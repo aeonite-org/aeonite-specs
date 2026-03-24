@@ -1,0 +1,20 @@
+{
+  "contracts": [
+    {
+      "id": "aeon.gp.profile.v1",
+      "kind": "profile",
+      "version": "1.0.0",
+      "path": "profiles/aeon.gp.profile.v1.aeon",
+      "sha256": "2e9233a9a4a046427be93c20f67290ac4f596aee1def1b9ee4c5178f1492e1f2",
+      "status": "active"
+    },
+    {
+      "id": "aeon.gp.schema.v1",
+      "kind": "schema",
+      "version": "1.0.0",
+      "path": "schemas/aeon.gp.schema.v1.aeon",
+      "sha256": "2ee9c1153914e52b3e4adb4946f0228bee25975c910f0c294737b197b4c53da4",
+      "status": "active"
+    }
+  ]
+}

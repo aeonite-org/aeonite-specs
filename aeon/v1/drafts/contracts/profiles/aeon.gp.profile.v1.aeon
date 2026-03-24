@@ -1,0 +1,6 @@
+profile_id = "aeon.gp.profile.v1"
+profile_version = "1.0.0"
+core_id = "aeon.core.v1"
+description = "General-purpose AEON profile baseline for v1."
+mode_default = "strict"
+datatype_policy_default = "reserved_only"
