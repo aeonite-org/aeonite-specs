@@ -316,6 +316,8 @@ Nuances:
 
 Newlines are structural in AEON, but only in specific places.
 
+Between structural tokens, a newline is otherwise treated the same as ordinary inter-token whitespace. A newline becomes special only when the surrounding grammar consumes it as a separator, or when inserting it would split a compact token that must remain contiguous.
+
 ### 6.1 Newline as Separator
 
 Newline can separate:
@@ -340,6 +342,7 @@ Notes:
 - trimticks are multiline string values introduced by a contiguous `>` through `>>>>` marker immediately before a backtick string opener;
 - trimticks trim the first empty line, trailing empty lines, and common left indentation according to the marker's tab policy;
 - separator literals may terminate at newline, comma, or closing container boundary depending on enclosing grammar context.
+- for worked boundary examples, see `appendices/appendix-whitespace-boundaries.md`.
 
 ### 6.3 Comments and Newlines
 
