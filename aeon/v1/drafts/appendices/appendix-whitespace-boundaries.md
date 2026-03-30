@@ -54,6 +54,16 @@ list
 ]
 ```
 
+Separator spec boundaries:
+
+```aeon
+size:sep
+[
+x
+]
+= ^300x250
+```
+
 Attribute and node-head boundaries:
 
 ```aeon
@@ -95,16 +105,6 @@ Separator literal payload:
 a =
 ^
 0.0
-```
-
-Separator spec bracket:
-
-```aeon
-size:sep
-[
-x
-]
-= ^300x250
 ```
 
 Bare identifier:
