@@ -12,10 +12,10 @@ If the container is embedded in a context where a Neon payload is expected (e.g.
 
 When present, the magic sequence uses `0xD7` as the start byte, followed by `0xFF` (which is strictly invalid in UTF-8, guaranteeing the payload cannot be mistaken for valid text), and a third byte selecting the parsing mode:
 
-| Mode | Bytes | Header size (w/ magic) | Header size (w/o magic) |
-|:---|:---|:---|:---|
-| **Simple** | `D7 FF 9B` | 4 bytes total | 1 byte total |
-| **Extended** | `D7 FF BB` | 5+ bytes total | 2+ bytes total |
+| Mode         | Bytes      | Header size (w/ magic) | Header size (w/o magic) |
+| :----------- | :--------- | :--------------------- | :---------------------- |
+| **Simple**   | `D7 FF 9B` | 4 bytes total          | 1 byte total            |
+| **Extended** | `D7 FF BB` | 5+ bytes total         | 2+ bytes total          |
 
 - **Simple mode** (`D7 FF 9B`): Minimal container — magic + 1 flags byte + payload. 
 - **Extended mode** (`D7 FF BB`): Same flags byte, followed by extension byte(s) for advanced features.
@@ -33,17 +33,17 @@ Byte 0: 0xD7          ← magic byte 1 (optional)
 Byte 1: 0xFF          ← magic byte 2 (optional)
 Byte 2: 0x9B          ← magic byte 3 (optional, simple mode)
 Byte 3: Flags
-  ┌─────────────────────────────────────────┐
-  │ Bits 7-5│ Version (0–7)                 │
-  ├─────────┼───────────────────────────────┤
-  │ Bits 4-3│ Encoding                      │
-  │         │ 00 = 2p6b-gp (general purpose) │
-  │         │ 01 = 3p6b                     │
-  │         │ 10 = utf-8                    │
-  │         │ 11 = 2p6b-aeon                │
-  ├─────────┼───────────────────────────────┤
-  │ Bits 2-0│ Pad bits (0–7)                │
-  └─────────┴───────────────────────────────┘
+  ┌───────────────────────────────────────────┐
+  │ Bits 7-5 │ Version (0–7)                  │
+  ├──────────┼────────────────────────────────┤
+  │ Bits 4-3 │ Encoding                       │
+  │          │ 00 = 2p6b-gp (general purpose) │
+  │          │ 01 = 3p6b                      │
+  │          │ 10 = utf-8                     │
+  │          │ 11 = 2p6b-aeon                 │
+  ├──────────┼────────────────────────────────┤
+  │ Bits 2-0 │ Pad bits (0–7)                 │
+  └──────────┴────────────────────────────────┘
 ...payload bytes...
 ```
 
@@ -60,17 +60,17 @@ Byte 3: Flags (identical layout to simple mode)
   Bits 4-3: Encoding
   Bits 2-0: Pad bits
 Byte 4: Extension flags
-  ┌─────────────────────────────────────────┐
-  │ Bit 7   │ CRC-32 (0=none, 1=4B trailer)│
-  ├─────────┼───────────────────────────────┤
-  │ Bit 6   │ Compression (0=none, 1=yes)  │
-  ├─────────┼───────────────────────────────┤
-  │ Bit 5   │ Directory (0=single, 1=multi)│
-  ├─────────┼───────────────────────────────┤
-  │ Bits 4-1│ Reserved (must be 0)          │
-  ├─────────┼───────────────────────────────┤
-  │ Bit 0   │ Chain (0=done, 1=more ext.)  │
-  └─────────┴───────────────────────────────┘
+  ┌──────────────────────────────────────────┐
+  │ Bit 7    │ CRC-32 (0=none, 1=4B trailer) │
+  ├──────────┼───────────────────────────────┤
+  │ Bit 6    │ Compression (0=none, 1=yes)   │
+  ├──────────┼───────────────────────────────┤
+  │ Bit 5    │ Directory (0=single, 1=multi) │
+  ├──────────┼───────────────────────────────┤
+  │ Bits 4-1 │ Reserved (must be 0)          │
+  ├──────────┼───────────────────────────────┤
+  │ Bit 0    │ Chain (0=done, 1=more ext.)   │
+  └──────────┴───────────────────────────────┘
 Byte 5 (conditional, if compression = 1):
   0x00 = Deflate, 0x01 = Brotli
 ...payload bytes...
@@ -82,12 +82,12 @@ Byte 5 (conditional, if compression = 1):
 
 ### Size comparison
 
-| Scenario | Experimental (v0) | Neon v1 (with magic) | Neon v1 (no magic) |
-|:---|:---|:---|:---|
-| Simple payload, no extras | 2 bytes | **4 bytes** | **1 byte** |
-| Payload + CRC-32 | n/a | 5 bytes | 2 bytes |
-| Compressed payload | 4 bytes (v0-ext) | 6 bytes | 3 bytes |
-| Multi-payload + compressed | 4–5 bytes (v0-ext) | 6–7 bytes | 3–4 bytes |
+| Scenario                   | Experimental (v0)  | Neon v1 (with magic) | Neon v1 (no magic) |
+| :------------------------- | :----------------- | :------------------- | :----------------- |
+| Simple payload, no extras  | 2 bytes            | **4 bytes**          | **1 byte**         |
+| Payload + CRC-32           | n/a                | 5 bytes              | 2 bytes            |
+| Compressed payload         | 4 bytes (v0-ext)   | 6 bytes              | 3 bytes            |
+| Multi-payload + compressed | 4–5 bytes (v0-ext) | 6–7 bytes            | 3–4 bytes          |
 
 Advanced features pay +1 byte for the extension byte.
 
@@ -99,50 +99,50 @@ Advanced features pay +1 byte for the extension byte.
 
 **Sticky Punctuation (indices 27–47)** — present on both pages, never triggers a page switch:
 
-| Idx | Char | Idx | Char | Idx | Char | Idx | Char |
-|:----|:-----|:----|:-----|:----|:-----|:----|:-----|
-| 27  | `` ` ``  | 32  | ` `  | 37  | `=`  | 42  | `)`  |
-| 28  | `"`  | 33  | `.`  | 38  | `:`  | 43  | `[`  |
-| 29  | `_`  | 34  | `,`  | 39  | `{`  | 44  | `]`  |
-| 30  | `\n` | 35  | `!`  | 40  | `}`  | 45  | `<`  |
-| 31  | `\t` | 36  | `?`  | 41  | `(`  | 46  | `>`  |
-|     |      |     |      |     |      | 47  | *(UTF marker)* |
+| Idx  | Char    | Idx  | Char | Idx  | Char | Idx  | Char           |
+| :--- | :------ | :--- | :--- | :--- | :--- | :--- | :------------- |
+| 27   | `` ` `` | 32   | ` `  | 37   | `=`  | 42   | `)`            |
+| 28   | `"`     | 33   | `.`  | 38   | `:`  | 43   | `[`            |
+| 29   | `_`     | 34   | `,`  | 39   | `{`  | 44   | `]`            |
+| 30   | `\n`    | 35   | `!`  | 40   | `}`  | 45   | `<`            |
+| 31   | `\t`    | 36   | `?`  | 41   | `(`  | 46   | `>`            |
+|      |         |      |      |      |      | 47   | *(UTF marker)* |
 
 > [!TIP]
 > Key design choices: **space at index 32** aligns with ASCII. **UTF marker at sticky index 47** means UTF-8 escape runs are accessible from any page without a page switch (was previously on page 1 only). **Single quote** (`'`) sits at page 1 index 25 since `'` and `"` are interchangeable in AEON — `"` remains available on any page via sticky index 28.
 
 **Page 0 — Lowercase**
 
-| Idx | Char | | Idx | Char | | Idx | Char |
-|:----|:-----|---|:----|:-----|---|:----|:-----|
-| 0   | *(reserved)* | | 10  | `j`  | | 20  | `t`  |
-| 1   | `a`  | | 11  | `k`  | | 21  | `u`  |
-| 2   | `b`  | | 12  | `l`  | | 22  | `v`  |
-| 3   | `c`  | | 13  | `m`  | | 23  | `w`  |
-| 4   | `d`  | | 14  | `n`  | | 24  | `x`  |
-| 5   | `e`  | | 15  | `o`  | | 25  | `y`  |
-| 6   | `f`  | | 16  | `p`  | | 26  | `z`  |
-| 7   | `g`  | | 17  | `q`  | | 27–47 | *sticky* |
-| 8   | `h`  | | 18  | `r`  | |     |      |
-| 9   | `i`  | | 19  | `s`  | |     |      |
+| Idx  | Char         |     | Idx  | Char |     | Idx   | Char     |
+| :--- | :----------- | --- | :--- | :--- | --- | :---- | :------- |
+| 0    | *(reserved)* |     | 10   | `j`  |     | 20    | `t`      |
+| 1    | `a`          |     | 11   | `k`  |     | 21    | `u`      |
+| 2    | `b`          |     | 12   | `l`  |     | 22    | `v`      |
+| 3    | `c`          |     | 13   | `m`  |     | 23    | `w`      |
+| 4    | `d`          |     | 14   | `n`  |     | 24    | `x`      |
+| 5    | `e`          |     | 15   | `o`  |     | 25    | `y`      |
+| 6    | `f`          |     | 16   | `p`  |     | 26    | `z`      |
+| 7    | `g`          |     | 17   | `q`  |     | 27–47 | *sticky* |
+| 8    | `h`          |     | 18   | `r`  |     |       |          |
+| 9    | `i`          |     | 19   | `s`  |     |       |          |
 
 Prefixes from page 0: `110` = shift/latch to page 1, `1111` = case shift (uppercase)
 
 **Page 1 — Data / Digits**
 
-| Idx | Char | | Idx | Char | | Idx | Char |
-|:----|:-----|---|:----|:-----|---|:----|:-----|
-| 0   | *(binary marker)* | | 11  | `+`  | | 21  | `@`  |
-| 1   | `0`  | | 12  | `-`  | | 22  | `#`  |
-| 2   | `1`  | | 13  | `*`  | | 23  | `$`  |
-| 3   | `2`  | | 14  | `/`  | | 24  | *(reserved)* |
-| 4   | `3`  | | 15  | `\`  | | 25  | `'`  |
-| 5   | `4`  | | 16  | `\|` | | 26  | `;`  |
-| 6   | `5`  | | 17  | `^`  | | 27–47 | *sticky* |
-| 7   | `6`  | | 18  | `&`  | |     |      |
-| 8   | `7`  | | 19  | `%`  | |     |      |
-| 9   | `8`  | | 20  | `~`  | |     |      |
-| 10  | `9`  | |     |      | |     |      |
+| Idx  | Char              |     | Idx  | Char |     | Idx   | Char         |
+| :--- | :---------------- | --- | :--- | :--- | --- | :---- | :----------- |
+| 0    | *(binary marker)* |     | 11   | `+`  |     | 21    | `@`          |
+| 1    | `0`               |     | 12   | `-`  |     | 22    | `#`          |
+| 2    | `1`               |     | 13   | `*`  |     | 23    | `$`          |
+| 3    | `2`               |     | 14   | `/`  |     | 24    | *(reserved)* |
+| 4    | `3`               |     | 15   | `\`  |     | 25    | `'`          |
+| 5    | `4`               |     | 16   | `\|` |     | 26    | `;`          |
+| 6    | `5`               |     | 17   | `^`  |     | 27–47 | *sticky*     |
+| 7    | `6`               |     | 18   | `&`  |     |       |              |
+| 8    | `7`               |     | 19   | `%`  |     |       |              |
+| 9    | `8`               |     | 20   | `~`  |     |       |              |
+| 10   | `9`               |     |      |      |     |       |              |
 
 Prefixes from page 1: `110` = shift/latch to page 0
 
@@ -152,43 +152,43 @@ Tailored for AEON syntax with **smart-equals combinators** that merge `=` with p
 
 **Page 0 — Lowercase + @**
 
-| Idx | Char | | Idx | Char | | Idx | Char |
-|:----|:-----|---|:----|:-----|---|:----|:-----|
-| 0   | *(reserved)* | | 10  | `j`  | | 20  | `t`  |
-| 1   | `a`  | | 11  | `k`  | | 21  | `u`  |
-| 2   | `b`  | | 12  | `l`  | | 22  | `v`  |
-| 3   | `c`  | | 13  | `m`  | | 23  | `w`  |
-| 4   | `d`  | | 14  | `n`  | | 24  | `x`  |
-| 5   | `e`  | | 15  | `o`  | | 25  | `y`  |
-| 6   | `f`  | | 16  | `p`  | | 26  | `z`  |
-| 7   | `g`  | | 17  | `q`  | | 27  | `@`  |
-| 8   | `h`  | | 18  | `r`  | | 28–47 | *sticky* |
-| 9   | `i`  | | 19  | `s`  | |     |      |
+| Idx  | Char         |     | Idx  | Char |     | Idx   | Char     |
+| :--- | :----------- | --- | :--- | :--- | --- | :---- | :------- |
+| 0    | *(reserved)* |     | 10   | `j`  |     | 20    | `t`      |
+| 1    | `a`          |     | 11   | `k`  |     | 21    | `u`      |
+| 2    | `b`          |     | 12   | `l`  |     | 22    | `v`      |
+| 3    | `c`          |     | 13   | `m`  |     | 23    | `w`      |
+| 4    | `d`          |     | 14   | `n`  |     | 24    | `x`      |
+| 5    | `e`          |     | 15   | `o`  |     | 25    | `y`      |
+| 6    | `f`          |     | 16   | `p`  |     | 26    | `z`      |
+| 7    | `g`          |     | 17   | `q`  |     | 27    | `@`      |
+| 8    | `h`          |     | 18   | `r`  |     | 28–47 | *sticky* |
+| 9    | `i`          |     | 19   | `s`  |     |       |          |
 
 **Page 1 — Data / Digits / Symbols**
 
-| Idx | Char | | Idx | Char | | Idx | Char |
-|:----|:-----|---|:----|:-----|---|:----|:-----|
-| 0   | *(binary marker)* | | 10  | `0`  | | 20  | `~`  |
-| 1   | `1`  | | 11  | `+`  | | 21  | `'`  |
-| 2   | `2`  | | 12  | `-`  | | 22  | `#`  |
-| 3   | `3`  | | 13  | `*`  | | 23  | `$`  |
-| 4   | `4`  | | 14  | `/`  | | 24  | `?`  |
-| 5   | `5`  | | 15  | `\`  | | 25  | `;`  |
-| 6   | `6`  | | 16  | `\|` | | 26  | `!`  |
-| 7   | `7`  | | 17  | `^`  | | 27  | `_`  |
-| 8   | `8`  | | 18  | `&`  | | 28–47 | *sticky* |
-| 9   | `9`  | | 19  | `%`  | |     |      |
+| Idx  | Char              |     | Idx  | Char |     | Idx   | Char     |
+| :--- | :---------------- | --- | :--- | :--- | --- | :---- | :------- |
+| 0    | *(binary marker)* |     | 10   | `0`  |     | 20    | `~`      |
+| 1    | `1`               |     | 11   | `+`  |     | 21    | `'`      |
+| 2    | `2`               |     | 12   | `-`  |     | 22    | `#`      |
+| 3    | `3`               |     | 13   | `*`  |     | 23    | `$`      |
+| 4    | `4`               |     | 14   | `/`  |     | 24    | `?`      |
+| 5    | `5`               |     | 15   | `\`  |     | 25    | `;`      |
+| 6    | `6`               |     | 16   | `\|` |     | 26    | `!`      |
+| 7    | `7`               |     | 17   | `^`  |     | 27    | `_`      |
+| 8    | `8`               |     | 18   | `&`  |     | 28–47 | *sticky* |
+| 9    | `9`               |     | 19   | `%`  |     |       |          |
 
 **Sticky (indices 28–47)** — shared across both pages:
 
-| Idx | Char | Idx | Char | Idx | Char | Idx | Char |
-|:----|:-----|:----|:-----|:----|:-----|:----|:-----|
-| 28  | `.`  | 33  | `=`  | 38  | `:`  | 43  | `[`  |
-| 29  | `,`  | 34  | *= + latch* | 39  | `{`  | 44  | `]`  |
-| 30  | `\n` | 35  | *= + shift* | 40  | `}`  | 45  | `<`  |
-| 31  | `\t` | 36  | `"`  | 41  | `(`  | 46  | `>`  |
-| 32  | ` `  | 37  | `` ` ``  | 42  | `)`  | 47  | *(UTF marker)* |
+| Idx  | Char | Idx  | Char        | Idx  | Char | Idx  | Char           |
+| :--- | :--- | :--- | :---------- | :--- | :--- | :--- | :------------- |
+| 28   | `.`  | 33   | `=`         | 38   | `:`  | 43   | `[`            |
+| 29   | `,`  | 34   | *= + latch* | 39   | `{`  | 44   | `]`            |
+| 30   | `\n` | 35   | *= + shift* | 40   | `}`  | 45   | `<`            |
+| 31   | `\t` | 36   | `"`         | 41   | `(`  | 46   | `>`            |
+| 32   | ` `  | 37   | `` ` ``     | 42   | `)`  | 47   | *(UTF marker)* |
 
 > [!IMPORTANT]
 > **Smart-equals combinators** (indices 33–35):
@@ -200,14 +200,14 @@ Tailored for AEON syntax with **smart-equals combinators** that merge `=` with p
 
 3p6b uses its own sticky punctuation arrangement (indices 27–47) shared across all three pages:
 
-| Idx | Char | Idx | Char | Idx | Char | Idx | Char |
-|:----|:-----|:----|:-----|:----|:-----|:----|:-----|
-| 27  | `.`  | 32  | `:`  | 37  | ` `  | 42  | `[`  |
-| 28  | `,`  | 33  | `` ` ``  | 38  | `\t` | 43  | `]`  |
-| 29  | `!`  | 34  | `'`  | 39  | `\n` | 44  | `{`  |
-| 30  | `?`  | 35  | `"`  | 40  | `(`  | 45  | `}`  |
-| 31  | `=`  | 36  | `_`  | 41  | `)`  | 46  | `<`  |
-|     |      |     |      |     |      | 47  | `>`  |
+| Idx  | Char | Idx  | Char    | Idx  | Char | Idx  | Char |
+| :--- | :--- | :--- | :------ | :--- | :--- | :--- | :--- |
+| 27   | `.`  | 32   | `:`     | 37   | ` `  | 42   | `[`  |
+| 28   | `,`  | 33   | `` ` `` | 38   | `\t` | 43   | `]`  |
+| 29   | `!`  | 34   | `'`     | 39   | `\n` | 44   | `{`  |
+| 30   | `?`  | 35   | `"`     | 40   | `(`  | 45   | `}`  |
+| 31   | `=`  | 36   | `_`     | 41   | `)`  | 46   | `<`  |
+|      |      |      |         |      |      | 47   | `>`  |
 
 **Page 0 — Lowercase**: indices 1–26 = `a`–`z`, 27–47 = sticky
 
@@ -215,20 +215,188 @@ Tailored for AEON syntax with **smart-equals combinators** that merge `=` with p
 
 **Page 2 — Digits / Symbols**
 
-| Idx | Char | | Idx | Char | | Idx | Char |
-|:----|:-----|---|:----|:-----|---|:----|:-----|
-| 0   | *(binary marker)* | | 9   | *(reserved)* | | 18  | `2`  |
-| 1   | `-`  | | 10  | `@`  | | 19  | `3`  |
-| 2   | `+`  | | 11  | `%`  | | 20  | `4`  |
-| 3   | `/`  | | 12  | `^`  | | 21  | `5`  |
-| 4   | `\`  | | 13  | `&`  | | 22  | `6`  |
-| 5   | `~`  | | 14  | `*`  | | 23  | `7`  |
-| 6   | `#`  | | 15  | `\|` | | 24  | `8`  |
-| 7   | `$`  | | 16  | `0`  | | 25  | `9`  |
-| 8   | *(UTF marker)* | | 17  | `1`  | | 26  | `;`  |
-|     |      | |     |      | | 27–47 | *sticky* |
+| Idx  | Char              |     | Idx  | Char         |     | Idx   | Char     |
+| :--- | :---------------- | --- | :--- | :----------- | --- | :---- | :------- |
+| 0    | *(binary marker)* |     | 9    | *(reserved)* |     | 18    | `2`      |
+| 1    | `-`               |     | 10   | `@`          |     | 19    | `3`      |
+| 2    | `+`               |     | 11   | `%`          |     | 20    | `4`      |
+| 3    | `/`               |     | 12   | `^`          |     | 21    | `5`      |
+| 4    | `\`               |     | 13   | `&`          |     | 22    | `6`      |
+| 5    | `~`               |     | 14   | `*`          |     | 23    | `7`      |
+| 6    | `#`               |     | 15   | `\|`         |     | 24    | `8`      |
+| 7    | `$`               |     | 16   | `0`          |     | 25    | `9`      |
+| 8    | *(UTF marker)*    |     | 17   | `1`          |     | 26    | `;`      |
+|      |                   |     |      |              |     | 27–47 | *sticky* |
 
 Page switching: `110` = jump +2 pages (mod 3), `111` = jump +1 page (mod 3)
+
+### Mixed Text/Binary Plan Streams
+
+Packed Neon encodings (`2p6b-gp`, `2p6b-aeon`, `3p6b`) can carry **mixed text/binary plans**, not just plain text.
+
+This is how Neon supports content such as:
+
+- text with inline binary payloads
+- exact text-backed binary segments
+- AEON-oriented reopen behavior where some binary content can still be reconstructed as text
+
+#### Where the binary marker lives
+
+Each packed codec reserves one symbol position as the binary marker:
+
+- `2p6b-gp`: page 1, code `0`
+- `2p6b-aeon`: page 1, code `0`
+- `3p6b`: page 2, code `0`
+
+When that reserved symbol is encountered in a normal stream position, the decoder switches from character decoding to **binary chunk decoding**.
+
+> [!IMPORTANT]
+> Binary chunks are valid only in normal stream positions. They are not valid in single-symbol shift positions.
+
+#### Binary chunk header
+
+After the binary marker, the chunk format is:
+
+```text
+[6 bits]   BINARY_MARKER
+[18 bits]  byteLength
+[6 bits]   mode
+[18 bits]  textLength        (only for text-backed modes)
+[N bytes]  raw binary bytes
+[M bytes]  source text bytes (only for text-backed modes)
+```
+
+The 18-bit length fields allow per-chunk lengths from `0` to `262143`.
+
+#### Binary modes
+
+| Mode | Meaning                              |
+| :--- | :----------------------------------- |
+| `0`  | Raw binary only                      |
+| `1`  | Binary with exact UTF-8 source text  |
+| `2`  | Binary with exact base64 source text |
+
+Modes `1` and `2` are **text-backed binary segments**. They store both:
+
+- the decoded binary bytes
+- the exact source text used to produce them
+
+This allows editor- or format-aware reopen behavior when the original textual form should be preserved exactly.
+
+#### Raw vs text-backed semantics
+
+- **Raw mode**
+  Stores only the binary bytes. This is the most compact representation, but it is not inherently text-roundtrippable.
+
+- **UTF-8 text-backed mode**
+  Stores binary bytes plus exact UTF-8 source text. The stored text must encode back to the same bytes exactly.
+
+- **Base64 text-backed mode**
+  Stores binary bytes plus exact base64 source text. The stored text must decode back to the same bytes exactly.
+
+#### Chunking rules
+
+Large raw binary payloads may be split across multiple adjacent raw chunks. Decoders should treat adjacent raw chunks as one logical binary segment.
+
+Text-backed binary chunks currently carry both the raw bytes and the exact source text in the same chunk and therefore use a single per-chunk size limit of `262143` bytes for each length field.
+
+#### Interleaving model
+
+A packed Neon plan is conceptually a sequence of segments:
+
+- text segment
+- binary segment
+- text segment
+- binary segment
+- and so on
+
+Decoders accumulate normal character symbols into a text segment until a binary marker is encountered. At that point:
+
+1. the current text segment is flushed
+2. the binary chunk is decoded
+3. a binary segment is appended
+4. text decoding then resumes on the current page
+
+This means the page-switching state is preserved across the text/binary boundary, apart from the fact that binary chunks themselves are not character-page content.
+
+#### Text reconstruction implications
+
+Mixed plans have two different reopen possibilities:
+
+- **exact text-backed reconstruction**
+  available when the binary segment stores `sourceText`
+
+- **canonical reconstruction**
+  available when the binary segment is raw-only and tooling must choose a textual representation, such as canonical base64
+
+This distinction is especially important for AEON integration, where some binary-oriented forms intentionally reopen canonically rather than byte-for-byte as the original source text.
+
+#### Worked examples
+
+##### Example A: exact text-backed base64 segment
+
+Suppose an encoder produces a mixed plan like:
+
+```text
+[
+  { kind: "text",   text: "code:inline = $" },
+  { kind: "binary", bytes: [AA BB CC], renderAs: "base64", sourceText: "qrvM" },
+  { kind: "text",   text: "\nmode=\"ok\"\n" }
+]
+```
+
+Operationally:
+
+1. the first text segment is emitted through the packed character stream
+2. the encoder emits the binary marker
+3. it writes:
+   - `byteLength = 3`
+   - `mode = 2` (`base64` text-backed)
+   - `textLength = 4`
+   - raw bytes `AA BB CC`
+   - exact source text bytes for `qrvM`
+4. normal packed text emission resumes for the trailing text segment
+
+This form supports exact reopen behavior because the binary segment carries its exact source text.
+
+An AEON-aware reconstruction layer can therefore recover:
+
+```aeon
+code:inline = $qrvM
+mode="ok"
+```
+
+##### Example B: raw binary segment with canonical reopen
+
+Suppose an encoder produces:
+
+```text
+[
+  { kind: "text",   text: "code:inline = $" },
+  { kind: "binary", bytes: [68 65 6C 6C 6F] },
+  { kind: "text",   text: "\n" }
+]
+```
+
+Operationally:
+
+1. the first text segment is emitted normally
+2. the encoder emits the binary marker
+3. it writes:
+   - `byteLength = 5`
+   - `mode = 0` (`raw`)
+   - raw bytes `68 65 6C 6C 6F`
+4. text emission resumes after the chunk
+
+This is more compact because no source text is stored alongside the bytes.
+
+However, exact text reopen is no longer guaranteed. A reconstruction layer must choose a textual representation if it wants to show editable AEON again. One valid canonical reopen would be:
+
+```aeon
+code:inline = $aGVsbG8
+```
+
+That reconstructed AEON is semantically equivalent for many workflows, but it is not necessarily byte-for-byte the same as the original source spelling that produced the binary payload.
 
 ---
 
@@ -292,13 +460,13 @@ From page 1 (data/digits):
 ### Bit-cost examples
 
 **Isolated digit** (`abc1def`): **45 bits** (saves 3 vs current 48)
-| Step | Current | Proposed |
-|:---|:---|:---|
-| `abc` | 18 | 18 |
+| Step     | Current   | Proposed  |
+| :------- | :-------- | :-------- |
+| `abc`    | 18        | 18        |
 | → page 1 | 3 (latch) | 3 (shift) |
-| `1` | 6 | 6 |
-| → page 0 | 3 (latch) | 0 (auto) |
-| `def` | 18 | 18 |
+| `1`      | 6         | 6         |
+| → page 0 | 3 (latch) | 0 (auto)  |
+| `def`    | 18        | 18        |
 
 **Digit run** (`abc12345def`): **73 bits** (+1 vs current 72)
 
@@ -350,7 +518,84 @@ When compression racing is enabled, the encoder:
 
 ---
 
-## 8. Summary
+## 8. AEON Integration Semantics
+
+The Neon container format is format-agnostic, but the current AEON integration layer follows a deliberate distinction:
+
+- some values remain **textual AEON**
+- some values become **binary-oriented Neon payloads**
+
+This distinction is not limited to `:base64`.
+
+### Text-preserving AEON forms
+
+The following AEON forms remain textual by default:
+
+- bare `$...` encoding literals
+- `:base64`
+- `:encoding`
+- custom encoding-like types that still use ordinary AEON textual syntax
+
+The important rule is that these forms are still ordinary AEON text. Unless AEON introduces new syntax for binary-bearing values, they are treated as text-preserving and should round-trip as AEON source.
+
+### Binary-oriented AEON forms
+
+The following forms are explicitly binary-oriented:
+
+- `:inline`
+- `:embed`
+- standalone directory attachments outside the AEON source itself
+
+These are Neon storage decisions, not generic AEON textual ones.
+
+### Operational meaning
+
+- `:base64`
+  Keeps the payload as textual AEON.
+
+- `:encoding`
+  Also keeps the payload as textual AEON.
+
+- custom textual encoding types
+  Behave like other text-preserving AEON forms unless future AEON syntax says otherwise.
+
+- `:inline`
+  Stores the payload as inline binary-oriented Neon content. This optimizes storage, but reopening may reconstruct canonical base64 rather than the exact original literal text.
+
+- `:embed`
+  Stores the payload as a packaged directory entry. The primary AEON text may internally reference the payload as `"neon-entry:<key>"`, but tooling may reconstruct it back into editable AEON `$...` form.
+
+- attachments
+  Are separate directory entries that do not live inside the AEON source text itself.
+
+### Round-trip expectation
+
+There are two useful round-trip levels:
+
+- **exact textual round-trip**
+  The AEON source remains text-bearing and reopens as AEON text after adapter normalizations.
+
+- **canonical reconstruction**
+  The reopened AEON is semantically equivalent, but some binary-oriented forms may reopen as canonical base64 rather than the exact original source spelling.
+
+Current intended AEON behavior:
+
+- text-preserving forms such as bare `$...`, `:base64`, `:encoding`, and similar textual custom types should remain textual
+- `:embed` should be reconstructible into AEON-friendly editing form
+- `:inline` is allowed to be binary-oriented and reconstructed canonically
+
+### Racing and AEON
+
+Neon encoding race selection and compression race selection are orthogonal to these AEON semantics:
+
+- encoding race chooses between `2p6b-gp`, `2p6b-aeon`, `3p6b`, and `utf-8`
+- compression race chooses between `none`, `deflate`, and `brotli`
+
+Those races choose the most compact Neon container representation. They do not, by themselves, convert text-preserving AEON forms into binary-oriented AEON forms.
+
+---
+
+## 9. Summary
 
 ```mermaid
 graph LR
@@ -373,16 +618,17 @@ graph LR
   end
 ```
 
-| Feature | Experimental (v0) | Neon v1 |
-|:---|:---|:---|
-| Magic | 1 byte (`0x4E`) | 3 bytes (`D7 FF 9B` / `BB`) or omitted |
-| Min header (simple) | 2 bytes | 4 bytes (1 byte if omitted) |
-| Min header (extended) | 4 bytes (v0-ext) | 5 bytes (2 bytes if omitted) |
-| False-positive risk | 1 in 256 | Zero (contains invalid UTF byte 0xFF) |
-| Encodings | 4 × 2-bit | 2p6b-gp, 3p6b, utf-8, 2p6b-aeon |
-| Checksum | CRC-16 | CRC-32 |
-| Page switching | Latch only | Shift + Latch (2p6b) |
-| Mixed-case text | 3p6b (same) | 3p6b (dedicated uppercase page) |
-| AEON optimization | — | 2p6b-aeon (smart-equals combinators) |
-| Isolated digit cost | 12 bits | 9 bits (2p6b) |
-| Extensibility | 1-byte dict ID (V0) | Extension bytes (CRC-32, Compression, Custom Maps, Preset Dictionaries) |
+| Feature               | Experimental (v0)   | Neon v1                                           |
+| :-------------------- | :------------------ | :------------------------------------------------ |
+| Magic                 | 1 byte (`0x4E`)     | 3 bytes (`D7 FF 9B` / `BB`) or omitted            |
+| Min header (simple)   | 2 bytes             | 4 bytes (1 byte if omitted)                       |
+| Min header (extended) | 4 bytes (v0-ext)    | 5 bytes (2 bytes if omitted)                      |
+| False-positive risk   | 1 in 256            | Zero (contains invalid UTF byte 0xFF)             |
+| Encodings             | 4 × 2-bit           | 2p6b-gp, 3p6b, utf-8, 2p6b-aeon                   |
+| Checksum              | CRC-16              | CRC-32                                            |
+| Page switching        | Latch only          | Shift + Latch (2p6b)                              |
+| Mixed-case text       | 3p6b (same)         | 3p6b (dedicated uppercase page)                   |
+| AEON optimization     | —                   | 2p6b-aeon (smart-equals combinators)              |
+| Isolated digit cost   | 12 bits             | 9 bits (2p6b)                                     |
+| Extensibility         | 1-byte dict ID (V0) | Extension bytes (CRC-32, Compression, Custom Maps |
+|                       |                     | Preset Dictionaries)                              |
