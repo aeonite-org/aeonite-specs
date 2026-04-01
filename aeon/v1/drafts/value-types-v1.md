@@ -211,7 +211,7 @@ Interpretation:
 | Boolean           | `true`, `false`                         | `flag = true`                               | `flag:boolean = true`                                           | `BooleanLiteral`   |
 | Switch            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:switch = on`                                             | `SwitchLiteral`    |
 | Hex               | `#ff00aa`                               | `color = #ff00aa`                           | `color:hex = #ff00aa`                                           | `HexLiteral`       |
-| Radix             | `%1011`                                 | `bits = %1011`                              | `bits:radix2 = %1011`                                           | `RadixLiteral`     |
+| Radix             | `%1011`                                 | `bits = %1011`                              | `bits:radix[2] = %1011`                                         | `RadixLiteral`     |
 | Encoding          | `$QmFzZTY0IQ==`                         | `payload = $QmFzZTY0IQ==`                   | `payload:base64 = $QmFzZTY0IQ==`                                | `EncodingLiteral`  |
 | Date              | `2025-01-01`, `2024-02-29`              | `d = 2025-01-01`                            | `d:date = 2025-01-01`                                           | `DateLiteral`      |
 | Time              | `09:`, `09:30`, `09:30Z`, `09:+02:00`, `09:30+02:00`, `09:30:00`, `09:30:00Z` | `t = 09:30:00`                              | `t:time = 09:30:00Z`                                            | `DateTimeLiteral`  |
@@ -436,20 +436,26 @@ Examples:
 
 ```aeon
 bits = %1011
-bits:radix2 = %1011
+bits:radix[2] = %1011
 ```
 
 Nuances:
 - payload captured without `%`.
 - radix literals are number-like rather than encoding-like;
+- `radix[base]` is informative metadata rather than a generic type parameter;
+- optional radix base metadata accepts decimal integers from `2` to `64`;
+- spaces around the radix base inside brackets are allowed, but the integer itself must be contiguous;
+- radix base forms with leading zeroes, non-decimal payloads, empty brackets, or values outside `2..64` are invalid;
+- reserved aliases such as `radix2`, `radix6`, `radix8`, and `radix12` remain accepted as shorthand;
 - optional leading sign `+` or `-` is allowed only once at the start of the payload;
 - radix payload digits are `0-9`, `A-Z`, `a-z`, `&`, and `!` in that order;
 - `.` is an optional radix decimal point and may appear at most once between non-empty digit runs;
 - `_` is visual spacing only and is valid only between radix digits;
+- radix payload leading zeroes are allowed and preserved as part of the represented digit sequence (for example `%00100101`);
 - `/` and `=` are not valid radix payload characters;
 - lexical acceptance is not base-specific radix validity;
 - base-specific digit checks still belong downstream for implementation/profile/schema enforcement;
-- parameterized forms such as `radix<2>` are not part of the shipped Core v1 datatype surface.
+- generic forms such as `radix<2>` are invalid; radix base metadata uses brackets.
 
 AES:
 - `RadixLiteral`.
@@ -469,6 +475,7 @@ Nuances:
 - payload captured without `$`.
 - `encoding`, `base64`, `embed`, and `inline` all bind to the same `EncodingLiteral` family in Core v1;
 - encoding/base64 payload accepts both the standard base64 alphabet (`A-Za-z0-9+/` with optional `=` padding) and the URL-safe base64 alphabet (`A-Za-z0-9-_` with optional `=` padding);
+- canonical encoding/base64 rendering prefers the URL-safe alphabet by rewriting `+` to `-` and `/` to `_`, and strips trailing `=` padding;
 - lexical acceptance is not encoding-family validity;
 - `a = $aa=` is unambiguous in current lexer, because the second `=` remains part of the encoding token rather than being reinterpreted as assignment.
 
