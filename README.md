@@ -45,6 +45,15 @@ Repository-level spec-maintenance utilities may also live under:
 
 - `scripts/`
 
+Before committing, run:
+
+```bash
+bash ./scripts/pre-commit-check.sh
+```
+
+This keeps portable spec text from accidentally picking up local filesystem
+paths.
+
 ## Licensing
 
 This repository is released under the MIT License. See `LICENSE`.
