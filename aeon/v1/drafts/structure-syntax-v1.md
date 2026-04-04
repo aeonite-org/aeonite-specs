@@ -198,13 +198,15 @@ Generic-depth notes:
 
 Current official v1 rules:
 - exactly one printable ASCII character;
-- no whitespace or newline inside brackets;
+- horizontal whitespace and newlines may appear around the separator character inside brackets, but the payload itself must remain contiguous;
 - `,`, `[`, and `]` are forbidden separator chars;
 - separator depth is the number of `[...]` segments.
 
 Nuances:
 - `size:sep[x]` has separator depth `1`;
 - `triple:set[x][y][z]` has separator depth `3`;
+- `sep[x]`, `sep[ x ]`, and `sep[\nx\n]` are legal;
+- `sep[xy]` and any form that splits the payload into more than one character are invalid;
 - repeated separator specs are legal and preserved structurally, including duplicate chars;
 - default runtime lock is `1`;
 - capability floor is at least `8`.
@@ -360,6 +362,7 @@ Key and attribute syntax affects addressing and references:
 
 ```aeon
 "a.b" = 2
+ref0 = ~"a.b"
 ref1 = ~["a.b"]
 ref2 = ~$.["a.b"]
 
@@ -369,6 +372,7 @@ ref3 = ~user@["profile.name"]
 
 Nuances:
 - `~a.b` means traversal through two member segments;
+- `~"a.b"` and `~["a.b"]` are equivalent initial quoted-member forms;
 - `~["a.b"]` means one quoted member segment;
 - `@key` and `@["key"]` both address attribute namespace segments.
 

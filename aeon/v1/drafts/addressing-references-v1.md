@@ -38,14 +38,17 @@ Identity rules:
 Authoritative grammar sketch:
 
 ```ebnf
-CanonicalPath = "$" PathMember* ;
-PathMember = "." BareKey | "[" Number "]" | "[" QuotedKey "]" ;
+CanonicalPath = "$" RootPathMember* ;
+RootPathMember = "." BareKey | ".[" QuotedKey "]" | "[" Number "]" ;
+PathMember = "." BareKey | ".[" QuotedKey "]" | "[" Number "]" ;
 ```
 
 Canonical notes:
 - non-bare keys are rendered in double-quoted bracket form;
 - lists and tuples use numeric index segments;
 - canonical path identity is deterministic across equivalent quoted spellings.
+- quoted root-member traversal uses the explicit dot form `$.["..."]`;
+- bare root-bracket member traversal such as `$["a"]` is not part of the Core v1 path grammar.
 
 ## 2. Key Segment Forms
 
@@ -63,14 +66,18 @@ Quoted member traversal:
 ```aeon
 $.["user name"]
 $.["a.b"]
+~"a.b"
 ~["a.b"]
 ~a.["b.c"]
 ```
 
 Nuances:
 - `~a.b` resolves member `a`, then member `b`;
+- `~"a.b"` and `~["a.b"]` are equivalent initial-segment forms for one quoted member key literally named `a.b`;
 - `~["a.b"]` resolves a single key literally named `a.b`;
 - `~a.["b.c"]` resolves member `a`, then a quoted member literally named `b.c`;
+- `~$.["a.b"]` is the explicit root-prefixed quoted-member form;
+- `~$["a.b"]` is not part of the Core v1 reference grammar;
 - quoted segment decoding occurs before identity comparison.
 
 ### 2.2 Indexed Traversal
@@ -134,7 +141,8 @@ Examples:
 a = 1
 b = ~a
 c = ~$.a
-d = ~["a.b"]
+d = ~"a.b"
+d2 = ~["a.b"]
 e = ~>a
 f = ~user@role
 ```
@@ -162,6 +170,7 @@ Then:
 ```aeon
 ~a        // object { b = 1 }
 ~a.b      // 1
+~"a.b"    // 2
 ~["a.b"]  // 2
 $.a.b     // canonical path to nested member
 $.["a.b"] // canonical path to quoted single key
