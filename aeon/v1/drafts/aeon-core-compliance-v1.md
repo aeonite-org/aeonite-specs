@@ -154,7 +154,7 @@ Implementations MUST:
 Implementations MUST:
 1. support repeatable separator specs (`[...]`)+;
 2. enforce separator character constraints (single printable ASCII, excluding `,`, `[` and `]`);
-3. reject whitespace/newline in separator spec brackets;
+3. allow horizontal whitespace and newlines around the separator character inside brackets, while still rejecting any form that makes the payload non-contiguous or longer than one character;
 4. preserve repeated separator specs structurally, including duplicate chars;
 5. treat `;` as separator-literal payload data rather than a terminator;
 6. terminate raw separator literals deterministically on grammar boundaries appropriate to the enclosing context;
@@ -175,7 +175,7 @@ Implementations MUST:
 7. continue to accept the Core v1 partial forms already admitted by grammar shape, including hour-precision `time` (`09:`) and `datetime` (`2025-01-01T09`);
 8. allow UTC/offset suffixes on valid reduced-precision time forms, including `09:30Z`, `09:+02:00`, and `09:30+02:00`;
 9. allow UTC/offset suffixes on valid reduced-precision `datetime` forms, including `2025-01-01T09Z`, `2025-01-01T09+02:00`, and `2025-01-01T09:30Z`;
-10. allow named-zone ZRUT suffixes on valid reduced-precision datetime bases, including `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, and `2025-01-01T09:30Z&Local`, and classify them as `zrut` literals;
+10. allow named-zone ZRUT suffixes on valid reduced-precision datetime bases, including `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, `2025-01-01T09Z&America/Port-au-Prince`, and `2025-01-01T09Z&Etc/GMT+1`, and classify them as `zrut` literals;
 11. treat uppercase `Z` as the UTC marker form and reject lowercase `z` as a temporal literal marker.
 
 Examples:
@@ -225,6 +225,18 @@ Implementations MUST enforce numeric underscore placement rules:
 Examples:
 - valid: `100_000`
 - invalid: `_100_000`, `100__000`, `100_`
+
+## 14.1 Hex Lexical Requirements
+
+Implementations MUST enforce hex underscore placement rules:
+1. `_` MAY appear only between hex digits;
+2. leading `_` is invalid;
+3. trailing `_` is invalid;
+4. consecutive underscores are invalid.
+
+Examples:
+- valid: `#ff00aa`, `#Ff_00_Aa`
+- invalid: `#_ff`, `#ff_`, `#F__f`
 
 ## 15. Minimum Conformance Floors
 

@@ -426,6 +426,9 @@ color:hex = #ff00aa
 
 Nuances:
 - parsed as hex literal payload without `#` in `value`.
+- surfaced machine-readable `value` is the payload-only form, while `raw` preserves the original sigiled source token;
+- `_` is visual spacing only and is valid only between hex digits;
+- leading, trailing, and consecutive `_` forms are invalid.
 
 AES:
 - `HexLiteral`.
@@ -504,6 +507,7 @@ Nuances:
 - zone suffixes (`Z`, `+hh:mm`, `-hh:mm`) may attach to valid reduced-precision time forms already admitted by Core v1, such as `09:` and `09:30`;
 - `datetime` extends that same reduced-precision rule after the `T`, so forms such as `2025-01-01T09Z`, `2025-01-01T09+02:00`, and `2025-01-01T09:30Z` are valid;
 - ZRUT extends the same reduced-precision datetime bases with a named zone suffix, so forms such as `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, and `2025-01-01T09:30Z&Local` are valid `zrut` literals;
+- named-zone ZRUT suffixes may contain `/`, `_`, `-`, and `+` when used as part of a contiguous zone identifier, so forms such as `America/Port-au-Prince`, `GB-Eire`, `Etc/GMT-1`, and `Etc/GMT+1` are valid zone payloads;
 - uppercase `Z` is the Core v1 UTC marker form; lowercase `z` is not a temporal literal marker;
 - invalid ranges such as `2025-13-40`, `2025-02-29`, `24:00`, `99:99`, and `23:59:60` are not temporal literals in Core v1;
 - strict datatype compatibility treats `:time`, `:datetime`, and `:zrut` as `DateTimeLiteral`-compatible;
@@ -533,7 +537,7 @@ Separator character rules (implementation-aligned):
 - exactly 1 character;
 - printable ASCII only (`0x21..0x7E`);
 - `,`, `[`, and `]` are forbidden;
-- whitespace/newline are forbidden by range check;
+- horizontal whitespace and newlines may appear around the separator character inside brackets, but the separator payload itself must remain contiguous;
 - multi-char specs are invalid.
 
 Depth/policy:

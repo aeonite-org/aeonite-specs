@@ -166,6 +166,19 @@ created:datetime = 2025-01-01T10:00:00Z
 
 ZRUT literals preserve the `&` syntax in the string.
 
+Legal AEON infinity literals are not representable in the strict JSON profile.
+Processors claiming strict JSON-profile conformance MUST fail closed rather than silently rewriting them.
+Loose or compatibility-oriented exporters MAY preserve `Infinity` and `-Infinity` as strings, but that behavior is outside the strict JSON profile contract.
+
+### Hex and Radix Literals → JSON Strings
+
+Hex and radix literals finalize as JSON strings of their payload form rather than as JSON numbers.
+
+- hex finalized strings exclude the leading `#`;
+- radix finalized strings exclude the leading `%`;
+- `_` visual separators are removed during finalized JSON materialization;
+- hex finalized strings preserve source letter case unless a stricter downstream profile defines canonical normalization.
+
 ### Separator Literals → String or Array
 
 Baseline JSON finalization preserves separator payload as string:

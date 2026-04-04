@@ -198,13 +198,15 @@ Generic-depth notes:
 
 Current official v1 rules:
 - exactly one printable ASCII character;
-- no whitespace or newline inside brackets;
+- horizontal whitespace and newlines may appear around the separator character inside brackets, but the payload itself must remain contiguous;
 - `,`, `[`, and `]` are forbidden separator chars;
 - separator depth is the number of `[...]` segments.
 
 Nuances:
 - `size:sep[x]` has separator depth `1`;
 - `triple:set[x][y][z]` has separator depth `3`;
+- `sep[x]`, `sep[ x ]`, and `sep[\nx\n]` are legal;
+- `sep[xy]` and any form that splits the payload into more than one character are invalid;
 - repeated separator specs are legal and preserved structurally, including duplicate chars;
 - default runtime lock is `1`;
 - capability floor is at least `8`.
