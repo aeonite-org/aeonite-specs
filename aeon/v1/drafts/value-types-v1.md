@@ -410,7 +410,10 @@ Nuances:
 - lexical forms: `yes`, `no`, `on`, `off`;
 - untyped switch literals are allowed in transport mode;
 - in strict mode, untyped switch literals must be annotated with `:switch`;
-- explicit `:switch` compatibility is enforced in both transport and strict.
+- in strict mode, non-`:switch` custom datatype aliases such as `:toggle` remain invalid even when general custom datatypes are otherwise enabled;
+- in custom mode, custom datatype aliases may carry switch literals under the same policy that governs other custom datatypes;
+- machine-readable surfaced `SwitchLiteral.value` remains lexical (`yes`, `no`, `on`, `off`);
+- finalized JSON materializes switch literals as booleans.
 
 AES:
 - `SwitchLiteral`.

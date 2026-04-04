@@ -105,9 +105,10 @@ Implementations MUST:
 
 In typed modes (`strict` and `custom`) implementations MUST:
 1. enforce `switch` datatype lock for switch literals;
-2. reject custom datatype aliases for switch literals;
-3. enforce canonical attribute+datatype ordering: `key@{...}:type = value`;
-4. reject reversed ordering (`key:type@{...}`).
+2. in `strict`, reject custom datatype aliases for switch literals even when general custom datatypes are otherwise enabled;
+3. in `custom`, allow custom datatype aliases for switch literals under the ordinary custom-datatype policy;
+4. enforce canonical attribute+datatype ordering: `key@{...}:type = value`;
+5. reject reversed ordering (`key:type@{...}`).
 
 ### 7.1 Explicit Datatype Compatibility
 
