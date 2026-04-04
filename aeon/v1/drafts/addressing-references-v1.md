@@ -66,12 +66,14 @@ Quoted member traversal:
 ```aeon
 $.["user name"]
 $.["a.b"]
+~"a.b"
 ~["a.b"]
 ~a.["b.c"]
 ```
 
 Nuances:
 - `~a.b` resolves member `a`, then member `b`;
+- `~"a.b"` and `~["a.b"]` are equivalent initial-segment forms for one quoted member key literally named `a.b`;
 - `~["a.b"]` resolves a single key literally named `a.b`;
 - `~a.["b.c"]` resolves member `a`, then a quoted member literally named `b.c`;
 - `~$.["a.b"]` is the explicit root-prefixed quoted-member form;
@@ -139,7 +141,8 @@ Examples:
 a = 1
 b = ~a
 c = ~$.a
-d = ~["a.b"]
+d = ~"a.b"
+d2 = ~["a.b"]
 e = ~>a
 f = ~user@role
 ```
@@ -167,6 +170,7 @@ Then:
 ```aeon
 ~a        // object { b = 1 }
 ~a.b      // 1
+~"a.b"    // 2
 ~["a.b"]  // 2
 $.a.b     // canonical path to nested member
 $.["a.b"] // canonical path to quoted single key

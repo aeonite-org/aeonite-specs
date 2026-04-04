@@ -362,6 +362,7 @@ Key and attribute syntax affects addressing and references:
 
 ```aeon
 "a.b" = 2
+ref0 = ~"a.b"
 ref1 = ~["a.b"]
 ref2 = ~$.["a.b"]
 
@@ -371,6 +372,7 @@ ref3 = ~user@["profile.name"]
 
 Nuances:
 - `~a.b` means traversal through two member segments;
+- `~"a.b"` and `~["a.b"]` are equivalent initial quoted-member forms;
 - `~["a.b"]` means one quoted member segment;
 - `@key` and `@["key"]` both address attribute namespace segments.
 
