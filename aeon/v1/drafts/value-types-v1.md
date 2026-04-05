@@ -539,8 +539,7 @@ SeparatorSpec = "[" SeparatorChar "]" ;
 
 Separator character rules (implementation-aligned):
 - exactly 1 character;
-- printable ASCII only (`0x21..0x7E`);
-- `,`, `[`, and `]` are forbidden;
+- separator specs accept only `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 - horizontal whitespace and newlines may appear around the separator character inside brackets, but the separator payload itself must remain contiguous;
 - multi-char specs are invalid.
 
@@ -558,6 +557,7 @@ Payload grammar:
 - no raw separator escapes are defined;
 - outside quoted segments, whitespace, `\\`, `/`, `,`, and closing container boundaries are not payload characters;
 - comment syntax resumes normally once a separator payload ends outside quoted segments.
+- both `:sep` and `:set` may bind separator literals with or without explicit bracket specs.
 
 AES:
 - `SeparatorLiteral` with raw payload preserved.

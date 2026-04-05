@@ -197,9 +197,8 @@ Generic-depth notes:
 - capability floor is at least `8`.
 
 Current official v1 rules:
-- exactly one printable ASCII character;
+- exactly one character from `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 - horizontal whitespace and newlines may appear around the separator character inside brackets, but the payload itself must remain contiguous;
-- `,`, `[`, and `]` are forbidden separator chars;
 - separator depth is the number of `[...]` segments.
 
 Nuances:
@@ -208,6 +207,7 @@ Nuances:
 - `sep[x]`, `sep[ x ]`, and `sep[\nx\n]` are legal;
 - `sep[xy]` and any form that splits the payload into more than one character are invalid;
 - repeated separator specs are legal and preserved structurally, including duplicate chars;
+- unparameterized `sep` and `set` datatypes may still bind separator literals;
 - separator payloads are compact tokens introduced by `^`;
 - outside quoted string segments, raw separator payload characters are limited to `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 - quoted segments use ordinary single-quoted or double-quoted AEON string lexical rules;
