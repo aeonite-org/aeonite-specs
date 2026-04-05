@@ -455,7 +455,9 @@ Nuances:
 - reserved aliases such as `radix2`, `radix6`, `radix8`, and `radix12` remain accepted as shorthand;
 - optional leading sign `+` or `-` is allowed only once at the start of the payload;
 - radix payload digits are `0-9`, `A-Z`, `a-z`, `&`, and `!` in that order;
-- `.` is an optional radix decimal point and may appear at most once between non-empty digit runs;
+- `.` is an optional radix decimal point and may appear at most once;
+- radix decimals may omit the integer part when there is at least one radix digit after the dot (for example `%.3`, `%-.3`, `%+.1`);
+- if present, the radix decimal point must still be followed by at least one radix digit;
 - `_` is visual spacing only and is valid only between radix digits;
 - radix payload leading zeroes are allowed and preserved as part of the represented digit sequence (for example `%00100101`);
 - `/` and `=` are not valid radix payload characters;
