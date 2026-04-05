@@ -154,15 +154,16 @@ Implementations MUST:
 
 Implementations MUST:
 1. support repeatable separator specs (`[...]`)+;
-2. enforce separator character constraints (single printable ASCII, excluding `,`, `[` and `]`);
+2. enforce separator character constraints using only `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 3. allow horizontal whitespace and newlines around the separator character inside brackets, while still rejecting any form that makes the payload non-contiguous or longer than one character;
 4. preserve repeated separator specs structurally, including duplicate chars;
-5. treat `;` as separator-literal payload data rather than a terminator;
-6. terminate raw separator literals deterministically on grammar boundaries appropriate to the enclosing context;
-7. support only the raw separator escapes `\\`, `\\,`, and `\\ `;
-8. accept trailing delimiter payload as raw core content;
-9. treat comment-like substrings inside raw separator payload as payload text rather than comment openers;
-10. reject raw separator payloads containing `[` `]` `{` `}` `(` or `)`.
+5. tokenize separator payloads as one or more contiguous raw or quoted segments immediately after `^`;
+6. accept raw separator payload characters only from `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
+7. accept ordinary single-quoted and double-quoted string segments inside separator payloads, using normal AEON quoted-string lexical rules;
+8. reject backtick segments and all raw separator escape syntax;
+9. resume ordinary comment and grammar-boundary handling once a separator payload ends outside quoted segments;
+10. reject unterminated quoted segments and any raw payload that requires disallowed characters outside quotes;
+11. accept unparameterized `sep` and `set` datatypes when the bound value is a separator literal.
 
 ## 10. Temporal Literal Requirements
 

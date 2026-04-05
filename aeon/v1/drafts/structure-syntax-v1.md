@@ -197,9 +197,8 @@ Generic-depth notes:
 - capability floor is at least `8`.
 
 Current official v1 rules:
-- exactly one printable ASCII character;
+- exactly one character from `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 - horizontal whitespace and newlines may appear around the separator character inside brackets, but the payload itself must remain contiguous;
-- `,`, `[`, and `]` are forbidden separator chars;
 - separator depth is the number of `[...]` segments.
 
 Nuances:
@@ -208,6 +207,12 @@ Nuances:
 - `sep[x]`, `sep[ x ]`, and `sep[\nx\n]` are legal;
 - `sep[xy]` and any form that splits the payload into more than one character are invalid;
 - repeated separator specs are legal and preserved structurally, including duplicate chars;
+- unparameterized `sep` and `set` datatypes may still bind separator literals;
+- separator payloads are compact tokens introduced by `^`;
+- outside quoted string segments, raw separator payload characters are limited to `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
+- quoted segments use ordinary single-quoted or double-quoted AEON string lexical rules;
+- backtick segments and raw separator escapes are not part of separator-literal syntax;
+- outside quoted segments, whitespace, `\\`, `/`, `,`, newline, or a closing container boundary end or invalidate the token depending on surrounding grammar;
 - default runtime lock is `1`;
 - capability floor is at least `8`.
 
@@ -343,7 +348,7 @@ Notes:
 - backtick strings may span newlines as string values, but backtick keys are not valid core keys;
 - trimticks are multiline string values introduced by a contiguous `>` through `>>>>` marker immediately before a backtick string opener;
 - trimticks trim the first empty line, trailing empty lines, and common left indentation according to the marker's tab policy;
-- separator literals may terminate at newline, comma, or closing container boundary depending on enclosing grammar context.
+- separator literals are compact tokens; outside quoted string segments they terminate at the first character that is not valid raw separator payload or at an enclosing grammar boundary.
 - for worked boundary examples, see `appendices/appendix-whitespace-boundaries.md`.
 
 ### 6.3 Comments and Newlines

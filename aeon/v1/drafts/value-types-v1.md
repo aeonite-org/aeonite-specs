@@ -455,7 +455,9 @@ Nuances:
 - reserved aliases such as `radix2`, `radix6`, `radix8`, and `radix12` remain accepted as shorthand;
 - optional leading sign `+` or `-` is allowed only once at the start of the payload;
 - radix payload digits are `0-9`, `A-Z`, `a-z`, `&`, and `!` in that order;
-- `.` is an optional radix decimal point and may appear at most once between non-empty digit runs;
+- `.` is an optional radix decimal point and may appear at most once;
+- radix decimals may omit the integer part when there is at least one radix digit after the dot (for example `%.3`, `%-.3`, `%+.1`);
+- if present, the radix decimal point must still be followed by at least one radix digit;
 - `_` is visual spacing only and is valid only between radix digits;
 - radix payload leading zeroes are allowed and preserved as part of the represented digit sequence (for example `%00100101`);
 - `/` and `=` are not valid radix payload characters;
@@ -522,11 +524,12 @@ AES:
 
 ## 3.10 Separator Literal (`^...`)
 
-Example:
+Examples:
 
 ```aeon
 size:sep[x] = ^300x250
 triple:set[x][y][z] = ^100x200y300z
+parts:sep[|] = ^"hello world"|"this, [is] fine"
 ```
 
 Datatype separator spec grammar:
@@ -538,8 +541,7 @@ SeparatorSpec = "[" SeparatorChar "]" ;
 
 Separator character rules (implementation-aligned):
 - exactly 1 character;
-- printable ASCII only (`0x21..0x7E`);
-- `,`, `[`, and `]` are forbidden;
+- separator specs accept only `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 - horizontal whitespace and newlines may appear around the separator character inside brackets, but the separator payload itself must remain contiguous;
 - multi-char specs are invalid.
 
@@ -548,13 +550,16 @@ Depth/policy:
 - default lock: `1`;
 - capability floor target: up to `8` via policy configuration.
 
-Payload/boundary nuance:
-- `;` is payload data, not a terminator;
-- raw separator literals terminate on grammar boundaries such as newline, comma, closing container boundary, or EOF depending on enclosing context;
-- raw payload may use only `\\`, `\\,`, and `\\ ` as escapes;
-- raw payload is comment-blind at core lexing stage: substrings such as `//?`, `/*...*/`, `?...?`, and `#...#` are treated as payload, not comment openers;
-- raw payload MUST NOT contain `[` `]` `{` `}` `(` or `)` characters;
-- inline separator literals are supported when payload uses the required escaping for enclosing boundary characters.
+Payload grammar:
+- separator payload begins immediately after `^` and is read as one or more contiguous segments;
+- each segment is either a raw segment or an ordinary quoted string segment;
+- raw segments may use only `A-Z`, `a-z`, `0-9`, and `! # $ % & * + - . : ; = ? @ ^ _ | ~ < >`;
+- quoted segments use ordinary AEON single-quoted or double-quoted string lexical rules;
+- backtick strings are not valid separator segments;
+- no raw separator escapes are defined;
+- outside quoted segments, whitespace, `\\`, `/`, `,`, and closing container boundaries are not payload characters;
+- comment syntax resumes normally once a separator payload ends outside quoted segments.
+- both `:sep` and `:set` may bind separator literals with or without explicit bracket specs.
 
 AES:
 - `SeparatorLiteral` with raw payload preserved.

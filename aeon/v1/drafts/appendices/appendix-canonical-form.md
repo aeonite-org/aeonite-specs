@@ -125,18 +125,18 @@ Multiline semantic strings canonically emit as spaces-only trimticks:
 Canonical separator literals:
 
 - No whitespace between `=` and `^`
-- Whitespace around parts is **trimmed** (unless quoted)
-- No trailing spaces
+- No raw whitespace outside quoted segments
+- Raw segments are emitted verbatim
+- Quoted segments use canonical quoted-string escaping
 
 ```aeon
 // Non-canonical → Canonical
-size:sep[x] =^ 300 x 250   → size:sep[x] = ^300x250
-size:sep[x] = ^ 300x250    → size:sep[x] = ^300x250
+size:sep[x] =^300x250   → size:sep[x] = ^300x250
 ```
 
-Quoted content preserves whitespace:
+Quoted segments preserve their string content:
 ```aeon
-data:sep[|] = ^"one "| " two"   // preserved as-is
+data:sep[|] = ^"one "|" two"   // preserved as-is
 ```
 
 ---
