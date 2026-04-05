@@ -45,7 +45,8 @@ Reference implementation policy surfaces:
 
 ## 3. Separator-Literal Boundary Clarification
 
-When a raw separator literal crosses an enclosing grammar boundary without the required escaping, downstream parse errors may surface as `SYNTAX_ERROR` depending on token context.
+Separator literals do not define a raw escape layer.
+Outside quoted string segments, the payload ends when ordinary grammar or comment syntax resumes, and disallowed raw characters may surface downstream as `SYNTAX_ERROR` depending on token context.
 This behavior is deterministic and expected under v1 separator-literal boundary rules.
 
 ## 4. Determinism Requirements

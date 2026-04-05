@@ -522,11 +522,12 @@ AES:
 
 ## 3.10 Separator Literal (`^...`)
 
-Example:
+Examples:
 
 ```aeon
 size:sep[x] = ^300x250
 triple:set[x][y][z] = ^100x200y300z
+parts:sep[|] = ^"hello world"|"this, [is] fine"
 ```
 
 Datatype separator spec grammar:
@@ -548,13 +549,15 @@ Depth/policy:
 - default lock: `1`;
 - capability floor target: up to `8` via policy configuration.
 
-Payload/boundary nuance:
-- `;` is payload data, not a terminator;
-- raw separator literals terminate on grammar boundaries such as newline, comma, closing container boundary, or EOF depending on enclosing context;
-- raw payload may use only `\\`, `\\,`, and `\\ ` as escapes;
-- raw payload is comment-blind at core lexing stage: substrings such as `//?`, `/*...*/`, `?...?`, and `#...#` are treated as payload, not comment openers;
-- raw payload MUST NOT contain `[` `]` `{` `}` `(` or `)` characters;
-- inline separator literals are supported when payload uses the required escaping for enclosing boundary characters.
+Payload grammar:
+- separator payload begins immediately after `^` and is read as one or more contiguous segments;
+- each segment is either a raw segment or an ordinary quoted string segment;
+- raw segments may use only `A-Z`, `a-z`, `0-9`, and `! # $ % & * + - . : ; = ? @ ^ _ | ~ < >`;
+- quoted segments use ordinary AEON single-quoted or double-quoted string lexical rules;
+- backtick strings are not valid separator segments;
+- no raw separator escapes are defined;
+- outside quoted segments, whitespace, `\\`, `/`, `,`, and closing container boundaries are not payload characters;
+- comment syntax resumes normally once a separator payload ends outside quoted segments.
 
 AES:
 - `SeparatorLiteral` with raw payload preserved.
