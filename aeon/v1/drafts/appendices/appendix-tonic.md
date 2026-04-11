@@ -59,6 +59,7 @@ A Tonic MAY:
 - Apply policy-driven runtime shaping
 - Resolve references according to its declared reference mode
 - Apply profile-specified processors
+- Materialize references more conservatively than authorial intent when explicitly configured by the consumer/profile
 
 A Tonic MUST NOT:
 - Re-parse raw AEON text
@@ -97,6 +98,16 @@ Each Tonic explicitly declares one reference mode:
 Reference mode MUST be declared in Tonic configuration, not inferred from document content.
 
 DoS budgets are mandatory for non-trivial resolution behavior (particularly `alias` and `inline` modes).
+
+Interpretation rule:
+- AES remains the source of truth for authorial reference intent.
+- Consumer/profile configuration decides how that intent is materialized at runtime.
+- Runtime materialization policy may be more conservative than authorial intent, but the original reference kind must remain observable from AES.
+
+Recommended budget dimensions include:
+- maximum resolved/materialized node count
+- maximum inline/reference depth
+- maximum cumulative materialized weight for clone expansion
 
 ### 5.1 Reference Diagnostic Transparency
 
@@ -157,6 +168,11 @@ The mode MUST be declared in Tonic configuration and applied consistently.
 | Tonic     | Semantic interpretation, materialization, runtime shaping |
 
 AEOS remains a form validator. Semantic interpretation and materialization policy belong to Tonic.
+
+This means:
+- AEON documents may declare reference intent;
+- AEOS may constrain reference form;
+- Tonic still has final authority over runtime interpretation and cost controls.
 
 ---
 

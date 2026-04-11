@@ -247,7 +247,30 @@ Escape sequences for quoted strings (`"` and `'`):
 Nuances:
 - backtick strings are raw strings and may span multiple lines;
 - non-backtick strings cannot contain raw newline;
-- invalid escapes produce lexer diagnostics.
+- quoted Unicode escapes must decode to valid Unicode scalar values;
+- `\uXXXX` high-surrogate forms are legal only when immediately followed by a
+  valid `\uXXXX` low-surrogate form in the same decoded sequence;
+- lone high-surrogate and lone low-surrogate escapes are illegal;
+- malformed braced Unicode escapes, incomplete Unicode escapes, non-hex escape
+  payloads, and out-of-range code points are illegal;
+- invalid escapes fail closed with deterministic invalid-escape diagnostics.
+
+Examples:
+
+```aeon
+ok1 = "\u0041"
+ok2 = "\u{41}"
+ok3 = "\uD83D\uDE00"
+```
+
+```aeon
+bad1 = "\uD800"
+bad2 = "\uDC00"
+bad3 = "\u{"
+bad4 = "\u{110000}"
+bad5 = "line1
+line2"
+```
 
 Canonical notes:
 - canonical single-line strings emit double-quoted strings with minimal escaping;

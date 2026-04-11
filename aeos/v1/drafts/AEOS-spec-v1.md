@@ -50,6 +50,7 @@ AEOS is authoritative for:
 - rule-index validation
 - presence checks
 - representational type checks
+- reference-form constraints on Core-emitted reference kinds
 - container-kind and arity checks
 - numeric lexical-form checks
 - string length and pattern checks
@@ -98,8 +99,9 @@ There are two schema layers to distinguish:
  - canonical fields:
   - `schema_id`
   - `schema_version`
-  - `rules`
+ - `rules`
   - optional `world`
+  - optional `reference_policy`
   - optional `datatype_allowlist`
   - optional `datatype_rules`
 
@@ -111,6 +113,7 @@ There are two schema layers to distinguish:
 interface SchemaV1 {
   readonly rules: readonly SchemaRule[];
   readonly world?: 'open' | 'closed';
+  readonly reference_policy?: 'allow' | 'forbid';
   readonly datatype_allowlist?: readonly string[];
   readonly datatype_rules?: Readonly<Record<string, ConstraintsV1>>;
 }
@@ -128,6 +131,7 @@ Current normative validator model:
 interface SchemaV1 {
   readonly rules: readonly SchemaRule[];
   readonly world?: 'open' | 'closed';
+  readonly reference_policy?: 'allow' | 'forbid';
   readonly datatype_allowlist?: readonly string[];
   readonly datatype_rules?: Readonly<Record<string, ConstraintsV1>>;
 }
@@ -152,6 +156,8 @@ Active shipped constraint surface:
 interface ConstraintsV1 {
   readonly required?: boolean;
   readonly type?: string;
+  readonly reference?: 'allow' | 'forbid' | 'require';
+  readonly reference_kind?: 'clone' | 'pointer' | 'either';
   readonly type_is?: 'list' | 'tuple';
   readonly length_exact?: number;
   readonly sign?: 'signed' | 'unsigned';
@@ -167,6 +173,11 @@ interface ConstraintsV1 {
 ```
 
 Unknown constraint keys are schema errors.
+
+Additional schema-surface notes:
+- `reference_policy?: 'allow' | 'forbid'` is a schema-wide form control.
+- `reference` and `reference_kind` constrain Core-emitted reference kinds without resolving them.
+- `reference_kind` is valid only when `reference: 'require'`.
 
 ## 5. Constraint Semantics
 
@@ -203,6 +214,14 @@ Current aliasing behavior:
 Failure diagnostics:
 - `type_mismatch`
 - `tuple_element_type_mismatch` for indexed tuple/list element paths
+
+Reference-form notes:
+- `type: CloneReference` requires a clone reference at the constrained path.
+- `type: PointerReference` requires a pointer reference at the constrained path.
+- `reference: 'require'` accepts either `CloneReference` or `PointerReference`.
+- `reference: 'forbid'` rejects both `CloneReference` and `PointerReference`.
+- `reference_kind: 'clone' | 'pointer' | 'either'` refines `reference: 'require'` without evaluating the target.
+- `reference_policy: 'forbid'` rejects reference-bearing AES events schema-wide.
 
 ### 5.3 `type_is`
 

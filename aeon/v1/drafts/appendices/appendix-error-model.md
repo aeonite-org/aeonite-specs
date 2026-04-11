@@ -29,6 +29,8 @@ Core/policy diagnostics retained from prior v1-era behavior summaries use legacy
 | `SEPARATOR_DEPTH_EXCEEDED`     | PolicyError | parse/policy enforcement | separator-spec depth exceeds active `max_separator_depth`                        |
 | `GENERIC_DEPTH_EXCEEDED`       | PolicyError | parse/policy enforcement | nested generic type depth exceeds active `max_generic_depth`                     |
 | `INVALID_SEPARATOR_CHAR`       | SyntaxError | parse                    | forbidden or malformed separator char in separator spec                          |
+| `INVALID_ESCAPE`               | SyntaxError | lex/parse                | malformed quoted escape, malformed Unicode escape, lone surrogate, or out-of-range code point |
+| `UNTERMINATED_STRING`          | SyntaxError | lex                      | quoted string crosses a raw newline or EOF before closing delimiter              |
 | `UNTYPED_SWITCH_LITERAL`       | ModeError   | mode enforcement         | strict switch literal not typed as `switch`                                      |
 | `UNTYPED_VALUE_IN_STRICT_MODE` | ModeError   | mode enforcement         | strict-mode value lacks required typing                                          |
 
@@ -56,6 +58,14 @@ Diagnostics MUST:
 - fail closed where specified by phase contract
 - include stable code and canonical path context when applicable
 - be deterministic under identical input and policy settings
+
+For the Unicode and quoted-string boundaries clarified in Core v1:
+
+- malformed quoted escapes SHOULD surface as `INVALID_ESCAPE`;
+- malformed Unicode escapes, lone surrogate escapes, and out-of-range code
+  points SHOULD surface as `INVALID_ESCAPE`;
+- raw newlines inside non-backtick quoted strings SHOULD surface as
+  `UNTERMINATED_STRING`.
 
 ## 5. Phase Presentation
 
