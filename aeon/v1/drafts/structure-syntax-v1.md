@@ -200,6 +200,8 @@ Current official v1 rules:
 - exactly one character from `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 - horizontal whitespace and newlines may appear around the separator character inside brackets, but the payload itself must remain contiguous;
 - separator depth is the number of `[...]` segments.
+- only ASCII space, tab, carriage return, and newline act as layout whitespace in Core v1 grammar positions unless another rule says otherwise;
+- non-structural Unicode separators and joiners such as U+2060 WORD JOINER, U+2028 LINE SEPARATOR, and U+2029 PARAGRAPH SEPARATOR are not document, object, list, tuple, or attribute separators.
 
 Nuances:
 - `size:sep[x]` has separator depth `1`;
@@ -213,6 +215,7 @@ Nuances:
 - quoted segments use ordinary single-quoted or double-quoted AEON string lexical rules;
 - backtick segments and raw separator escapes are not part of separator-literal syntax;
 - outside quoted segments, whitespace, `\\`, `/`, `,`, newline, or a closing container boundary end or invalidate the token depending on surrounding grammar;
+- U+2060, U+2028, and U+2029 do not act as interchangeable layout whitespace or newline tokens in those positions and therefore fail closed when inserted there;
 - default runtime lock is `1`;
 - capability floor is at least `8`.
 
