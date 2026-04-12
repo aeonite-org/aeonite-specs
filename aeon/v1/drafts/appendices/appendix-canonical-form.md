@@ -76,19 +76,48 @@ When a list is rendered multiline, complex object elements canonically expand to
 
 ### Numbers
 
+- Canonicalization of `:n` values is value-normalizing while preserving the
+  broad representation family chosen by the author:
+  - integer family
+  - decimal family
+  - exponent family
 - Remove all `_` separators
 - No leading `+` sign
 - Leading-dot decimals gain an explicit zero (`.5` → `0.5`)
-- No trailing decimal point (`5.` → `5`)
-- Lowercase `e` for exponents
-- No leading zeros in exponent
+- Decimal-family values trim redundant trailing fractional zeroes, but retain at
+  least one fractional digit (`10.00` → `10.0`)
+- Exponent-family values use lowercase `e`
+- Exponent-family values remove redundant exponent sign and leading exponent
+  zeroes (`1.0E+03` → `1e3`)
+- Zero follows the same family model rather than a special ad hoc rule:
+  - integer zero → `0` or `-0`
+  - decimal zero → `0.0` or `-0.0`
+  - exponent zero → `0e0` or `-0e0`
 
 ```aeon
 // Non-canonical → Canonical
 1_000_000   → 1000000
 1.2300      → 1.23
+.10         → 0.10
 .5          → 0.5
 1.0E+03     → 1e3
+10.00       → 10.0
+0.0e+0      → 0e0
+```
+
+### Radix
+
+- Canonicalization of `:radix[...]` values remains representation-preserving
+  rather than value-normalizing
+- `_` separators are removed from the canonical payload
+- the remaining digit sequence, decimal point placement, and leading zero width
+  are otherwise preserved
+
+```aeon
+// Non-canonical → Canonical
+%10_00      → %1000
+%10.00      → %10.00
+%0010.00    → %0010.00
 ```
 
 ### Booleans

@@ -356,8 +356,16 @@ Nuances:
 
 Canonical notes:
 - underscore separators removed;
+- canonicalization of `:number` values is value-normalizing while preserving the
+  broad representation family (`integer`, `decimal`, `exponent`);
 - leading-dot decimals normalize to an explicit zero (`.5` → `0.5`, `-.5` → `-0.5`);
-- normalized exponent style in canonical output.
+- decimal-family values trim redundant trailing fractional zeroes, but retain at
+  least one fractional digit (`10.00` → `10.0`);
+- exponent-family values normalize to lowercase `e` and trim redundant exponent
+  sign and leading exponent zeroes (`1.0E+03` → `1e3`);
+- zero follows the same family rule rather than a one-off special case:
+  integer zero canonically emits as `0`/`-0`, decimal zero as `0.0`/`-0.0`,
+  and exponent zero as `0e0`/`-0e0`.
 
 AES:
 - `NumberLiteral` (`value` normalized, `raw` preserved).
@@ -487,6 +495,13 @@ Nuances:
 - lexical acceptance is not base-specific radix validity;
 - base-specific digit checks still belong downstream for implementation/profile/schema enforcement;
 - generic forms such as `radix<2>` are invalid; radix base metadata uses brackets.
+
+Canonical notes:
+- canonicalization of `:radix[...]` values is representation-preserving rather
+  than value-normalizing;
+- `_` separators are removed from canonical radix output;
+- the remaining digit sequence, decimal-point placement, and leading-zero width
+  are otherwise preserved.
 
 AES:
 - `RadixLiteral`.
