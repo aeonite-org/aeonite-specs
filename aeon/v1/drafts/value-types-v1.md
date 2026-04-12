@@ -198,7 +198,7 @@ Interpretation:
 | ----------------- | ------ |
 | Type              | `null` |
 | Alternative names | none   |
-| Reserved          | `!none`, `!uninitialised`, `!notApplicable`, `!tombstone` |
+| Reserved          | `!none`, `!notSet`, `!notApplicable`, `!tombstone` |
 
 ## 2. Value Kind Catalog
 
@@ -209,7 +209,7 @@ Interpretation:
 | Number            | `42`, `3.14`, `.5`, `1e3`, `1_000`      | `count = 42`                                | `count:number = 42`                                             | `NumberLiteral`    |
 | Infinity         | `Infinity`, `-Infinity`                 | `top = Infinity`                            | `top:infinity = Infinity`                                       | `InfinityLiteral`  |
 | NaN              | `NaN`, `-NaN`                           | `bad = NaN`                                 | `bad:nan = NaN`                                                 | `NaNLiteral`       |
-| Null             | `!none`, `!uninitialised`, `!"..."`     | `missing = !none`                           | `missing:null = !none`                                          | `NullLiteral`      |
+| Null             | `!none`, `!notSet`, `!"..."`            | `missing = !none`                           | `missing:null = !none`                                          | `NullLiteral`      |
 | Boolean           | `true`, `false`                         | `flag = true`                               | `flag:boolean = true`                                           | `BooleanLiteral`   |
 | Switch            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:switch = on`                                             | `SwitchLiteral`    |
 | Hex               | `#ff00aa`                               | `color = #ff00aa`                           | `color:hex = #ff00aa`                                           | `HexLiteral`       |
@@ -438,14 +438,14 @@ Examples:
 
 ```aeon
 missing = !none
-state = !uninitialised
+state = !notSet
 deleted = !tombstone
 reservationDate:null = !"postponed"
 ```
 
 Nuances:
 - `NullLiteral` is a distinct literal family from `StringLiteral` and `NumberLiteral`;
-- reserved sentinel forms are exactly `!none`, `!uninitialised`, `!notApplicable`, and `!tombstone`;
+- reserved sentinel forms are exactly `!none`, `!notSet`, `!notApplicable`, and `!tombstone`;
 - custom null reasons must use a quoted string form after `!`;
 - quoted custom reasons must decode to a non-empty, non-ASCII-whitespace-only string;
 - quoted custom reasons must not decode to any reserved null sentinel name;
