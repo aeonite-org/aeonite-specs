@@ -208,6 +208,7 @@ Interpretation:
 | Trimtick          | `>``...``` through `>>>>``...```        | `note = >>`...``                            | `note:trimtick = >>`...``                                       | `StringLiteral`    |
 | Number            | `42`, `3.14`, `.5`, `1e3`, `1_000`      | `count = 42`                                | `count:number = 42`                                             | `NumberLiteral`    |
 | Infinity         | `Infinity`, `-Infinity`                 | `top = Infinity`                            | `top:infinity = Infinity`                                       | `InfinityLiteral`  |
+| NaN              | `NaN`, `-NaN`                           | `bad = NaN`                                 | `bad:nan = NaN`                                                 | `NaNLiteral`       |
 | Boolean           | `true`, `false`                         | `flag = true`                               | `flag:boolean = true`                                           | `BooleanLiteral`   |
 | Switch            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:switch = on`                                             | `SwitchLiteral`    |
 | Hex               | `#ff00aa`                               | `color = #ff00aa`                           | `color:hex = #ff00aa`                                           | `HexLiteral`       |
@@ -404,6 +405,31 @@ Canonical notes:
 
 AES:
 - `InfinityLiteral` with `value` and `raw` equal to `Infinity` or `-Infinity`.
+
+## 3.3.2 NaN
+
+Examples:
+
+```aeon
+bad = NaN
+signed = -NaN
+badValue:nan = NaN
+signedValue:nan = -NaN
+```
+
+Nuances:
+- `NaNLiteral` is a distinct literal family from `NumberLiteral`;
+- accepted surface forms are exactly `NaN` and `-NaN`;
+- `+NaN`, `Infinity`, `-Infinity`, lowercase aliases, and shorthand forms are invalid;
+- explicit `:nan` compatibility is enforced in all modes;
+- `:number` remains finite-only and rejects `NaNLiteral`.
+
+Canonical notes:
+- canonical output preserves `NaN` and `-NaN` exactly;
+- invalid spellings have no canonical form.
+
+AES:
+- `NaNLiteral` with `value` and `raw` equal to `NaN` or `-NaN`.
 
 ## 3.4 Boolean
 
@@ -744,6 +770,6 @@ This page is intentionally implementation-cross-checked to reduce inter-implemen
 
 Not distinct parser value kinds in current core v1:
 - bare duration literal kind (`P30D`) as dedicated AST/AES node;
-- null/NaN literal kinds.
+- null literal kind.
 
 These may be represented through profile/schema conventions or string/date-time forms.
