@@ -22,7 +22,9 @@ Convention identifier: `aeon.host.nulls.v1`
 
 # 1. Purpose
 
-`aeon.host.nulls.v1` defines a narrow interop convention for representing host-language null-like values inside an AEON document without changing AEON core semantics.
+`aeon.host.nulls.v1` defines a narrow interop convention for representing host-language null-like values inside an AEON document.
+
+In AEON v1 draft builds that include `NullLiteral`, this convention should be understood as an import/export mapping layer on top of core null support, not as a substitute for a missing core null primitive.
 
 Documents using this convention should declare it in the header:
 
