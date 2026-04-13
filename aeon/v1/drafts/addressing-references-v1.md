@@ -150,6 +150,7 @@ f = ~user@role
 Nuances:
 - `~path` references the target value;
 - `~>path` preserves alias/pointer intent in the AST/AES model;
+- ASCII inter-token whitespace may appear between `~` or `~>` and the following reference path, but canonical formatting removes it;
 - both forms use the same path grammar after the introducer.
 
 AES notes:

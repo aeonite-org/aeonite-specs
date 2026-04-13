@@ -198,7 +198,7 @@ Interpretation:
 | ----------------- | ------ |
 | Type              | `null` |
 | Alternative names | none   |
-| Reserved          | none   |
+| Reserved          | `!none`, `!notSet`, `!notApplicable`, `!tombstone` |
 
 ## 2. Value Kind Catalog
 
@@ -208,6 +208,8 @@ Interpretation:
 | Trimtick          | `>``...``` through `>>>>``...```        | `note = >>`...``                            | `note:trimtick = >>`...``                                       | `StringLiteral`    |
 | Number            | `42`, `3.14`, `.5`, `1e3`, `1_000`      | `count = 42`                                | `count:number = 42`                                             | `NumberLiteral`    |
 | Infinity         | `Infinity`, `-Infinity`                 | `top = Infinity`                            | `top:infinity = Infinity`                                       | `InfinityLiteral`  |
+| NaN              | `NaN`, `-NaN`                           | `bad = NaN`                                 | `bad:nan = NaN`                                                 | `NaNLiteral`       |
+| Null             | `!none`, `!notSet`, `!"..."`            | `missing = !none`                           | `missing:null = !none`                                          | `NullLiteral`      |
 | Boolean           | `true`, `false`                         | `flag = true`                               | `flag:boolean = true`                                           | `BooleanLiteral`   |
 | Switch            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:switch = on`                                             | `SwitchLiteral`    |
 | Hex               | `#ff00aa`                               | `color = #ff00aa`                           | `color:hex = #ff00aa`                                           | `HexLiteral`       |
@@ -404,6 +406,59 @@ Canonical notes:
 
 AES:
 - `InfinityLiteral` with `value` and `raw` equal to `Infinity` or `-Infinity`.
+
+## 3.3.2 NaN
+
+Examples:
+
+```aeon
+bad = NaN
+signed = -NaN
+badValue:nan = NaN
+signedValue:nan = -NaN
+```
+
+Nuances:
+- `NaNLiteral` is a distinct literal family from `NumberLiteral`;
+- accepted surface forms are exactly `NaN` and `-NaN`;
+- `+NaN`, `Infinity`, `-Infinity`, lowercase aliases, and shorthand forms are invalid;
+- explicit `:nan` compatibility is enforced in all modes;
+- `:number` remains finite-only and rejects `NaNLiteral`.
+
+Canonical notes:
+- canonical output preserves `NaN` and `-NaN` exactly;
+- invalid spellings have no canonical form.
+
+AES:
+- `NaNLiteral` with `value` and `raw` equal to `NaN` or `-NaN`.
+
+## 3.3.3 Null
+
+Examples:
+
+```aeon
+missing = !none
+state = !notSet
+deleted = !tombstone
+reservationDate:null = !"postponed"
+```
+
+Nuances:
+- `NullLiteral` is a distinct literal family from `StringLiteral` and `NumberLiteral`;
+- reserved sentinel forms are exactly `!none`, `!notSet`, `!notApplicable`, and `!tombstone`;
+- custom null reasons must use a quoted string form after `!`;
+- quoted custom reasons must decode to a non-empty, non-ASCII-whitespace-only string;
+- quoted custom reasons must not decode to any reserved null sentinel name;
+- collision checks are performed on decoded strings without Unicode normalization;
+- explicit `:null` compatibility is enforced in all modes.
+
+Canonical notes:
+- reserved sentinels preserve their exact spellings;
+- quoted custom reasons canonicalize using ordinary AEON string canonicalization after `!`;
+- canonicalization must not rewrite reserved sentinels into quoted reasons or vice versa.
+
+AES:
+- `NullLiteral` with `mode`, `value`, and `raw`.
 
 ## 3.4 Boolean
 
@@ -712,6 +767,7 @@ meta = ~a@ns
 
 Nuances:
 - clone (`~`) and pointer (`~>`) are distinct and preserved;
+- ASCII inter-token whitespace may appear between the reference sigil and the following path, but canonical formatting removes it;
 - attribute selectors are valid in reference paths;
 - legality checks (missing/forward/self) are core-owned.
 
@@ -743,7 +799,6 @@ This page is intentionally implementation-cross-checked to reduce inter-implemen
 ## 8. Out-of-Scope or Non-Distinct in Core v1
 
 Not distinct parser value kinds in current core v1:
-- bare duration literal kind (`P30D`) as dedicated AST/AES node;
-- null/NaN literal kinds.
+- bare duration literal kind (`P30D`) as dedicated AST/AES node.
 
 These may be represented through profile/schema conventions or string/date-time forms.
