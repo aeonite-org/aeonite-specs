@@ -55,6 +55,9 @@ Nuances:
 - reversed order such as `key:type@{...} = value` is not Core v1 canonical syntax;
 - attributes may appear without datatype;
 - datatype may appear without attributes.
+- `*...*` is reserved for out-of-band preprocessing and templating conventions, but it is not part of Core v1 syntax.
+- Core parsers must continue to fail closed if a `*...*` placeholder reaches AEON parsing unchanged.
+- A preprocessor may replace `*...*` spans before AEON parsing, but that substitution occurs outside the Core language contract.
 
 ## 2. Keys
 
@@ -89,6 +92,7 @@ Nuances:
 - single and double quotes are both valid key delimiters;
 - quoted keys must not be empty;
 - backtick-quoted keys are not part of AEON Core v1 key syntax.
+- asterisk-delimited placeholder forms such as `*secret-key*` are reserved for preprocessors and remain invalid as Core keys or Core values until replaced before parsing.
 
 Canonical notes:
 - canonical paths render non-bare keys using bracketed double-quoted form, for example `$.["a.b"]`;
