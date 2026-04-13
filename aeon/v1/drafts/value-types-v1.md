@@ -767,6 +767,7 @@ meta = ~a@ns
 
 Nuances:
 - clone (`~`) and pointer (`~>`) are distinct and preserved;
+- ASCII inter-token whitespace may appear between the reference sigil and the following path, but canonical formatting removes it;
 - attribute selectors are valid in reference paths;
 - legality checks (missing/forward/self) are core-owned.
 
