@@ -105,7 +105,7 @@ There are two schema layers to distinguish:
 - canonical path for the contract object is `$.aeos`
 - the binding at `$.aeos` MUST carry datatype/type annotation `schema`
 - canonical document fields:
-  - `id`
+ - `id`
   - `version`
   - `rules`
   - optional `world`
@@ -114,6 +114,23 @@ There are two schema layers to distinguish:
   - optional `datatype_rules`
 - authoring-oriented helper fields may also appear at this layer so long as they are projected away before validation
   - example: `reference_target_path`
+
+3. Document header schema declaration layer
+- used by documents that declare intended schema contracts in `aeon:header`
+- canonical fields:
+  - `schema`
+  - optional `schemas`
+- `schema` is singular and identifies the primary schema id declared by the document producer
+- `schemas` is an optional object mapping named contexts to additional declared schema associations
+  - recommended reserved keys:
+    - `authoring`
+    - `validation`
+  - recommended custom keys use identifier-safe names with `_` separators
+    - example: `vendor_acme`
+- `schemas` entries are named associations, not cumulative instructions
+- header schema declarations are descriptive metadata only; they do not dictate consumer processing behavior
+- a consumer MAY choose to apply `schema`, MAY choose a context-specific entry from `schemas`, MAY ignore the declaration entirely, or MAY enforce a local schema instead
+- when a consumer does select among declared header schema ids, `schema` is the default fallback when no context-specific association is used
 
 2. In-memory `SchemaV1` validator layer
 - the object actually consumed by `validate(aes, schema, options)`
@@ -132,6 +149,8 @@ interface SchemaV1 {
 The `.aeos` contract wrapper is handled before AEOS validation begins. AEOS validation itself operates on the in-memory schema object.
 Loaders MUST parse the `.aeos` file as AEON, materialize the object at `$.aeos`, validate the document contract,
 and project it into `SchemaV1` before invoking `validate(aes, schema, options)`.
+Document header schema declarations are a separate concern from `.aeos` schema documents: they identify which schema id
+the document declares for a given context, but they do not change the runtime `SchemaV1` shape and they do not prescribe how any consumer must process the document.
 
 ## 4. Active Schema Model
 

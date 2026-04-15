@@ -53,6 +53,28 @@ The `.aeos` document is the canonical human-authored schema format.
 `SchemaV1` remains the canonical in-memory validator format.
 Loaders MUST project a valid `.aeos` document into a valid `SchemaV1` object before validation begins.
 
+Document header declarations are separate from schema authoring. An AEON document MAY declare:
+
+```aeon
+aeon:header = {
+  schema = "altopelago.main_schema.v1"
+  schemas = {
+    authoring = "altopelago.authoring_schema.v1"
+    validation = "altopelago.validation_schema.v1"
+    vendor_acme = "acme.vendor_schema.v1"
+  }
+}
+```
+
+In that model:
+
+* `schema` is the primary schema id declared by the document producer.
+* `schemas` is an optional object of additional named schema associations.
+* Header schema declarations are descriptive metadata only; they do not dictate consumer processing behavior.
+* A consumer MAY apply `schema`, MAY apply a named association from `schemas`, MAY ignore the declaration, or MAY enforce a local schema instead.
+* If a consumer does choose among declared schema associations, `schema` is the default fallback.
+* Context keys SHOULD use identifier-safe names with `_` separators rather than `.`.
+
 ---
 
 ## 3. Schema document top-level shape
@@ -69,8 +91,8 @@ aeos:schema = {
   rules              = { ... }               // REQUIRED
   patterns           = { ... }               // OPTIONAL
   charsets           = { ... }               // OPTIONAL
-  world              = closed                // OPTIONAL
-  reference_policy   = allow                 // OPTIONAL
+  world              = "closed"              // OPTIONAL
+  reference_policy   = "allow"               // OPTIONAL
   datatype_allowlist = [ ... ]               // OPTIONAL
   datatype_rules     = { ... }               // OPTIONAL
 }
@@ -111,12 +133,12 @@ Each rule applies independently; rule order has no semantic meaning.
 ```aeon
 rules = {
   $.user.email = {
-    type = StringLiteral
+    type = "StringLiteral"
     apply_pattern = "email"
   }
 
   $.server.port = {
-    type = IntegerLiteral
+    type = "IntegerLiteral"
   }
 }
 ```
@@ -175,7 +197,7 @@ Projection notes:
 ### 4.4 `type` constraint
 
 ```aeon
-type = StringLiteral
+type = "StringLiteral"
 ```
 
 Rules:
@@ -430,7 +452,7 @@ aeos:schema = {
 
   rules = {
     $.user.email = {
-      type = StringLiteral
+      type = "StringLiteral"
       apply_pattern = "email"
     }
   }
