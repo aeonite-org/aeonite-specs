@@ -250,9 +250,14 @@ Implementations claiming AEON v1 conformance MUST support at least:
 5. list/tuple element count per container: `65,536`;
 6. canonical/reference path string length: `8,192` characters;
 7. structured comment payload length: `1,048,576` characters;
-8. `max_attribute_depth` and `max_separator_depth` capability floor of at least `8`.
+8. `max_attribute_depth`, `max_separator_depth`, and `max_generic_depth` capability floor of at least `8`.
 
 These floors are minimum interoperability guarantees. Implementations MAY support larger limits.
+
+The container nesting floor in item 4 is a required supported processing floor
+whether or not an implementation surfaces `max_nesting_depth` as a public
+runtime or CLI control. When an implementation does expose configurable
+container nesting limits, it MUST accept configured values of at least `64`.
 
 ## 16. Section-to-CTS Matrix
 
