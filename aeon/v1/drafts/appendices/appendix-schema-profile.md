@@ -9,12 +9,12 @@ path: specification/appendices/appendix-schema-profile-v1
 
 # AEOS Schema Profile v1
 
-**Status:** implementation-ahead appendix for consolidated v1
+**Status:** normative authoring profile for AEOS v1 schema documents
 
 Canonical topic owners: `../AEOS-spec-v1.md`, `../contracts/`
 
-This appendix describes a broader schema/profile model than the currently locked AEOS v1 baseline.
-It is informative for future work and must not override the shipped AEOS v1 contract surface.
+This appendix defines the canonical AEON-authored schema document form for AEOS v1.
+It complements, and must project compatibly into, the shipped AEOS v1 `SchemaV1` validator surface.
 
 ## 1. Scope and purpose
 
@@ -37,9 +37,9 @@ AEOS validates **data AES** against **schema AES**.
 
 ```
 data.aeon   → AEON Core → AES_data
-schema.aeon → AEON Core → AES_schema
+schema.aeos → AEON Core → AES_schema → SchemaV1 projection
 
-AES_schema + AES_data → AEOS → Result Envelope
+SchemaV1 + AES_data → AEOS → Result Envelope
 ```
 
 AEOS NEVER:
@@ -49,27 +49,50 @@ AEOS NEVER:
 * coerces values
 * interprets semantics beyond form
 
+The `.aeos` document is the canonical human-authored schema format.
+`SchemaV1` remains the canonical in-memory validator format.
+Loaders MUST project a valid `.aeos` document into a valid `SchemaV1` object before validation begins.
+
 ---
 
 ## 3. Schema document top-level shape
 
-A Schema Profile v1 document MUST be an AEON object with the following optional top-level sections:
+A Schema Profile v1 document MUST be an AEON document containing a top-level binding at canonical path `$.aeos`.
+That binding MUST be typed as `schema`.
+
+Canonical form:
 
 ```aeon
-schema = {
-  rules     = { ... }   // REQUIRED
-  patterns  = { ... }   // OPTIONAL
-  charsets  = { ... }   // OPTIONAL
+aeos:schema = {
+  id                 = "com.example.person"  // REQUIRED
+  version            = "1"                   // REQUIRED
+  rules              = { ... }               // REQUIRED
+  patterns           = { ... }               // OPTIONAL
+  charsets           = { ... }               // OPTIONAL
+  world              = closed                // OPTIONAL
+  reference_policy   = allow                 // OPTIONAL
+  datatype_allowlist = [ ... ]               // OPTIONAL
+  datatype_rules     = { ... }               // OPTIONAL
 }
 ```
 
 Rules:
 
-* `schema` MUST be present.
-* `schema.rules` MUST be present.
-* Any unknown top-level key under `schema` is invalid:
+* `$.aeos` MUST be present.
+* The binding at `$.aeos` MUST carry datatype/type annotation `schema`.
+* `$.aeos.id` MUST be present and MUST be a string.
+* `$.aeos.version` MUST be present and MUST be a string.
+* `$.aeos.rules` MUST be present.
+* Any unknown top-level key under `$.aeos` is invalid:
 
   * `code = "invalid_schema_key"`
+
+Loader requirements:
+
+* A `.aeos` loader MUST parse the document as normal AEON.
+* It MUST locate `$.aeos`, confirm the `schema` type annotation, and materialize its object value.
+* It MUST validate the schema-document contract before projection.
+* It MUST project the materialized `$.aeos` object into a valid in-memory `SchemaV1`.
 
 ---
 
@@ -77,7 +100,7 @@ Rules:
 
 ### 4.1 Purpose
 
-`schema.rules` binds **data paths** to **constraints**.
+`$.aeos.rules` binds **data paths** to **constraints**.
 
 Each rule applies independently; rule order has no semantic meaning.
 
@@ -114,14 +137,38 @@ Invalid:
 
 A Rule Object MAY contain the following keys:
 
-| Key             | Required | Meaning                    |
-| --------------- | -------- | -------------------------- |
-| `type`          | YES      | Required literal kind      |
-| `apply_pattern` | NO       | Pattern reference (string) |
+| Key                        | Required | Meaning                                 |
+| -------------------------- | -------- | --------------------------------------- |
+| `required`                 | NO       | Presence requirement                    |
+| `type`                     | NO       | Required literal kind                   |
+| `reference`                | NO       | Reference allowance policy              |
+| `reference_kind`           | NO       | Required reference kind                 |
+| `reference_target_path`    | NO       | Author-friendly reference target path selector |
+| `reference_target_pattern` | NO       | Advanced regex fallback for target path |
+| `resolve_reference_form`   | NO       | Opt in to bounded resolved-form checks  |
+| `type_is`                  | NO       | Container kind requirement              |
+| `length_exact`             | NO       | Exact tuple/list arity                  |
+| `sign`                     | NO       | Numeric sign policy                     |
+| `min_digits`               | NO       | Minimum integer digit count             |
+| `max_digits`               | NO       | Maximum integer digit count             |
+| `min_value`                | NO       | Minimum numeric value                   |
+| `max_value`                | NO       | Maximum numeric value                   |
+| `min_length`               | NO       | Minimum string length                   |
+| `max_length`               | NO       | Maximum string length                   |
+| `pattern`                  | NO       | Regex or pattern-profile string constraint |
+| `datatype`                 | NO       | Datatype label requirement              |
+| `apply_pattern`            | NO       | Pattern reference (string)              |
 
 Any other key is invalid:
 
 * `code = "invalid_rule_key"`
+
+Projection notes:
+
+* `reference_target_path` is the preferred authoring surface.
+* `reference_target_pattern` is an advanced fallback escape hatch.
+* Loaders MUST project `reference_target_path` into an equivalent internal target-matching form before invoking AEOS.
+* The resulting in-memory schema MUST remain compatible with the shipped `SchemaV1` surface.
 
 ---
 
@@ -326,12 +373,17 @@ AEOS Schema Profile v1 explicitly forbids:
 
 * default value injection
 * value coercion
-* reference resolution
 * semantic validation (RFCs, calendars, etc.)
 * schema-driven mutation of data
 * schema rules depending on other rules’ results
 
 Violation of these principles breaks conformance.
+
+Clarification:
+
+* The schema document loader MAY perform bounded projection work, including converting `reference_target_path`
+  into the internal target-matching representation required by AEOS v1.
+* The AEOS validator itself still operates on `SchemaV1`, not on raw source text.
 
 ---
 
@@ -339,8 +391,11 @@ Violation of these principles breaks conformance.
 
 A conforming AEOS Schema Profile v1 implementation MUST:
 
-* [ ] Reject unknown keys in `schema`
+* [ ] Require a top-level `aeos:schema` binding in `.aeos` documents
+* [ ] Reject missing or mistyped `$.aeos`
+* [ ] Reject unknown keys in `$.aeos`
 * [ ] Enforce canonical path keys in `rules`
+* [ ] Project `.aeos` documents into valid `SchemaV1` objects before validation
 * [ ] Enforce literal-kind-only `type` checks
 * [ ] Apply patterns only after successful type check
 * [ ] Resolve patterns only within schema scope
@@ -354,7 +409,9 @@ A conforming AEOS Schema Profile v1 implementation MUST:
 ## 12. Minimal complete example
 
 ```aeon
-schema = {
+aeos:schema = {
+  id = "com.example.user"
+  version = "1"
 
   charsets = {
     dns_label = {

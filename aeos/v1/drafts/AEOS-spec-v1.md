@@ -101,14 +101,19 @@ There are two schema layers to distinguish:
 
 1. Contract document layer
 - used by CLI/runtime contract loading
- - canonical fields:
-  - `schema_id`
-  - `schema_version`
- - `rules`
+- canonical authoring form is an AEON `.aeos` document with top-level binding `aeos:schema`
+- canonical path for the contract object is `$.aeos`
+- the binding at `$.aeos` MUST carry datatype/type annotation `schema`
+- canonical document fields:
+  - `id`
+  - `version`
+  - `rules`
   - optional `world`
   - optional `reference_policy`
   - optional `datatype_allowlist`
   - optional `datatype_rules`
+- authoring-oriented helper fields may also appear at this layer so long as they are projected away before validation
+  - example: `reference_target_path`
 
 2. In-memory `SchemaV1` validator layer
 - the object actually consumed by `validate(aes, schema, options)`
@@ -124,7 +129,9 @@ interface SchemaV1 {
 }
 ```
 
-The contract wrapper is handled before AEOS validation begins. AEOS validation itself operates on the in-memory schema object.
+The `.aeos` contract wrapper is handled before AEOS validation begins. AEOS validation itself operates on the in-memory schema object.
+Loaders MUST parse the `.aeos` file as AEON, materialize the object at `$.aeos`, validate the document contract,
+and project it into `SchemaV1` before invoking `validate(aes, schema, options)`.
 
 ## 4. Active Schema Model
 
@@ -183,8 +190,10 @@ Unknown constraint keys are schema errors.
 
 Additional schema-surface notes:
 - `reference_policy?: 'allow' | 'forbid'` is a schema-wide form control.
+- `.aeos` is the canonical authoring extension for schema documents; `SchemaV1` remains the canonical runtime object.
 - `reference` and `reference_kind` constrain Core-emitted reference kinds without resolving them.
 - `reference_kind` is valid only when `reference: 'require'`.
+- `reference_target_path` is the preferred `.aeos` authoring constraint for target-domain matching.
 - `reference_target_pattern` constrains the canonical target path declared by a reference.
 - `resolve_reference_form` is boolean and opt-in.
 - `reference_target_pattern` and `resolve_reference_form` are invalid when paired with `reference: 'forbid'`.
@@ -254,6 +263,11 @@ Failure diagnostic:
 
 Schema-validation failures:
 - `invalid_reference_constraint` for non-string patterns, invalid regexes, or contradictory combinations.
+
+Authoring note:
+- `.aeos` documents SHOULD prefer `reference_target_path` where the allowed target domain can be expressed
+  as a path selector such as `$.ages[*]`.
+- Loaders MUST project that selector into an equivalent internal target-matching form before AEOS validation.
 
 ### 5.4 `resolve_reference_form`
 
