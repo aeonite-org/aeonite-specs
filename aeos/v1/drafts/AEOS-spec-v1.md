@@ -487,6 +487,47 @@ Normative rules:
 - diagnostics use canonical path strings
 - `phase` is currently fixed to `schema_validation`
 
+### 7.1 Tooling Metadata Is Separate
+
+Consumer tools may wrap AEOS results in larger command or editor payloads.
+Those wrappers are not part of the core `ResultEnvelope` contract.
+
+In particular:
+- CLI or editor output may expose declared contract metadata read from `aeon:header`
+- runtime bind flows may expose both declared and applied contract ids
+- such metadata is consumer/tooling provenance, not AEOS validator state
+
+One valid tooling pattern is:
+
+```json
+{
+  "document": { "...": "..." },
+  "meta": {
+    "errors": [],
+    "warnings": [],
+    "contracts": {
+      "declared": {
+        "profile": "aeon.gp.profile.v1",
+        "schema": "altopelago.main_schema.v1",
+        "schemas": {
+          "authoring": "altopelago.authoring_schema.v1"
+        }
+      },
+      "applied": {
+        "profile": "altopelago.core.v1",
+        "schema": "altopelago.main_schema.v1"
+      }
+    }
+  }
+}
+```
+
+Interpretation:
+- `declared` reflects producer-declared header metadata only
+- `applied` reflects the contract ids actually selected by the consumer
+- `inspect`-style read-only surfaces may expose only `declared`
+- `bind`-style runtime surfaces may expose both `declared` and `applied`
+
 ## 8. Guarantees
 
 AEOS guarantees are advisory representation tags keyed by canonical path.
