@@ -36,6 +36,7 @@ The current AEOS behavior families are:
 - schema rule-index integrity
 - presence and forbid semantics
 - representational type and datatype-label constraints
+- reference-form, reference-target, and resolved-reference constraints
 - numeric lexical-form constraints
 - string length and pattern constraints
 - guarantee emission
@@ -54,6 +55,7 @@ An AEOS-conforming implementation MUST:
 - preserve the ResultEnvelope contract
 - preserve canonical-path diagnostics within the AEOS validator surface
 - avoid treating Core-owned legality failures as schema-validation failures
+- preserve bounded, deterministic behavior for opt-in resolved-reference validation
 
 AEOS conformance is not satisfied by passing only representative examples if validator behavior drifts across one of the AEOS behavior families listed above.
 

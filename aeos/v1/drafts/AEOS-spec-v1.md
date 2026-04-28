@@ -51,16 +51,17 @@ AEOS is authoritative for:
 - presence checks
 - representational type checks
 - reference-form constraints on Core-emitted reference kinds
+- reference-target constraints on Core-emitted target paths
 - container-kind and arity checks
 - numeric lexical-form checks
 - string length and pattern checks
 - datatype allowlist membership checks when configured in schema
+- bounded resolved-endpoint validation when explicitly enabled by schema
 - result-envelope emission
 
 ### 2.3 AEOS Does Not Own
 
 AEOS must not:
-- resolve references
 - coerce values
 - inject defaults
 - mutate AES
@@ -70,6 +71,10 @@ AEOS must not:
 Exception:
 - when the active schema explicitly declares exact numeric bounds such as `min_value` or `max_value`,
   AEOS may compare numeric magnitudes to enforce those declared constraints.
+- when a rule declares `resolve_reference_form: true`, AEOS may follow a bounded reference chain
+  structurally in order to validate the terminal literal form against the referencing path.
+  This does not transfer Core legality ownership, mutate AES, or authorize schema inheritance
+  from the referenced path.
 
 ## 3. Inputs
 
@@ -96,14 +101,36 @@ There are two schema layers to distinguish:
 
 1. Contract document layer
 - used by CLI/runtime contract loading
- - canonical fields:
-  - `schema_id`
-  - `schema_version`
- - `rules`
+- canonical authoring form is an AEON `.aeos` document with top-level binding `aeos:schema`
+- canonical path for the contract object is `$.aeos`
+- the binding at `$.aeos` MUST carry datatype/type annotation `schema`
+- canonical document fields:
+ - `id`
+  - `version`
+  - `rules`
   - optional `world`
   - optional `reference_policy`
   - optional `datatype_allowlist`
   - optional `datatype_rules`
+- authoring-oriented helper fields may also appear at this layer so long as they are projected away before validation
+  - example: `reference_target_path`
+
+3. Document header schema declaration layer
+- used by documents that declare intended schema contracts in `aeon:header`
+- canonical fields:
+  - `schema`
+  - optional `schemas`
+- `schema` is singular and identifies the primary schema id declared by the document producer
+- `schemas` is an optional object mapping named contexts to additional declared schema associations
+  - recommended reserved keys:
+    - `authoring`
+    - `validation`
+  - recommended custom keys use identifier-safe names with `_` separators
+    - example: `vendor_acme`
+- `schemas` entries are named associations, not cumulative instructions
+- header schema declarations are descriptive metadata only; they do not dictate consumer processing behavior
+- a consumer MAY choose to apply `schema`, MAY choose a context-specific entry from `schemas`, MAY ignore the declaration entirely, or MAY enforce a local schema instead
+- when a consumer does select among declared header schema ids, `schema` is the default fallback when no context-specific association is used
 
 2. In-memory `SchemaV1` validator layer
 - the object actually consumed by `validate(aes, schema, options)`
@@ -119,7 +146,11 @@ interface SchemaV1 {
 }
 ```
 
-The contract wrapper is handled before AEOS validation begins. AEOS validation itself operates on the in-memory schema object.
+The `.aeos` contract wrapper is handled before AEOS validation begins. AEOS validation itself operates on the in-memory schema object.
+Loaders MUST parse the `.aeos` file as AEON, materialize the object at `$.aeos`, validate the document contract,
+and project it into `SchemaV1` before invoking `validate(aes, schema, options)`.
+Document header schema declarations are a separate concern from `.aeos` schema documents: they identify which schema id
+the document declares for a given context, but they do not change the runtime `SchemaV1` shape and they do not prescribe how any consumer must process the document.
 
 ## 4. Active Schema Model
 
@@ -158,6 +189,8 @@ interface ConstraintsV1 {
   readonly type?: string;
   readonly reference?: 'allow' | 'forbid' | 'require';
   readonly reference_kind?: 'clone' | 'pointer' | 'either';
+  readonly reference_target_pattern?: string;
+  readonly resolve_reference_form?: boolean;
   readonly type_is?: 'list' | 'tuple';
   readonly length_exact?: number;
   readonly sign?: 'signed' | 'unsigned';
@@ -176,8 +209,15 @@ Unknown constraint keys are schema errors.
 
 Additional schema-surface notes:
 - `reference_policy?: 'allow' | 'forbid'` is a schema-wide form control.
+- `.aeos` is the canonical authoring extension for schema documents; `SchemaV1` remains the canonical runtime object.
 - `reference` and `reference_kind` constrain Core-emitted reference kinds without resolving them.
 - `reference_kind` is valid only when `reference: 'require'`.
+- `reference_target_path` is the preferred `.aeos` authoring constraint for target-domain matching.
+- `reference_target_pattern` constrains the canonical target path declared by a reference.
+- `resolve_reference_form` is boolean and opt-in.
+- `reference_target_pattern` and `resolve_reference_form` are invalid when paired with `reference: 'forbid'`.
+- `resolve_reference_form` is invalid when the rule still expects a reference type such as `CloneReference`
+  or `PointerReference`.
 
 ## 5. Constraint Semantics
 
@@ -223,7 +263,57 @@ Reference-form notes:
 - `reference_kind: 'clone' | 'pointer' | 'either'` refines `reference: 'require'` without evaluating the target.
 - `reference_policy: 'forbid'` rejects reference-bearing AES events schema-wide.
 
-### 5.3 `type_is`
+### 5.3 `reference_target_pattern`
+
+Target-domain constraint for reference-bearing paths:
+
+```ts
+reference_target_pattern?: string
+```
+
+Behavior:
+- applies only to Core-emitted `CloneReference` and `PointerReference` events;
+- validates the canonical target path string declared by the reference;
+- does not resolve the referenced value;
+- uses canonical formatting for quoted members, indexes, and attribute segments before matching.
+
+Failure diagnostic:
+- `reference_target_mismatch`
+
+Schema-validation failures:
+- `invalid_reference_constraint` for non-string patterns, invalid regexes, or contradictory combinations.
+
+Authoring note:
+- `.aeos` documents SHOULD prefer `reference_target_path` where the allowed target domain can be expressed
+  as a path selector such as `$.ages[*]`.
+- Loaders MUST project that selector into an equivalent internal target-matching form before AEOS validation.
+
+### 5.4 `resolve_reference_form`
+
+Opt-in resolved-endpoint validation:
+
+```ts
+resolve_reference_form?: boolean
+```
+
+Behavior:
+- when `true`, AEOS may follow a bounded reference chain from the constrained path to its terminal literal endpoint;
+- literal-form constraints such as `type`, `min_value`, `max_value`, `min_length`, `max_length`, `pattern`,
+  and datatype-rule checks apply to the resolved terminal literal form;
+- reference-form constraints such as `reference`, `reference_kind`, and `reference_target_pattern` continue to
+  apply to the original reference event at the constrained path;
+- AEOS does not mutate AES, inherit target-path schema obligations, or reinterpret Core legality failures.
+
+Boundary notes:
+- missing targets, forward references, self-references, and other Core legality failures remain Core-owned;
+- cyclic or otherwise unresolvable chains do not become new AEOS schema errors merely because
+  `resolve_reference_form` is enabled;
+- resolved-endpoint validation is bounded and deterministic.
+
+Schema-validation failures:
+- `invalid_reference_constraint` for non-boolean values or contradictory combinations.
+
+### 5.5 `type_is`
 
 Container kind constraint:
 
@@ -238,14 +328,14 @@ Behavior:
 Failure diagnostic:
 - `wrong_container_kind`
 
-### 5.4 `length_exact`
+### 5.6 `length_exact`
 
 Exact container arity constraint for tuple/list style containers.
 
 Failure diagnostic:
 - `tuple_arity_mismatch`
 
-### 5.5 Numeric Form Constraints
+### 5.7 Numeric Form Constraints
 
 Numeric lexical-form constraints:
 - `sign`
@@ -263,7 +353,7 @@ Behavior:
 Failure diagnostic:
 - `numeric_form_violation`
 
-### 5.6 String Form Constraints
+### 5.8 String Form Constraints
 
 String constraints:
 - `min_length`
@@ -282,13 +372,13 @@ Failure diagnostics:
 - `string_length_violation`
 - `pattern_mismatch`
 
-### 5.7 `datatype`
+### 5.9 `datatype`
 
 Datatype constraint is a label-presence check only.
 
 It does not perform semantic subtype reasoning. It validates the declared datatype string carried by AES when the rule requests one.
 
-### 5.8 `datatype_allowlist`
+### 5.10 `datatype_allowlist`
 
 Optional schema-level allowlist:
 
@@ -303,7 +393,7 @@ Behavior:
 Failure diagnostic:
 - `datatype_allowlist_reject`
 
-### 5.9 `world`
+### 5.11 `world`
 
 Optional schema-level world policy:
 
@@ -320,7 +410,7 @@ Behavior:
 Failure diagnostic:
 - `unexpected_binding`
 
-### 5.10 `datatype_rules`
+### 5.12 `datatype_rules`
 
 Optional schema-level datatype semantics:
 
@@ -346,13 +436,14 @@ Current shipped validator phases:
 2. Baseline invariants
 3. Rule-index build / schema-shape validation
 4. Presence checks
-5. Type and container-kind checks
-6. Numeric form checks
-7. String form and pattern checks
-8. Datatype allowlist enforcement during rule indexing
-9. World-policy enforcement
-10. Datatype-rule enforcement
-11. Guarantees emission
+5. Type and reference checks
+6. Container-kind checks
+7. Numeric form checks
+8. String form and pattern checks
+9. Datatype allowlist enforcement during rule indexing
+10. World-policy enforcement
+11. Datatype-rule enforcement
+12. Guarantees emission
 
 ### 6.1 Baseline Invariants
 
@@ -395,6 +486,47 @@ Normative rules:
 - envelope must not include AES input
 - diagnostics use canonical path strings
 - `phase` is currently fixed to `schema_validation`
+
+### 7.1 Tooling Metadata Is Separate
+
+Consumer tools may wrap AEOS results in larger command or editor payloads.
+Those wrappers are not part of the core `ResultEnvelope` contract.
+
+In particular:
+- CLI or editor output may expose declared contract metadata read from `aeon:header`
+- runtime bind flows may expose both declared and applied contract ids
+- such metadata is consumer/tooling provenance, not AEOS validator state
+
+One valid tooling pattern is:
+
+```json
+{
+  "document": { "...": "..." },
+  "meta": {
+    "errors": [],
+    "warnings": [],
+    "contracts": {
+      "declared": {
+        "profile": "aeon.gp.profile.v1",
+        "schema": "altopelago.main_schema.v1",
+        "schemas": {
+          "authoring": "altopelago.authoring_schema.v1"
+        }
+      },
+      "applied": {
+        "profile": "altopelago.core.v1",
+        "schema": "altopelago.main_schema.v1"
+      }
+    }
+  }
+}
+```
+
+Interpretation:
+- `declared` reflects producer-declared header metadata only
+- `applied` reflects the contract ids actually selected by the consumer
+- `inspect`-style read-only surfaces may expose only `declared`
+- `bind`-style runtime surfaces may expose both `declared` and `applied`
 
 ## 8. Guarantees
 
@@ -446,6 +578,7 @@ Current standard AEOS diagnostic codes include:
 - `rule_missing_path`
 - `duplicate_rule_path`
 - `unknown_constraint_key`
+- `invalid_reference_constraint`
 
 ### 10.2 Presence / Type / Container
 - `missing_required_field`
@@ -454,6 +587,10 @@ Current standard AEOS diagnostic codes include:
 - `tuple_arity_mismatch`
 - `tuple_element_type_mismatch`
 - `invalid_index_format`
+- `reference_forbidden`
+- `reference_required`
+- `reference_kind_mismatch`
+- `reference_target_mismatch`
 
 ### 10.3 Numeric / String / Datatype
 - `numeric_form_violation`
@@ -496,6 +633,11 @@ Current v1 behavior-family anchors:
 - representational type and datatype-label constraints
   - `cts/aeos/v1/suites/04-type.json`
   - `cts/aeos/v1/suites/08-datatype-labels.json`
+- reference-form, reference-target, and resolved-reference constraints
+  - `cts/aeos/v1/suites/16-reference-forms.json`
+  - `cts/aeos/v1/suites/17-reference-targets.json`
+  - `cts/aeos/v1/suites/18-resolved-reference-form.json`
+  - `cts/aeos/v1/suites/19-reference-security.json`
 - numeric lexical-form constraints
   - `cts/aeos/v1/suites/05-numeric-form.json`
 - string length and pattern constraints
@@ -541,6 +683,7 @@ An implementation must preserve behavior across the AEOS validation families def
 - schema rule validation
 - presence checks
 - type and datatype-label enforcement
+- reference-form, reference-target, and resolved-reference enforcement
 - numeric and string-form constraints
 - container and indexed-path validation
 - separator policy enforcement

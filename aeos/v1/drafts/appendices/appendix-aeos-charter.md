@@ -66,7 +66,7 @@ AEOS validates **representations**, not **interpretations**.
 AEOS participates in a strictly **one-directional pipeline**:
 
 ```
-AEON Core → AES → AEOS → Processor / Elixir → Output
+AEON Core → AES → AEOS → Processor / Tonic → Output
 ```
 
 AEOS MUST NOT introduce backward dependencies or feedback loops.
@@ -81,9 +81,9 @@ AEOS implements **Phase 6 only** of the AEON conceptual model.
 | -------------------------------------- | -------------------- |
 | Parsing, Path Resolution, AES Emission | AEON Core            |
 | **Schema Validation**                  | **AEOS v1**          |
-| Profile Interpretation                 | Processors / Elixirs |
-| Reference Evaluation                   | Processors / Elixirs |
-| Materialization                        | Processors / Elixirs |
+| Profile Interpretation                 | Processors / Tonics |
+| Reference Evaluation                   | Processors / Tonics |
+| Materialization                        | Processors / Tonics |
 
 AEOS MUST NOT perform behavior belonging to any other phase.
 
@@ -317,7 +317,7 @@ AEOS v1 explicitly does **not** provide:
 * runtime configuration
 * materialized output
 
-These are delegated to processors and elixirs.
+These are delegated to processors and tonics.
 
 ---
 
