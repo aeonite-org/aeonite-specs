@@ -46,6 +46,7 @@ Attribute      = "@{" AttributeEntryList? "}" ;
 AttributeEntryList = AttributeEntry (AttributeSep AttributeEntry)* AttributeSep? ;
 AttributeEntry = Key AttributeList? TypeAnnotation? "=" Value ;
 AttributeSep   = "," | Newline ;
+TypedValue     = TypeAnnotation "=" Value ;
 TypeAnnotation = ":" TypeName GenericArgs? SeparatorSpec* ;
 SeparatorSpec  = "[" SeparatorChar "]" ;
 ```
@@ -55,6 +56,9 @@ Nuances:
 - reversed order such as `key:type@{...} = value` is not Core v1 canonical syntax;
 - attributes may appear without datatype;
 - datatype may appear without attributes.
+- `TypedValue` is valid only in anonymous value-element contexts: list elements, tuple elements, and node children.
+- `TypedValue` is not a binding head and MUST NOT appear where `Binding` or `AttributeEntry` is expected.
+- the datatype on `TypedValue` annotates only the immediate following `Value`; nested `:type = :type = value` forms are invalid.
 - `*...*` is reserved for out-of-band preprocessing and templating conventions, but it is not part of Core v1 syntax.
 - Core parsers must continue to fail closed if a `*...*` placeholder reaches AEON parsing unchanged.
 - A preprocessor may replace `*...*` spans before AEON parsing, but that substitution occurs outside the Core language contract.
@@ -264,7 +268,8 @@ items = [
 Grammar summary:
 
 ```ebnf
-List = "[" (Value ListSep?)* "]" ;
+List = "[" (ListElement ListSep?)* "]" ;
+ListElement = Value | TypedValue ;
 ListSep = "," | Newline ;
 ```
 
@@ -272,6 +277,7 @@ Nuances:
 - list elements may be separated by commas or newlines;
 - mixed comma/newline list formatting is accepted by parser behavior;
 - indexed elements are addressable as `[0]`, `[1]`, and so on.
+- anonymous typed elements use `:type = value` and do not introduce keys or reorder elements.
 
 ### 5.3 Tuples
 
@@ -288,13 +294,15 @@ point = (
 Grammar summary:
 
 ```ebnf
-Tuple = "(" (Value TupleSep?)* ")" ;
+Tuple = "(" (TupleElement TupleSep?)* ")" ;
+TupleElement = Value | TypedValue ;
 TupleSep = "," | Newline ;
 ```
 
 Nuances:
 - tuple elements follow the same separator surface as lists;
 - tuple semantics differ from list semantics, but the element separator grammar is the same.
+- anonymous typed tuple elements use `:type = value`; the annotation is local to that element.
 
 ### 5.4 Node Children
 
@@ -313,12 +321,14 @@ icon = <glyph>
 Grammar summary:
 
 ```ebnf
-Node = "<" Identifier AttributeList? TypeAnnotation? ( ">" | "(" (Value NodeSep?)* ")" ">" ) ;
+Node = "<" Identifier AttributeList? TypeAnnotation? ( ">" | "(" (NodeChild NodeSep?)* ")" ">" ) ;
+NodeChild = Value | TypedValue ;
 NodeSep = "," | Newline ;
 ```
 
 Nuances:
 - node children accept comma and newline separators;
+- anonymous typed node children use `:type = value`; the annotation is local to the immediate child value;
 - empty-node shorthand uses `>` immediately after the tag metadata and is equivalent to an empty child list;
 - child-bearing nodes require a closing `>` after the closing `)`;
 - canonical printed form uses the closing `>` and prefers `<tag>` over `<tag()>` for empty nodes;

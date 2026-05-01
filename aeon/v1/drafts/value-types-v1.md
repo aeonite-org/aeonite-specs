@@ -35,10 +35,29 @@ Mode requirements:
 - `custom` requires a datatype annotation on non-header bindings and allows custom datatype labels;
 - typed modes do not require generic args (`arr:list = [...]` is valid);
 - typed modes do not require separator specs unless the datatype itself uses them.
+- typed modes do not require datatype annotations on anonymous list elements, tuple elements, or node children.
 
 Implementations MAY still expose an explicit datatype-policy override, but the default semantic behavior is mode-driven.
 
 Reserved datatype names in Core are compatibility labels, not full semantic contracts.
+
+Anonymous values inside list, tuple, and node-child containers MAY carry a local datatype annotation:
+
+```aeon
+values:list = [:int32 = 3, :string = "4"]
+pair:tuple = (:float64 = 10.5, :float64 = 2.0)
+page:node = <page(:string = "hello", <tag>, :int32 = 3)>
+```
+
+This form is an annotation on an immediate anonymous value, not a binding. It is therefore invalid at document root, invalid inside objects where keyed bindings are required, and invalid when nested as another anonymous typed value:
+
+```aeon
+:n = 3                  // invalid: no container element context
+a:object = { :n = 3 }   // invalid: objects require keyed bindings
+a:list = [:n = :n = 3]  // invalid: typed value cannot wrap another typed value
+```
+
+Container typing and anonymous value typing are not equivalent. `numbers:list<int32> = [1, 2, 3]` declares an expectation on the container binding, while `values:list = [:int32 = 3, :string = "4"]` annotates individual anonymous elements without changing their order or making them named bindings.
 
 In particular:
 - Core recognizes reserved names such as `int`, `uint`, `int32`, `float64`, `obj`, `envelope`, `trimtick`, `sep`, and `set`;
@@ -710,6 +729,7 @@ Nuances:
 - strict requires datatype presence, not generic args;
 - generic args are optional syntax and not enforced by core semantic typing rules.
 - nested generic type annotations are valid surface syntax and count against `max_generic_depth`.
+- list elements may carry local anonymous datatype annotations with `:type = value`.
 
 AES:
 - `ListNode`.
@@ -727,6 +747,7 @@ point:tuple<int32,int32> = (10,20)
 Nuances:
 - tuple/list distinction is preserved in AST/AES;
 - strict does not require tuple generic args.
+- tuple elements may carry local anonymous datatype annotations with `:type = value`.
 
 AES:
 - `TupleLiteral`.
@@ -748,6 +769,7 @@ Nuances:
 - inline node-head datatypes are permitted syntactically, but strict mode reserves node heads for `:node`;
 - non-`node` inline node-head datatypes such as `<tag:pair("x", "y")>` are transport/custom forms, not strict forms;
 - child list may contain mixed value kinds;
+- node children may carry local anonymous datatype annotations with `:type = value`;
 - nodes are values; node children do not become independent top-level bindings by default.
 
 AES:
