@@ -202,6 +202,8 @@ interface ConstraintsV1 {
   readonly max_length?: number;
   readonly pattern?: string;
   readonly datatype?: string;
+  readonly attributes?: Readonly<Record<string, ConstraintsV1>>;
+  readonly closed_attributes?: boolean;
 }
 ```
 
@@ -218,6 +220,8 @@ Additional schema-surface notes:
 - `reference_target_pattern` and `resolve_reference_form` are invalid when paired with `reference: 'forbid'`.
 - `resolve_reference_form` is invalid when the rule still expects a reference type such as `CloneReference`
   or `PointerReference`.
+- `attributes` defines recursive constraints over attribute-entry payloads carried on AES events.
+- `closed_attributes` is local to the current attribute object and rejects unknown attribute-entry keys.
 
 ## 5. Constraint Semantics
 
@@ -258,6 +262,54 @@ Failure diagnostics:
 Reference-form notes:
 - `type: CloneReference` requires a clone reference at the constrained path.
 - `type: PointerReference` requires a pointer reference at the constrained path.
+
+### 5.3 `attributes`
+
+`attributes` applies nested `ConstraintsV1` rules to attribute entries attached
+to the constrained AES event.
+
+This applies equally to:
+
+- ordinary binding attributes
+- anonymous child attributes on indexed AES paths such as `$.values[0]` and `$.page[0]`
+
+Example:
+
+```json
+{
+  "rules": [
+    {
+      "path": "$.values[0]",
+      "constraints": {
+        "type": "NumberLiteral",
+        "attributes": {
+          "unit": {
+            "required": true,
+            "type": "StringLiteral",
+            "datatype": "string"
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+### 5.4 `closed_attributes`
+
+`closed_attributes: true` means the current attribute object admits only the
+attribute keys named in the nested `attributes` map.
+
+Unknown attribute-entry keys are validator failures.
+
+### 5.5 Attribute datatype-rule inheritance
+
+When an attribute entry carries a datatype label and the active schema defines
+`datatype_rules` for that datatype, those datatype rules apply to the attribute
+entry by default.
+
+Nested `attributes.<key>` constraints remain authoritative when they are more
+specific than inherited datatype rules.
 - `reference: 'require'` accepts either `CloneReference` or `PointerReference`.
 - `reference: 'forbid'` rejects both `CloneReference` and `PointerReference`.
 - `reference_kind: 'clone' | 'pointer' | 'either'` refines `reference: 'require'` without evaluating the target.

@@ -28,6 +28,8 @@ $.user
 $.user.name
 $.items[0]
 $.["a.b"]
+$.page[0]
+$.page[0].a
 ```
 
 Identity rules:
@@ -46,6 +48,7 @@ PathMember = "." BareKey | ".[" QuotedKey "]" | "[" Number "]" ;
 Canonical notes:
 - non-bare keys are rendered in double-quoted bracket form;
 - lists and tuples use numeric index segments;
+- node children also use numeric index segments;
 - canonical path identity is deterministic across equivalent quoted spellings.
 - quoted root-member traversal uses the explicit dot form `$.["..."]`;
 - bare root-bracket member traversal such as `$["a"]` is not part of the Core v1 path grammar.
@@ -82,17 +85,20 @@ Nuances:
 
 ### 2.2 Indexed Traversal
 
-List/tuple addressing:
+List/tuple/node-child addressing:
 
 ```aeon
 $.items[0]
 ~items[1]
+$.page[0]
+~page[0].a
 ```
 
 Nuances:
 - index segments are positional and zero-based;
 - index segments participate in canonical path identity;
 - index segments may be followed by member traversal or attribute selectors.
+- node-child addressing uses the same bracket index form as list and tuple addressing.
 
 ## 3. Attribute Selectors
 

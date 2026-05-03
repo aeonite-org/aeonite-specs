@@ -36,6 +36,7 @@ The current AEOS behavior families are:
 - schema rule-index integrity
 - presence and forbid semantics
 - representational type and datatype-label constraints
+- attribute-payload and attribute-closure constraints
 - reference-form, reference-target, and resolved-reference constraints
 - numeric lexical-form constraints
 - string length and pattern constraints

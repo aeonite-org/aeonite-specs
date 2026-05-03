@@ -40,11 +40,10 @@ point:tuple = (1, 2)
 Core grammar summary:
 
 ```ebnf
-Binding        = Key AttributeList? TypeAnnotation? "=" Value ;
-AttributeList  = Attribute* ;
+Binding        = Key Attribute? TypeAnnotation? "=" Value ;
 Attribute      = "@{" AttributeEntryList? "}" ;
 AttributeEntryList = AttributeEntry (AttributeSep AttributeEntry)* AttributeSep? ;
-AttributeEntry = Key AttributeList? TypeAnnotation? "=" Value ;
+AttributeEntry = Key Attribute? TypeAnnotation? "=" Value ;
 AttributeSep   = "," | Newline ;
 TypedValue     = TypeAnnotation "=" Value ;
 TypeAnnotation = ":" TypeName GenericArgs? SeparatorSpec* ;
@@ -62,6 +61,8 @@ Nuances:
 - `*...*` is reserved for out-of-band preprocessing and templating conventions, but it is not part of Core v1 syntax.
 - Core parsers must continue to fail closed if a `*...*` placeholder reaches AEON parsing unchanged.
 - A preprocessor may replace `*...*` spans before AEON parsing, but that substitution occurs outside the Core language contract.
+
+Informative parser-context illustrations are available in `appendices/appendix-grammar-flow.md`.
 
 ## 2. Keys
 
@@ -123,7 +124,7 @@ Grammar:
 ```ebnf
 Attribute      = "@{" AttributeEntryList? "}" ;
 AttributeEntryList = AttributeEntry (AttributeSep AttributeEntry)* AttributeSep? ;
-AttributeEntry = Key AttributeList? TypeAnnotation? "=" Value ;
+AttributeEntry = Key Attribute? TypeAnnotation? "=" Value ;
 AttributeSep   = "," | Newline ;
 ```
 
@@ -138,6 +139,8 @@ Nuances:
 - postfix literal attributes are not part of Core v1 syntax: `a = [0]@{b=2}` is invalid and fails closed;
 - nested bindings inside container values may carry their own attributes, for example `a = [{x@{b=0}=1}]`.
 - nested attribute heads are part of Core v1 and count against `max_attribute_depth`.
+- duplicate keys inside one attribute block are invalid and fail closed;
+- repeated nested attribute heads on the same attribute entry are invalid; use one nested attribute block with multiple entries instead.
 
 Reference/addressing forms:
 
@@ -162,6 +165,14 @@ Examples:
 a@{b=1} = [0]
 a = [{x@{b=0}=1}]
 f@{ns@{origin:string="core"}:string = "aeon"}:string = "fractal"
+```
+
+Rejected examples:
+
+```aeon
+a@{x=1, x=2} = 3
+a@{x@{y=1}@{z=2} = 3} = 4
+x = { @{meta=1} k = 2 }
 ```
 
 Namespace note:
@@ -321,7 +332,7 @@ icon = <glyph>
 Grammar summary:
 
 ```ebnf
-Node = "<" Identifier AttributeList? TypeAnnotation? ( ">" | "(" (NodeChild NodeSep?)* ")" ">" ) ;
+Node = "<" Identifier Attribute? TypeAnnotation? ( ">" | "(" (NodeChild NodeSep?)* ")" ">" ) ;
 NodeChild = Value | TypedValue ;
 NodeSep = "," | Newline ;
 ```
