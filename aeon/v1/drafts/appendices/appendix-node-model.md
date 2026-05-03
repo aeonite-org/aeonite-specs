@@ -94,6 +94,20 @@ A node child MAY be any of the following:
 * list literal
 * node
 * reference (`~`, `~>`)
+* anonymous typed value (`:type = value`)
+
+Anonymous typed children annotate only the immediate child value. They do not
+create named bindings, path segments, or ordering side effects:
+
+```aeon
+page:node = <page(
+  :string = "hello"
+  <tag>
+  :int32 = 3
+)>
+```
+
+Nested anonymous typed values such as `:n = :n = 3` are invalid.
 
 ### 4.2 Ordering
 

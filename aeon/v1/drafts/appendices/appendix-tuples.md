@@ -49,12 +49,13 @@ AEON uses "list" and "tuple" terminology, not "array".
 
 ```ebnf
 Value = Literal | Reference | Object | List | Tuple ;
+TypedValue = TypeAnnotation "=" Value ;
 
 List  = AttributeList? "[" ListBody? "]" ;
 Tuple = AttributeList? "(" TupleBody? ")" ;
 
-ListBody  = ( Value ListSeparator? )* ;
-TupleBody = ( Value ListSeparator? )* ;
+ListBody  = ( (Value | TypedValue) ListSeparator? )* ;
+TupleBody = ( (Value | TypedValue) ListSeparator? )* ;
 
 ListSeparator = "," | Newline ;
 ```
@@ -81,6 +82,8 @@ Examples:
 items:list<string> = ["a", "b"]
 point:tuple<int32,int32> = (10, 20)
 score:tuple<string,int32> = ("alice", 95)
+values:list = [:int32 = 3, :string = "4"]
+pair:tuple = (:float64 = 10.5, :float64 = 2.0)
 ```
 
 ---

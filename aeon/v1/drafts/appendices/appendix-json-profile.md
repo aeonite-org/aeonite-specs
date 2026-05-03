@@ -127,6 +127,29 @@ Notes:
 - exact collisions on `@` are profile errors;
 - keys like `@a` remain ordinary user keys.
 
+Indexed child attributes may be projected under reserved `@items` metadata on
+the owning binding:
+
+```json
+{
+  "width": [3],
+  "@": {
+    "width": {
+      "@items": {
+        "0": {
+          "unit": "cm"
+        }
+      }
+    }
+  }
+}
+```
+
+Profile notes:
+- `@items` is reserved in finalized/materialized JSON projection for indexed child attributes;
+- this is a projection/profile convention, not a core canonical-path syntax change;
+- exact collisions on `@items` are profile errors.
+
 ### Projected Materialization
 
 Consumers may request projected materialization instead of whole-document materialization.

@@ -193,6 +193,30 @@ Implementations MUST:
 4. in transport/custom modes, continue to accept non-`node` inline node-head datatypes as syntax, for example `<tag:pair("x", "y")>`;
 5. reject other node-like forms deterministically.
 
+Implementations MUST also:
+1. support anonymous child heads inside ordered containers, including:
+   - `:type = value`
+   - `@{...} = value`
+   - `@{...}:type = value`
+2. allow those anonymous child-head forms only in:
+   - list elements
+   - tuple elements
+   - node children
+3. reject those forms at the root and inside objects without keys;
+4. reject nested anonymous-head recursion such as `:n = :n = 3`;
+5. preserve canonical ordering of anonymous heads as `@{...}:type = value` when both are present;
+6. allow at most one attribute block in a binding head, node head, or anonymous child head;
+7. reject repeated head attribute blocks deterministically, including forms such as:
+   - `a@{x=1}@{y=2}:n = 3`
+   - `a:list = [@{x=1}@{y=2}:n = 3]`
+   - `page:node = <page(@{x=1}@{y=2}:n = 3)>`
+8. reject reserved attribute keys that collide with shipped metadata/projection namespaces, including:
+   - `@`
+   - `@items`
+   - `__proto__`
+   - `constructor`
+   - `prototype`
+
 ## 12. Duration Boundary
 
 Implementations MUST NOT treat bare duration tokens as AEON core v1 literals.

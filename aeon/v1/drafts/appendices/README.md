@@ -23,3 +23,7 @@ See:
 - `../AEON-spec-v1.md`
 - `../AEON-v1-compliance.md`
 - `../AEOS-spec-v1.md`
+
+Parser and grammar aids:
+
+- `appendix-grammar-flow.md` - context-card illustrations for legal Core v1 parser flow.
