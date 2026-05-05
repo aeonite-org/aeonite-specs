@@ -125,6 +125,12 @@ Fast-path format note:
 - `//! format:<id>` is a tooling side-channel for processor discovery and pre-parser routing only;
 - it does not create bindings, does not modify header fields, and must not appear in AES, annotation-stream output, or canonical output.
 
+Directive-block reservation note:
+- future AEON lines may define a broader directive block using strict `//! key:value` lines for capability-based evolution;
+- in v1, that broader block is reserved and non-operational;
+- v1 processors MUST NOT activate `require`, `feature`, `profile`, or `comment.*` semantics from `//!` comments;
+- see `appendices/appendix-directive-block-capabilities.md` for the informative upgrade strategy.
+
 ### 2.6 Reserved Channels
 
 Forms:
