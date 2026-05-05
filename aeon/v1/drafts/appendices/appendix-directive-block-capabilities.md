@@ -37,15 +37,44 @@ The directive block is reserved in v1 and may become operational in v2 or later.
 
 ## 3. Candidate Syntax
 
-Directive lines use a strict form:
+Directive lines use a strict form with either no spacer or exactly one ASCII space after `//!`:
 
 ```aeon
 //! key:value
 ```
 
-For the candidate future block grammar, no whitespace or alternative separators are permitted in directive lines.
+```aeon
+//!key:value
+```
+
+For the candidate future block grammar, no other whitespace or alternative separators are permitted in directive lines.
 
 In v1, only `//! format:<id>` has defined preflight meaning, and only in the file-header slot. Other `//! key:value` spellings are comments unless and until a future directive-aware processing mode is explicitly selected.
+
+### 3.1 Candidate Grammar Sketch
+
+```ebnf
+Document        ::= Shebang? DirectiveBlock? Body
+
+Shebang         ::= "#!" <any characters except newline> Newline
+
+DirectiveBlock  ::= DirectiveLine+ BlankLine
+
+DirectiveLine   ::= "//! " DirectiveKey ":" DirectiveValue Newline
+                 |  "//!" DirectiveKey ":" DirectiveValue Newline
+
+DirectiveKey    ::= Identifier ("." Identifier)*
+
+Identifier      ::= [a-zA-Z] [a-zA-Z0-9_-]*
+
+DirectiveValue  ::= [^\r\n]+
+
+BlankLine       ::= Newline | Whitespace Newline
+
+Body            ::= <normal AEON source>
+```
+
+This grammar is a future directive-aware preflight grammar. It must not change how AEON Core parses the document body.
 
 ## 4. Candidate Block Shape
 
@@ -72,6 +101,23 @@ invoice = {
   subtotal = 100
 }
 ```
+
+Also valid:
+
+```aeon
+//! format:sound.app
+
+data = {}
+```
+
+Not a directive block:
+
+```aeon
+data = {}
+//! require:aeon.tuple.v2
+```
+
+The final line above is an ordinary comment because it appears after the document body has begun.
 
 ## 5. Candidate Block Termination
 
@@ -149,6 +195,46 @@ Candidate rules:
 - no validation authority
 - must not override consumer-owned AEOS schemas or profile selection
 
+### 6.5 Candidate Ordering
+
+Recommended future normative order:
+
+```text
+format
+require*
+feature*
+comment.*
+```
+
+Rules:
+
+```text
+format      max 1, first if present
+require     0..n, after format
+feature     0..n, after require
+comment.*   0..1 per comment channel, after require/feature
+```
+
+Valid:
+
+```aeon
+//! format:sound.app
+//! require:aeon.tuple.v2
+//! require:aeon.indexed-paths.v2
+//! feature:aeon.locale.v1
+//! comment.doc:&ND.v1
+//! comment.hint:aeon.schema-hint.v1
+```
+
+Invalid for directive-aware consumers:
+
+```aeon
+//! feature:aeon.locale.v1
+//! require:aeon.tuple.v2
+```
+
+The `require` directive appears after `feature`, so strict directive-aware processing must reject the directive block.
+
 ## 7. Candidate Consumer Behavior
 
 ### 7.1 v1 Core Consumers
@@ -172,9 +258,14 @@ If additional future directive lines are present and the consumer is not directi
 
 A future directive-aware consumer may parse the full directive block and enforce:
 
+- directive-block grammar;
+- directive ordering;
+- directive uniqueness;
 - `require`: unknown or unsupported values fail closed;
 - `feature`: unknown or unsupported values are ignored unless selected by policy;
 - `comment.*`: advisory interpretation only, with no validation authority.
+
+Minimal doctrine: the directive block is a preflight declaration. It may decide whether processing may continue, but it must not change how AEON Core parses the document body.
 
 ## 8. Versioning Strategy
 
