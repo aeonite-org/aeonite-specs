@@ -227,6 +227,7 @@ The official v1 documentation is intentionally split by concern:
 - `structure-syntax-v1.md` — keys, attributes, separators, newline behavior
 - `addressing-references-v1.md` — canonical paths and reference rules
 - `comments-annotations-v1.md` — comment channels and attachment behavior
+- `appendices/appendix-directive-block-capabilities.md` — informative v1 reservation for capability-based evolution
 
 This overview should stay short and stable. Detailed syntax, examples, and edge-case rules belong in the companion references.
 

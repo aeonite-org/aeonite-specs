@@ -99,7 +99,8 @@ Implementations MUST:
 5. recognize `//!` as a host/file-header directive only at line 1, column 1, or line 2, column 1 when line 1 is a shebang, after any ignored leading BOM;
 6. treat `//! format:<id>` as processor-discovery-only metadata in that file-header slot;
 7. keep file-header host directives out of AES, annotation-stream output, and canonical output;
-8. preserve deterministic binding behavior for annotation channels where emitted.
+8. not activate `require`, `feature`, `profile`, or `comment.*` directive semantics from `//!` comments in v1;
+9. preserve deterministic binding behavior for annotation channels where emitted.
 
 ## 7. Typed-Mode Requirements
 

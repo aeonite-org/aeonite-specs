@@ -60,7 +60,7 @@ a:list = [:n = :n = 3]  // invalid: typed value cannot wrap another typed value
 Container typing and anonymous value typing are not equivalent. `numbers:list<int32> = [1, 2, 3]` declares an expectation on the container binding, while `values:list = [:int32 = 3, :string = "4"]` annotates individual anonymous elements without changing their order or making them named bindings.
 
 In particular:
-- Core recognizes reserved names such as `int`, `uint`, `int32`, `float64`, `obj`, `envelope`, `trimtick`, `sep`, and `set`;
+- Core recognizes reserved names such as `int`, `uint`, `int32`, `float64`, `obj`, `envelope`, `trimtick`, `prose`, `sep`, and `set`;
 - Core checks literal-family compatibility only;
 - stronger semantic enforcement such as integer-only, unsigned-only, width, or range belongs to profile/schema validation layers;
 - `aeon.gp.profile.v1` and `aeon.gp.schema.v1` are the intended general-purpose baseline for making those stronger meanings operational.
@@ -88,7 +88,9 @@ Interpretation:
 | ----------------- | ---------- |
 | Type              | `trimtick` |
 | Alternative names | none       |
-| Reserved          | none       |
+| Reserved          | `prose`    |
+
+`prose` is a reserved compatibility label for formatted trimtick text, such as Markdown or other application-level prose formats. Core treats `prose` as the same literal family as `trimtick`; richer format semantics belong to profiles or application contracts.
 
 ### `number`
 
@@ -320,6 +322,12 @@ note:trimtick = >`
 note:trimtick = >>`
     one
   two
+`
+
+body:prose = >`
+  # Title
+
+  Markdown-ish content.
 `
 ```
 

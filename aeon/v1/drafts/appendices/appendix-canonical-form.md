@@ -32,7 +32,7 @@ aeon:header = {
   encoding = "utf-8"
   mode = "transport"
   profile = "core"
-  version = 1.0
+  version = "1.0"
 }
 ```
 

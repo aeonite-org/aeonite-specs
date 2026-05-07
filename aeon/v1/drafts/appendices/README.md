@@ -27,3 +27,7 @@ See:
 Parser and grammar aids:
 
 - `appendix-grammar-flow.md` - context-card illustrations for legal Core v1 parser flow.
+
+Evolution and forward-compatibility aids:
+
+- `appendix-directive-block-capabilities.md` - informative v1 reservation for directive-block capability declarations and future v2 activation.
