@@ -778,7 +778,7 @@ Nuances:
 - non-`node` inline node-head datatypes such as `<tag:pair("x", "y")>` are transport/custom forms, not strict forms;
 - child list may contain mixed value kinds;
 - node children may carry local anonymous datatype annotations with `:type = value`;
-- nodes are values; node children do not become independent top-level bindings by default.
+- nodes are values; node children do not become independent top-level named bindings, but ordered child slots use indexed canonical paths.
 
 AES:
 - `NodeLiteral`.
