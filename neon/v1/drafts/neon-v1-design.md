@@ -60,17 +60,21 @@ Byte 3: Flags (identical layout to simple mode)
   Bits 4-3: Encoding
   Bits 2-0: Pad bits
 Byte 4: Extension flags
-  ┌──────────────────────────────────────────┐
-  │ Bit 7    │ CRC-32 (0=none, 1=4B trailer) │
-  ├──────────┼───────────────────────────────┤
-  │ Bit 6    │ Compression (0=none, 1=yes)   │
-  ├──────────┼───────────────────────────────┤
-  │ Bit 5    │ Directory (0=single, 1=multi) │
-  ├──────────┼───────────────────────────────┤
-  │ Bits 4-1 │ Reserved (must be 0)          │
-  ├──────────┼───────────────────────────────┤
-  │ Bit 0    │ Chain (0=done, 1=more ext.)   │
-  └──────────┴───────────────────────────────┘
+  ┌──────────────────────────────────────────────────────────┐
+  │ Bit 7    │ CRC-32 (0=none, 1=4B trailer)                │
+  ├──────────┼─────────────────────────────────────────────┤
+  │ Bit 6    │ Compression (0=none, 1=yes)                  │
+  ├──────────┼─────────────────────────────────────────────┤
+  │ Bit 5    │ Directory (0=single, 1=multi)                │
+  ├──────────┼─────────────────────────────────────────────┤
+  │ Bit 4    │ Custom map (0=standard, 1=inline map follows)│
+  ├──────────┼─────────────────────────────────────────────┤
+  │ Bit 3    │ Preset Dictionary (0=none, 1=dict ID follows)│
+  ├──────────┼─────────────────────────────────────────────┤
+  │ Bits 2-1 │ Reserved (must be 0)                        │
+  ├──────────┼─────────────────────────────────────────────┤
+  │ Bit 0    │ Chain (0=done, 1=more ext.)                  │
+  └──────────┴─────────────────────────────────────────────┘
 Byte 5 (conditional, if compression = 1):
   0x00 = Deflate, 0x01 = Brotli
 ...payload bytes...
@@ -176,7 +180,7 @@ Tailored for AEON syntax with **smart-equals combinators** that merge `=` with p
 | 4    | `4`               |     | 14   | `/`  |     | 24    | `?`      |
 | 5    | `5`               |     | 15   | `\`  |     | 25    | `;`      |
 | 6    | `6`               |     | 16   | `\|` |     | 26    | `!`      |
-| 7    | `7`               |     | 17   | `^`  |     | 27    | `_`      |
+| 7    | `7`               |     | 17   | `^`  |     | 27    | `\t`     |
 | 8    | `8`               |     | 18   | `&`  |     | 28–47 | *sticky* |
 | 9    | `9`               |     | 19   | `%`  |     |       |          |
 
@@ -187,7 +191,7 @@ Tailored for AEON syntax with **smart-equals combinators** that merge `=` with p
 | 28   | `.`  | 33   | `=`         | 38   | `:`  | 43   | `[`            |
 | 29   | `,`  | 34   | *= + latch* | 39   | `{`  | 44   | `]`            |
 | 30   | `\n` | 35   | *= + shift* | 40   | `}`  | 45   | `<`            |
-| 31   | `\t` | 36   | `"`         | 41   | `(`  | 46   | `>`            |
+| 31   | `_`  | 36   | `"`         | 41   | `(`  | 46   | `>`            |
 | 32   | ` `  | 37   | `` ` ``     | 42   | `)`  | 47   | *(UTF marker)* |
 
 > [!IMPORTANT]
@@ -202,12 +206,12 @@ Tailored for AEON syntax with **smart-equals combinators** that merge `=` with p
 
 | Idx  | Char | Idx  | Char    | Idx  | Char | Idx  | Char |
 | :--- | :--- | :--- | :------ | :--- | :--- | :--- | :--- |
-| 27   | `.`  | 32   | `:`     | 37   | ` `  | 42   | `[`  |
-| 28   | `,`  | 33   | `` ` `` | 38   | `\t` | 43   | `]`  |
-| 29   | `!`  | 34   | `'`     | 39   | `\n` | 44   | `{`  |
-| 30   | `?`  | 35   | `"`     | 40   | `(`  | 45   | `}`  |
-| 31   | `=`  | 36   | `_`     | 41   | `)`  | 46   | `<`  |
-|      |      |      |         |      |      | 47   | `>`  |
+| 27   | `.`  | 32   | `:`     | 37   | ` `         | 42   | `[`  |
+| 28   | `,`  | 33   | `` ` `` | 38   | *(UTF marker)* | 43   | `]`  |
+| 29   | `!`  | 34   | `'`     | 39   | `\n`        | 44   | `{`  |
+| 30   | `?`  | 35   | `"`     | 40   | `(`         | 45   | `}`  |
+| 31   | `=`  | 36   | `_`     | 41   | `)`         | 46   | `<`  |
+|      |      |      |         |      |             | 47   | `>`  |
 
 **Page 0 — Lowercase**: indices 1–26 = `a`–`z`, 27–47 = sticky
 
@@ -225,7 +229,7 @@ Tailored for AEON syntax with **smart-equals combinators** that merge `=` with p
 | 5    | `~`               |     | 14   | `*`          |     | 23    | `7`      |
 | 6    | `#`               |     | 15   | `\|`         |     | 24    | `8`      |
 | 7    | `$`               |     | 16   | `0`          |     | 25    | `9`      |
-| 8    | *(UTF marker)*    |     | 17   | `1`          |     | 26    | `;`      |
+| 8    | `\t`              |     | 17   | `1`          |     | 26    | `;`      |
 |      |                   |     |      |              |     | 27–47 | *sticky* |
 
 Page switching: `110` = jump +2 pages (mod 3), `111` = jump +1 page (mod 3)
@@ -260,7 +264,7 @@ After the binary marker, the chunk format is:
 ```text
 [6 bits]   BINARY_MARKER
 [18 bits]  byteLength
-[6 bits]   mode
+[2 bits]   mode
 [18 bits]  textLength        (only for text-backed modes)
 [N bytes]  raw binary bytes
 [M bytes]  source text bytes (only for text-backed modes)
@@ -275,6 +279,7 @@ The 18-bit length fields allow per-chunk lengths from `0` to `262143`.
 | `0`  | Raw binary only                      |
 | `1`  | Binary with exact UTF-8 source text  |
 | `2`  | Binary with exact base64 source text |
+| `3`  | Reserved — decoders must reject      |
 
 Modes `1` and `2` are **text-backed binary segments**. They store both:
 
@@ -400,7 +405,108 @@ That reconstructed AEON is semantically equivalent for many workflows, but it is
 
 ---
 
-## 4. Custom Character Maps (Extended Mode)
+## 4. Directory Containers
+
+When extension bit 5 (`Directory`) is set, the Neon payload is a **directory container** — a structured multi-entry archive. The payload region encodes a self-describing index followed by the concatenated entry data.
+
+### Payload layout
+
+```
+[uvarint]  directory byte length (D)
+[D bytes]  directory index
+[N bytes]  payload region  ← flat concatenation of all stored entry bytes
+```
+
+Reading the directory index gives you a complete manifest of every entry — kind, name, lengths, offsets, and metadata — before touching any entry data. Parsers can therefore seek directly to any entry without scanning through the others.
+
+### Directory index
+
+```
+[1 byte]   version (currently 0x01)
+[uvarint]  entry count
+[uvarint]  primary entry id
+For each entry (sorted ascending by id):
+  [uvarint]  id
+  [1 byte]   kind  (0x00=text, 0x01=binary, 0x02=folder)
+  If kind is text or binary:
+    [1 byte]   compression  (0x00=deflate, 0x01=brotli, 0xFF=none)
+  [uvarint]  name byte length
+  [N bytes]  name (UTF-8; zero length = unnamed)
+  If kind is text or binary:
+    [uvarint]  stored byte length
+    [uvarint]  original byte length
+    [uvarint]  data offset  (byte offset into the payload region)
+  [uvarint]  metadata item count
+  For each metadata item:
+    [uvarint]  key byte length
+    [N bytes]  key (UTF-8)
+    [uvarint]  value byte length
+    [N bytes]  value (UTF-8)
+```
+
+> [!NOTE]
+> Folder entries (`0x02`) omit compression, stored/original byte lengths, and data offset — they carry no payload and those fields would always be zero. This saves 3+ bytes per folder entry.
+
+> [!NOTE]
+> `stored byte length` and `original byte length` differ only when compression is enabled for that entry. For uncompressed entries both values are the same.
+
+### Entry kinds
+
+| Kind     | Byte   | Has payload | Description                                    |
+| :------- | :----- | :---------- | :--------------------------------------------- |
+| `text`   | `0x00` | Yes         | UTF-8 text, optionally compressed               |
+| `binary` | `0x01` | Yes         | Raw binary bytes, optionally compressed         |
+| `folder` | `0x02` | No          | Structural placeholder; both lengths are zero   |
+
+Folder entries carry no data in the payload region. They do not serialize compression, stored/original byte lengths, or data offset.
+
+### Entry names and paths
+
+Entry names are optional UTF-8 strings. An unnamed entry encodes a zero-length name. Named entries follow these rules:
+
+- **Must be relative** — names must not start with `/`
+- **No `..` components** — no path component may be the literal string `..`
+- **No null bytes**
+- **Folder entries require a non-empty name**
+- Path separators are `/`; there is no platform-specific separator
+
+Examples of valid names:
+```
+docs/readme.aeon
+assets/images/logo.png
+docs/             ← folder entry marking the docs/ directory
+```
+
+> [!IMPORTANT]
+> The name is purely advisory metadata. The format does not enforce that a folder entry with name `docs/` exists before a file entry with name `docs/readme.aeon`. Tooling may impose additional conventions on top of the format.
+
+### Pad bits
+
+Directory containers must set `padBits = 0` in the flags byte. The directory payload is raw bytes, not a bitstream, so trailing pad bits have no meaning. Decoders must reject directory containers where `padBits ≠ 0`.
+
+### Compression interaction
+
+Individual entries may be compressed per-entry via the `compression` field. The container-level compression flag (extension bit 6) compresses the entire payload region — including any already-compressed entry data — and should **not** be used alongside per-entry compression, as it adds overhead without benefit. Encoders should either use one or the other; applying both is technically valid but strongly discouraged.
+
+### Primary entry
+
+Every directory container nominates one **primary entry id**. For AEON containers, this is the text entry holding the AEON source. Decoders can use the primary entry as the default entry to present when the caller does not specify one.
+
+### Metadata
+
+Entries carry an arbitrary list of key/value metadata pairs (both strings). The format does not define reserved keys, but the `@neon/aeon` layer uses the following well-known keys:
+
+| Key                 | Used on         | Meaning                                           |
+| :------------------ | :-------------- | :------------------------------------------------ |
+| `aeon-form`         | binary          | `embed-base64` or `inline-base64`                 |
+| `aeon-entry-key`    | binary          | The `neon-entry:<key>` reference string           |
+| `aeon-source-start` | binary          | Byte offset of the reference in the primary text  |
+| `aeon-source-end`   | binary          | End byte offset of the reference                  |
+| `mime`              | binary          | MIME type hint for the payload                    |
+
+---
+
+## 5. Custom Character Maps (Extended Mode)
 
 Extension bit 4 signals a **custom character map** embedded in the header, replacing the standard map for the selected encoding.
 
@@ -431,9 +537,12 @@ Entries are assigned indices 1–N in order. Index 0 remains reserved (binary/UT
 > [!NOTE]
 > Custom maps are a **niche feature** for domain-specific content where the standard character frequencies don't apply. The typical AEON encoder would never set this flag — it exists for extensibility without burning a version increment.
 
+> [!NOTE]
+> **Chain bit forward compatibility**: If `Chain = 1`, additional extension byte(s) follow before the payload. Parsers that do not understand the chained format must reject the container rather than silently skipping the unknown bytes. The layout of chained extension bytes is reserved for a future specification.
+
 ---
 
-## 5. Shift vs. Latch Page Switching (2p6b)
+## 6. Shift vs. Latch Page Switching (2p6b)
 
 ### Encoding selection
 
@@ -476,11 +585,11 @@ The DP solver automatically picks shift vs. latch at each transition, so it neve
 
 ---
 
-## 6. CRC-32 Checksum
+## 7. CRC-32 Checksum
 
 When extension bit 7 = 1: append a **4-byte CRC-32** (IEEE 802.3) trailer, computed over the stored payload bytes. CRC-16 is dropped entirely.
 
-## 7. Optimal Selection (Racing)
+## 8. Optimal Selection (Racing)
 
 The Neon v1 encoder should support both **explicit selection** and **dynamic racing**.
 
@@ -518,7 +627,7 @@ When compression racing is enabled, the encoder:
 
 ---
 
-## 8. AEON Integration Semantics
+## 9. AEON Integration Semantics
 
 The Neon container format is format-agnostic, but the current AEON integration layer follows a deliberate distinction:
 
@@ -595,7 +704,7 @@ Those races choose the most compact Neon container representation. They do not, 
 
 ---
 
-## 9. Summary
+## 10. Summary
 
 ```mermaid
 graph LR
