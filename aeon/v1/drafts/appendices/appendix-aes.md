@@ -108,7 +108,7 @@ Value kinds:
 ### 4.4 `datatype` (optional)
 
 - Explicit type annotation provided in the source
-- Example: `string`, `int32`, `switch`, `tuple<string,int32>`
+- Example: `string`, `int32`, `toggle`, `tuple<string,int32>`
 - Presence and enforcement depend on mode
 
 ### 4.5 `attributes` (optional)

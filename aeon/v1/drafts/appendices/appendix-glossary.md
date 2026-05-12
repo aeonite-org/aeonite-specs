@@ -124,7 +124,7 @@ Conventions:
 - do not change AEON grammar
 - are declared by documents but interpreted by downstream consumers
 
-Examples include document metadata conventions, context conventions, security conventions, and limbo conventions.
+Examples include document metadata conventions, context conventions, temporal conventions, and security conventions.
 
 ---
 

@@ -84,6 +84,9 @@ Byte 5 (conditional, if compression = 1):
 > [!NOTE]
 > The `Flags` byte is **identical** in both modes. A parser always reads version, encoding, and pad the same way. The only difference is whether the extension byte exists.
 
+> [!NOTE]
+> This compression method byte is only present for container-level compression. Directory entries have their own per-entry compression bits in the directory index.
+
 ### Size comparison
 
 | Scenario                   | Experimental (v0)  | Neon v1 (with magic) | Neon v1 (no magic) |
@@ -424,41 +427,79 @@ Reading the directory index gives you a complete manifest of every entry — kin
 ```
 [1 byte]   version (currently 0x01)
 [uvarint]  entry count
-[uvarint]  primary entry id
+[uvarint]  primary entry ref
 For each entry (sorted ascending by id):
   [uvarint]  id
-  [1 byte]   kind  (0x00=text, 0x01=binary, 0x02=folder)
-  If kind is text or binary:
-    [1 byte]   compression  (0x00=deflate, 0x01=brotli, 0xFF=none)
+  [1 byte]   entry flags
   [uvarint]  name byte length
   [N bytes]  name (UTF-8; zero length = unnamed)
-  If kind is text or binary:
-    [uvarint]  stored byte length
-    [uvarint]  original byte length
+  If kind is file:
     [uvarint]  data offset  (byte offset into the payload region)
-  [uvarint]  metadata item count
-  For each metadata item:
-    [uvarint]  key byte length
-    [N bytes]  key (UTF-8)
-    [uvarint]  value byte length
-    [N bytes]  value (UTF-8)
+    [uvarint]  stored byte length
+    [uvarint]  decoded bit length
+  If metadata flag is set:
+    [uvarint]  metadata item count
+    For each metadata item:
+      [uvarint]  key byte length
+      [N bytes]  key (UTF-8)
+      [uvarint]  value byte length
+      [N bytes]  value (UTF-8)
 ```
 
-> [!NOTE]
-> Folder entries (`0x02`) omit compression, stored/original byte lengths, and data offset — they carry no payload and those fields would always be zero. This saves 3+ bytes per folder entry.
+`primary entry ref` is encoded as `entry id + 1`. A value of `0` means the directory has no primary entry.
+
+#### Entry flags
+
+```
+Bits 7-6: kind
+  00 = file
+  01 = folder
+  10-11 = reserved
+
+Bits 5-3: entry encoding
+  000 = raw binary
+  001 = utf-8 text
+  010 = 2p6b-gp text
+  011 = 2p6b-aeon text
+  100 = 3p6b text
+  101-111 = reserved
+
+Bits 2-1: entry compression
+  00 = none
+  01 = deflate
+  10 = brotli
+  11 = reserved
+
+Bit 0: metadata present
+  0 = no metadata count or metadata items follow
+  1 = metadata count and metadata key/value items follow
+```
+
+The entry encoding determines the logical file kind:
+
+| Encoding      | Logical kind | Payload interpretation                         |
+| :------------ | :----------- | :--------------------------------------------- |
+| `raw`         | binary       | Raw binary bytes                               |
+| `utf-8`       | text         | UTF-8 text bytes                               |
+| `2p6b-gp`     | text         | 2-page packed text bitstream                   |
+| `2p6b-aeon`   | text         | AEON-optimized 2-page packed text bitstream    |
+| `3p6b`        | text         | 3-page packed text bitstream                   |
+
+Folder entries must use kind `folder`, encoding `raw`, compression `none`, and no payload fields. File entries must use kind `file`. A file with `raw` encoding is binary; a file with any text encoding is text.
+
+Text file payloads are stored using the entry encoding selected for that file. For AEON directory containers, the primary AEON source entry should therefore normally be stored as `2p6b-aeon`, `2p6b-gp`, or `3p6b`, with `utf-8` reserved as a fallback or explicit user choice.
 
 > [!NOTE]
-> `stored byte length` and `original byte length` differ only when compression is enabled for that entry. For uncompressed entries both values are the same.
+> `stored byte length` is the byte length after per-entry compression. `decoded bit length` is the exact bit length after per-entry decompression and before interpreting the payload. For byte-aligned encodings, `decoded bit length = decoded byte length × 8`. For packed text encodings, trailing pad bits are derived from `decoded byte length × 8 - decoded bit length`.
 
 ### Entry kinds
 
-| Kind     | Byte   | Has payload | Description                                    |
-| :------- | :----- | :---------- | :--------------------------------------------- |
-| `text`   | `0x00` | Yes         | UTF-8 text, optionally compressed               |
-| `binary` | `0x01` | Yes         | Raw binary bytes, optionally compressed         |
-| `folder` | `0x02` | No          | Structural placeholder; both lengths are zero   |
+| Kind     | Has payload | Description                                                |
+| :------- | :---------- | :--------------------------------------------------------- |
+| `file`   | Yes         | Raw binary or encoded text, selected by entry encoding     |
+| `folder` | No          | Structural placeholder; carries name and optional metadata |
 
-Folder entries carry no data in the payload region. They do not serialize compression, stored/original byte lengths, or data offset.
+Folder entries carry no data in the payload region. They do not serialize data offset, stored byte length, or decoded bit length.
 
 ### Entry names and paths
 
@@ -482,15 +523,27 @@ docs/             ← folder entry marking the docs/ directory
 
 ### Pad bits
 
-Directory containers must set `padBits = 0` in the flags byte. The directory payload is raw bytes, not a bitstream, so trailing pad bits have no meaning. Decoders must reject directory containers where `padBits ≠ 0`.
+Directory containers must set container `padBits = 0` in the flags byte. The directory payload is raw bytes, not a single container-level bitstream, so container trailing pad bits have no meaning. Decoders must reject directory containers where container `padBits ≠ 0`.
+
+Packed text entries use their own `decoded bit length` to determine entry-local pad bits. These pad bits belong to the entry payload, not to the container header.
 
 ### Compression interaction
 
-Individual entries may be compressed per-entry via the `compression` field. The container-level compression flag (extension bit 6) compresses the entire payload region — including any already-compressed entry data — and should **not** be used alongside per-entry compression, as it adds overhead without benefit. Encoders should either use one or the other; applying both is technically valid but strongly discouraged.
+Individual file entries may be compressed per-entry via the compression bits in the entry flags. The container-level compression flag (extension bit 6) compresses the entire directory body — including the directory index and payload region. Applying both container compression and per-entry compression is technically valid but usually wasteful.
+
+User-facing tools should treat compression as a policy rather than as part of Neon text/binary semantics. Recommended policies are:
+
+- no compression
+- compress text entries only
+- compress the whole container
+
+Binary/raw entries, especially already-compressed media such as PNG/JPEG/WebP/MP4, should normally remain uncompressed unless the user explicitly chooses whole-container compression.
 
 ### Primary entry
 
-Every directory container nominates one **primary entry id**. For AEON containers, this is the text entry holding the AEON source. Decoders can use the primary entry as the default entry to present when the caller does not specify one.
+A directory container may nominate one **primary entry id**. When present, it identifies the default file entry to present when the caller does not specify one. The primary entry id must reference a file entry, not a folder entry.
+
+For AEON containers, this should be the text entry holding the AEON source. Archive-like containers with no natural root document may omit the primary entry by writing `primary entry ref = 0`.
 
 ### Metadata
 
@@ -606,21 +659,36 @@ Users can bypass the race by explicitly requesting a specific encoding.
 
 ### Compression Selection
 
-By default, **compression is OFF**. The payload is simply bit-packed.
-If the user requests compression, they can either specify an algorithm or ask the encoder to race them.
+By default, **compression is OFF**. The payload is simply encoded according to the selected encoding.
+If the user requests compression, they can either specify an algorithm or ask the encoder to race the available compression choices.
 
-- **Deflate** (`0x00`)
-- **Brotli** (`0x01`)
+- **None**
+- **Deflate**
+- **Brotli**
+
+For single-payload container-level compression, the compression method byte is only written when compression is enabled:
+
+- **Deflate**: `0x00`
+- **Brotli**: `0x01`
+
+For directory entry compression, the method is stored in the entry flags:
+
+- **None**: `00`
+- **Deflate**: `01`
+- **Brotli**: `10`
 
 **Preset Dictionaries:**
 If Extension Bit 3 (`Preset Dictionary`) is set, a 1-byte **Dictionary ID** (0–255) is written to the header immediately after the compression method byte (if present). The encoder/decoder must use this pre-shared, application-defined dictionary buffer to seed the Deflate or Brotli algorithm. This allows massive compression ratios on tiny payloads based on domain-specific dictionaries (e.g., standard AEON UI strings).
 
 When compression racing is enabled, the encoder:
 1. Encodes the payload using the winning encoding (from the step above).
-2. Compresses that payload using Deflate (with dictionary if specified).
-3. Compresses that payload using Brotli (with dictionary if specified).
-4. Compares the sizes: `Uncompressed` vs `Deflate + overhead` vs `Brotli + overhead`.
-5. Selects the smallest option.
+2. Keeps one uncompressed candidate.
+3. Compresses that payload using Deflate (with dictionary if specified).
+4. Compresses that payload using Brotli (with dictionary if specified).
+5. Compares the sizes: `Uncompressed` vs `Deflate + overhead` vs `Brotli + overhead`.
+6. Selects the smallest option.
+
+Encoding race and compression race are separate stages. An explicit encoding request bypasses the encoding race, but it does not imply any compression. An explicit compression method bypasses the compression race, but it does not change the selected text encoding.
 
 > [!NOTE]
 > Because the extension mode adds 1 byte for the compression flag, 1 byte for the method, and optionally 1 byte for the Dictionary ID, compression must save at least 3–4 bytes to "win" the race. For very small payloads without a powerful preset dictionary, uncompressed will naturally win.

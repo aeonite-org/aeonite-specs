@@ -35,7 +35,7 @@ Implementations may accept looser transport forms, but this overview defines the
 ```aeon
 name:string = "AEON"
 build:number = 1
-active:switch = on
+active:toggle = on
 ```
 
 This demonstrates:

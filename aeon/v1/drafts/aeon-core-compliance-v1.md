@@ -105,9 +105,9 @@ Implementations MUST:
 ## 7. Typed-Mode Requirements
 
 In typed modes (`strict` and `custom`) implementations MUST:
-1. enforce `switch` datatype lock for switch literals;
-2. in `strict`, reject custom datatype aliases for switch literals even when general custom datatypes are otherwise enabled;
-3. in `custom`, allow custom datatype aliases for switch literals under the ordinary custom-datatype policy;
+1. enforce `toggle` datatype lock for toggle literals;
+2. in `strict`, reject custom datatype aliases for toggle literals even when general custom datatypes are otherwise enabled;
+3. in `custom`, allow custom datatype aliases for toggle literals under the ordinary custom-datatype policy;
 4. enforce canonical attribute+datatype ordering: `key@{...}:type = value`;
 5. reject reversed ordering (`key:type@{...}`).
 
@@ -180,6 +180,8 @@ Implementations MUST:
 9. allow UTC/offset suffixes on valid reduced-precision `datetime` forms, including `2025-01-01T09Z`, `2025-01-01T09+02:00`, and `2025-01-01T09:30Z`;
 10. allow named-zone ZRUT suffixes on valid reduced-precision datetime bases, including `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, `2025-01-01T09Z&America/Port-au-Prince`, and `2025-01-01T09Z&Etc/GMT+1`, and classify them as `zrut` literals;
 11. treat uppercase `Z` as the UTC marker form and reject lowercase `z` as a temporal literal marker.
+
+The datatype label `zdt` is reserved for a possible future zoned datetime type. AEON Core v1 implementations MUST NOT treat `zdt` as an operational Core v1 datatype or recognize bracketed zoned-datetime syntax as Core v1 temporal syntax.
 
 Examples:
 - valid: `2024-02-29`, `09:`, `09:30`, `09:30Z`, `09:+02:00`, `2025-01-01T09Z`, `2025-01-01T09+02:00`, `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, `23:59:59`, `2024-02-29T09:30:00`
