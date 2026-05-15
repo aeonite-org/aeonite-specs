@@ -63,7 +63,7 @@ Document profile declarations are therefore a routing hint, not a trust anchor.
 
 Profiles may reinterpret AEON constructs *after parsing*:
 - JSON profile resolves references before output
-- a profile may require conventions such as `aeon.gp.limbo.v1` or `aeon.host.nulls.v1` for a document class
+- a profile may require conventions such as `aeon.gp.temporal.v1` or `aeon.gp.security-envelope.v1` for a document class
 
 Profiles **must not** alter AEON grammar.
 

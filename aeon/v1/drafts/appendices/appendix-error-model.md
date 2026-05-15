@@ -31,7 +31,7 @@ Core/policy diagnostics retained from prior v1-era behavior summaries use legacy
 | `INVALID_SEPARATOR_CHAR`       | SyntaxError | parse                    | forbidden or malformed separator char in separator spec                          |
 | `INVALID_ESCAPE`               | SyntaxError | lex/parse                | malformed quoted escape, malformed Unicode escape, lone surrogate, or out-of-range code point |
 | `UNTERMINATED_STRING`          | SyntaxError | lex                      | quoted string crosses a raw newline or EOF before closing delimiter              |
-| `UNTYPED_SWITCH_LITERAL`       | ModeError   | mode enforcement         | strict switch literal not typed as `switch`                                      |
+| `UNTYPED_SWITCH_LITERAL`       | ModeError   | mode enforcement         | strict toggle literal not typed as `toggle`                                      |
 | `UNTYPED_VALUE_IN_STRICT_MODE` | ModeError   | mode enforcement         | strict-mode value lacks required typing                                          |
 
 AEOS validation diagnostics use lowercase snake case:

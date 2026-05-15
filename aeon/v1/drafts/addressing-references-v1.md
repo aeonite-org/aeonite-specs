@@ -277,12 +277,13 @@ $.a@meta.["x.y"]
 
 ## 9. Node Model Boundary
 
-Node children do not receive canonical paths in the current v1 node model.
+Node children use numeric index segments in canonical paths, matching the ordered child-slot model used by lists and tuples.
 
 Implications:
-- the binding that owns the node has a canonical path;
-- node child ordering is structural, not canonical-path addressed;
-- addressing/reference syntax applies to bindings, list/tuple elements, and attribute selectors, not arbitrary node children.
+- the binding that owns the node has a canonical path for the node value;
+- node child ordering is structural and reflected through bracket indices such as `$.page[0]`;
+- object members inside node children continue normal member traversal, for example `$.page[0].title`;
+- node tags are not independent canonical path segments.
 
 ## 10. Minimum Conformance Reminders
 

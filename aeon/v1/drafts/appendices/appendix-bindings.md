@@ -47,7 +47,7 @@ References (`~`, `~>`) target bindings via address expressions. A value without 
 
 ## 5. Node Literals
 
-Node literals are values. Node children do not implicitly create top-level binding identity unless they contain bindings.
+Node literals are values. Node children do not implicitly create top-level named binding identity, but ordered child slots use bracket-index canonical paths such as `$.content[0]`. If a node child contains bindings, those bindings continue below the indexed child path.
 
 Valid introducer example:
 

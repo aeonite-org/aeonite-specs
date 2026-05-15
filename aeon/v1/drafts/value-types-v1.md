@@ -41,6 +41,8 @@ Implementations MAY still expose an explicit datatype-policy override, but the d
 
 Reserved datatype names in Core are compatibility labels, not full semantic contracts.
 
+The datatype label `zdt` is reserved for a possible future zoned datetime type. It is not operational in AEON Core v1, is not an accepted Core v1 datatype family, and does not introduce bracketed zoned-datetime lexical syntax in v1.
+
 Anonymous values inside list, tuple, and node-child containers MAY carry a local datatype annotation:
 
 ```aeon
@@ -68,6 +70,8 @@ In particular:
 ## 1.1 Reserved Datatype Name Table
 
 This section lists the accepted datatype-name families used by Core v1.
+
+Future-reserved labels, including `zdt`, are intentionally excluded from this table.
 
 Interpretation:
 - `Type` is the canonical name used in examples and docs;
@@ -117,11 +121,11 @@ Interpretation:
 | Alternative names | `bool`    |
 | Reserved          | none      |
 
-### `switch`
+### `toggle`
 
 | Field             | Names    |
 | ----------------- | -------- |
-| Type              | `switch` |
+| Type              | `toggle` |
 | Alternative names | none     |
 | Reserved          | none     |
 
@@ -232,7 +236,7 @@ Interpretation:
 | NaN              | `NaN`, `-NaN`                           | `bad = NaN`                                 | `bad:nan = NaN`                                                 | `NaNLiteral`       |
 | Null             | `!none`, `!notSet`, `!"..."`            | `missing = !none`                           | `missing:null = !none`                                          | `NullLiteral`      |
 | Boolean           | `true`, `false`                         | `flag = true`                               | `flag:boolean = true`                                           | `BooleanLiteral`   |
-| Switch            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:switch = on`                                             | `SwitchLiteral`    |
+| Toggle            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:toggle = on`                                             | `SwitchLiteral`    |
 | Hex               | `#ff00aa`                               | `color = #ff00aa`                           | `color:hex = #ff00aa`                                           | `HexLiteral`       |
 | Radix             | `%1011`                                 | `bits = %1011`                              | `bits:radix[2] = %1011`                                         | `RadixLiteral`     |
 | Encoding          | `$QmFzZTY0IQ==`                         | `payload = $QmFzZTY0IQ==`                   | `payload:base64 = $QmFzZTY0IQ==`                                | `EncodingLiteral`  |
@@ -474,6 +478,7 @@ Nuances:
 - `NullLiteral` is a distinct literal family from `StringLiteral` and `NumberLiteral`;
 - reserved sentinel forms are exactly `!none`, `!notSet`, `!notApplicable`, and `!tombstone`;
 - custom null reasons must use a quoted string form after `!`;
+- implementation-specific null distinctions should use quoted custom reasons such as `!"js.undefined"` rather than a separate null convention;
 - quoted custom reasons must decode to a non-empty, non-ASCII-whitespace-only string;
 - quoted custom reasons must not decode to any reserved null sentinel name;
 - collision checks are performed on decoded strings without Unicode normalization;
@@ -514,19 +519,19 @@ AES:
 Examples:
 
 ```aeon
-state = on             // valid switch literal
-state:switch = off     // valid switch literal
-state:switch = true    // invalid
+state = on             // valid toggle literal
+state:toggle = off     // valid toggle literal
+state:toggle = true    // invalid
 ```
 
 Nuances:
 - lexical forms: `yes`, `no`, `on`, `off`;
-- untyped switch literals are allowed in transport mode;
-- in strict mode, untyped switch literals must be annotated with `:switch`;
-- in strict mode, non-`:switch` custom datatype aliases such as `:toggle` remain invalid even when general custom datatypes are otherwise enabled;
-- in custom mode, custom datatype aliases may carry switch literals under the same policy that governs other custom datatypes;
+- untyped toggle literals are allowed in transport mode;
+- in strict mode, untyped toggle literals must be annotated with `:toggle`;
+- in strict mode, non-`:toggle` custom datatype aliases such as `:mySwitch` remain invalid even when general custom datatypes are otherwise enabled;
+- in custom mode, custom datatype aliases may carry toggle literals under the same policy that governs other custom datatypes;
 - machine-readable surfaced `SwitchLiteral.value` remains lexical (`yes`, `no`, `on`, `off`);
-- finalized JSON materializes switch literals as booleans.
+- finalized JSON materializes toggle literals as booleans.
 
 AES:
 - `SwitchLiteral`.
@@ -778,7 +783,7 @@ Nuances:
 - non-`node` inline node-head datatypes such as `<tag:pair("x", "y")>` are transport/custom forms, not strict forms;
 - child list may contain mixed value kinds;
 - node children may carry local anonymous datatype annotations with `:type = value`;
-- nodes are values; node children do not become independent top-level bindings by default.
+- nodes are values; node children do not become independent top-level named bindings, but ordered child slots use indexed canonical paths.
 
 AES:
 - `NodeLiteral`.
@@ -808,7 +813,7 @@ AES:
 
 ```ebnf
 Value = Literal | Reference | Object | List | Tuple | Node ;
-Literal = String | Number | Boolean | Switch | Hex | Radix | Encoding
+Literal = String | Number | Boolean | Toggle            | Hex | Radix | Encoding
         | Date | DateTime | SeparatorLiteral ;
 Reference = "~" RefPath | "~>" RefPath ;
 Object = "{" (Binding)* "}" ;

@@ -22,10 +22,10 @@ path: specification/appendices/appendix-node-model-v1
 The Node Model introduces a **non-binding structural container** intended for:
 
 * mixed content
-* ordered, non-addressable children
-* structural grouping without introducing canonical paths
+* ordered child slots
+* structural grouping without introducing named binding identity
 
-Nodes exist to represent **structure without identity**.
+Nodes exist to represent **structure without named binding identity**.
 
 They are explicitly *not* objects, lists, or bindings.
 
@@ -36,13 +36,13 @@ They are explicitly *not* objects, lists, or bindings.
 The Node Model is governed by the following invariants:
 
 1. **Nodes do not introduce bindings**
-2. **Node children never receive canonical paths**
+2. **Node children use indexed canonical path segments**
 3. **Nodes are opaque to AEON Core**
-4. **Nodes do not affect Assignment Event semantics**
+4. **Nodes do not create named Assignment Events**
 5. **Nodes preserve ordering**
 
 Nodes are structural only.
-They do not participate in identity, reference resolution, or assignment.
+They preserve ordered child structure while exposing child slots through the same bracket-index path model used by lists and tuples.
 
 ---
 
@@ -79,7 +79,7 @@ In this example:
 
 * `$.content` is a canonical binding
 * `paragraph` and `strong` are node tags
-* Node children have **no canonical paths**
+* the first node child is addressable as `$.content[0]`
 
 ---
 
@@ -97,7 +97,7 @@ A node child MAY be any of the following:
 * anonymous typed value (`:type = value`)
 
 Anonymous typed children annotate only the immediate child value. They do not
-create named bindings, path segments, or ordering side effects:
+create named bindings or ordering side effects:
 
 ```aeon
 page:node = <page(
@@ -125,9 +125,9 @@ Ordering is observable only by consumers that interpret node values.
 
 ### 5.1 Nodes
 
-A node itself **does not receive a canonical path**.
-
-Only the **binding that owns the node** has a canonical path.
+A node literal is reached through the canonical path of its owning value slot.
+When a node is the value of a binding, the binding path identifies the node value.
+Node children then use bracket-index segments beneath that path.
 
 ```aeon
 p = <paragraph("text")>
@@ -136,7 +136,7 @@ p = <paragraph("text")>
 Canonical paths:
 
 * `$.p` ✔
-* `$.p[0]` ✘
+* `$.p[0]` ✔
 * `$.p.text` ✘
 
 ---
@@ -152,19 +152,20 @@ p = <paragraph({ emphasis = "strong" })>
 Then:
 
 * `$.p` is a binding
-* `$.p.emphasis` **is a binding**
+* `$.p[0]` is the anonymous object child
+* `$.p[0].emphasis` **is a binding**
 * The object literal behaves normally
-* The node does not introduce path segments
+* The node child slot uses the same bracket-index path form as list and tuple elements
 
 ---
 
 ## 6. Assignment Events
 
-Nodes do **not** emit Assignment Events.
+Nodes do **not** emit named Assignment Events.
 
-Only bindings emit Assignment Events.
+Bindings emit ordinary named Assignment Events. Ordered child slots, including node children, may emit synthetic indexed AES events so downstream tooling can validate, project, and materialize them consistently.
 
-If a binding’s value is a node, the node appears as the **opaque value** of the event.
+If a binding’s value is a node, the node appears as the value of the binding event and its children may be surfaced through indexed child paths.
 
 ```aeon
 title = <heading("Hello")>
@@ -175,11 +176,11 @@ Emitted event:
 * path: `$.title`
 * value: Node(`heading`, children…)
 
-No events are emitted for:
+Synthetic indexed child events may be emitted for:
 
-* node tag
-* node children
 * child positions
+* anonymous typed child values
+* bindings contained inside object children
 
 ---
 
@@ -193,8 +194,9 @@ References (`~`, `~>`) inside node children are:
 
 However:
 
-* nodes themselves are **not reference targets**
-* references may only target canonical binding paths
+* node child targets use numeric index segments, for example `$.page[0]`
+* node tags are not independent reference targets
+* references target canonical paths, not raw source positions
 
 ---
 
@@ -234,7 +236,6 @@ Node semantics are **mode-agnostic**.
 The Node Model does **not** provide:
 
 * automatic traversal semantics
-* indexing or addressing of children
 * implicit binding creation
 * execution or evaluation
 * rendering rules
@@ -251,7 +252,7 @@ It allows AEON to express:
 
 * mixed content
 * hierarchical grouping
-* ordered, non-addressable elements
+* ordered child elements
 
 …without violating AEON’s core invariants:
 
@@ -265,7 +266,7 @@ It allows AEON to express:
 ## 12. Summary
 
 * Nodes are **structural containers**
-* Bindings are the **only identity-bearing construct**
-* Node children are **ordered, opaque, and non-addressable**
+* Bindings are the **only named identity-bearing construct**
+* Node children are **ordered and bracket-index addressable**
 * Nodes are **profile-gated and optional**
 * AEON Core remains a **binding-centric system**

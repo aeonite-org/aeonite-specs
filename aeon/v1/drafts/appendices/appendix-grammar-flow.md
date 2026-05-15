@@ -170,7 +170,7 @@ Value starts include:
 | string token                     | string                                  |
 | number-like token                | number, infinity, NaN                   |
 | `!` form                         | null literal                            |
-| boolean/switch keyword           | boolean or switch                       |
+| boolean/toggle keyword           | boolean or toggle                       |
 | `#`, `%`, `$`, `^` literal token | hex, radix, encoding, separator literal |
 | trimtick opener                  | trimtick string                         |
 
