@@ -124,7 +124,7 @@ When a list is rendered multiline, complex object elements canonically expand to
 
 Always `true` or `false` (lowercase).
 
-### Switch
+### Toggle
 
 Preserve original literal (`yes`, `on`, etc.).
 

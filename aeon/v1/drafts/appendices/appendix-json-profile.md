@@ -49,7 +49,7 @@ Direct mapping. Order preserved.
 
 `true`/`false` pass through.
 
-### Switch → JSON Boolean
+### Toggle → JSON Boolean
 
 | AEON        | JSON    |
 | ----------- | ------- |
