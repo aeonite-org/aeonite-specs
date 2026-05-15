@@ -236,7 +236,7 @@ Interpretation:
 | NaN              | `NaN`, `-NaN`                           | `bad = NaN`                                 | `bad:nan = NaN`                                                 | `NaNLiteral`       |
 | Null             | `!none`, `!notSet`, `!"..."`            | `missing = !none`                           | `missing:null = !none`                                          | `NullLiteral`      |
 | Boolean           | `true`, `false`                         | `flag = true`                               | `flag:boolean = true`                                           | `BooleanLiteral`   |
-| Toggle            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:toggle = on`                                             | `SwitchLiteral`    |
+| Toggle            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:toggle = on`                                             | `ToggleLiteral`    |
 | Hex               | `#ff00aa`                               | `color = #ff00aa`                           | `color:hex = #ff00aa`                                           | `HexLiteral`       |
 | Radix             | `%1011`                                 | `bits = %1011`                              | `bits:radix[2] = %1011`                                         | `RadixLiteral`     |
 | Encoding          | `$QmFzZTY0IQ==`                         | `payload = $QmFzZTY0IQ==`                   | `payload:base64 = $QmFzZTY0IQ==`                                | `EncodingLiteral`  |
@@ -514,7 +514,7 @@ Canonical notes:
 AES:
 - `BooleanLiteral`.
 
-## 3.5 Switch
+## 3.5 Toggle
 
 Examples:
 
@@ -528,13 +528,12 @@ Nuances:
 - lexical forms: `yes`, `no`, `on`, `off`;
 - untyped toggle literals are allowed in transport mode;
 - in strict mode, untyped toggle literals must be annotated with `:toggle`;
-- in strict mode, non-`:toggle` custom datatype aliases such as `:mySwitch` remain invalid even when general custom datatypes are otherwise enabled;
-- in custom mode, custom datatype aliases may carry toggle literals under the same policy that governs other custom datatypes;
-- machine-readable surfaced `SwitchLiteral.value` remains lexical (`yes`, `no`, `on`, `off`);
+- non-`:toggle` custom datatype aliases such as `:myToggle` remain invalid even when general custom datatypes are otherwise enabled;
+- machine-readable surfaced `ToggleLiteral.value` remains lexical (`yes`, `no`, `on`, `off`);
 - finalized JSON materializes toggle literals as booleans.
 
 AES:
-- `SwitchLiteral`.
+- `ToggleLiteral`.
 
 ## 3.6 Hex
 
