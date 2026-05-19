@@ -187,12 +187,19 @@ Active shipped constraint surface:
 interface ConstraintsV1 {
   readonly required?: boolean;
   readonly type?: string;
+  readonly nullable?: boolean;
+  readonly allow_infinity?: boolean;
+  readonly allow_nan?: boolean;
+  readonly null_value?: string;
+  readonly toggle_pair?: 'any' | 'yes_no' | 'on_off';
   readonly reference?: 'allow' | 'forbid' | 'require';
   readonly reference_kind?: 'clone' | 'pointer' | 'either';
   readonly reference_target_pattern?: string;
   readonly resolve_reference_form?: boolean;
   readonly type_is?: 'list' | 'tuple';
   readonly length_exact?: number;
+  readonly min_children?: number;
+  readonly max_children?: number;
   readonly sign?: 'signed' | 'unsigned';
   readonly min_digits?: number;
   readonly max_digits?: number;
@@ -387,7 +394,64 @@ Exact container arity constraint for tuple/list style containers.
 Failure diagnostic:
 - `tuple_arity_mismatch`
 
-### 5.7 Numeric Form Constraints
+### 5.7 Container Cardinality Constraints
+
+Container child-count constraints:
+- `length_exact`
+- `min_children`
+- `max_children`
+
+Behavior:
+- applies to Core-emitted container forms with immediate children, including `ObjectNode`, `ListNode` / `ListLiteral`, `TupleLiteral`, and `NodeLiteral`;
+- `length_exact` requires exactly the declared immediate child count;
+- `min_children` requires at least the declared immediate child count;
+- `max_children` requires at most the declared immediate child count.
+
+Failure diagnostics:
+- `tuple_arity_mismatch` for `length_exact`
+- `container_cardinality_mismatch` for `min_children` and `max_children`
+
+### 5.8 Type Widening and Literal Lexical Constraints
+
+Nullable and special numeric widening constraints:
+- `nullable`
+- `allow_infinity`
+- `allow_nan`
+
+Behavior:
+- when `nullable: true`, `NullLiteral` satisfies the declared `type` constraint;
+- when `allow_infinity: true`, `InfinityLiteral` satisfies numeric `type` constraints (`NumberLiteral`, `IntegerLiteral`, `FloatLiteral`);
+- when `allow_nan: true`, `NaNLiteral` satisfies numeric `type` constraints (`NumberLiteral`, `IntegerLiteral`, `FloatLiteral`);
+- additional literal-form constraints apply only when they are meaningful for the actual literal form.
+
+Null value constraint:
+
+```ts
+null_value?: string
+```
+
+Behavior:
+- applies only when the matched AES event is a `NullLiteral`;
+- compares against the Core-surfaced null value, such as `none`, `notApplicable`, or a custom quoted null reason.
+
+Toggle pair constraint:
+
+```ts
+toggle_pair?: 'any' | 'yes_no' | 'on_off'
+```
+
+Behavior:
+- `any` accepts all toggle literals: `yes`, `no`, `on`, and `off`;
+- `yes_no` accepts only `yes` and `no`;
+- `on_off` accepts only `on` and `off`;
+- omitted is equivalent to `any`.
+
+Failure diagnostics:
+- `type_mismatch` for missing widening flags;
+- `null_value_mismatch`;
+- `toggle_pair_mismatch`.
+
+### 5.9 Numeric Form Constraints
 
 Numeric lexical-form constraints:
 - `sign`
@@ -405,7 +469,7 @@ Behavior:
 Failure diagnostic:
 - `numeric_form_violation`
 
-### 5.8 String Form Constraints
+### 5.10 String Form Constraints
 
 String constraints:
 - `min_length`
@@ -424,7 +488,7 @@ Failure diagnostics:
 - `string_length_violation`
 - `pattern_mismatch`
 
-### 5.9 `datatype`
+### 5.11 `datatype`
 
 Datatype constraint is a label-presence check only.
 
@@ -566,7 +630,7 @@ One valid tooling pattern is:
         }
       },
       "applied": {
-        "profile": "altopelago.core.v1",
+        "profile": "core",
         "schema": "altopelago.main_schema.v1"
       }
     }
