@@ -93,6 +93,7 @@ IdentifierContinue = IdentifierStart | "0".."9" ;
 
 Nuances:
 - bare keys are best used when the key is identifier-safe;
+- boolean and toggle literal words (`true`, `false`, `yes`, `no`, `on`, `off`) are valid bare keys in key, attribute-key, tag, and path-segment contexts; they are literals only in value contexts;
 - quoted keys are required for spaces, dots-as-data, and other non-bare characters;
 - single and double quotes are both valid key delimiters;
 - quoted keys must not be empty;

@@ -53,12 +53,13 @@ The current anti-drift coverage accounting for those families is tracked in `aeo
 
 Implementations MUST:
 1. accept bare, single-quoted, and double-quoted keys in all key positions;
-2. reject backtick-quoted keys as keys;
-3. reject empty quoted keys;
-4. reject malformed quoted-key escape sequences;
-5. preserve key/path disambiguation between dotted traversal (`a.b`) and quoted single-key (`["a.b"]`);
-6. recognize the document header only at the start of the document;
-7. reject a structured header (`aeon:header = { ... }`) that appears after any body binding.
+2. accept boolean and toggle literal words (`true`, `false`, `yes`, `no`, `on`, `off`) as bare keys in key, attribute-key, tag, and path-segment contexts;
+3. reject backtick-quoted keys as keys;
+4. reject empty quoted keys;
+5. reject malformed quoted-key escape sequences;
+6. preserve key/path disambiguation between dotted traversal (`a.b`) and quoted single-key (`["a.b"]`);
+7. recognize the document header only at the start of the document;
+8. reject a structured header (`aeon:header = { ... }`) that appears after any body binding.
 
 ## 4. Addressing and Reference Requirements
 
