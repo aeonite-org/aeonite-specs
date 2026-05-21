@@ -116,7 +116,7 @@ In typed modes (`strict` and `custom`) implementations MUST:
 Implementations MUST:
 1. validate explicit datatype/literal compatibility independent of mode;
 2. allow untyped bindings in transport mode;
-3. require datatype presence in typed modes (`strict` and `custom`);
+3. require datatype presence on non-header bindings and value-carrying attribute entries in typed modes (`strict` and `custom`);
 4. emit deterministic mismatch diagnostics when an explicit reserved datatype does not match the bound literal kind.
 
 ### 7.2 Mode-Driven Datatype Acceptance

@@ -33,6 +33,7 @@ Mode requirements:
 - `transport` allows untyped non-header bindings and allows custom datatype labels;
 - `strict` requires a datatype annotation on non-header bindings and rejects custom datatype labels by default;
 - `custom` requires a datatype annotation on non-header bindings and allows custom datatype labels;
+- typed modes require datatype annotations on attribute entries that carry values;
 - typed modes do not require generic args (`arr:list = [...]` is valid);
 - typed modes do not require separator specs unless the datatype itself uses them.
 - typed modes do not require datatype annotations on anonymous list elements, tuple elements, or node children.
