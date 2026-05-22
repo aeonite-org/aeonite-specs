@@ -191,6 +191,7 @@ interface ConstraintsV1 {
   readonly allow_infinity?: boolean;
   readonly allow_nan?: boolean;
   readonly null_value?: string;
+  readonly null_values?: readonly string[];
   readonly toggle_pair?: 'any' | 'yes_no' | 'on_off';
   readonly reference?: 'allow' | 'forbid' | 'require';
   readonly reference_kind?: 'clone' | 'pointer' | 'either';
@@ -203,6 +204,7 @@ interface ConstraintsV1 {
   readonly sign?: 'signed' | 'unsigned';
   readonly min_digits?: number;
   readonly max_digits?: number;
+  readonly radix?: number;
   readonly min_value?: string;
   readonly max_value?: string;
   readonly min_length?: number;
@@ -428,10 +430,13 @@ Null value constraint:
 
 ```ts
 null_value?: string
+null_values?: readonly string[]
 ```
 
 Behavior:
 - applies only when the matched AES event is a `NullLiteral`;
+- `null_value` is shorthand for one accepted surfaced null value;
+- `null_values` accepts any surfaced null value in the list;
 - compares against the Core-surfaced null value, such as `none`, `notApplicable`, or a custom quoted null reason.
 
 Toggle pair constraint:
@@ -457,12 +462,14 @@ Numeric lexical-form constraints:
 - `sign`
 - `min_digits`
 - `max_digits`
+- `radix`
 - `min_value`
 - `max_value`
 
 Behavior:
-- applies only to numeric literal forms;
-- uses lexical representation for sign and digit-count checks;
+- applies to numeric literal forms, and to digit-bearing symbolic literal forms where the declared constraint is meaningful;
+- `radix` applies only to `RadixLiteral` and declares the exact accepted digit base;
+- uses lexical representation for sign, digit-count, and radix digit checks;
 - uses numeric magnitude only when `min_value` or `max_value` are explicitly declared;
 - integer digit count excludes sign.
 
