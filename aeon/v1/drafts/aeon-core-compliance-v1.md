@@ -165,7 +165,8 @@ Implementations MUST:
 8. reject backtick segments and all raw separator escape syntax;
 9. resume ordinary comment and grammar-boundary handling once a separator payload ends outside quoted segments;
 10. reject unterminated quoted segments and any raw payload that requires disallowed characters outside quotes;
-11. accept unparameterized `sep` and `set` datatypes when the bound value is a separator literal.
+11. accept unparameterized `sep` datatypes when the bound value is a separator literal;
+12. accept unparameterized `kadot` datatypes when the bound value is a separator literal, without enforcing the kadot payload shape in Core.
 
 ## 10. Temporal Literal Requirements
 

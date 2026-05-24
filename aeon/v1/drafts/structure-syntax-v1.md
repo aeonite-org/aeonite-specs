@@ -196,7 +196,8 @@ Separator specs decorate datatypes:
 
 ```aeon
 size:sep[x] = ^300x250
-triple:set[x][y][z] = ^100x200y300z
+triple:sep[x][y][z] = ^100x200y300z
+semver:kadot = ^3.14.15
 ```
 
 Grammar:
@@ -225,11 +226,13 @@ Current official v1 rules:
 
 Nuances:
 - `size:sep[x]` has separator depth `1`;
-- `triple:set[x][y][z]` has separator depth `3`;
+- `triple:sep[x][y][z]` has separator depth `3`;
+- `semver:kadot` has separator depth `0`;
 - `sep[x]`, `sep[ x ]`, and `sep[\nx\n]` are legal;
 - `sep[xy]` and any form that splits the payload into more than one character are invalid;
 - repeated separator specs are legal and preserved structurally, including duplicate chars;
-- unparameterized `sep` and `set` datatypes may still bind separator literals;
+- unparameterized `sep` datatypes may still bind separator literals;
+- unparameterized `kadot` datatypes may bind separator literals; Core does not enforce the dot-separated numeric shape;
 - separator payloads are compact tokens introduced by `^`;
 - outside quoted string segments, raw separator payload characters are limited to `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 - quoted segments use ordinary single-quoted or double-quoted AEON string lexical rules;

@@ -63,7 +63,7 @@ a:list = [:n = :n = 3]  // invalid: typed value cannot wrap another typed value
 Container typing and anonymous value typing are not equivalent. `numbers:list<int32> = [1, 2, 3]` declares an expectation on the container binding, while `values:list = [:int32 = 3, :string = "4"]` annotates individual anonymous elements without changing their order or making them named bindings.
 
 In particular:
-- Core recognizes reserved names such as `int`, `uint`, `int32`, `float64`, `obj`, `envelope`, `trimtick`, `prose`, `sep`, and `set`;
+- Core recognizes reserved names such as `int`, `uint`, `int32`, `float64`, `obj`, `envelope`, `trimtick`, `prose`, `sep`, and `kadot`;
 - Core checks literal-family compatibility only;
 - stronger semantic enforcement such as integer-only, unsigned-only, width, or range belongs to profile/schema validation layers;
 - `aeon.gp.profile.v1` and `aeon.gp.schema.v1` are the intended general-purpose baseline for making those stronger meanings operational.
@@ -184,7 +184,7 @@ Interpretation:
 | ----------------- | ----- |
 | Type              | `sep` |
 | Alternative names | none  |
-| Reserved          | `set` |
+| Reserved          | `kadot` |
 
 ### `object`
 
@@ -653,7 +653,7 @@ Examples:
 
 ```aeon
 size:sep[x] = ^300x250
-triple:set[x][y][z] = ^100x200y300z
+semver:kadot = ^3.14.15
 parts:sep[|] = ^"hello world"|"this, [is] fine"
 ```
 
@@ -684,7 +684,8 @@ Payload grammar:
 - no raw separator escapes are defined;
 - outside quoted segments, whitespace, `\\`, `/`, `,`, and closing container boundaries are not payload characters;
 - comment syntax resumes normally once a separator payload ends outside quoted segments.
-- both `:sep` and `:set` may bind separator literals with or without explicit bracket specs.
+- `:sep` may bind separator literals with or without explicit bracket specs.
+- `:kadot` may bind unparameterized separator literals. The intended kadot shape is dot-separated numeric segments, for example `ip:kadot = ^198.0.126.255` or `semver:kadot = ^3.14.15`, but Core only enforces the separator-literal family; stricter shape validation belongs to schema/profile layers.
 
 AES:
 - `SeparatorLiteral` with raw payload preserved.
