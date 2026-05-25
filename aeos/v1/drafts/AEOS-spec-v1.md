@@ -172,12 +172,44 @@ interface SchemaV1 {
 
 ```ts
 interface SchemaRule {
-  readonly path: string;
+  readonly path?: string;
+  readonly selector?: string;
   readonly constraints: ConstraintsV1;
 }
 ```
 
-Rules are keyed by canonical path strings.
+Rules target AES events by either exact canonical path or by selector.
+
+Each rule MUST provide exactly one of:
+- `path`
+- `selector`
+
+A rule with neither target field is invalid.
+A rule with both target fields is invalid.
+
+`path` is an exact canonical path target, with one additional indexed wildcard form:
+- `[*]` matches a single numeric index segment.
+
+Examples:
+- `$.contact`
+- `$.contact.name`
+- `$.items[*]`
+- `$.items[*].name`
+
+`selector` is a canonical-path selector target.
+Selector strings are root-anchored and use canonical path segment syntax with two additional selector segments:
+- `*` matches exactly one path segment.
+- `**` matches zero or more path segments.
+
+Examples:
+- `$.*.contact` matches `contact` at exact depth 2 from root, such as `$.app.contact`.
+- `$.**.contact` matches `contact` at any depth under root, including `$.contact`.
+- `$.*.**.contact` matches `contact` at depth 2 or deeper.
+
+Selector `[*]` retains the indexed wildcard meaning and matches one numeric index segment.
+For example, `$.pages[*].title` matches `$.pages[0].title`.
+
+Selectors do not create virtual paths. They match against actual Core/AES event paths.
 
 ### 4.3 ConstraintsV1
 
@@ -236,12 +268,16 @@ Additional schema-surface notes:
 
 ### 5.1 `required`
 
-`required: true` means the canonical path must exist in AES.
+For a `path` rule, `required: true` means the targeted canonical path must exist in AES.
+
+For a `selector` rule, `required: true` means the selector must match at least one actual AES event path.
+If the selector matches one or more actual paths, the rule applies to each matched path.
 
 Failure diagnostic:
 - `missing_required_field`
 
-Missing-path diagnostics use `span: null`.
+Missing-path and missing-selector diagnostics use `span: null`.
+For a missing selector, the diagnostic `path` field is the selector string.
 
 ### 5.2 `type`
 
@@ -528,6 +564,7 @@ Behavior:
 - `open` is the default;
 - `open` validates declared schema rules and ignores unexpected AES binding paths;
 - `closed` rejects any non-header AES binding path not explicitly covered by `schema.rules`;
+- exact `path` rules, indexed `path` wildcard rules, and `selector` rules all participate in closed-world coverage;
 - rejection happens before downstream materialization is trusted.
 
 Failure diagnostic:
@@ -558,15 +595,16 @@ Current shipped validator phases:
 1. Envelope plumbing
 2. Baseline invariants
 3. Rule-index build / schema-shape validation
-4. Presence checks
-5. Type and reference checks
-6. Container-kind checks
-7. Numeric form checks
-8. String form and pattern checks
-9. Datatype allowlist enforcement during rule indexing
-10. World-policy enforcement
-11. Datatype-rule enforcement
-12. Guarantees emission
+4. Selector and indexed-wildcard rule expansion
+5. Presence checks
+6. Type and reference checks
+7. Container-kind checks
+8. Numeric form checks
+9. String form and pattern checks
+10. Datatype allowlist enforcement during rule indexing
+11. World-policy enforcement
+12. Datatype-rule enforcement
+13. Guarantees emission
 
 ### 6.1 Baseline Invariants
 
@@ -751,6 +789,8 @@ Current v1 behavior-family anchors:
   - `cts/aeos/v1/suites/01-baseline.json`
 - schema rule-index integrity
   - `cts/aeos/v1/suites/02-schema-rules.json`
+- selector path rule targeting and closed-world coverage
+  - `cts/aeos/v1/suites/22-selector-paths.json`
 - presence and forbid semantics
   - `cts/aeos/v1/suites/03-presence.json`
 - representational type and datatype-label constraints
@@ -804,6 +844,7 @@ AEOS conformance is not satisfied by passing only representative examples.
 
 An implementation must preserve behavior across the AEOS validation families defined in this document and their corresponding CTS lanes, especially:
 - schema rule validation
+- selector path targeting
 - presence checks
 - type and datatype-label enforcement
 - reference-form, reference-target, and resolved-reference enforcement
