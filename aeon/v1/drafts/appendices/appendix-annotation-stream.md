@@ -4,9 +4,10 @@ title: Appendix - Annotation Stream
 description: Structured annotation channel model and source-order emission behavior.
 family: appendices-v1
 group: Core Semantics
+status: informative summary for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-annotation-stream-v1
 ---
-
 # Appendix — Annotation Stream
 
 Status: informative summary for consolidated v1

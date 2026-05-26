@@ -1,12 +1,13 @@
 ---
 id: appendix-tuples-v1
 title: Appendix - Tuples and Indexed Paths
-description: Tuple semantics and indexed path behavior at parse, pathing, and validation boundaries.
+description: "Tuple semantics and indexed path behavior at parse, pathing, and validation boundaries."
 family: appendices-v1
 group: Core Semantics
+status: informative summary for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-tuples-v1
 ---
-
 # Appendix — Tuples and Indexed Paths
 
 **Appendix to:** AEON Specification v1

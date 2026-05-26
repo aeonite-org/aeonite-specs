@@ -1,12 +1,13 @@
 ---
 id: appendix-glossary-v1
 title: Appendix - Glossary
-description: Normative terminology used across AEON Core, AEOS, and companion references.
+description: "Normative terminology used across AEON Core, AEOS, and companion references."
 family: appendices-v1
 group: Orientation
+status: Draft
+license: CC-BY-4.0
 path: specification/appendices/appendix-glossary-v1
 ---
-
 # Appendix — Glossary (Normative)
 
 **Appendix to:** AEON Specification v1

@@ -1,15 +1,17 @@
 ---
 id: aeon-core-v1-compliance
 title: AEON Core v1 Compliance Specification
-description: Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules.
+description: "Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules."
+family: official-v1
 group: Core Specifications
+status: official v1 compliance draft
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-core-v1-compliance-specification
 links:
   - aeon-core-v1
   - aeos-v1
   - aeon-v1-conformance-matrix
 ---
-
 # AEON Core v1 Compliance Specification
 
 Status: official v1 compliance draft  

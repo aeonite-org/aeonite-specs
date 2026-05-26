@@ -1,15 +1,17 @@
 ---
 id: aeon-core-v1-comments-annotations
 title: AEON v1 Comments and Annotations Reference
-description: Reference for comment forms, structured channels, reserved meanings, deterministic attachment, and annotation-related boundaries.
+description: "Reference for comment forms, structured channels, reserved meanings, deterministic attachment, and annotation-related boundaries."
+family: official-v1
 group: Core References
+status: official v1 companion reference
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-v1-comments-and-annotations-reference
 links:
   - aeon-core-v1
   - aeon-v1-conformance-matrix
   - aeos-v1
 ---
-
 # AEON v1 Comments and Annotations Reference
 
 Status: official v1 companion reference  

@@ -1,15 +1,17 @@
 ---
 id: aeon-core-v1-structure-syntax
 title: AEON v1 Structure Syntax Reference
-description: Reference for binding shape, keys, attributes, separator specs, newline rules, and structural grammar decisions in AEON Core v1.
+description: "Reference for binding shape, keys, attributes, separator specs, newline rules, and structural grammar decisions in AEON Core v1."
+family: official-v1
 group: Core References
+status: official v1 companion reference
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-v1-structure-syntax-reference
 links:
   - aeon-core-v1
   - aeon-core-v1-addressing-references
   - aeon-core-v1-value-types
 ---
-
 # AEON v1 Structure Syntax Reference
 
 Status: official v1 companion reference  

@@ -1,15 +1,16 @@
 ---
 id: aeon-context-v1
 title: AEON Context v1
-description: Draft context-label convention for descriptive metadata such as domain, role, audience, intent, source, confidence, sensitivity, and advisory instruction comments.
+description: "Draft context-label convention for descriptive metadata such as domain, role, audience, intent, source, confidence, sensitivity, and advisory instruction comments."
 family: conventions
 group: General-Purpose Conventions
+status: Draft interoperability convention
+license: CC0-1.0
 path: specification/conventions/aeon-context-v1
 links:
   - aeon-conventions-overview
   - aeon-gp-convention-v1
 ---
-
 # AEON Context v1
 
 ## Status

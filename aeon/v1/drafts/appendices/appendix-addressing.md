@@ -4,9 +4,10 @@ title: Appendix - Addressing
 description: Detailed path addressing examples and canonical segment traversal clarifications.
 family: appendices-v1
 group: Core Semantics
+status: informative summary for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-addressing-v1
 ---
-
 # Appendix — Addressing
 
 Status: informative summary for consolidated v1

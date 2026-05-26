@@ -1,16 +1,17 @@
 ---
 id: aeon-v1-contracts
 title: AEON v1 Contracts Specification
-description: Contract-layer specification covering contract identifiers, artifact shapes, registry format, and the boundary between core processing, contracts, and consumer policy.
-group: Contracts Overview
+description: "Contract-layer specification covering contract identifiers, artifact shapes, registry format, and the boundary between core processing, contracts, and consumer policy."
 family: contracts
+group: Contracts Overview
+status: official v1 contract specification
+license: CC-BY-4.0
 path: specification/contracts/aeon-v1-contracts-specification
 links:
   - contracts-artifacts-overview
   - aeon-core-v1
   - aeos-v1
 ---
-
 # AEON v1 Contracts Specification
 
 Status: official v1 contract specification  
@@ -33,9 +34,9 @@ The canonical general-purpose baseline contracts for AEON v1 are:
 - schema contract: `aeon.gp.schema.v1`
 
 Baseline artifacts:
-- [profile artifact](./contracts/profiles/aeon.gp.profile.v1.aeon)
-- [schema artifact](./contracts/schemas/aeon.gp.schema.v1.aeon)
-- [registry](./contracts/registry.json)
+- [profile artifact](./artifacts/profiles/aeon.gp.profile.v1.aeon)
+- [schema artifact](./artifacts/schemas/aeon.gp.schema.v1.aeon)
+- [registry](./artifacts/registry.json)
 
 These baseline contracts are official and published, but they are not implicit defaults.
 When no trusted external selection chooses a profile/schema, Core-only processing defaults apply.

@@ -1,3 +1,7 @@
+---
+license: CC-BY-4.0
+---
+
 # aeonite-specs
 
 `aeonite-specs` is the canonical public repository for formal AEON-family specification text.
@@ -21,6 +25,11 @@ It is not intended to own:
 - official CTS ownership
 - project planning trackers
 
+## Public repositories
+
+- [`aeonite-org/aeonite-specs`](https://github.com/aeonite-org/aeonite-specs) is the canonical specification source.
+- [`aeonite-org/aeonite-cts`](https://github.com/aeonite-org/aeonite-cts) owns the public conformance suites, runners, and CTS protocol material.
+
 ## Layout
 
 ```text
@@ -39,6 +48,18 @@ neon/
     proposals/
     drafts/
     published/
+and/
+  v1/
+    drafts/
+  v2/
+    proposals/
+contracts/
+  v1/
+    drafts/
+      artifacts/
+conventions/
+  v1/
+    drafts/
 ```
 
 Repository-level spec-maintenance utilities may also live under:
@@ -56,4 +77,9 @@ paths.
 
 ## Licensing
 
-This repository is released under the MIT License. See `LICENSE`.
+This repository uses artifact-specific licenses. Normative specifications and
+appendices use `CC-BY-4.0`, conventions and reusable examples use `CC0-1.0`,
+and repository maintenance scripts use `MIT`, unless a file declares otherwise.
+
+See `LICENSE` and `LICENSE.md` for the licensing policy, and `LICENSES/` for
+the full license texts.

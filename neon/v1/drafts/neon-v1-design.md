@@ -1,6 +1,19 @@
+---
+id: neon-v1-draft
+title: NEON v1 Container and Encoding Design
+description: Draft container and encoding design for the NEON hybrid text/binary codec and container format.
+family: neon
+group: NEON
+status: Draft
+path: specification/neon/v1-container-encoding-design
+license: CC-BY-4.0
+---
+
 # Neon v1 — Container & Encoding Design
 
-The first formal specification for the Neon codec — replacing the experimental v0 prototype while preserving its bit-packing philosophy.
+NEON v1 is a hybrid text/binary codec and container format for compact AEON-family transport. It is intended for cases where an AEON document carries binary information that would otherwise be embedded as base64 text, and for cases where an AEON document needs to travel with attached files or supporting resources in a single package.
+
+At the payload level, NEON stores compact text using packed symbol encodings and can switch into explicit binary chunks when raw bytes are more efficient than textual representation. In extended directory mode, a NEON container stores a small self-describing index followed by one or more file entries, allowing a primary AEON source document and its attachments to be packaged together while keeping representation, validation, and interpretation separate.
 
 ---
 
@@ -120,36 +133,36 @@ Advanced features pay +1 byte for the extension byte.
 
 **Page 0 — Lowercase**
 
-| Idx  | Char         |     | Idx  | Char |     | Idx   | Char     |
-| :--- | :----------- | --- | :--- | :--- | --- | :---- | :------- |
-| 0    | *(reserved)* |     | 10   | `j`  |     | 20    | `t`      |
-| 1    | `a`          |     | 11   | `k`  |     | 21    | `u`      |
-| 2    | `b`          |     | 12   | `l`  |     | 22    | `v`      |
-| 3    | `c`          |     | 13   | `m`  |     | 23    | `w`      |
-| 4    | `d`          |     | 14   | `n`  |     | 24    | `x`      |
-| 5    | `e`          |     | 15   | `o`  |     | 25    | `y`      |
-| 6    | `f`          |     | 16   | `p`  |     | 26    | `z`      |
-| 7    | `g`          |     | 17   | `q`  |     | 27–47 | *sticky* |
-| 8    | `h`          |     | 18   | `r`  |     |       |          |
-| 9    | `i`          |     | 19   | `s`  |     |       |          |
+| Idx  | Char         | Idx  | Char | Idx   | Char     |
+| :--- | :----------- | :--- | :--- | :---- | :------- |
+| 0    | *(reserved)* | 10   | `j`  | 20    | `t`      |
+| 1    | `a`          | 11   | `k`  | 21    | `u`      |
+| 2    | `b`          | 12   | `l`  | 22    | `v`      |
+| 3    | `c`          | 13   | `m`  | 23    | `w`      |
+| 4    | `d`          | 14   | `n`  | 24    | `x`      |
+| 5    | `e`          | 15   | `o`  | 25    | `y`      |
+| 6    | `f`          | 16   | `p`  | 26    | `z`      |
+| 7    | `g`          | 17   | `q`  | 27–47 | *sticky* |
+| 8    | `h`          | 18   | `r`  |       |          |
+| 9    | `i`          | 19   | `s`  |       |          |
 
 Prefixes from page 0: `110` = shift/latch to page 1, `1111` = case shift (uppercase)
 
 **Page 1 — Data / Digits**
 
-| Idx  | Char              |     | Idx  | Char |     | Idx   | Char         |
-| :--- | :---------------- | --- | :--- | :--- | --- | :---- | :----------- |
-| 0    | *(binary marker)* |     | 11   | `+`  |     | 21    | `@`          |
-| 1    | `0`               |     | 12   | `-`  |     | 22    | `#`          |
-| 2    | `1`               |     | 13   | `*`  |     | 23    | `$`          |
-| 3    | `2`               |     | 14   | `/`  |     | 24    | *(reserved)* |
-| 4    | `3`               |     | 15   | `\`  |     | 25    | `'`          |
-| 5    | `4`               |     | 16   | `\|` |     | 26    | `;`          |
-| 6    | `5`               |     | 17   | `^`  |     | 27–47 | *sticky*     |
-| 7    | `6`               |     | 18   | `&`  |     |       |              |
-| 8    | `7`               |     | 19   | `%`  |     |       |              |
-| 9    | `8`               |     | 20   | `~`  |     |       |              |
-| 10   | `9`               |     |      |      |     |       |              |
+| Idx  | Char              | Idx  | Char | Idx   | Char         |
+| :--- | :---------------- | :--- | :--- | :---- | :----------- |
+| 0    | *(binary marker)* | 11   | `+`  | 21    | `@`          |
+| 1    | `0`               | 12   | `-`  | 22    | `#`          |
+| 2    | `1`               | 13   | `*`  | 23    | `$`          |
+| 3    | `2`               | 14   | `/`  | 24    | *(reserved)* |
+| 4    | `3`               | 15   | `\`  | 25    | `'`          |
+| 5    | `4`               | 16   | `\|` | 26    | `;`          |
+| 6    | `5`               | 17   | `^`  | 27–47 | *sticky*     |
+| 7    | `6`               | 18   | `&`  |       |              |
+| 8    | `7`               | 19   | `%`  |       |              |
+| 9    | `8`               | 20   | `~`  |       |              |
+| 10   | `9`               |      |      |       |              |
 
 Prefixes from page 1: `110` = shift/latch to page 0
 
@@ -159,33 +172,33 @@ Tailored for AEON syntax with **smart-equals combinators** that merge `=` with p
 
 **Page 0 — Lowercase + @**
 
-| Idx  | Char         |     | Idx  | Char |     | Idx   | Char     |
-| :--- | :----------- | --- | :--- | :--- | --- | :---- | :------- |
-| 0    | *(reserved)* |     | 10   | `j`  |     | 20    | `t`      |
-| 1    | `a`          |     | 11   | `k`  |     | 21    | `u`      |
-| 2    | `b`          |     | 12   | `l`  |     | 22    | `v`      |
-| 3    | `c`          |     | 13   | `m`  |     | 23    | `w`      |
-| 4    | `d`          |     | 14   | `n`  |     | 24    | `x`      |
-| 5    | `e`          |     | 15   | `o`  |     | 25    | `y`      |
-| 6    | `f`          |     | 16   | `p`  |     | 26    | `z`      |
-| 7    | `g`          |     | 17   | `q`  |     | 27    | `@`      |
-| 8    | `h`          |     | 18   | `r`  |     | 28–47 | *sticky* |
-| 9    | `i`          |     | 19   | `s`  |     |       |          |
+| Idx  | Char         | Idx  | Char | Idx   | Char     |
+| :--- | :----------- | :--- | :--- | :---- | :------- |
+| 0    | *(reserved)* | 10   | `j`  | 20    | `t`      |
+| 1    | `a`          | 11   | `k`  | 21    | `u`      |
+| 2    | `b`          | 12   | `l`  | 22    | `v`      |
+| 3    | `c`          | 13   | `m`  | 23    | `w`      |
+| 4    | `d`          | 14   | `n`  | 24    | `x`      |
+| 5    | `e`          | 15   | `o`  | 25    | `y`      |
+| 6    | `f`          | 16   | `p`  | 26    | `z`      |
+| 7    | `g`          | 17   | `q`  | 27    | `@`      |
+| 8    | `h`          | 18   | `r`  | 28–47 | *sticky* |
+| 9    | `i`          | 19   | `s`  |       |          |
 
 **Page 1 — Data / Digits / Symbols**
 
-| Idx  | Char              |     | Idx  | Char |     | Idx   | Char     |
-| :--- | :---------------- | --- | :--- | :--- | --- | :---- | :------- |
-| 0    | *(binary marker)* |     | 10   | `0`  |     | 20    | `~`      |
-| 1    | `1`               |     | 11   | `+`  |     | 21    | `'`      |
-| 2    | `2`               |     | 12   | `-`  |     | 22    | `#`      |
-| 3    | `3`               |     | 13   | `*`  |     | 23    | `$`      |
-| 4    | `4`               |     | 14   | `/`  |     | 24    | `?`      |
-| 5    | `5`               |     | 15   | `\`  |     | 25    | `;`      |
-| 6    | `6`               |     | 16   | `\|` |     | 26    | `!`      |
-| 7    | `7`               |     | 17   | `^`  |     | 27    | `\t`     |
-| 8    | `8`               |     | 18   | `&`  |     | 28–47 | *sticky* |
-| 9    | `9`               |     | 19   | `%`  |     |       |          |
+| Idx  | Char              | Idx  | Char | Idx   | Char     |
+| :--- | :---------------- | :--- | :--- | :---- | :------- |
+| 0    | *(binary marker)* | 10   | `0`  | 20    | `~`      |
+| 1    | `1`               | 11   | `+`  | 21    | `'`      |
+| 2    | `2`               | 12   | `-`  | 22    | `#`      |
+| 3    | `3`               | 13   | `*`  | 23    | `$`      |
+| 4    | `4`               | 14   | `/`  | 24    | `?`      |
+| 5    | `5`               | 15   | `\`  | 25    | `;`      |
+| 6    | `6`               | 16   | `\|` | 26    | `!`      |
+| 7    | `7`               | 17   | `^`  | 27    | `\t`     |
+| 8    | `8`               | 18   | `&`  | 28–47 | *sticky* |
+| 9    | `9`               | 19   | `%`  |       |          |
 
 **Sticky (indices 28–47)** — shared across both pages:
 
@@ -222,18 +235,18 @@ Tailored for AEON syntax with **smart-equals combinators** that merge `=` with p
 
 **Page 2 — Digits / Symbols**
 
-| Idx  | Char              |     | Idx  | Char         |     | Idx   | Char     |
-| :--- | :---------------- | --- | :--- | :----------- | --- | :---- | :------- |
-| 0    | *(binary marker)* |     | 9    | *(reserved)* |     | 18    | `2`      |
-| 1    | `-`               |     | 10   | `@`          |     | 19    | `3`      |
-| 2    | `+`               |     | 11   | `%`          |     | 20    | `4`      |
-| 3    | `/`               |     | 12   | `^`          |     | 21    | `5`      |
-| 4    | `\`               |     | 13   | `&`          |     | 22    | `6`      |
-| 5    | `~`               |     | 14   | `*`          |     | 23    | `7`      |
-| 6    | `#`               |     | 15   | `\|`         |     | 24    | `8`      |
-| 7    | `$`               |     | 16   | `0`          |     | 25    | `9`      |
-| 8    | `\t`              |     | 17   | `1`          |     | 26    | `;`      |
-|      |                   |     |      |              |     | 27–47 | *sticky* |
+| Idx  | Char              | Idx  | Char         | Idx   | Char     |
+| :--- | :---------------- | :--- | :----------- | :---- | :------- |
+| 0    | *(binary marker)* | 9    | *(reserved)* | 18    | `2`      |
+| 1    | `-`               | 10   | `@`          | 19    | `3`      |
+| 2    | `+`               | 11   | `%`          | 20    | `4`      |
+| 3    | `/`               | 12   | `^`          | 21    | `5`      |
+| 4    | `\`               | 13   | `&`          | 22    | `6`      |
+| 5    | `~`               | 14   | `*`          | 23    | `7`      |
+| 6    | `#`               | 15   | `\|`         | 24    | `8`      |
+| 7    | `$`               | 16   | `0`          | 25    | `9`      |
+| 8    | `\t`              | 17   | `1`          | 26    | `;`      |
+|      |                   |      |              | 27–47 | *sticky* |
 
 Page switching: `110` = jump +2 pages (mod 3), `111` = jump +1 page (mod 3)
 

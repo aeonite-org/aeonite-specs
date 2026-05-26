@@ -1,14 +1,16 @@
 ---
 id: aeon-core-v1-value-types
 title: AEON v1 Value Types Reference
-description: Reference for AEON value kinds, reserved datatype names, literal families, container forms, and reference-bearing values.
+description: "Reference for AEON value kinds, reserved datatype names, literal families, container forms, and reference-bearing values."
+family: official-v1
 group: Core References
+status: official v1 reference draft
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-v1-value-types-reference
 links:
   - aeon-core-v1
   - aeon-v1-contracts
 ---
-
 # AEON v1 Value Types Reference
 
 Status: official v1 reference draft

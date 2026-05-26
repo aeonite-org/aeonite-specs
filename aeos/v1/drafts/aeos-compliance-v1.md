@@ -2,11 +2,14 @@
 id: aeos-v1-compliance
 title: AEOS v1 Compliance Specification
 description: Conformance requirements for AEOS-specific validator and profile behavior layered on top of AEON core.
+family: official-v1
 group: AEOS Specifications
+status: draft scaffold
 path: specification/aeos-v1-documentation/aeos-v1-compliance-specification
 links:
   - aeos-v1
   - aeon-core-v1-compliance
+license: CC-BY-4.0
 ---
 
 # AEOS v1 Compliance Specification

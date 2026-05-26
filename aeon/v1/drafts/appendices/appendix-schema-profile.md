@@ -1,17 +1,18 @@
 ---
 id: appendix-schema-profile-v1
 title: Appendix - AEOS Schema Profile v1
-description: Schema profile constraints, rule application semantics, and compatibility expectations.
+description: "Schema profile constraints, rule application semantics, and compatibility expectations."
 family: appendices-v1
 group: AEOS and Profiles
+status: normative authoring profile for AEOS v1 schema documents
+license: CC-BY-4.0
 path: specification/appendices/appendix-schema-profile-v1
 ---
-
 # AEOS Schema Profile v1
 
 **Status:** normative authoring profile for AEOS v1 schema documents
 
-Canonical topic owners: `../AEOS-spec-v1.md`, `../contracts/`
+Canonical topic owners: `../../../aeos/v1/drafts/AEOS-spec-v1.md`, `../../../../contracts/v1/drafts/`
 
 This appendix defines the canonical AEON-authored schema document form for AEOS v1.
 It complements, and must project compatibly into, the shipped AEOS v1 `SchemaV1` validator surface.

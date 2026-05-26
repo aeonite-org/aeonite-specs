@@ -1,12 +1,13 @@
 ---
 id: appendix-processing-model-v1
 title: Appendix - Processing Model
-description: Conceptual phase pipeline from lexing through finalization, including assignment events.
+description: "Conceptual phase pipeline from lexing through finalization, including assignment events."
 family: appendices-v1
 group: Core Semantics
+status: decision-needed for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-processing-model-v1
 ---
-
 # Appendix — Processing Model
 
 **Appendix to:** AEON Specification v1

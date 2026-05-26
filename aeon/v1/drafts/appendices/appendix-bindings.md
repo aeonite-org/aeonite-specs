@@ -1,12 +1,13 @@
 ---
 id: appendix-bindings-v1
 title: Appendix - Bindings and Identity
-description: Binding identity model, uniqueness constraints, and canonical identity behavior.
+description: "Binding identity model, uniqueness constraints, and canonical identity behavior."
 family: appendices-v1
 group: Core Semantics
+status: informative summary for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-bindings-v1
 ---
-
 # Appendix — Bindings and Identity
 
 Status: informative summary for consolidated v1

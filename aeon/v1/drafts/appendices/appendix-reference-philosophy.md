@@ -4,9 +4,10 @@ title: Appendix - Reference Philosophy
 description: Rationale behind clone vs pointer reference semantics and determinism constraints.
 family: appendices-v1
 group: Core Semantics
+status: Draft
+license: CC-BY-4.0
 path: specification/appendices/appendix-reference-philosophy-v1
 ---
-
 # Appendix — The Philosophy of References in AEON
 
 **Appendix to:** AEON Specification v1

@@ -1,15 +1,17 @@
 ---
 id: aeos-v1
 title: AEOS Specification v1
-description: Validation-layer specification for AEOS, covering schema authority, active-schema evaluation, diagnostics, and result-envelope rules.
+description: "Validation-layer specification for AEOS, covering schema authority, active-schema evaluation, diagnostics, and result-envelope rules."
+family: official-v1
 group: Core Specifications
+status: official v1 normative spec
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeos-specification-v1
 links:
   - aeon-core-v1
   - aeon-core-v1-compliance
   - aeon-v1-contracts
 ---
-
 # AEOS Specification v1
 
 Status: official v1 normative spec  

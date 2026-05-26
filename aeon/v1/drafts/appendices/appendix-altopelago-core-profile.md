@@ -1,12 +1,13 @@
 ---
 id: appendix-altopelago-core-profile-v1
 title: Appendix - Core Profile v1
-description: Informative profile appendix describing the `core` profile and its minimal form-oriented behavior.
+description: "Informative profile appendix describing the `core` profile and its minimal form-oriented behavior."
 family: appendices-v1
 group: Profiles and Extensions
+status: informative profile appendix for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-altopelago-core-profile-v1
 ---
-
 # Appendix — Core Profile v1
 
 **Profile Name:** `core`  
@@ -14,7 +15,7 @@ path: specification/appendices/appendix-altopelago-core-profile-v1
 **Determinism:** Deterministic  
 **Scope:** Minimal, form-only interpretation aligned with AEON v1 core
 
-Canonical topic owners: `../AEON-spec-v1.md`, `../contracts/`
+Canonical topic owners: `../AEON-spec-v1.md`, `../../../../contracts/v1/drafts/`
 
 This appendix describes the permissive AEON Core v1 baseline profile label.
 If this appendix conflicts with the canonical v1 spec set or baseline contracts, the canonical v1 documents win.

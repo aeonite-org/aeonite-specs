@@ -1,8 +1,11 @@
 ---
 id: aeon-core-v1
 title: AEON Specification v1
-description: Start here for the overall AEON Core v1 model, scope, behavior modes, and the companion documents that define the rest of the specification surface.
+description: "Start here for the overall AEON Core v1 model, scope, behavior modes, and the companion documents that define the rest of the specification surface."
+family: official-v1
 group: Core Specifications
+status: official v1 overview
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-specification-v1
 links:
   - aeon-core-v1-compliance
@@ -12,7 +15,6 @@ links:
   - aeon-core-v1-addressing-references
   - aeon-core-v1-comments-annotations
 ---
-
 # AEON Specification v1
 
 Status: official v1 overview  
@@ -210,9 +212,9 @@ The anti-drift coverage state for those families is tracked in `aeonite-cts/CONF
 ## 12. Contracts
 
 Canonical baseline v1 contracts are provided in:
-- `contracts/registry.json`
-- `contracts/profiles/aeon.gp.profile.v1.aeon`
-- `contracts/schemas/aeon.gp.schema.v1.aeon`
+- `../../../contracts/v1/drafts/artifacts/registry.json`
+- `../../../contracts/v1/drafts/artifacts/profiles/aeon.gp.profile.v1.aeon`
+- `../../../contracts/v1/drafts/artifacts/schemas/aeon.gp.schema.v1.aeon`
 
 These contracts are authoritative artifacts for the baseline general-purpose profile/schema set.
 They are official baseline contracts, not implicit defaults when no trusted profile/schema is selected.

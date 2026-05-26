@@ -1,12 +1,13 @@
 ---
 id: appendix-profiles-framework-v1
 title: Appendix - Profiles Framework
-description: Profile system architecture, authority model, and integration boundaries.
+description: "Profile system architecture, authority model, and integration boundaries."
 family: appendices-v1
 group: AEOS and Profiles
+status: Draft
+license: CC-BY-4.0
 path: specification/appendices/appendix-profiles-framework-v1
 ---
-
 # Appendix — Profiles Framework
 
 **Appendix to:** AEON Specification v1

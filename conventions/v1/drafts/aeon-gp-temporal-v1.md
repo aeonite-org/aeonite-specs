@@ -1,15 +1,16 @@
 ---
 id: aeon-gp-temporal-v1
 title: AEON GP Temporal v1
-description: Draft temporal convention for interpreting temporal literals with explicit timezone, timezone database version, calendar, and ambiguity metadata.
+description: "Draft temporal convention for interpreting temporal literals with explicit timezone, timezone database version, calendar, and ambiguity metadata."
 family: conventions
 group: General-Purpose Conventions
+status: Draft temporal convention
+license: CC0-1.0
 path: specification/conventions/aeon-gp-temporal-v1
 links:
   - aeon-conventions-overview
   - aeon-core-v1-value-types
 ---
-
 # AEON GP Temporal v1
 
 ## Status

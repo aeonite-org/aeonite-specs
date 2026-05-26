@@ -1,21 +1,17 @@
-MIT License
+Aeonite Specs Licensing
+=======================
 
-Copyright (c) 2026 aeonite-org
+This repository uses artifact-specific licenses. Individual Markdown documents
+declare their license in frontmatter using the `license` field.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Default posture:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+- Normative specifications and appendices: CC-BY-4.0
+- Conventions, examples, fixtures, and reusable vocabularies: CC0-1.0
+- Repository maintenance scripts and other software: MIT
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Full license texts are stored in `LICENSES/`.
+
+If a file declares a license explicitly, that declaration controls. If a file
+does not declare a license, use the default posture above based on the artifact
+type and location.

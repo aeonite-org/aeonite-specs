@@ -1,15 +1,17 @@
 ---
 id: aeon-v1-release-governance
 title: AEON v1 Release Governance
-description: Governance policy for AEON v1 releases, changelog rules, version claims, and how conformance claims relate to released artifacts.
+description: "Governance policy for AEON v1 releases, changelog rules, version claims, and how conformance claims relate to released artifacts."
+family: official-v1
 group: Core Specifications
+status: official v1 governance policy
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-v1-release-governance
 links:
   - aeon-core-v1
   - aeon-core-v1-compliance
   - aeon-v1-conformance-matrix
 ---
-
 # AEON v1 Release Governance
 
 Status: official v1 governance policy  
