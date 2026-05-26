@@ -4,9 +4,10 @@ title: Appendix - Tonic Processor Governance
 description: Governance model and operational constraints for tonic processor behavior.
 family: appendices-v1
 group: AEOS and Profiles
+status: informative appendix for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-tonic-v1
 ---
-
 # Appendix — Tonic Processor Governance
 
 **Appendix to:** AEON Specification v1

@@ -5,8 +5,8 @@ description: Authority note for convention documents authored in the v1 working 
 family: conventions
 group: Convention Overview
 path: specification/conventions/v1-working-source
+license: CC0-1.0
 ---
-
 # v1 Working Conventions Source
 
 This folder holds convention documents authored in the v1 working source tree.

@@ -1,15 +1,17 @@
 ---
 id: aeon-core-v1-compliance
 title: AEON Core v1 Compliance Specification
-description: Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules.
+description: "Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules."
+family: official-v1
 group: Core Specifications
+status: official v1 compliance draft
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-core-v1-compliance-specification
 links:
   - aeon-core-v1
   - aeos-v1
   - aeon-v1-conformance-matrix
 ---
-
 # AEON Core v1 Compliance Specification
 
 Status: official v1 compliance draft  
@@ -53,12 +55,13 @@ The current anti-drift coverage accounting for those families is tracked in `aeo
 
 Implementations MUST:
 1. accept bare, single-quoted, and double-quoted keys in all key positions;
-2. reject backtick-quoted keys as keys;
-3. reject empty quoted keys;
-4. reject malformed quoted-key escape sequences;
-5. preserve key/path disambiguation between dotted traversal (`a.b`) and quoted single-key (`["a.b"]`);
-6. recognize the document header only at the start of the document;
-7. reject a structured header (`aeon:header = { ... }`) that appears after any body binding.
+2. accept boolean and toggle literal words (`true`, `false`, `yes`, `no`, `on`, `off`) as bare keys in key, attribute-key, tag, and path-segment contexts;
+3. reject backtick-quoted keys as keys;
+4. reject empty quoted keys;
+5. reject malformed quoted-key escape sequences;
+6. preserve key/path disambiguation between dotted traversal (`a.b`) and quoted single-key (`["a.b"]`);
+7. recognize the document header only at the start of the document;
+8. reject a structured header (`aeon:header = { ... }`) that appears after any body binding.
 
 ## 4. Addressing and Reference Requirements
 
@@ -116,7 +119,7 @@ In typed modes (`strict` and `custom`) implementations MUST:
 Implementations MUST:
 1. validate explicit datatype/literal compatibility independent of mode;
 2. allow untyped bindings in transport mode;
-3. require datatype presence in typed modes (`strict` and `custom`);
+3. require datatype presence on non-header bindings and value-carrying attribute entries in typed modes (`strict` and `custom`);
 4. emit deterministic mismatch diagnostics when an explicit reserved datatype does not match the bound literal kind.
 
 ### 7.2 Mode-Driven Datatype Acceptance
@@ -164,7 +167,8 @@ Implementations MUST:
 8. reject backtick segments and all raw separator escape syntax;
 9. resume ordinary comment and grammar-boundary handling once a separator payload ends outside quoted segments;
 10. reject unterminated quoted segments and any raw payload that requires disallowed characters outside quotes;
-11. accept unparameterized `sep` and `set` datatypes when the bound value is a separator literal.
+11. accept unparameterized `sep` datatypes when the bound value is a separator literal;
+12. accept unparameterized `kadot` datatypes when the bound value is a separator literal, without enforcing the kadot payload shape in Core.
 
 ## 10. Temporal Literal Requirements
 

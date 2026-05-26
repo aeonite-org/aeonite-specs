@@ -1,12 +1,13 @@
 ---
 id: appendix-aes-v1
-title: Appendix - Assignment Event Stream (AES)
+title: "Appendix - Assignment Event Stream (AES)"
 description: Assignment event stream structure and event-level consistency expectations.
 family: appendices-v1
 group: Core Semantics
+status: Normative
+license: CC-BY-4.0
 path: specification/appendices/appendix-aes-v1
 ---
-
 # Appendix — Assignment Event Stream (AES)
 
 **Appendix to:** AEON Specification v1

@@ -4,14 +4,15 @@ title: Appendix - AEOS Pattern Profile v1
 description: Pattern-oriented profile semantics and deterministic pattern evaluation guidance.
 family: appendices-v1
 group: AEOS and Profiles
+status: implementation-ahead appendix for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-pattern-profile-v1
 ---
-
 # AEOS Pattern Profile v1
 
 **Status:** implementation-ahead appendix for consolidated v1
 
-Canonical topic owners: `../AEOS-spec-v1.md`, `../contracts/`
+Canonical topic owners: `../../../aeos/v1/drafts/AEOS-spec-v1.md`, `../../../../contracts/v1/drafts/`
 
 This appendix describes a pattern DSL that is ahead of the currently locked AEOS v1 baseline.
 It is informative for future work and must not be treated as required for AEON Core v1 or the shipped AEOS v1 baseline.

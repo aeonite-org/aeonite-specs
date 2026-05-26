@@ -4,9 +4,10 @@ title: Appendix - Node Model
 description: Node literal model and representation boundaries relative to canonical pathing.
 family: appendices-v1
 group: Core Semantics
+status: "Optional, profile-gated feature"
+license: CC-BY-4.0
 path: specification/appendices/appendix-node-model-v1
 ---
-
 # Appendix N — Node Model
 
 ## Status

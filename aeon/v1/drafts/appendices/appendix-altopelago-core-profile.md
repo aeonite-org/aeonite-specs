@@ -1,29 +1,30 @@
 ---
 id: appendix-altopelago-core-profile-v1
-title: Appendix - Altopelago Core Profile v1
-description: Informative profile appendix describing the `altopelago.core.v1` profile and its minimal form-oriented behavior.
+title: Appendix - Core Profile v1
+description: "Informative profile appendix describing the `core` profile and its minimal form-oriented behavior."
 family: appendices-v1
 group: Profiles and Extensions
+status: informative profile appendix for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-altopelago-core-profile-v1
 ---
+# Appendix — Core Profile v1
 
-# Appendix — Altopelago Core Profile v1
-
-**Profile Name:** `altopelago.core.v1`  
+**Profile Name:** `core`  
 **Status:** informative profile appendix for consolidated v1  
 **Determinism:** Deterministic  
 **Scope:** Minimal, form-only interpretation aligned with AEON v1 core
 
-Canonical topic owners: `../AEON-spec-v1.md`, `../contracts/`
+Canonical topic owners: `../AEON-spec-v1.md`, `../../../../contracts/v1/drafts/`
 
-This appendix describes an extension profile, not the baseline AEON Core v1 conformance target.
+This appendix describes the permissive AEON Core v1 baseline profile label.
 If this appendix conflicts with the canonical v1 spec set or baseline contracts, the canonical v1 documents win.
 
 ---
 
 ## 1. Purpose
 
-The Altopelago Core Profile v1 defines a minimal, stable interpretation layer
+The Core Profile v1 defines a minimal, stable interpretation layer
 for AEON documents. It preserves AEON's form-only semantics and exposes the
 Assignment Event Stream (AES) as the primary output. This profile is intended
 as the baseline for TypeScript projects that want to parse AEON without
@@ -35,14 +36,14 @@ introducing application-specific meaning.
 
 ```aeon
 aeon:header = {
-  profile = "altopelago.core.v1"
+  profile = "core"
 }
 ```
 
 Or shorthand:
 
 ```aeon
-aeon:profile = "altopelago.core.v1"
+aeon:profile = "core"
 ```
 
 ---
@@ -57,7 +58,7 @@ This profile enables only AEON core grammar and behavior:
 - Clone and pointer references
 - Headers and envelope structures
 
-No optional profile extensions are enabled.
+No external contracts are attached by default.
 
 ---
 
@@ -109,7 +110,7 @@ form requirements.
 
 ## 9. Conformance Requirements
 
-An implementation conforming to `altopelago.core.v1` MUST:
+An implementation conforming to `core` MUST:
 
 - Accept all valid AEON v1 core constructs.
 - Reject invalid AEON documents with diagnostics that reference canonical paths.
@@ -133,5 +134,5 @@ The profile preserves AEON reference semantics:
 
 ## 11. Compatibility Notes
 
-This profile is designed to be the default baseline for TypeScript projects.
+This profile is the default AEON v1 baseline when no profile is declared.
 It aligns with AEON v1 core behavior and AEOS v1 form validation.

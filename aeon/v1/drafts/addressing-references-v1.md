@@ -1,15 +1,17 @@
 ---
 id: aeon-core-v1-addressing-references
 title: AEON v1 Addressing and References Reference
-description: Reference for canonical paths, quoted segments, attribute selectors, reference forms, and reference legality in AEON Core v1.
+description: "Reference for canonical paths, quoted segments, attribute selectors, reference forms, and reference legality in AEON Core v1."
+family: official-v1
 group: Core References
+status: official v1 companion reference
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-v1-addressing-and-references-reference
 links:
   - aeon-core-v1
   - aeon-core-v1-structure-syntax
   - aeon-core-v1-comments-annotations
 ---
-
 # AEON v1 Addressing and References Reference
 
 Status: official v1 companion reference  

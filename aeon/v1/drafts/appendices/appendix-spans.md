@@ -4,9 +4,10 @@ title: Appendix - Spans
 description: Source span representation and diagnostic location semantics.
 family: appendices-v1
 group: Core Semantics
+status: informative summary for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-spans-v1
 ---
-
 # Appendix — Spans
 
 Status: informative summary for consolidated v1

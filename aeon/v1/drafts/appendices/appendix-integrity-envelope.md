@@ -4,9 +4,10 @@ title: Appendix - Integrity Envelope
 description: Integrity envelope structure and representation rules for signed or hashed payload metadata.
 family: appendices-v1
 group: Core Semantics
+status: normative v1 appendix
+license: CC-BY-4.0
 path: specification/appendices/appendix-integrity-envelope-v1
 ---
-
 # Appendix — Integrity Envelope
 
 **Appendix to:** AEON Specification v1

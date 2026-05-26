@@ -1,15 +1,17 @@
 ---
 id: aeos-v1
 title: AEOS Specification v1
-description: Validation-layer specification for AEOS, covering schema authority, active-schema evaluation, diagnostics, and result-envelope rules.
+description: "Validation-layer specification for AEOS, covering schema authority, active-schema evaluation, diagnostics, and result-envelope rules."
+family: official-v1
 group: Core Specifications
+status: official v1 normative spec
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeos-specification-v1
 links:
   - aeon-core-v1
   - aeon-core-v1-compliance
   - aeon-v1-contracts
 ---
-
 # AEOS Specification v1
 
 Status: official v1 normative spec  
@@ -172,12 +174,44 @@ interface SchemaV1 {
 
 ```ts
 interface SchemaRule {
-  readonly path: string;
+  readonly path?: string;
+  readonly selector?: string;
   readonly constraints: ConstraintsV1;
 }
 ```
 
-Rules are keyed by canonical path strings.
+Rules target AES events by either exact canonical path or by selector.
+
+Each rule MUST provide exactly one of:
+- `path`
+- `selector`
+
+A rule with neither target field is invalid.
+A rule with both target fields is invalid.
+
+`path` is an exact canonical path target, with one additional indexed wildcard form:
+- `[*]` matches a single numeric index segment.
+
+Examples:
+- `$.contact`
+- `$.contact.name`
+- `$.items[*]`
+- `$.items[*].name`
+
+`selector` is a canonical-path selector target.
+Selector strings are root-anchored and use canonical path segment syntax with two additional selector segments:
+- `*` matches exactly one path segment.
+- `**` matches zero or more path segments.
+
+Examples:
+- `$.*.contact` matches `contact` at exact depth 2 from root, such as `$.app.contact`.
+- `$.**.contact` matches `contact` at any depth under root, including `$.contact`.
+- `$.*.**.contact` matches `contact` at depth 2 or deeper.
+
+Selector `[*]` retains the indexed wildcard meaning and matches one numeric index segment.
+For example, `$.pages[*].title` matches `$.pages[0].title`.
+
+Selectors do not create virtual paths. They match against actual Core/AES event paths.
 
 ### 4.3 ConstraintsV1
 
@@ -187,15 +221,24 @@ Active shipped constraint surface:
 interface ConstraintsV1 {
   readonly required?: boolean;
   readonly type?: string;
+  readonly nullable?: boolean;
+  readonly allow_infinity?: boolean;
+  readonly allow_nan?: boolean;
+  readonly null_value?: string;
+  readonly null_values?: readonly string[];
+  readonly toggle_pair?: 'any' | 'yes_no' | 'on_off';
   readonly reference?: 'allow' | 'forbid' | 'require';
   readonly reference_kind?: 'clone' | 'pointer' | 'either';
   readonly reference_target_pattern?: string;
   readonly resolve_reference_form?: boolean;
   readonly type_is?: 'list' | 'tuple';
   readonly length_exact?: number;
+  readonly min_children?: number;
+  readonly max_children?: number;
   readonly sign?: 'signed' | 'unsigned';
   readonly min_digits?: number;
   readonly max_digits?: number;
+  readonly radix?: number;
   readonly min_value?: string;
   readonly max_value?: string;
   readonly min_length?: number;
@@ -227,12 +270,16 @@ Additional schema-surface notes:
 
 ### 5.1 `required`
 
-`required: true` means the canonical path must exist in AES.
+For a `path` rule, `required: true` means the targeted canonical path must exist in AES.
+
+For a `selector` rule, `required: true` means the selector must match at least one actual AES event path.
+If the selector matches one or more actual paths, the rule applies to each matched path.
 
 Failure diagnostic:
 - `missing_required_field`
 
-Missing-path diagnostics use `span: null`.
+Missing-path and missing-selector diagnostics use `span: null`.
+For a missing selector, the diagnostic `path` field is the selector string.
 
 ### 5.2 `type`
 
@@ -387,25 +434,87 @@ Exact container arity constraint for tuple/list style containers.
 Failure diagnostic:
 - `tuple_arity_mismatch`
 
-### 5.7 Numeric Form Constraints
+### 5.7 Container Cardinality Constraints
+
+Container child-count constraints:
+- `length_exact`
+- `min_children`
+- `max_children`
+
+Behavior:
+- applies to Core-emitted container forms with immediate children, including `ObjectNode`, `ListNode` / `ListLiteral`, `TupleLiteral`, and `NodeLiteral`;
+- `length_exact` requires exactly the declared immediate child count;
+- `min_children` requires at least the declared immediate child count;
+- `max_children` requires at most the declared immediate child count.
+
+Failure diagnostics:
+- `tuple_arity_mismatch` for `length_exact`
+- `container_cardinality_mismatch` for `min_children` and `max_children`
+
+### 5.8 Type Widening and Literal Lexical Constraints
+
+Nullable and special numeric widening constraints:
+- `nullable`
+- `allow_infinity`
+- `allow_nan`
+
+Behavior:
+- when `nullable: true`, `NullLiteral` satisfies the declared `type` constraint;
+- when `allow_infinity: true`, `InfinityLiteral` satisfies numeric `type` constraints (`NumberLiteral`, `IntegerLiteral`, `FloatLiteral`);
+- when `allow_nan: true`, `NaNLiteral` satisfies numeric `type` constraints (`NumberLiteral`, `IntegerLiteral`, `FloatLiteral`);
+- additional literal-form constraints apply only when they are meaningful for the actual literal form.
+
+Null value constraint:
+
+```ts
+null_value?: string
+null_values?: readonly string[]
+```
+
+Behavior:
+- applies only when the matched AES event is a `NullLiteral`;
+- `null_value` is shorthand for one accepted surfaced null value;
+- `null_values` accepts any surfaced null value in the list;
+- compares against the Core-surfaced null value, such as `none`, `notApplicable`, or a custom quoted null reason.
+
+Toggle pair constraint:
+
+```ts
+toggle_pair?: 'any' | 'yes_no' | 'on_off'
+```
+
+Behavior:
+- `any` accepts all toggle literals: `yes`, `no`, `on`, and `off`;
+- `yes_no` accepts only `yes` and `no`;
+- `on_off` accepts only `on` and `off`;
+- omitted is equivalent to `any`.
+
+Failure diagnostics:
+- `type_mismatch` for missing widening flags;
+- `null_value_mismatch`;
+- `toggle_pair_mismatch`.
+
+### 5.9 Numeric Form Constraints
 
 Numeric lexical-form constraints:
 - `sign`
 - `min_digits`
 - `max_digits`
+- `radix`
 - `min_value`
 - `max_value`
 
 Behavior:
-- applies only to numeric literal forms;
-- uses lexical representation for sign and digit-count checks;
+- applies to numeric literal forms, and to digit-bearing symbolic literal forms where the declared constraint is meaningful;
+- `radix` applies only to `RadixLiteral` and declares the exact accepted digit base;
+- uses lexical representation for sign, digit-count, and radix digit checks;
 - uses numeric magnitude only when `min_value` or `max_value` are explicitly declared;
 - integer digit count excludes sign.
 
 Failure diagnostic:
 - `numeric_form_violation`
 
-### 5.8 String Form Constraints
+### 5.10 String Form Constraints
 
 String constraints:
 - `min_length`
@@ -424,7 +533,7 @@ Failure diagnostics:
 - `string_length_violation`
 - `pattern_mismatch`
 
-### 5.9 `datatype`
+### 5.11 `datatype`
 
 Datatype constraint is a label-presence check only.
 
@@ -457,6 +566,7 @@ Behavior:
 - `open` is the default;
 - `open` validates declared schema rules and ignores unexpected AES binding paths;
 - `closed` rejects any non-header AES binding path not explicitly covered by `schema.rules`;
+- exact `path` rules, indexed `path` wildcard rules, and `selector` rules all participate in closed-world coverage;
 - rejection happens before downstream materialization is trusted.
 
 Failure diagnostic:
@@ -487,15 +597,16 @@ Current shipped validator phases:
 1. Envelope plumbing
 2. Baseline invariants
 3. Rule-index build / schema-shape validation
-4. Presence checks
-5. Type and reference checks
-6. Container-kind checks
-7. Numeric form checks
-8. String form and pattern checks
-9. Datatype allowlist enforcement during rule indexing
-10. World-policy enforcement
-11. Datatype-rule enforcement
-12. Guarantees emission
+4. Selector and indexed-wildcard rule expansion
+5. Presence checks
+6. Type and reference checks
+7. Container-kind checks
+8. Numeric form checks
+9. String form and pattern checks
+10. Datatype allowlist enforcement during rule indexing
+11. World-policy enforcement
+12. Datatype-rule enforcement
+13. Guarantees emission
 
 ### 6.1 Baseline Invariants
 
@@ -566,7 +677,7 @@ One valid tooling pattern is:
         }
       },
       "applied": {
-        "profile": "altopelago.core.v1",
+        "profile": "core",
         "schema": "altopelago.main_schema.v1"
       }
     }
@@ -680,6 +791,8 @@ Current v1 behavior-family anchors:
   - `cts/aeos/v1/suites/01-baseline.json`
 - schema rule-index integrity
   - `cts/aeos/v1/suites/02-schema-rules.json`
+- selector path rule targeting and closed-world coverage
+  - `cts/aeos/v1/suites/22-selector-paths.json`
 - presence and forbid semantics
   - `cts/aeos/v1/suites/03-presence.json`
 - representational type and datatype-label constraints
@@ -733,6 +846,7 @@ AEOS conformance is not satisfied by passing only representative examples.
 
 An implementation must preserve behavior across the AEOS validation families defined in this document and their corresponding CTS lanes, especially:
 - schema rule validation
+- selector path targeting
 - presence checks
 - type and datatype-label enforcement
 - reference-form, reference-target, and resolved-reference enforcement

@@ -4,9 +4,10 @@ title: Appendix - AEOS v1 Charter
 description: Charter-level scope and governance constraints for AEOS validation behavior.
 family: appendices-v1
 group: AEOS and Profiles
+status: decision-needed for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-aeos-charter-v1
 ---
-
 # AEOS v1 Charter
 
 **AEON Schema Validation System — Version 1**

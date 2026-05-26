@@ -1,15 +1,17 @@
 ---
 id: aeon-core-v1-structure-syntax
 title: AEON v1 Structure Syntax Reference
-description: Reference for binding shape, keys, attributes, separator specs, newline rules, and structural grammar decisions in AEON Core v1.
+description: "Reference for binding shape, keys, attributes, separator specs, newline rules, and structural grammar decisions in AEON Core v1."
+family: official-v1
 group: Core References
+status: official v1 companion reference
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-v1-structure-syntax-reference
 links:
   - aeon-core-v1
   - aeon-core-v1-addressing-references
   - aeon-core-v1-value-types
 ---
-
 # AEON v1 Structure Syntax Reference
 
 Status: official v1 companion reference  
@@ -93,6 +95,7 @@ IdentifierContinue = IdentifierStart | "0".."9" ;
 
 Nuances:
 - bare keys are best used when the key is identifier-safe;
+- boolean and toggle literal words (`true`, `false`, `yes`, `no`, `on`, `off`) are valid bare keys in key, attribute-key, tag, and path-segment contexts; they are literals only in value contexts;
 - quoted keys are required for spaces, dots-as-data, and other non-bare characters;
 - single and double quotes are both valid key delimiters;
 - quoted keys must not be empty;
@@ -195,7 +198,8 @@ Separator specs decorate datatypes:
 
 ```aeon
 size:sep[x] = ^300x250
-triple:set[x][y][z] = ^100x200y300z
+triple:sep[x][y][z] = ^100x200y300z
+semver:kadot = ^3.14.15
 ```
 
 Grammar:
@@ -224,11 +228,13 @@ Current official v1 rules:
 
 Nuances:
 - `size:sep[x]` has separator depth `1`;
-- `triple:set[x][y][z]` has separator depth `3`;
+- `triple:sep[x][y][z]` has separator depth `3`;
+- `semver:kadot` has separator depth `0`;
 - `sep[x]`, `sep[ x ]`, and `sep[\nx\n]` are legal;
 - `sep[xy]` and any form that splits the payload into more than one character are invalid;
 - repeated separator specs are legal and preserved structurally, including duplicate chars;
-- unparameterized `sep` and `set` datatypes may still bind separator literals;
+- unparameterized `sep` datatypes may still bind separator literals;
+- unparameterized `kadot` datatypes may bind separator literals; Core does not enforce the dot-separated numeric shape;
 - separator payloads are compact tokens introduced by `^`;
 - outside quoted string segments, raw separator payload characters are limited to `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 - quoted segments use ordinary single-quoted or double-quoted AEON string lexical rules;

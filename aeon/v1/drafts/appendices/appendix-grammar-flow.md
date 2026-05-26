@@ -1,12 +1,13 @@
 ---
 id: appendix-grammar-flow-v1
 title: Appendix - Grammar Flow Cards
-description: Informative parser-context flow cards for AEON Core v1 keys, attributes, types, values, containers, references, and comments.
+description: "Informative parser-context flow cards for AEON Core v1 keys, attributes, types, values, containers, references, and comments."
 family: appendices-v1
 group: Core Appendices
+status: informative companion appendix
+license: CC-BY-4.0
 path: specification/appendices/appendix-grammar-flow-v1
 ---
-
 # Appendix: Grammar Flow Cards
 
 Status: informative companion appendix  

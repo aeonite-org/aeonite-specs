@@ -1,12 +1,13 @@
 ---
 id: appendix-transport-v1
 title: Appendix - Transport and Framing
-description: Transport envelopes, framing assumptions, and interchange-safe packaging concerns.
+description: "Transport envelopes, framing assumptions, and interchange-safe packaging concerns."
 family: appendices-v1
 group: Core Semantics
+status: Draft
+license: CC-BY-4.0
 path: specification/appendices/appendix-transport-v1
 ---
-
 # Appendix — Transport & Framing
 
 **Appendix to:** AEON Specification v1

@@ -4,9 +4,10 @@ title: Appendix - AEON JSON Profile
 description: Informative appendix describing the AEON-to-JSON interoperability profile and transformation expectations.
 family: appendices-v1
 group: Profiles and Extensions
+status: Draft
+license: CC-BY-4.0
 path: specification/appendices/appendix-json-profile-v1
 ---
-
 # AEON JSON Profile — Appendix
 
 **Profile Identifier:** `"json"`

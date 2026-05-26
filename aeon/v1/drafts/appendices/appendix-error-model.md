@@ -1,12 +1,13 @@
 ---
 id: appendix-error-model-v1
 title: Appendix - Error Model
-description: Error code shape, failure classes, and deterministic diagnostic reporting conventions.
+description: "Error code shape, failure classes, and deterministic diagnostic reporting conventions."
 family: appendices-v1
 group: Core Semantics
+status: informative summary for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-error-model-v1
 ---
-
 # Appendix — Error Model
 
 Status: informative summary for consolidated v1

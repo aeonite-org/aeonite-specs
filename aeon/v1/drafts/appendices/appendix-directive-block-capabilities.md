@@ -4,9 +4,10 @@ title: Appendix - Directive Block and Capability Declaration
 description: Informative v1 reservation for directive-block based capability evolution and future v2 activation.
 family: appendices-v1
 group: Evolution
+status: "informative v1 reservation; candidate normative activation in v2 or later."
+license: CC-BY-4.0
 path: specification/appendices/appendix-directive-block-capabilities-v1
 ---
-
 # Appendix - Directive Block and Capability Declaration
 
 Status: informative v1 reservation; candidate normative activation in v2 or later.

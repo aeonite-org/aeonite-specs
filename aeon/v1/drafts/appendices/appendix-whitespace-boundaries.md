@@ -4,9 +4,10 @@ title: Appendix - Whitespace Boundaries
 description: Clarifies where line breaks behave like ordinary whitespace and where compact tokens must remain contiguous.
 family: appendices-v1
 group: Core Syntax
+status: informative clarification for consolidated v1
+license: CC-BY-4.0
 path: specification/appendices/appendix-whitespace-boundaries-v1
 ---
-
 # Appendix - Whitespace Boundaries
 
 Status: informative clarification for consolidated v1

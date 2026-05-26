@@ -2,11 +2,14 @@
 id: aeos-v1-compliance
 title: AEOS v1 Compliance Specification
 description: Conformance requirements for AEOS-specific validator and profile behavior layered on top of AEON core.
+family: official-v1
 group: AEOS Specifications
+status: draft scaffold
 path: specification/aeos-v1-documentation/aeos-v1-compliance-specification
 links:
   - aeos-v1
   - aeon-core-v1-compliance
+license: CC-BY-4.0
 ---
 
 # AEOS v1 Compliance Specification
@@ -34,6 +37,7 @@ AEOS compliance SHALL be evaluated against validator behavior families, not only
 The current AEOS behavior families are:
 - result-envelope and validator output contract
 - schema rule-index integrity
+- selector path targeting and closed-world coverage
 - presence and forbid semantics
 - representational type and datatype-label constraints
 - attribute-payload and attribute-closure constraints
@@ -55,6 +59,7 @@ An AEOS-conforming implementation MUST:
 - consume Core/AES output rather than redefining Core legality
 - preserve the ResultEnvelope contract
 - preserve canonical-path diagnostics within the AEOS validator surface
+- support exact `path` rules and `selector` rules according to `AEOS-spec-v1.md`
 - avoid treating Core-owned legality failures as schema-validation failures
 - preserve bounded, deterministic behavior for opt-in resolved-reference validation
 

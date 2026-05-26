@@ -1,14 +1,16 @@
 ---
 id: aeon-core-v1-value-types
 title: AEON v1 Value Types Reference
-description: Reference for AEON value kinds, reserved datatype names, literal families, container forms, and reference-bearing values.
+description: "Reference for AEON value kinds, reserved datatype names, literal families, container forms, and reference-bearing values."
+family: official-v1
 group: Core References
+status: official v1 reference draft
+license: CC-BY-4.0
 path: specification/aeon-v1-documentation/aeon-v1-value-types-reference
 links:
   - aeon-core-v1
   - aeon-v1-contracts
 ---
-
 # AEON v1 Value Types Reference
 
 Status: official v1 reference draft
@@ -33,6 +35,7 @@ Mode requirements:
 - `transport` allows untyped non-header bindings and allows custom datatype labels;
 - `strict` requires a datatype annotation on non-header bindings and rejects custom datatype labels by default;
 - `custom` requires a datatype annotation on non-header bindings and allows custom datatype labels;
+- typed modes require datatype annotations on attribute entries that carry values;
 - typed modes do not require generic args (`arr:list = [...]` is valid);
 - typed modes do not require separator specs unless the datatype itself uses them.
 - typed modes do not require datatype annotations on anonymous list elements, tuple elements, or node children.
@@ -62,7 +65,7 @@ a:list = [:n = :n = 3]  // invalid: typed value cannot wrap another typed value
 Container typing and anonymous value typing are not equivalent. `numbers:list<int32> = [1, 2, 3]` declares an expectation on the container binding, while `values:list = [:int32 = 3, :string = "4"]` annotates individual anonymous elements without changing their order or making them named bindings.
 
 In particular:
-- Core recognizes reserved names such as `int`, `uint`, `int32`, `float64`, `obj`, `envelope`, `trimtick`, `prose`, `sep`, and `set`;
+- Core recognizes reserved names such as `int`, `uint`, `int32`, `float64`, `obj`, `envelope`, `trimtick`, `prose`, `sep`, and `kadot`;
 - Core checks literal-family compatibility only;
 - stronger semantic enforcement such as integer-only, unsigned-only, width, or range belongs to profile/schema validation layers;
 - `aeon.gp.profile.v1` and `aeon.gp.schema.v1` are the intended general-purpose baseline for making those stronger meanings operational.
@@ -183,7 +186,7 @@ Interpretation:
 | ----------------- | ----- |
 | Type              | `sep` |
 | Alternative names | none  |
-| Reserved          | `set` |
+| Reserved          | `kadot` |
 
 ### `object`
 
@@ -652,7 +655,7 @@ Examples:
 
 ```aeon
 size:sep[x] = ^300x250
-triple:set[x][y][z] = ^100x200y300z
+semver:kadot = ^3.14.15
 parts:sep[|] = ^"hello world"|"this, [is] fine"
 ```
 
@@ -683,7 +686,8 @@ Payload grammar:
 - no raw separator escapes are defined;
 - outside quoted segments, whitespace, `\\`, `/`, `,`, and closing container boundaries are not payload characters;
 - comment syntax resumes normally once a separator payload ends outside quoted segments.
-- both `:sep` and `:set` may bind separator literals with or without explicit bracket specs.
+- `:sep` may bind separator literals with or without explicit bracket specs.
+- `:kadot` may bind unparameterized separator literals. The intended kadot shape is dot-separated numeric segments, for example `ip:kadot = ^198.0.126.255` or `semver:kadot = ^3.14.15`, but Core only enforces the separator-literal family; stricter shape validation belongs to schema/profile layers.
 
 AES:
 - `SeparatorLiteral` with raw payload preserved.

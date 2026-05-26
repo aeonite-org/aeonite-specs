@@ -1,3 +1,7 @@
+---
+license: CC-BY-4.0
+---
+
 # Authority
 
 `aeonite-specs` is the sole long-term source of truth for formal AEON-family specification text.
@@ -20,5 +24,5 @@ It is not authoritative for:
 The repository boundary is:
 
 - `altopelago/aeon`: implementation authority
-- `aeonite-org/aeonite-specs`: specification authority
-- `aeonite-org/aeonite-cts`: conformance authority
+- [`aeonite-org/aeonite-specs`](https://github.com/aeonite-org/aeonite-specs): specification authority
+- [`aeonite-org/aeonite-cts`](https://github.com/aeonite-org/aeonite-cts): conformance authority
