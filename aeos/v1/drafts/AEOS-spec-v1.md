@@ -514,7 +514,7 @@ Behavior:
 Failure diagnostic:
 - `numeric_form_violation`
 
-### 5.10 String Form Constraints
+### 5.10 String And Pattern Form Constraints
 
 String constraints:
 - `min_length`
@@ -522,9 +522,11 @@ String constraints:
 - `pattern`
 
 Length semantics:
+- applies only to `StringLiteral`
 - measured in UTF-16 code units (`JavaScript string.length`)
 
 Pattern semantics:
+- applies to normalized literal values for `StringLiteral` and `SeparatorLiteral`
 - AEOS portable pattern strings
 - full-string match semantics
 - if anchors are omitted, AEOS adds `^` and `$`
