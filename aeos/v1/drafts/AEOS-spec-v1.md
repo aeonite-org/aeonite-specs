@@ -239,6 +239,7 @@ interface ConstraintsV1 {
   readonly min_digits?: number;
   readonly max_digits?: number;
   readonly radix?: number;
+  readonly allow_unspecified_radix?: boolean;
   readonly min_value?: string;
   readonly max_value?: string;
   readonly min_length?: number;
@@ -505,8 +506,12 @@ Numeric lexical-form constraints:
 - `max_value`
 
 Behavior:
-- applies to numeric literal forms, and to digit-bearing symbolic literal forms where the declared constraint is meaningful;
+- applies to numeric literal forms and radix-like symbolic literal forms;
 - `radix` applies only to `RadixLiteral` and declares the exact accepted digit base;
+- when `radix` is present, a `RadixLiteral` MUST declare the same radix in its datatype
+  using `radix[n]` or `radixn`;
+- `allow_unspecified_radix: true` permits legacy or transport-oriented `RadixLiteral`
+  values whose datatype is omitted, while still checking the value against the schema radix;
 - uses lexical representation for sign, digit-count, and radix digit checks;
 - uses numeric magnitude only when `min_value` or `max_value` are explicitly declared;
 - integer digit count excludes sign.
@@ -522,11 +527,12 @@ String constraints:
 - `pattern`
 
 Length semantics:
-- applies only to `StringLiteral`
+- applies to normalized string-like literal values:
+  `StringLiteral`, `SeparatorLiteral`, `NullLiteral`, `EncodingLiteral`, and temporal literal forms
 - measured in UTF-16 code units (`JavaScript string.length`)
 
 Pattern semantics:
-- applies to normalized literal values for `StringLiteral` and `SeparatorLiteral`
+- applies to normalized string-like literal values
 - AEOS portable pattern strings
 - full-string match semantics
 - if anchors are omitted, AEOS adds `^` and `$`
