@@ -70,7 +70,7 @@ aeos:schema = {
     }
     kadot:object = {
       type:string = "SeparatorLiteral"
-      pattern:string = "^[0-9]+(?:\\.[0-9]+)*$"
+      pattern:string = "^[0-9.]+$"
     }
   }
 }
