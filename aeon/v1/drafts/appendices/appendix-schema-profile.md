@@ -167,7 +167,7 @@ A Rule Object MAY contain the following keys:
 | `reference`                | NO       | Reference allowance policy              |
 | `reference_kind`           | NO       | Required reference kind                 |
 | `reference_target_path`    | NO       | Author-friendly reference target path selector |
-| `reference_target_pattern` | NO       | Advanced regex fallback for target path |
+| `reference_target_pattern` | NO       | AEOS portable-pattern fallback for target path |
 | `resolve_reference_form`   | NO       | Opt in to bounded resolved-form checks  |
 | `type_is`                  | NO       | Container kind requirement              |
 | `length_exact`             | NO       | Exact tuple/list arity                  |
@@ -178,7 +178,7 @@ A Rule Object MAY contain the following keys:
 | `max_value`                | NO       | Maximum numeric value                   |
 | `min_length`               | NO       | Minimum string length                   |
 | `max_length`               | NO       | Maximum string length                   |
-| `pattern`                  | NO       | Regex or pattern-profile string constraint |
+| `pattern`                  | NO       | AEOS portable-pattern literal constraint |
 | `datatype`                 | NO       | Datatype label requirement              |
 | `apply_pattern`            | NO       | Pattern reference (string)              |
 

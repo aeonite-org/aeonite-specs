@@ -239,6 +239,7 @@ interface ConstraintsV1 {
   readonly min_digits?: number;
   readonly max_digits?: number;
   readonly radix?: number;
+  readonly allow_unspecified_radix?: boolean;
   readonly min_value?: string;
   readonly max_value?: string;
   readonly min_length?: number;
@@ -380,7 +381,7 @@ Failure diagnostic:
 - `reference_target_mismatch`
 
 Schema-validation failures:
-- `invalid_reference_constraint` for non-string patterns, invalid regexes, or contradictory combinations.
+- `invalid_reference_constraint` for non-string patterns, non-portable patterns, invalid pattern syntax, or contradictory combinations.
 
 Authoring note:
 - `.aeos` documents SHOULD prefer `reference_target_path` where the allowed target domain can be expressed
@@ -505,8 +506,12 @@ Numeric lexical-form constraints:
 - `max_value`
 
 Behavior:
-- applies to numeric literal forms, and to digit-bearing symbolic literal forms where the declared constraint is meaningful;
+- applies to numeric literal forms and radix-like symbolic literal forms;
 - `radix` applies only to `RadixLiteral` and declares the exact accepted digit base;
+- when `radix` is present, a `RadixLiteral` MUST declare the same radix in its datatype
+  using `radix[n]` or `radixn`;
+- `allow_unspecified_radix: true` permits legacy or transport-oriented `RadixLiteral`
+  values whose datatype is omitted, while still checking the value against the schema radix;
 - uses lexical representation for sign, digit-count, and radix digit checks;
 - uses numeric magnitude only when `min_value` or `max_value` are explicitly declared;
 - integer digit count excludes sign.
@@ -514,7 +519,7 @@ Behavior:
 Failure diagnostic:
 - `numeric_form_violation`
 
-### 5.10 String Form Constraints
+### 5.10 String And Pattern Form Constraints
 
 String constraints:
 - `min_length`
@@ -522,24 +527,68 @@ String constraints:
 - `pattern`
 
 Length semantics:
+- applies to normalized string-like literal values:
+  `StringLiteral`, `SeparatorLiteral`, `NullLiteral`, `EncodingLiteral`, and temporal literal forms
 - measured in UTF-16 code units (`JavaScript string.length`)
 
 Pattern semantics:
-- ECMAScript regex strings
+- applies to normalized string-like literal values
+- AEOS portable pattern strings
 - full-string match semantics
 - if anchors are omitted, AEOS adds `^` and `$`
+- validators MUST NOT silently accept host-specific regular-expression features
 
 Failure diagnostics:
 - `string_length_violation`
 - `pattern_mismatch`
 
-### 5.11 `datatype`
+### 5.11 AEOS Portable Pattern Profile
+
+The `pattern` and `reference_target_pattern` constraints use the AEOS portable
+pattern profile. They are not host-language regular expressions.
+
+The profile is intentionally small so schemas can move between TypeScript,
+Rust, Python, PHP, and other implementations without changing validation
+meaning or exposing validators to catastrophic backtracking behavior.
+
+Supported syntax:
+- literal characters
+- escaped literal punctuation
+- `.`
+- `^` and `$`
+- character classes such as `[A-Z]` and negated classes such as `[^0-9]`
+- grouping with `(...)` and non-capturing grouping with `(?:...)`
+- alternation with `|`
+- quantifiers `?`, `*`, `+`, `{m}`, and `{m,n}`
+- common portable escapes: `\d`, `\D`, `\w`, `\W`, `\s`, `\S`, `\b`, `\B`, `\n`, `\r`, `\t`, `\f`, `\v`, and `\0`
+
+Forbidden syntax:
+- backreferences such as `\1`
+- named backreferences such as `\k<name>`
+- lookahead and lookbehind
+- named captures
+- inline regex flags
+- Unicode property escapes such as `\p{Letter}`
+- implementation-specific escape classes
+- nested quantified groups that may cause catastrophic backtracking, such as `^(a+)+$`
+
+Validation requirements:
+- A schema containing a pattern outside this profile is invalid.
+- Implementations MUST reject unsupported pattern syntax during schema validation.
+- Implementations MUST NOT reinterpret unsupported syntax through the host regex engine.
+- Implementations MAY use a host regex engine after they have verified the pattern conforms to this profile.
+
+Schema-validation failures:
+- `unknown_constraint_key` for invalid `pattern` constraints.
+- `invalid_reference_constraint` for invalid `reference_target_pattern` constraints.
+
+### 5.12 `datatype`
 
 Datatype constraint is a label-presence check only.
 
 It does not perform semantic subtype reasoning. It validates the declared datatype string carried by AES when the rule requests one.
 
-### 5.10 `datatype_allowlist`
+### 5.13 `datatype_allowlist`
 
 Optional schema-level allowlist:
 

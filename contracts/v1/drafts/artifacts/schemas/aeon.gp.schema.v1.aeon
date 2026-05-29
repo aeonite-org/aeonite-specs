@@ -68,5 +68,9 @@ aeos:schema = {
       min_value:string = "-1.7976931348623157e308"
       max_value:string = "1.7976931348623157e308"
     }
+    kadot:object = {
+      type:string = "SeparatorLiteral"
+      pattern:string = "^[0-9.]+$"
+    }
   }
 }
