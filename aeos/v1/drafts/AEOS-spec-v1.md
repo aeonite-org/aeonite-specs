@@ -112,6 +112,7 @@ There are two schema layers to distinguish:
   - `rules`
   - optional `world`
   - optional `reference_policy`
+  - optional `resource_policy`
   - optional `datatype_allowlist`
   - optional `datatype_rules`
 - authoring-oriented helper fields may also appear at this layer so long as they are projected away before validation
@@ -143,6 +144,7 @@ interface SchemaV1 {
   readonly rules: readonly SchemaRule[];
   readonly world?: 'open' | 'closed';
   readonly reference_policy?: 'allow' | 'forbid';
+  readonly resource_policy?: ResourcePolicyV1;
   readonly datatype_allowlist?: readonly string[];
   readonly datatype_rules?: Readonly<Record<string, ConstraintsV1>>;
 }
@@ -165,8 +167,23 @@ interface SchemaV1 {
   readonly rules: readonly SchemaRule[];
   readonly world?: 'open' | 'closed';
   readonly reference_policy?: 'allow' | 'forbid';
+  readonly resource_policy?: ResourcePolicyV1;
   readonly datatype_allowlist?: readonly string[];
   readonly datatype_rules?: Readonly<Record<string, ConstraintsV1>>;
+}
+```
+
+```ts
+interface ResourcePolicyV1 {
+  readonly max_events?: number;
+  readonly max_rules?: number;
+  readonly max_any_of_cases?: number;
+  readonly max_schema_depth?: number;
+  readonly max_path_length?: number;
+  readonly max_reference_resolution_steps?: number;
+  readonly max_selector_expansions?: number;
+  readonly max_string_length_default?: number;
+  readonly max_container_children_default?: number;
 }
 ```
 
@@ -255,6 +272,7 @@ Unknown constraint keys are schema errors.
 
 Additional schema-surface notes:
 - `reference_policy?: 'allow' | 'forbid'` is a schema-wide form control.
+- `resource_policy?: ResourcePolicyV1` is a schema-wide validation budget surface.
 - `.aeos` is the canonical authoring extension for schema documents; `SchemaV1` remains the canonical runtime object.
 - `reference` and `reference_kind` constrain Core-emitted reference kinds without resolving them.
 - `reference_kind` is valid only when `reference: 'require'`.
@@ -639,6 +657,34 @@ Typical uses:
 - `int32` => `type = "IntegerLiteral"`, `min_value = "-2147483648"`, `max_value = "2147483647"`
 - `float32` => `type = "FloatLiteral"`
 
+### 5.13 `resource_policy`
+
+`resource_policy` declares validator resource budgets. It exists to keep active
+schema evaluation bounded when schemas or AES streams are supplied by untrusted
+or semi-trusted parties.
+
+Supported fields:
+- `max_events`
+- `max_rules`
+- `max_any_of_cases`
+- `max_schema_depth`
+- `max_path_length`
+- `max_reference_resolution_steps`
+- `max_selector_expansions`
+- `max_string_length_default`
+- `max_container_children_default`
+
+Policy values MUST be positive integers or zero. A value of zero is valid and
+means no items in that category may be consumed or expanded.
+
+`max_string_length_default` is reserved as the default string-like payload
+budget. Explicit `min_length` and `max_length` constraints remain the
+normative way to validate string, trimtick/prose, separator, encoding, ZRUT,
+and custom null payload lengths.
+
+Validation failures emit:
+- `invalid_schema_policy`
+
 ## 6. Validation Phases
 
 Current shipped validator phases:
@@ -646,16 +692,17 @@ Current shipped validator phases:
 1. Envelope plumbing
 2. Baseline invariants
 3. Rule-index build / schema-shape validation
-4. Selector and indexed-wildcard rule expansion
-5. Presence checks
-6. Type and reference checks
-7. Container-kind checks
-8. Numeric form checks
-9. String form and pattern checks
-10. Datatype allowlist enforcement during rule indexing
-11. World-policy enforcement
-12. Datatype-rule enforcement
-13. Guarantees emission
+4. Resource-policy budget checks
+5. Selector and indexed-wildcard rule expansion
+6. Presence checks
+7. Type and reference checks
+8. Container-kind checks
+9. Numeric form checks
+10. String form and pattern checks
+11. Datatype allowlist enforcement during rule indexing
+12. World-policy enforcement
+13. Datatype-rule enforcement
+14. Guarantees emission
 
 ### 6.1 Baseline Invariants
 
@@ -811,6 +858,7 @@ Current standard AEOS diagnostic codes include:
 - `datatype_allowlist_reject`
 - `trailing_separator_delimiter`
 - `constraint_inapplicable`
+- `invalid_schema_policy`
 
 Vendor-prefixed diagnostics may use:
 
@@ -869,6 +917,8 @@ Current v1 behavior-family anchors:
   - `cts/aeos/v1/suites/14-separator-literal-policy.json`
 - structural container item validation
   - `cts/aeos/v1/suites/15-structural-container-items.json`
+- resource-policy budget validation
+  - `cts/aeos/v1/suites/23-resource-policy.json`
 
 Protocol governance:
 - `cts/protocol/v1/runner-contract.md`

@@ -148,7 +148,15 @@ Core v1 requires deterministic depth-policy controls for:
 - `max_separator_depth`
 - `max_generic_depth`
 
-Reference implementation defaults lock these to `1`, while conforming implementations must support a capability floor of at least `8`.
+Core v1 also defines an optional event-budget control:
+- `max_events`
+
+Reference implementation defaults lock the depth-policy controls to `1`, while
+conforming implementations must support a capability floor of at least `8`.
+
+When `max_events` is configured, implementations MUST fail closed if the emitted
+AES event count exceeds the configured value. This limit is a consumer-side
+resource budget and does not change source syntax or canonical path assignment.
 
 ## 10. Phase Boundaries
 

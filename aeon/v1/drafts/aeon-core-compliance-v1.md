@@ -92,6 +92,10 @@ Implementations MUST:
 4. fail closed when configured limits are exceeded;
 5. emit deterministic diagnostics for depth-policy violations.
 
+Implementations MAY expose `max_events` as a Core resource-budget control.
+When exposed and configured, implementations MUST fail closed before returning
+events if the emitted AES event count exceeds the configured value.
+
 ## 6. Comment and Annotation Requirements
 
 Implementations MUST:
@@ -282,6 +286,7 @@ Implementations claiming AEON v1 conformance MUST support at least:
 6. canonical/reference path string length: `8,192` characters;
 7. structured comment payload length: `1,048,576` characters;
 8. `max_attribute_depth`, `max_separator_depth`, and `max_generic_depth` capability floor of at least `8`.
+9. `max_events` configured value of at least `100,000` when the control is exposed.
 
 These floors are minimum interoperability guarantees. Implementations MAY support larger limits.
 

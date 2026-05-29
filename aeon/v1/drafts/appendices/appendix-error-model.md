@@ -29,6 +29,7 @@ Core/policy diagnostics retained from prior v1-era behavior summaries use legacy
 | `ATTRIBUTE_DEPTH_EXCEEDED`     | PolicyError | policy enforcement       | address-expression attribute selector depth exceeds active `max_attribute_depth` |
 | `SEPARATOR_DEPTH_EXCEEDED`     | PolicyError | parse/policy enforcement | separator-spec depth exceeds active `max_separator_depth`                        |
 | `GENERIC_DEPTH_EXCEEDED`       | PolicyError | parse/policy enforcement | nested generic type depth exceeds active `max_generic_depth`                     |
+| `EVENT_COUNT_EXCEEDED`         | PolicyError | core validation          | emitted AES event count exceeds active `max_events`                              |
 | `INVALID_SEPARATOR_CHAR`       | SyntaxError | parse                    | forbidden or malformed separator char in separator spec                          |
 | `INVALID_ESCAPE`               | SyntaxError | lex/parse                | malformed quoted escape, malformed Unicode escape, lone surrogate, or out-of-range code point |
 | `UNTERMINATED_STRING`          | SyntaxError | lex                      | quoted string crosses a raw newline or EOF before closing delimiter              |
