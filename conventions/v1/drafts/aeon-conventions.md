@@ -80,6 +80,7 @@ aeon:header = {
   conventions = [
     "aeon.gp.document.v1"
     "aeon.gp.context.v1"
+    "aeon.gp.collection.v1"
     "aeon.gp.temporal.v1"
     "aeon.gp.security.v1"
   ]
@@ -104,6 +105,7 @@ Examples:
 ```text
 aeon.gp.document.v1
 aeon.gp.context.v1
+aeon.gp.collection.v1
 aeon.gp.temporal.v1
 aeon.gp.security.v1
 aeon.gp.integrity.v1
@@ -158,6 +160,7 @@ Example:
 
 ```text
 aeon.gp.convention.v1
+aeon.gp.collection.v1
 aeon.gp.temporal.v1
 ```
 
@@ -389,6 +392,7 @@ This separation allows AEON to remain minimal while supporting rich ecosystems.
 │ examples:                                    │
 │ aeon.gp.document.v1                             │
 │ aeon.gp.context.v1                              │
+│ aeon.gp.collection.v1                           │
 │ aeon.gp.convention.v1                           │
 │ aeon.gp.security.v1                             │
 │ aeon.gp.integrity.v1                            │
@@ -440,6 +444,7 @@ They standardize things like:
 
 * document metadata
 * context labels
+* collection semantics
 * units and formats
 * security envelopes
 * integrity hashing
@@ -450,6 +455,7 @@ Examples:
 
 * `aeon.gp.document.v1`
 * `aeon.gp.context.v1`
+* `aeon.gp.collection.v1`
 * `aeon.gp.convention.v1`
 * `aeon.gp.security.v1`
 * `aeon.gp.integrity.v1`

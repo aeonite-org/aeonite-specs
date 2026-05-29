@@ -348,6 +348,7 @@ This convention complements the AEON ecosystem:
 | -------------------- | ------------------------- |
 | `aeon.gp.document.v1`   | document metadata         |
 | `aeon.gp.context.v1`    | contextual annotations    |
+| `aeon.gp.collection.v1` | collection semantics      |
 | `aeon.gp.convention.v1` | data interpretation hints |
 | `aeon.gp.security.v1`   | security envelope         |
 | `aeon.gp.integrity.v1`  | document hashing          |
