@@ -193,6 +193,8 @@ AES is produced after completion of:
 5. Reference Validation
 6. Mode Enforcement
 
+Mode enforcement uses the processor-selected **effective mode**. A document-declared `aeon:mode` may be used as the effective mode only when processor policy chooses to honor document-declared mode. AES generation MUST NOT allow document metadata to override an externally supplied effective mode.
+
 If any phase fails and recovery is disabled, AES MUST be empty (fail-closed).
 
 ---

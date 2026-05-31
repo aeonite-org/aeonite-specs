@@ -130,13 +130,34 @@ AEON Core v1 defines three behavior modes:
 - `strict`
 - `custom`
 
-Core v1 behavior is:
+`aeon:mode` / `aeon:header.mode` is a **declared document mode**. It records the author's intended processing discipline, but it is not authoritative over the processor.
+
+Processors apply an **effective mode** when enforcing mode-dependent rules:
+
+- the effective mode MAY be selected by processor/runtime configuration;
+- the effective mode MAY be inferred from the declared document mode when no external policy is supplied;
+- processor/runtime configuration MUST remain authoritative when it supplies an effective mode;
+- a document-declared mode MUST NOT force a processor to become stricter, looser, or custom-enabled against processor policy.
+
+Effective mode resolution:
+
+| Declared `aeon:mode` | External effective mode | Resulting effective mode |
+| --- | --- | --- |
+| absent | absent | `transport` |
+| `transport` | absent | `transport` |
+| `strict` | absent | `strict` |
+| `custom` | absent | `custom` |
+| any value | `transport` | `transport` |
+| any value | `strict` | `strict` |
+| any value | `custom` | `custom` |
+
+Core v1 behavior under the effective mode is:
 - `transport` may omit datatype annotations and accepts custom datatype labels
 - `strict` requires datatype presence and accepts only the reserved Core datatype surface by default
 - `custom` requires datatype presence and accepts custom datatype labels
 - explicit datatype annotations are validated in all modes
 
-Implementations MAY still expose an explicit datatype-policy override as an implementation control, but the default semantic behavior is mode-driven.
+Implementations MAY still expose an explicit datatype-policy override as an implementation control. Datatype policy applies to the effective mode, not merely to a document-declared mode claim.
 
 Authoritative compliance requirements and behavioral floors are defined in:
 - `AEON-v1-compliance.md`
