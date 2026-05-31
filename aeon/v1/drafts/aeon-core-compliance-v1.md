@@ -111,6 +111,26 @@ Implementations MUST:
 
 ## 7. Typed-Mode Requirements
 
+Core distinguishes **declared mode** from **effective mode**:
+
+- `aeon:mode` / `aeon:header.mode` is the declared document mode.
+- The effective mode is the mode selected by the processor for enforcement.
+- A processor MAY use the declared document mode as the effective mode when no external policy is supplied.
+- External processor/runtime policy MUST be authoritative when it supplies an effective mode.
+- A document-declared mode MUST NOT force a processor to become stricter, looser, or custom-enabled against processor policy.
+
+Effective mode resolution MUST follow this matrix:
+
+| Declared mode | External effective mode | Result |
+| --- | --- | --- |
+| absent | absent | `transport` |
+| `transport` | absent | `transport` |
+| `strict` | absent | `strict` |
+| `custom` | absent | `custom` |
+| any value | `transport` | `transport` |
+| any value | `strict` | `strict` |
+| any value | `custom` | `custom` |
+
 In typed modes (`strict` and `custom`) implementations MUST:
 1. enforce `toggle` datatype lock for toggle literals;
 2. in `strict`, reject custom datatype aliases for toggle literals even when general custom datatypes are otherwise enabled;
@@ -128,12 +148,12 @@ Implementations MUST:
 
 ### 7.2 Mode-Driven Datatype Acceptance
 
-Implementations MUST:
+Under the effective mode, implementations MUST:
 1. allow custom datatype labels in transport mode;
 2. reject custom datatype labels by default in strict mode;
 3. allow custom datatype labels in custom mode.
 
-Implementations MAY expose an explicit datatype-policy override as a tooling or runtime option, but the default Core behavior MUST follow the declared document mode.
+Implementations MAY expose an explicit datatype-policy override as a tooling or runtime option. The override applies to the effective mode. A declared document mode alone is not a trust anchor.
 
 ### 7.3 Canonical Rendering Requirements
 
