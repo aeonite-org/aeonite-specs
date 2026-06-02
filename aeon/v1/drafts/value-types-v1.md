@@ -717,6 +717,19 @@ Reserved object aliases:
 All of these aliases perform the same Core compatibility check: the bound value must be an object.
 Core does not attach extra semantics to `:envelope`; it is an ordinary object alias that conventions may reuse.
 
+Parameterized object claims:
+
+```aeon
+scores:object<number> = {
+  alice:number = 10
+  bob:number = 12
+}
+```
+
+`object<T>` is a preserved claim that object member values are expected to satisfy `T`.
+Core validates only that the bound value is an object and preserves the full datatype annotation.
+Member-value validation belongs to AEOS, profiles, conventions, or trusted consumer logic.
+
 Example:
 
 ```aeon
@@ -775,7 +788,9 @@ Examples:
 ```aeon
 content = <div(<span("hello", <br>, "world")>)>
 content:node = <div(<span("hello", <br>, "world")>)>
+doc:node<html> = <html(<head>, <body>)>
 icon:node = <glyph>
+title:node = <title:node<string>("Hello world")>
 ```
 
 Nuances:
@@ -784,6 +799,9 @@ Nuances:
 - child-bearing node forms require the closing `>`; `<tag(...)` is invalid;
 - inline node-head datatypes are permitted syntactically, but strict mode reserves node heads for `:node`;
 - non-`node` inline node-head datatypes such as `<tag:pair("x", "y")>` are transport/custom forms, not strict forms;
+- `binding:node<T>` is a preserved profile/domain/materialization-target claim about the bound node value;
+- `<tag:node<T>(...)>` is a preserved child-content claim about that node head's children;
+- Core validates only that `node<T>` binds or annotates a node value and preserves the full datatype annotation;
 - child list may contain mixed value kinds;
 - node children may carry local anonymous datatype annotations with `:type = value`;
 - nodes are values; node children do not become independent top-level named bindings, but ordered child slots use indexed canonical paths.

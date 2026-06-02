@@ -214,6 +214,25 @@ A **ListNode** is the AES/AST value kind for `[...]` surface syntax.
 
 ---
 
+## NodeLiteral
+
+A **NodeLiteral** is the AES/AST value kind for `<tag(...)>` and `<tag>` surface syntax.
+
+- Type constructor on bindings: `node<T>` as a node profile/domain/materialization-target claim
+- Type constructor on node heads: `<tag:node<T>(...)>` as a node child-content claim
+- Core preserves the claim and does not validate children against `T`
+
+---
+
+## ObjectNode
+
+An **ObjectNode** is the AES/AST value kind for `{...}` surface syntax.
+
+- Indicates named-member container intent
+- Type constructor: `object<T>`
+
+---
+
 ## Instruction Comment
 
 An **Instruction Comment** is an advisory comment intended as side-channel guidance for downstream consumers.
