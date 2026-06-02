@@ -32,6 +32,15 @@ On ordinary bindings, it claims that the bound node value belongs to a profile, 
 
 ```aeon
 doc:node<html> = <html(<head>, <body>)>
+child:node<node> = <tag>
+```
+
+Binding-side `node<T>` is deliberately narrower than node-head `node<T>`.
+The argument may be `node` itself or a custom profile/domain/materialization target such as `html`.
+Reserved non-`node` value datatypes are invalid on ordinary bindings:
+
+```aeon
+tag:node<string> = <tag>
 ```
 
 On node heads, it claims the expected type of that node's direct children:
@@ -40,7 +49,7 @@ On node heads, it claims the expected type of that node's direct children:
 title:node = <title:node<string>("Hello world")>
 ```
 
-Core preserves the claim in both positions. It does not validate the node children against `T`.
+Core preserves the claim in both positions. It rejects reserved non-`node` binding-side arguments and does not validate node-head children against `T`.
 
 ## Non-Goals
 
@@ -83,4 +92,3 @@ Node child intent can be expressed with indexed child rules:
   { "path": "$.title[*]", "constraints": { "type": "StringLiteral" } }
 ]
 ```
-

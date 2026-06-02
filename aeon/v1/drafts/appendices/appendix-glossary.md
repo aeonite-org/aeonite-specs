@@ -219,6 +219,7 @@ A **ListNode** is the AES/AST value kind for `[...]` surface syntax.
 A **NodeLiteral** is the AES/AST value kind for `<tag(...)>` and `<tag>` surface syntax.
 
 - Type constructor on bindings: `node<T>` as a node profile/domain/materialization-target claim
+- Binding-side `T` may be `node` or a custom profile/domain/materialization target; reserved non-`node` value datatypes such as `string` are invalid here
 - Type constructor on node heads: `<tag:node<T>(...)>` as a node child-content claim
 - Core preserves the claim and does not validate children against `T`
 

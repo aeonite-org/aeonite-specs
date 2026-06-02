@@ -142,7 +142,7 @@ Rules:
 
 - binding and attribute-entry type annotations must be followed by `=`;
 - anonymous typed values use `:type = value` only in list, tuple, and node-child contexts;
-- node-head inline datatypes are syntactically narrower than ordinary binding types and do not accept generic or bracket specs in Core v1 node-head syntax;
+- node-head inline datatypes are syntactically narrower than ordinary binding types and accept generic arguments only for `:node<T>`;
 - generic and separator depth policies are enforced by parser options.
 
 ## 5. Value Dispatch

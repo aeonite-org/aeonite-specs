@@ -789,6 +789,7 @@ Examples:
 content = <div(<span("hello", <br>, "world")>)>
 content:node = <div(<span("hello", <br>, "world")>)>
 doc:node<html> = <html(<head>, <body>)>
+child:node<node> = <tag>
 icon:node = <glyph>
 title:node = <title:node<string>("Hello world")>
 ```
@@ -800,8 +801,10 @@ Nuances:
 - inline node-head datatypes are permitted syntactically, but strict mode reserves node heads for `:node`;
 - non-`node` inline node-head datatypes such as `<tag:pair("x", "y")>` are transport/custom forms, not strict forms;
 - `binding:node<T>` is a preserved profile/domain/materialization-target claim about the bound node value;
+- binding-side `node<T>` accepts `T = node` or a custom profile/domain/materialization target such as `html`;
+- binding-side `node<string>`, `node<number>`, and other reserved non-`node` value datatype arguments are invalid because child-content claims belong on node heads;
 - `<tag:node<T>(...)>` is a preserved child-content claim about that node head's children;
-- Core validates only that `node<T>` binds or annotates a node value and preserves the full datatype annotation;
+- Core validates the binding-side reserved-argument rule, validates that `node<T>` binds or annotates a node value, and preserves the full datatype annotation;
 - child list may contain mixed value kinds;
 - node children may carry local anonymous datatype annotations with `:type = value`;
 - nodes are values; node children do not become independent top-level named bindings, but ordered child slots use indexed canonical paths.
