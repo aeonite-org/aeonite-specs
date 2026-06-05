@@ -4,11 +4,11 @@ title: Appendix - Canonical AEON Form
 description: Canonicalization conventions and normalization outputs for stable interchange.
 family: appendices-v1
 group: Core Semantics
-status: Draft
+status: informative companion for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-canonical-form-v1
 ---
-# Canonical AEON Form — Appendix
+# Appendix — Canonical AEON Form
 
 **Appendix to:** AEON Specification v1
 
@@ -220,7 +220,3 @@ Canonical form does NOT:
 - Inline references
 - Change types
 - Add or remove bindings (except default header)
-
----
-
-*End of Canonical Form Appendix*

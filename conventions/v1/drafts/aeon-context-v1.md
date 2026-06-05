@@ -1,7 +1,7 @@
 ---
 id: aeon-context-v1
 title: AEON Context v1
-description: "Draft context-label convention for descriptive metadata such as domain, role, audience, intent, source, confidence, sensitivity, and advisory instruction comments."
+description: "Draft soft context annotation convention for descriptive metadata such as domain, role, audience, intent, source, confidence, sensitivity, and advisory instruction comments."
 family: conventions
 group: General-Purpose Conventions
 status: Draft interoperability convention
@@ -9,7 +9,8 @@ license: CC0-1.0
 path: specification/conventions/aeon-context-v1
 links:
   - aeon-conventions-overview
-  - aeon-gp-convention-v1
+  - aeon-gp-document-v1
+  - aeon-gp-measurement-v1
 ---
 # AEON Context v1
 
@@ -23,7 +24,7 @@ Convention identifier: `aeon.gp.context.v1`
 
 # 1. Overview
 
-**AEON Context v1** defines a lightweight convention for attaching contextual metadata to AEON data.
+**AEON Context v1** defines a lightweight convention for attaching contextual guidance to AEON data.
 
 It is intended to help downstream consumers, especially:
 
@@ -35,7 +36,7 @@ It is intended to help downstream consumers, especially:
 
 This convention does **not** add computation, control flow, or execution semantics to AEON.
 
-It only standardizes a small set of contextual labels.
+It standardizes a small set of contextual labels and recommends carrying them as structured comments by default.
 
 ---
 
@@ -58,7 +59,7 @@ Without context, a processor may not know:
 * whether `amount` is money, count, or weight
 * whether `type="report"` is semantic, editorial, or technical
 
-`aeon.gp.context.v1` provides a light way to label that context.
+`aeon.gp.context.v1` provides a light way to label that context without cluttering the data binding itself.
 
 ---
 
@@ -72,18 +73,19 @@ aeon:header = {
 }
 ```
 
-## With base convention
+## With related conventions
 
 ```aeon
 aeon:header = {
   conventions = [
-    "aeon.gp.convention.v1"
+    "aeon.gp.document.v1"
+    "aeon.gp.measurement.v1"
     "aeon.gp.context.v1"
   ]
 }
 ```
 
-This is the recommended form when both general semantic labels and contextual labels are used.
+This is the recommended form when document namespace labels, measurement labels, and contextual labels are used together.
 
 ---
 
@@ -109,9 +111,55 @@ It must not become a command language for AI agents.
 
 ---
 
-# 5. Reserved Attribute Keys
+# 5. Context Carriers
 
-The following lowercase attribute keys are defined by `aeon.gp.context.v1`.
+Context labels may be carried in two forms.
+
+## 5.1 Soft Context Annotations
+
+Soft context annotations are the recommended form.
+
+They use AEON structured comment channels and attach to nearby targets according to AEON Core comment attachment rules.
+
+Example:
+
+```aeon
+//@ context(role="headline", audience="executive", intent="inform")
+title = "Q1 Operations Summary"
+```
+
+Soft context annotations keep the AEON data binding clean.
+
+They are appropriate when context is advisory, interpretive, or intended mainly for tools, AI systems, review systems, retrieval pipelines, or editor workflows.
+
+Soft context annotations:
+
+* do not create or remove bindings
+* do not change values
+* do not change canonical path identity
+* do not change reference legality
+* do not change assignment ordering
+* may be ignored by processors that do not consume annotation streams
+
+## 5.2 Hard Context Attributes
+
+Hard context attributes may be used when the context label must travel with the binding as binding metadata.
+
+Example:
+
+```aeon
+title@{role="headline" audience="executive" intent="inform"} = "Q1 Operations Summary"
+```
+
+Hard context attributes are appropriate when a processor, profile, schema, or storage pipeline requires the labels to remain attached after comments or annotation streams are stripped.
+
+They should be used sparingly to avoid turning contextual guidance into visual clutter.
+
+---
+
+# 6. Reserved Context Keys
+
+The following lowercase context keys are defined by `aeon.gp.context.v1`.
 
 | Key           | Purpose                                                 |
 | ------------- | ------------------------------------------------------- |
@@ -126,17 +174,24 @@ The following lowercase attribute keys are defined by `aeon.gp.context.v1`.
 
 These keys are descriptive only.
 
+When used in a soft context annotation, these keys appear inside `context(...)`.
+
+When used as hard context attributes, these keys appear inside `@{...}`.
+
 ---
 
-# 6. Attribute Definitions
+# 7. Context Key Definitions
 
-## 6.1 `domain`
+## 7.1 `domain`
 
 Declares the broad subject or knowledge domain.
 
 ```aeon
-summary@{domain="finance"} = "Quarterly revenue increased 8%"
-diagnosis@{domain="medical"} = "pending review"
+//@ context(domain="finance")
+summary = "Quarterly revenue increased 8%"
+
+//@ context(domain="medical")
+diagnosis = "pending review"
 ```
 
 Examples:
@@ -152,14 +207,19 @@ This helps downstream systems situate interpretation.
 
 ---
 
-## 6.2 `role`
+## 7.2 `role`
 
 Declares the semantic role a value plays.
 
 ```aeon
-title@{role="headline"} = "Stormwater Easement Assessment"
-amount@{role="estimated-cost"} = 1200
-status@{role="workflow-state"} = "open"
+//@ context(role="headline")
+title = "Stormwater Easement Assessment"
+
+//@ context(role="estimated-cost")
+amount = 1200
+
+//@ context(role="workflow-state")
+status = "open"
 ```
 
 Examples:
@@ -175,14 +235,19 @@ This is useful when the same field name may appear across different contexts.
 
 ---
 
-## 6.3 `audience`
+## 7.3 `audience`
 
 Declares the intended audience.
 
 ```aeon
-note@{audience="internal"} = "Draft only"
-summary@{audience="executive"} = "High-level overview"
-guide@{audience="customer"} = "Setup instructions"
+//@ context(audience="internal")
+note = "Draft only"
+
+//@ context(audience="executive")
+summary = "High-level overview"
+
+//@ context(audience="customer")
+guide = "Setup instructions"
 ```
 
 Examples:
@@ -195,14 +260,19 @@ Examples:
 
 ---
 
-## 6.4 `intent`
+## 7.4 `intent`
 
 Declares the intended communicative or processing intent.
 
 ```aeon
-text@{intent="inform"} = "System maintenance scheduled for Friday"
-brief@{intent="decide"} = "Choose option B based on lower risk"
-record@{intent="archive"} = "Meeting transcript"
+//@ context(intent="inform")
+text = "System maintenance scheduled for Friday"
+
+//@ context(intent="decide")
+brief = "Choose option B based on lower risk"
+
+//@ context(intent="archive")
+record = "Meeting transcript"
 ```
 
 Examples:
@@ -219,14 +289,19 @@ It is a declaration of intended use or purpose.
 
 ---
 
-## 6.5 `scope`
+## 7.5 `scope`
 
 Declares contextual scope or applicability.
 
 ```aeon
-status@{scope="project"} = "active"
-policy@{scope="regional"} = "applies in Victoria"
-limit@{scope="session"} = 10
+//@ context(scope="project")
+status = "active"
+
+//@ context(scope="regional")
+policy = "applies in Victoria"
+
+//@ context(scope="session")
+limit = 10
 ```
 
 Examples:
@@ -240,14 +315,19 @@ Examples:
 
 ---
 
-## 6.6 `source`
+## 7.6 `source`
 
 Declares an origin classification.
 
 ```aeon
-statement@{source="user"} = "Preferred delivery window is 3-5pm"
-summary@{source="system"} = "Generated from uploaded files"
-record@{source="sensor"} = 42.7
+//@ context(source="user")
+statement = "Preferred delivery window is 3-5pm"
+
+//@ context(source="system")
+summary = "Generated from uploaded files"
+
+//@ context(source="sensor")
+record = 42.7
 ```
 
 Examples:
@@ -263,13 +343,16 @@ This helps downstream consumers distinguish origin without requiring provenance 
 
 ---
 
-## 6.7 `confidence`
+## 7.7 `confidence`
 
 Declares a confidence label.
 
 ```aeon
-classification@{confidence="high"} = "invoice"
-match@{confidence="low"} = "possible duplicate"
+//@ context(confidence="high")
+classification = "invoice"
+
+//@ context(confidence="low")
+match = "possible duplicate"
 ```
 
 Examples:
@@ -283,14 +366,19 @@ This is descriptive and does not imply probability unless defined elsewhere.
 
 ---
 
-## 6.8 `sensitivity`
+## 7.8 `sensitivity`
 
 Declares a handling sensitivity label.
 
 ```aeon
-email@{sensitivity="personal"} = "user@example.com"
-report@{sensitivity="internal"} = "Draft assessment"
-record@{sensitivity="restricted"} = "Access-controlled"
+//@ context(sensitivity="personal")
+email = "user@example.com"
+
+//@ context(sensitivity="internal")
+report = "Draft assessment"
+
+//@ context(sensitivity="restricted")
+record = "Access-controlled"
 ```
 
 Examples:
@@ -303,9 +391,36 @@ Examples:
 
 This helps AI and automation systems avoid flattening all inputs into the same handling class.
 
+`sensitivity` remains advisory in this convention. Security enforcement belongs to profiles, processors, access-control systems, or security conventions.
+
 ---
 
-# 7. Non-Goals
+# 8. Soft and Hard Forms
+
+The soft and hard forms carry the same context vocabulary but have different processing posture.
+
+Soft form:
+
+```aeon
+//@ context(role="workflow-state", scope="project")
+status = "active"
+```
+
+Hard form:
+
+```aeon
+status@{role="workflow-state" scope="project"} = "active"
+```
+
+Processors that support this convention should treat both examples as equivalent context labels for interpretation.
+
+They should not treat either form as an instruction to execute behavior.
+
+When both forms are present on the same target, profiles should define precedence. In the absence of a profile rule, processors should preserve both and report conflicts rather than silently choosing.
+
+---
+
+# 9. Non-Goals
 
 `aeon.gp.context.v1` does not define:
 
@@ -319,7 +434,8 @@ This helps AI and automation systems avoid flattening all inputs into the same h
 For example:
 
 ```aeon
-summary@{intent="decide"} = "Option A is lower risk"
+//@ context(intent="decide")
+summary = "Option A is lower risk"
 ```
 
 does not mean:
@@ -332,7 +448,7 @@ It only labels contextual intent.
 
 ---
 
-# 8. Unknown Keys
+# 10. Unknown Keys
 
 Unknown context keys remain valid and opaque unless defined by another convention, schema, or profile.
 
@@ -340,7 +456,7 @@ This allows local extension without changing the core convention.
 
 ---
 
-# 9. Advisory Instruction Comments
+# 11. Advisory Instruction Comments
 
 AEON comment channels may also carry advisory instruction text for downstream consumers.
 
@@ -357,7 +473,7 @@ may be used as a side-channel hint for:
 * review systems
 * end-of-line application logic
 
-This convention treats such comments as:
+This convention treats instruction comments as:
 
 * descriptive or advisory context
 * non-authoritative by default
@@ -383,34 +499,40 @@ Even in that case, the instruction comment should be treated as advisory guidanc
 
 ---
 
-# 10. Example Document
+# 12. Example Document
 
 ```aeon
 aeon:header = {
   conventions = [
-    "aeon.gp.convention.v1"
+    "aeon.gp.document.v1"
+    "aeon.gp.measurement.v1"
     "aeon.gp.context.v1"
   ]
 }
 
 type@{ns="aeon"} = "document"
 
-title@{role="headline" audience="executive" intent="inform"} = "Q1 Operations Summary"
+//@ context(role="headline", audience="executive", intent="inform")
+title = "Q1 Operations Summary"
 
-status@{role="workflow-state" scope="project"} = "active"
+//@ context(role="workflow-state", scope="project")
+status = "active"
 
-budget@{currency="AUD" precision=0.01 role="estimated-cost" domain="finance"} = 12000
+//@ context(role="estimated-cost", domain="finance")
+budget@{currency="AUD" precision=0.01} = 12000
 
-summary@{domain="operations" audience="internal" source="system" confidence="medium"} =
+//@ context(domain="operations", audience="internal", source="system", confidence="medium")
+summary =
   "Based on current inputs, delivery risk is moderate."
 
-note@{audience="internal" sensitivity="restricted"} =
+//@ context(audience="internal", sensitivity="restricted")
+note =
   "Pending contractor confirmation."
 ```
 
 ---
 
-# 11. Agentic AI Use Case
+# 13. Agentic AI Use Case
 
 This convention is especially useful for agentic AI because it helps separate:
 
@@ -421,10 +543,12 @@ This convention is especially useful for agentic AI because it helps separate:
 Example:
 
 ```aeon
-instruction@{intent="review" audience="technical" source="user"} =
+//@ context(intent="review", audience="technical", source="user")
+request =
   "Check whether the schema matches the release draft."
 
-status@{role="workflow-state" source="system" confidence="high"} = "blocked"
+//@ context(role="workflow-state", source="system", confidence="high")
+status = "blocked"
 ```
 
 A downstream AI system can use these labels to improve interpretation, prioritization, summarization, or routing.
@@ -433,7 +557,7 @@ But the convention itself does not instruct the AI to act.
 
 ---
 
-# 12. Summary
+# 14. Summary
 
 **AEON Context v1** is a lightweight contextual annotation convention for AEON documents.
 
@@ -451,6 +575,8 @@ without turning AEON into a procedural agent language.
 ## Recommendation
 
 Keep `aeon.gp.context.v1` intentionally small in v1.
+
+Prefer soft context annotations for ordinary contextual guidance, and reserve hard context attributes for durable binding metadata.
 
 A good minimal registry is:
 

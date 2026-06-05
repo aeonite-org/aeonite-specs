@@ -425,10 +425,12 @@ top = Infinity
 bottom = -Infinity
 ceiling:infinity = Infinity
 floor:infinity = -Infinity
+limit:infinity<speedofmass> = Infinity
 ```
 
 Nuances:
 - `InfinityLiteral` is a distinct literal family from `NumberLiteral`;
+- `infinity<T>` is a non-finite domain claim: Core preserves the parameter and treats the value as an infinity literal, while schema, profile, or consumer validation may interpret the claimed domain;
 - accepted surface forms are exactly `Infinity` and `-Infinity`;
 - `+Infinity`, `NaN`, `-NaN`, `+NaN`, `inf`, and lowercase aliases are invalid;
 - explicit `:infinity` compatibility is enforced in all modes;
@@ -450,10 +452,12 @@ bad = NaN
 signed = -NaN
 badValue:nan = NaN
 signedValue:nan = -NaN
+badReading:nan<number> = NaN
 ```
 
 Nuances:
 - `NaNLiteral` is a distinct literal family from `NumberLiteral`;
+- `nan<T>` is a non-finite domain claim: Core preserves the parameter and treats the value as a NaN literal, while schema, profile, or consumer validation may interpret the claimed domain;
 - accepted surface forms are exactly `NaN` and `-NaN`;
 - `+NaN`, `Infinity`, `-Infinity`, lowercase aliases, and shorthand forms are invalid;
 - explicit `:nan` compatibility is enforced in all modes;
@@ -475,10 +479,12 @@ missing = !none
 state = !notSet
 deleted = !tombstone
 reservationDate:null = !"postponed"
+nextRetry:null<datetime> = !none
 ```
 
 Nuances:
 - `NullLiteral` is a distinct literal family from `StringLiteral` and `NumberLiteral`;
+- `null<T>` is an absence-domain claim: Core preserves the parameter and treats the value as a null literal, while schema, profile, or consumer validation may interpret the absent value's expected domain;
 - reserved sentinel forms are exactly `!none`, `!notSet`, `!notApplicable`, and `!tombstone`;
 - custom null reasons must use a quoted string form after `!`;
 - implementation-specific null distinctions should use quoted custom reasons such as `!"js.undefined"` rather than a separate null convention;
@@ -757,6 +763,7 @@ arr:list<number> = [1,2,3]
 Nuances:
 - strict requires datatype presence, not generic args;
 - generic args are optional syntax and not enforced by core semantic typing rules.
+- Core v1 reserves generic arguments for `list<T>`, `tuple<T...>`, `object<T>`, `node<T>`, `null<T>`, `nan<T>`, and `infinity<T>`.
 - nested generic type annotations are valid surface syntax and count against `max_generic_depth`.
 - list elements may carry local anonymous datatype annotations with `:type = value`.
 
@@ -854,10 +861,3 @@ Implementers should align with:
 - `AEON-v1-compliance.md`
 
 This page is intentionally implementation-cross-checked to reduce inter-implementation drift.
-
-## 8. Out-of-Scope or Non-Distinct in Core v1
-
-Not distinct parser value kinds in current core v1:
-- bare duration literal kind (`P30D`) as dedicated AST/AES node.
-
-These may be represented through profile/schema conventions or string/date-time forms.

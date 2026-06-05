@@ -4,20 +4,20 @@ title: Appendix - AEOS v1 Charter
 description: Charter-level scope and governance constraints for AEOS validation behavior.
 family: appendices-v1
 group: AEOS and Profiles
-status: decision-needed for consolidated v1
+status: informative charter for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-aeos-charter-v1
 ---
-# AEOS v1 Charter
+# Appendix — AEOS v1 Charter
 
 **AEON Schema Validation System — Version 1**
 
-**Status:** decision-needed for consolidated v1
+**Status:** informative charter for consolidated v1
 **Scope:** AEOS v1 implementations and compatible third-party schema validators
 
 Canonical topic owner: `../AEOS-spec-v1.md`
 
-This appendix captures earlier AEOS boundary language and must not override the consolidated AEOS v1 specification.
+This appendix summarizes AEOS boundary language and must not override the consolidated AEOS v1 specification.
 If this appendix conflicts with `AEOS-spec-v1.md`, `AEOS-spec-v1.md` wins.
 
 ---
@@ -88,6 +88,8 @@ AEOS implements **Phase 6 only** of the AEON conceptual model.
 
 AEOS MUST NOT perform behavior belonging to any other phase.
 
+AEOS may perform bounded resolved-form validation only when the active schema explicitly enables it. That capability does not transfer Core reference-legality ownership, mutate AES, or authorize materialization.
+
 ---
 
 ## 3. Inputs
@@ -122,7 +124,7 @@ AEOS MUST NOT infer recovery intent implicitly.
 
 ## 4. Outputs
 
-### 4.1 Validator Result Envelope (Normative)
+### 4.1 Validator Result Envelope
 
 AEOS v1 MUST emit a result object with the following minimum structure:
 
@@ -182,7 +184,7 @@ Guarantees are **advisory, non-semantic assertions** emitted by AEOS.
 
 They describe **representation properties only**.
 
-### 6.1 Tier-1 Standard Guarantees (Normative)
+### 6.1 Tier-1 Standard Guarantees
 
 AEOS v1 MAY emit the following standardized guarantees:
 
@@ -265,7 +267,7 @@ Recovery behavior is observational only.
 
 ---
 
-## 10. Canonical Validation Scenarios (Normative Examples)
+## 10. Canonical Validation Scenarios
 
 ### 10.1 Representation Eligibility
 
@@ -294,14 +296,13 @@ exists earlier or later in AES.
 
 ---
 
-### 10.3 Ordering Constraint
+### 10.3 Reference Form Constraint
 
 ```aeon
-b = ~a
-a = 1
+backup = ~primary
 ```
 
-Invalid — reference targets a later binding.
+AEOS may validate that `backup` is a Core-emitted reference form or that its declared target path matches a schema pattern. AEOS does not decide whether the reference target is legal; Core owns missing-target, forward-reference, and self-reference legality.
 
 ---
 

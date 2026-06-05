@@ -4,7 +4,7 @@ title: Appendix - Processing Model
 description: "Conceptual phase pipeline from lexing through finalization, including assignment events."
 family: appendices-v1
 group: Core Semantics
-status: decision-needed for consolidated v1
+status: informative orientation for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-processing-model-v1
 ---
@@ -12,27 +12,25 @@ path: specification/appendices/appendix-processing-model-v1
 
 **Appendix to:** AEON Specification v1
 
-**Status:** decision-needed for consolidated v1
+**Status:** informative orientation for consolidated v1
 
 Canonical topic owners: `../AEON-spec-v1.md`, `../AEOS-spec-v1.md`
 
-This appendix predates the v1 phase-boundary cleanup and must not be treated as the primary authority for current phase ownership.
+This appendix is an orientation aid for the v1 processing pipeline. Canonical phase ownership lives in the top-level v1 specs and compliance documents.
 If this appendix conflicts with the canonical v1 spec set, the canonical v1 spec set wins.
 
-This appendix defines AEON's normative processing phases, Assignment Events, Processor Registry, and v1 updates for tuple/indexed-path support and annotation stream emission.
+This appendix illustrates AEON's conceptual processing phases, Assignment Events, processor selection boundaries, tuple/indexed-path support, and annotation stream emission.
 
 > [!IMPORTANT]
-> **v1 Baseline Additions**
+> **v1 Baseline Surfaces**
 >
-> **New in v1 baseline:** Tuple literal parsing (`TupleLiteral`), indexed path segment assignment (`[n]`), annotation stream record emission, reference resolution for indexed targets.
->
-> **Gated:** These additions are part of the consolidated v1 baseline unless otherwise profile-gated.
+> Tuple literal parsing (`TupleLiteral`), indexed path segment assignment (`[n]`), annotation stream record emission, and indexed reference targets are part of the consolidated v1 surface described by the canonical specs.
 
 ---
 
 ## 1. Processing Phases
 
-Implementations MUST follow the behavior of these conceptual phases:
+Implementations should read these phases as a conceptual pipeline. Normative phase ownership and conformance requirements live in the canonical v1 specs and compliance documents.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -247,7 +245,7 @@ Because AEON forbids forward references, cycles are unrepresentable.
 
 ## 7. Error Reporting
 
-All errors MUST reference:
+Diagnostics should reference:
 - Canonical path
 - Span (when available)
 - Phase where error occurred
@@ -260,5 +258,3 @@ Phase: Profile Interpretation
 ```
 
 ---
-
-*End of Processing Model — v1*

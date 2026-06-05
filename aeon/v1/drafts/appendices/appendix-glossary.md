@@ -1,14 +1,14 @@
 ---
 id: appendix-glossary-v1
 title: Appendix - Glossary
-description: "Normative terminology used across AEON Core, AEOS, and companion references."
+description: "Terminology used across AEON Core, AEOS, and companion references."
 family: appendices-v1
 group: Orientation
-status: Draft
+status: informative glossary for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-glossary-v1
 ---
-# Appendix — Glossary (Normative)
+# Appendix — Glossary
 
 **Appendix to:** AEON Specification v1
 
@@ -214,26 +214,6 @@ A **ListNode** is the AES/AST value kind for `[...]` surface syntax.
 
 ---
 
-## NodeLiteral
-
-A **NodeLiteral** is the AES/AST value kind for `<tag(...)>` and `<tag>` surface syntax.
-
-- Type constructor on bindings: `node<T>` as a node profile/domain/materialization-target claim
-- Binding-side `T` may be `node` or a custom profile/domain/materialization target; reserved non-`node` value datatypes such as `string` are invalid here
-- Type constructor on node heads: `<tag:node<T>(...)>` as a node child-content claim
-- Core preserves the claim and does not validate children against `T`
-
----
-
-## ObjectNode
-
-An **ObjectNode** is the AES/AST value kind for `{...}` surface syntax.
-
-- Indicates named-member container intent
-- Type constructor: `object<T>`
-
----
-
 ## Instruction Comment
 
 An **Instruction Comment** is an advisory comment intended as side-channel guidance for downstream consumers.
@@ -399,7 +379,3 @@ See *Appendix: Third-Party Validator Conformance*.
 | Body              | Meaning                             |
 | Envelope          | Integrity                           |
 | Annotation Stream | Parallel structured comment records |
-
----
-
-*End of Glossary — v1*

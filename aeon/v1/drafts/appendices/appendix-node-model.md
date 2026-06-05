@@ -4,17 +4,19 @@ title: Appendix - Node Model
 description: Node literal model and representation boundaries relative to canonical pathing.
 family: appendices-v1
 group: Core Semantics
-status: "Optional, profile-gated feature"
+status: optional profile-gated feature
 license: CC-BY-4.0
 path: specification/appendices/appendix-node-model-v1
 ---
-# Appendix N — Node Model
+# Appendix — Node Model
 
 ## Status
 
-**Optional, profile-gated feature**
-**Not enabled in AEON Core v1 by default**
-**Active freeze draft:** `specs/01-proposals/r8/r8-node-model-v1-freeze.md`
+Status: optional, profile-gated feature.
+
+The Node Model is not enabled in AEON Core v1 by default.
+
+Canonical topic owner: profile or processor specifications that explicitly enable node syntax.
 
 ---
 

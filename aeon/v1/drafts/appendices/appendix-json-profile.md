@@ -4,11 +4,11 @@ title: Appendix - AEON JSON Profile
 description: Informative appendix describing the AEON-to-JSON interoperability profile and transformation expectations.
 family: appendices-v1
 group: Profiles and Extensions
-status: Draft
+status: informative profile appendix for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-json-profile-v1
 ---
-# AEON JSON Profile — Appendix
+# Appendix — AEON JSON Profile
 
 **Profile Identifier:** `"json"`
 
@@ -236,7 +236,3 @@ The following are NOT supported in JSON profile:
 | ReferenceError   | Unresolved reference        |
 | SchemaError      | Cannot represent in JSON    |
 | JSONProfileError | Domain constraint violation |
-
----
-
-*End of JSON Profile Appendix*

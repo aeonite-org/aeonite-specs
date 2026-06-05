@@ -376,12 +376,15 @@ entry by default.
 
 Nested `attributes.<key>` constraints remain authoritative when they are more
 specific than inherited datatype rules.
+
+### 5.6 Reference Form Constraints
+
 - `reference: 'require'` accepts either `CloneReference` or `PointerReference`.
 - `reference: 'forbid'` rejects both `CloneReference` and `PointerReference`.
 - `reference_kind: 'clone' | 'pointer' | 'either'` refines `reference: 'require'` without evaluating the target.
 - `reference_policy: 'forbid'` rejects reference-bearing AES events schema-wide.
 
-### 5.3 `reference_target_pattern`
+### 5.7 `reference_target_pattern`
 
 Target-domain constraint for reference-bearing paths:
 
@@ -406,7 +409,7 @@ Authoring note:
   as a path selector such as `$.ages[*]`.
 - Loaders MUST project that selector into an equivalent internal target-matching form before AEOS validation.
 
-### 5.4 `resolve_reference_form`
+### 5.8 `resolve_reference_form`
 
 Opt-in resolved-endpoint validation:
 
@@ -431,7 +434,7 @@ Boundary notes:
 Schema-validation failures:
 - `invalid_reference_constraint` for non-boolean values or contradictory combinations.
 
-### 5.5 `type_is`
+### 5.9 `type_is`
 
 Container kind constraint:
 
@@ -446,14 +449,14 @@ Behavior:
 Failure diagnostic:
 - `wrong_container_kind`
 
-### 5.6 `length_exact`
+### 5.10 `length_exact`
 
 Exact container arity constraint for tuple/list style containers.
 
 Failure diagnostic:
 - `tuple_arity_mismatch`
 
-### 5.7 Container Cardinality Constraints
+### 5.11 Container Cardinality Constraints
 
 Container child-count constraints:
 - `length_exact`
@@ -470,7 +473,7 @@ Failure diagnostics:
 - `tuple_arity_mismatch` for `length_exact`
 - `container_cardinality_mismatch` for `min_children` and `max_children`
 
-### 5.8 Type Widening and Literal Lexical Constraints
+### 5.12 Type Widening and Literal Lexical Constraints
 
 Nullable and special numeric widening constraints:
 - `nullable`
@@ -513,7 +516,7 @@ Failure diagnostics:
 - `null_value_mismatch`;
 - `toggle_pair_mismatch`.
 
-### 5.9 Numeric Form Constraints
+### 5.13 Numeric Form Constraints
 
 Numeric lexical-form constraints:
 - `sign`
@@ -537,7 +540,7 @@ Behavior:
 Failure diagnostic:
 - `numeric_form_violation`
 
-### 5.10 String And Pattern Form Constraints
+### 5.14 String and Pattern Form Constraints
 
 String constraints:
 - `min_length`
@@ -560,7 +563,7 @@ Failure diagnostics:
 - `string_length_violation`
 - `pattern_mismatch`
 
-### 5.11 AEOS Portable Pattern Profile
+### 5.15 AEOS Portable Pattern Profile
 
 The `pattern` and `reference_target_pattern` constraints use the AEOS portable
 pattern profile. They are not host-language regular expressions.
@@ -600,13 +603,13 @@ Schema-validation failures:
 - `unknown_constraint_key` for invalid `pattern` constraints.
 - `invalid_reference_constraint` for invalid `reference_target_pattern` constraints.
 
-### 5.12 `datatype`
+### 5.16 `datatype`
 
 Datatype constraint is a label-presence check only.
 
 It does not perform semantic subtype reasoning. It validates the declared datatype string carried by AES when the rule requests one.
 
-### 5.13 `datatype_allowlist`
+### 5.17 `datatype_allowlist`
 
 Optional schema-level allowlist:
 
@@ -621,7 +624,7 @@ Behavior:
 Failure diagnostic:
 - `datatype_allowlist_reject`
 
-### 5.11 `world`
+### 5.18 `world`
 
 Optional schema-level world policy:
 
@@ -639,7 +642,7 @@ Behavior:
 Failure diagnostic:
 - `unexpected_binding`
 
-### 5.12 `datatype_rules`
+### 5.19 `datatype_rules`
 
 Optional schema-level datatype semantics:
 
@@ -657,7 +660,7 @@ Typical uses:
 - `int32` => `type = "IntegerLiteral"`, `min_value = "-2147483648"`, `max_value = "2147483647"`
 - `float32` => `type = "FloatLiteral"`
 
-### 5.13 `resource_policy`
+### 5.20 `resource_policy`
 
 `resource_policy` declares validator resource budgets. It exists to keep active
 schema evaluation bounded when schemas or AES streams are supplied by untrusted

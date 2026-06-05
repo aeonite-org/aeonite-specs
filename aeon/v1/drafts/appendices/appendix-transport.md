@@ -4,7 +4,7 @@ title: Appendix - Transport and Framing
 description: "Transport envelopes, framing assumptions, and interchange-safe packaging concerns."
 family: appendices-v1
 group: Core Semantics
-status: Draft
+status: informative appendix for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-transport-v1
 ---
@@ -154,7 +154,3 @@ Transport MUST NOT:
 - Alter canonical paths
 - Affect assignment ordering
 - Inject metadata into document model
-
----
-
-*End of Transport & Framing*

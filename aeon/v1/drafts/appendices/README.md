@@ -4,11 +4,11 @@ title: Appendix - Guide and Authority
 description: "Defines appendix scope, authority boundaries, and precedence relative to canonical v1 specs."
 family: appendices-v1
 group: Orientation
-status: Draft
+status: informative guide for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-guide-and-authority-v1
 ---
-# Appendices
+# Appendix Guide and Authority
 
 Appendices are supporting documents for the consolidated AEON v1 spec set.
 

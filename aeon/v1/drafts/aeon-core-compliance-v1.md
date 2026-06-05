@@ -51,6 +51,25 @@ The current backbone families are:
 
 The current anti-drift coverage accounting for those families is tracked in `aeonite-cts/CONFORMANCE-COVERAGE.md`.
 
+## 2.1 Undefined or Unspecified Cases
+
+If an implementation encounters behavior not defined by AEON Core v1 or by an explicitly adopted convention, profile, or processor policy, it MUST NOT invent semantics or silently reinterpret the document.
+
+For Core parsing, validation, canonicalization, AES emission, reference resolution, and other conformance-sensitive behavior, undefined or unspecified cases MUST fail closed with a deterministic diagnostic.
+
+For convention-level interpretation, processors MUST follow the active convention mode. Strict Convention Mode fails when required semantics are unknown or undefined. Permissive Convention Mode ignores unknown convention semantics and preserves the underlying AEON data unchanged.
+
+Implementation-specific behavior MAY be exposed only when selected by an explicit processor policy, profile, or convention. Such behavior MUST NOT be claimed as AEON Core v1 semantics.
+
+Claims carried by source text, datatype parameters, attributes, convention metadata, profile declarations, or comments MUST NOT be realized as semantic conclusions until a processing stage with explicit authority realizes their meaning. A processor MUST NOT turn a claim into a semantic conclusion merely because it can parse or transport the claim.
+
+Before realizing implementation-specific behavior, implementations SHOULD identify:
+1. what exactly is being represented;
+2. what can legitimately be concluded from that representation;
+3. which convention, profile, schema, processor policy, or consuming system has authority to make that conclusion.
+
+If no authority is selected, the implementation SHOULD preserve the claim where preservation is part of the active processing surface, ignore it where the active mode allows ignoring it, or fail closed where the claim affects Core conformance or required semantics.
+
 ## 3. Syntax and Key Requirements
 
 Implementations MUST:

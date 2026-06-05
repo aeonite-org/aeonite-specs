@@ -1,4 +1,20 @@
-# Proposal: Parameterized Object and Node Claims in AEON
+---
+id: aeon-v1-parameterized-object-node-claims
+title: Parameterized Object and Node Claims
+description: "Accepted informative design note recording the rationale and boundaries for parameterized object<T> and node<T> claims in AEON v1."
+status: accepted informative design note
+family: official-v1
+group: Design Notes
+license: CC-BY-4.0
+path: specification/aeon-v1-documentation/parameterized-object-node-claims
+links:
+  - aeon-core-v1-value-types
+  - aeon-core-v1-structure-syntax
+  - aeon-core-v1-compliance
+---
+# Accepted Design Note: Parameterized Object and Node Claims in AEON
+
+Status: accepted informative design note. The normative requirements live in `../drafts/value-types-v1.md`, `../drafts/structure-syntax-v1.md`, `../drafts/aeon-core-compliance-v1.md`, and related appendices. This note records the rationale and boundaries.
 
 ## Purpose
 
@@ -9,7 +25,7 @@ values:list<number> = [1, 2, 3]
 point:tuple<number, number> = (144.9631, -37.8136)
 ```
 
-These claims are preserved by Core and enforced by schema, profile, convention, or consumer validation. This proposal extends the same surface to `object<T>` and `node<T>`.
+These claims are preserved by Core and enforced by schema, profile, convention, or consumer validation. Consolidated AEON v1 extends the same surface to `object<T>` and `node<T>`.
 
 ## `object<T>`
 
@@ -63,7 +79,7 @@ string<markdown> = "body"
 <tag:pair<string, number>("x", 1)>
 ```
 
-The structural generic family is:
+The structural generic family described by this note is:
 
 ```text
 list<T>
@@ -71,6 +87,8 @@ tuple<T...>
 object<T>
 node<T>
 ```
+
+Other limited parameterized reserved datatypes, such as absence and non-finite domain claims, are defined by the value-types draft when present. They are outside this note's object/node scope.
 
 ## Validation
 
