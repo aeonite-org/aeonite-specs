@@ -153,7 +153,7 @@ Two different integrity models exist:
 
 | Model              | Purpose                                  |
 | ------------------ | ---------------------------------------- |
-| Document integrity | Protect final document meaning           |
+| Document integrity | Protect covered canonical document state |
 | Event integrity    | Protect chronological sequence of events |
 
 AEON’s standard integrity convention (`aeon.gp.integrity.v1`) is state-based and does not preserve event chronology.

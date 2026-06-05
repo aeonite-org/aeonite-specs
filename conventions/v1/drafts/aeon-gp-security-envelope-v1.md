@@ -28,7 +28,7 @@ Defines the **standard AEON security envelope** used for:
 * document integrity
 * signatures
 * encryption
-* future security extensions
+* additional security extensions
 
 The envelope is the **document closure**.
 
@@ -77,7 +77,7 @@ Example:
 ```aeon
 integrity:integrityBlock = {
   alg:string = "sha-256"
-  hash:string = "7a91e4c8..."
+  hash:bytes = #7A91E4C8...
 }
 ```
 
@@ -185,7 +185,7 @@ message:object = {
 
   integrity:integrityBlock = {
     alg:string = "sha-256"
-    hash:string = "7a91e4c8..."
+    hash:bytes = #7A91E4C8...
   }
 
   signatures:signatureSet = [
@@ -253,8 +253,6 @@ aeon.gp.security.v1
 aeon.gp.integrity.v1
 aeon.gp.signature.v1
 aeon.gp.encryption.v1
-aeon.audit.v1
-aeon.merkle.v1
 ```
 
 Core stays minimal while the ecosystem provides security capabilities.

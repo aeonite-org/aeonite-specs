@@ -1,7 +1,7 @@
 ---
 id: aeon-gp-measurement-v1
 title: AEON GP Measurement v1
-description: Draft general-purpose measurement convention for units, measurement systems, precision, currency, and packed dimensions.
+description: Draft general-purpose measurement convention for units, measurement systems, precision, and currency.
 family: conventions
 group: General-Purpose Conventions
 status: Draft
@@ -33,13 +33,11 @@ It standardizes a small set of descriptive labels for:
 * measurement systems or standards
 * representational or measurement precision
 * currency denominations
-* packed dimensional values
 
 This convention does **not** extend AEON core semantics.
 It relies on existing AEON constructs:
 
 * attributes (`@{}`)
-* separator syntax (`:sep[...]`)
 * ordinary scalar values
 
 ---
@@ -54,7 +52,7 @@ The measurement convention aims to be:
 * cross-domain
 * easy to validate downstream
 
-It provides measurement interoperability without turning AEON into a unit-conversion or dimensional-analysis language.
+It provides measurement interoperability without turning AEON into a unit-conversion language.
 
 ---
 
@@ -65,7 +63,6 @@ It provides measurement interoperability without turning AEON into a unit-conver
 * convert units
 * normalize numeric values
 * infer measurement systems
-* evaluate dimensions
 * compute derived values
 * perform exchange-rate logic
 
@@ -74,7 +71,6 @@ Examples:
 ```aeon
 distance@{unit="m"} = 3
 price@{currency="AUD"} = 19.95
-box@{unit="cm" dimensions="W,H,D"}:sep[x] = ^300x300x150
 ```
 
 These statements only label the data.
@@ -96,7 +92,6 @@ AEON core preserves:
 
 * bindings
 * attributes
-* separators
 * scalar values
 
 The convention defines how these preserved patterns are commonly understood by cooperating consumers.
@@ -111,13 +106,12 @@ Attribute keys defined by this convention **must be lowercase ASCII identifiers*
 
 Unknown keys remain allowed and are treated as opaque unless defined elsewhere.
 
-| Key          | Purpose                                      |
-| ------------ | -------------------------------------------- |
-| `unit`       | measurement unit label                       |
-| `system`     | measurement system or standard context       |
-| `precision`  | representational or measurement resolution   |
-| `currency`   | monetary denomination                        |
-| `dimensions` | ordering or structure of packed measurements |
+| Key         | Purpose                                    |
+| ----------- | ------------------------------------------ |
+| `unit`      | measurement unit label                     |
+| `system`    | measurement system or standard context     |
+| `precision` | representational or measurement resolution |
+| `currency`  | monetary denomination                      |
 
 ---
 
@@ -135,7 +129,7 @@ Meaning:
 
 * identifies the unit of measurement
 * purely descriptive
-* does not imply conversion or dimensional reasoning
+* does not imply conversion or calculation
 
 ---
 
@@ -191,39 +185,7 @@ Meaning:
 
 ---
 
-## 5.5 `dimensions`
-
-Declares the ordering or semantic structure of packed dimensional values.
-
-```aeon
-box@{unit="cm" dimensions="W,H,D"}:sep[x] = ^300x300x150
-```
-
-Meaning:
-
-* describes the dimension ordering
-* does not parse or validate the value
-
----
-
-# 6. Packed Dimension Pattern
-
-AEON core provides separator syntax.
-This convention defines a common measurement use for packed dimensional values.
-
-```aeon
-box@{unit="cm" dimensions="W,H,D"}:sep[x] = ^300x300x150
-```
-
-Meaning:
-
-* `x`-separated dimensional values
-* dimension order declared by `dimensions`
-* measurement unit declared by `unit`
-
----
-
-# 7. Unknown Keys
+# 6. Unknown Keys
 
 The measurement convention permits extension.
 
@@ -237,7 +199,7 @@ This enables forward compatibility.
 
 ---
 
-# 8. Validation Posture
+# 7. Validation Posture
 
 `aeon.gp.measurement.v1` itself is descriptive.
 
@@ -250,13 +212,12 @@ A schema might require:
 * `currency` to match ISO codes
 * `unit` to match an allowed list
 * `precision` to match allowed increments
-* `dimensions` to match the number of packed values
 
 These checks are **not AEON core responsibilities**.
 
 ---
 
-# 9. Example Document
+# 8. Example Document
 
 ```aeon
 aeon:header = {
@@ -266,14 +227,12 @@ aeon:header = {
 distance@{unit="m" system="metric" precision=0.01} = 3
 price@{currency="AUD" precision=0.01} = 19.95
 
-box@{unit="cm" system="metric" dimensions="W,H,D"}:sep[x] = ^300x300x150
-
 mass@{unit="oz" system="avoirdupois"} = 12
 ```
 
 ---
 
-# 10. Interpretation Summary
+# 9. Interpretation Summary
 
 | Pattern                 | Meaning                     |
 | ----------------------- | --------------------------- |
@@ -281,11 +240,9 @@ mass@{unit="oz" system="avoirdupois"} = 12
 | `@{system="metric"}`    | measurement system context  |
 | `@{precision=0.01}`     | representational resolution |
 | `@{currency="AUD"}`     | monetary denomination       |
-| `@{dimensions="W,H,D"}` | dimension ordering          |
-| `:sep[x]`               | packed dimension separator  |
 
 ---
 
-# 11. Definition
+# 10. Definition
 
 `aeon.gp.measurement.v1` is a versioned interoperability convention that standardizes common measurement labels using AEON core constructs, without extending AEON core semantics.

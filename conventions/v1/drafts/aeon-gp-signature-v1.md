@@ -80,7 +80,7 @@ This allows:
 
 * single signatures
 * multiple signatures
-* countersigning patterns later
+* extension-defined countersigning patterns
 * stable extension without changing shape
 
 ---
@@ -386,11 +386,11 @@ These belong to:
 * `aeon.gp.security.v1` — envelope structure
 * `aeon.gp.integrity.v1` — canonical hash model
 
-It may later be extended or complemented by:
+It may be extended or complemented by:
 
 * `aeon.gp.encryption.v1`
-* `aeon.audit.v1`
-* `aeon.merkle.v1`
+* future event-log integrity conventions
+* future subtree-proof conventions
 
 ---
 

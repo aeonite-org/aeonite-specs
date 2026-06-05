@@ -27,7 +27,7 @@ Draft interoperability convention
 
 `aeon.gp.integrity.v1` defines a deterministic hashing model for AEON documents.
 
-It exists to ensure that independent implementations produce the **same hash** for the **same AEON document meaning**.
+It exists to ensure that independent implementations produce the **same hash** for the **same covered canonical assignment state**.
 
 This convention is intended as the foundation for:
 
@@ -61,7 +61,7 @@ It does **not** define:
 
 `aeon.gp.integrity.v1` hashes the document’s **final canonical state**, not the original source text and not the original write order.
 
-This means two source documents that are semantically equivalent under AEON core must produce the same integrity hash.
+This means two source documents that produce the same covered canonical assignment state must produce the same integrity hash.
 
 Example:
 
@@ -77,7 +77,7 @@ a = 1
 b = 2
 ```
 
-must produce the same canonical hash if AEON core considers them equivalent.
+must produce the same canonical hash when their covered canonical assignment state is identical.
 
 ---
 
@@ -96,7 +96,7 @@ The integrity hash excludes:
 * annotations
 * source whitespace
 * transport-level formatting artifacts
-* datatype hints, if excluded by AEON canonicalization rules
+* fields excluded by canonical AEON form
 
 ---
 
@@ -116,7 +116,7 @@ Only trailing whitespace or comments may appear after it.
 
 The input to hashing is the UTF-8 serialization of the document’s **final canonical assignment state**.
 
-This state is produced after AEON core parsing and canonicalization rules have been applied.
+This state is produced after AEON Core parsing and canonical rendering rules have been applied.
 
 The canonical hash input consists of one line per final canonical path.
 
@@ -147,7 +147,7 @@ This means integrity hashing is state-based, not chronology-based.
 
 # 8. Canonical Value Serialization
 
-Canonical value serialization must follow AEON core canonicalization rules.
+Canonical value serialization must follow AEON Core canonical rendering rules.
 
 At minimum, the following normalizations apply.
 
@@ -244,15 +244,15 @@ Other algorithms may be allowed by profile or convention.
 
 The hash value is the digest of the canonical hash input byte stream encoded as UTF-8.
 
-The resulting digest must be represented using the agreed envelope encoding.
+The resulting digest must be represented as an AEON bytes literal unless a selected profile explicitly requires another representation.
 
 Example:
 
 ```aeon
-hash = #7A91E4C8...
+hash:bytes = #7A91E4C8...
 ```
 
-The exact binary/text encoding of hash values should be defined consistently across the security conventions.
+Profiles that require a textual digest representation must define the encoding and comparison rules explicitly.
 
 ---
 
@@ -317,7 +317,7 @@ These UTF-8 bytes are hashed.
 * event timing
 * append history
 
-Those belong to an event-log convention such as `aeon.audit.v1`.
+Those belong to a separate event-log convention.
 
 ---
 
@@ -329,10 +329,7 @@ Those belong to an event-log convention such as `aeon.audit.v1`.
 * `aeon.gp.signature.v1` — signatures over the integrity hash
 * `aeon.gp.encryption.v1` — optional encrypted payload structures
 
-It is distinct from:
-
-* `aeon.audit.v1` — ordered event-sequence integrity
-* `aeon.merkle.v1` — subtree hashing and proof structures
+It is distinct from possible future conventions for ordered event-sequence integrity, subtree hashing, and proof structures.
 
 ---
 
