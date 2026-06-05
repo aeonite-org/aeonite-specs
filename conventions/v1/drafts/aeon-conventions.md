@@ -82,6 +82,7 @@ aeon:header = {
     "aeon.gp.context.v1"
     "aeon.gp.collection.v1"
     "aeon.gp.temporal.v1"
+    "aeon.gp.measurement.v1"
     "aeon.gp.security.v1"
   ]
 
@@ -89,6 +90,45 @@ aeon:header = {
 ```
 
 This declaration informs consumers which interpretation rules may apply.
+
+## Single Convention
+
+```aeon
+aeon:header = {
+  convention = "aeon.gp.document.v1"
+}
+```
+
+## Multiple Conventions
+
+```aeon
+aeon:header = {
+  conventions = [
+    "aeon.gp.document.v1"
+    "aeon.gp.measurement.v1"
+  ]
+}
+```
+
+## Declaration Rule
+
+`convention` and `conventions` are **mutually exclusive**.
+
+A document **must not declare both**.
+
+Implementations may internally normalize:
+
+```aeon
+convention = "x"
+```
+
+as:
+
+```aeon
+conventions = ["x"]
+```
+
+This normalization must not appear in serialized documents.
 
 ---
 
@@ -107,6 +147,7 @@ aeon.gp.document.v1
 aeon.gp.context.v1
 aeon.gp.collection.v1
 aeon.gp.temporal.v1
+aeon.gp.measurement.v1
 aeon.gp.security.v1
 aeon.gp.integrity.v1
 aeon.gp.signature.v1
@@ -154,12 +195,12 @@ aeon.gp.context.v1
 
 ### Data Interpretation
 
-Standard representations such as units or formats.
+Standard representations such as measurement labels, collection semantics, or temporal semantics.
 
 Example:
 
 ```text
-aeon.gp.convention.v1
+aeon.gp.measurement.v1
 aeon.gp.collection.v1
 aeon.gp.temporal.v1
 ```
@@ -190,6 +231,7 @@ aeon:header = {
   conventions = [
     "aeon.gp.document.v1"
     "aeon.gp.context.v1"
+    "aeon.gp.measurement.v1"
     "aeon.gp.security.v1"
   ]
 }
@@ -209,15 +251,17 @@ aeon.gp.integrity.v1
 
 # Convention Compliance
 
-Consumers may operate in different modes.
+Consumers may apply convention declarations in different convention modes.
 
-### Strict Mode
+These modes describe how a processor handles declared conventions. They are distinct from AEON transport mode and from any strictness rules defined by the core syntax or value specifications.
+
+### Strict Convention Mode
 
 The processor must understand all declared conventions.
 
 If a convention is unknown, processing fails.
 
-### Permissive Mode
+### Permissive Convention Mode
 
 Unknown conventions are ignored.
 
@@ -264,6 +308,8 @@ Each convention specification should define:
 6. examples
 
 This ensures interoperability across independent implementations.
+
+The `aeon.gp.convention.v1` document provides a compact authoring template for new convention specifications.
 
 ---
 
@@ -366,8 +412,8 @@ This separation allows AEON to remain minimal while supporting rich ecosystems.
 ┌──────────────────────────────────────────────┐
 │                  Processors                  │
 │──────────────────────────────────────────────│
-│ apps · validators · AI agents · runtimes ·  │
-│ signers · verifiers · indexers · toolchains │
+│ apps · validators · AI agents · runtimes ·   │
+│ signers · verifiers · indexers · toolchains  │
 └──────────────────────────────────────────────┘
                       ▲
                       │ uses
@@ -390,14 +436,14 @@ This separation allows AEON to remain minimal while supporting rich ecosystems.
 │ document metadata · context · security       │
 │                                              │
 │ examples:                                    │
-│ aeon.gp.document.v1                             │
-│ aeon.gp.context.v1                              │
-│ aeon.gp.collection.v1                           │
-│ aeon.gp.convention.v1                           │
-│ aeon.gp.security.v1                             │
-│ aeon.gp.integrity.v1                            │
-│ aeon.gp.signature.v1                            │
-│ aeon.gp.encryption.v1                           │
+│ aeon.gp.document.v1                          │
+│ aeon.gp.context.v1                           │
+│ aeon.gp.collection.v1                        │
+│ aeon.gp.measurement.v1                       │
+│ aeon.gp.security.v1                          │
+│ aeon.gp.integrity.v1                         │
+│ aeon.gp.signature.v1                         │
+│ aeon.gp.encryption.v1                        │
 └──────────────────────────────────────────────┘
                       ▲
                       │ extends
@@ -445,7 +491,7 @@ They standardize things like:
 * document metadata
 * context labels
 * collection semantics
-* units and formats
+* measurement labels
 * security envelopes
 * integrity hashing
 * signatures
@@ -456,7 +502,7 @@ Examples:
 * `aeon.gp.document.v1`
 * `aeon.gp.context.v1`
 * `aeon.gp.collection.v1`
-* `aeon.gp.convention.v1`
+* `aeon.gp.measurement.v1`
 * `aeon.gp.security.v1`
 * `aeon.gp.integrity.v1`
 * `aeon.gp.signature.v1`

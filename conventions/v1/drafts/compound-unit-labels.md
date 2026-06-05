@@ -7,11 +7,13 @@ group: Informative Convention Appendices
 status: Informative
 path: specification/conventions/compound-unit-labels
 license: CC0-1.0
+links:
+  - aeon-gp-measurement-v1
 ---
 
 # Appendix — Compound Unit Labels (Informative)
 
-AEON Convention v1 permits compound unit labels in the `unit` attribute.
+AEON GP Measurement v1 permits compound unit labels in the `unit` attribute.
 
 Compound unit labels are treated as **opaque identifiers** and are not parsed or interpreted by AEON.
 
@@ -45,7 +47,7 @@ They are treated as **plain unit identifiers**.
 
 # No Grammar Requirement
 
-AEON Convention v1 does not define a formal grammar for compound units.
+AEON GP Measurement v1 does not define a formal grammar for compound units.
 
 Characters such as the following may appear within unit labels:
 
@@ -89,4 +91,3 @@ Compound units are allowed because:
 AEON therefore preserves compound unit labels exactly as written.
 
 ---
-

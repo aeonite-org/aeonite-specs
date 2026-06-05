@@ -7,14 +7,16 @@ group: Informative Convention Appendices
 status: Informative
 path: specification/conventions/measurement-labels-reference
 license: CC0-1.0
+links:
+  - aeon-gp-measurement-v1
 ---
 
 # Appendix — Informative Reference: Measurement Labels
 
-This appendix provides a **non-exhaustive reference** of commonly used measurement labels that may appear with the `unit` and `system` attributes.
+This appendix provides a **non-exhaustive reference** of commonly used measurement labels that may appear with the `unit` and `system` attributes defined by AEON GP Measurement v1.
 
 This list is **informative only**.
-AEON Convention v1 does not restrict or validate the values of these attributes.
+AEON GP Measurement v1 does not restrict or validate the values of these attributes.
 
 Schemas, profiles, or processors may define stricter requirements if needed.
 

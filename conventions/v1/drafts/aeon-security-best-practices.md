@@ -1,358 +1,35 @@
 ---
 id: aeon-security-best-practices
-title: AEON Security Best Practices
-description: Guidance on subtree hashing, tamper-evident histories, and related integrity patterns built on AEON structure.
+title: AEON Advanced Integrity Patterns
+description: Informative guidance on subtree hashing, tamper-evident histories, and related integrity patterns built on AEON structure.
 family: conventions
 group: Security Conventions
-status: Draft
+status: Informative
 path: specification/conventions/aeon-security-best-practices
 license: CC0-1.0
+links:
+  - aeon-gp-security-envelope-v1
+  - aeon-gp-integrity-v1
+  - aeon-gp-signature-v1
+  - aeon-gp-encryption-v1
 ---
 
-# AEON Security Best Practices
-
-## Overview
-
-In addition to the formal security conventions, AEON’s deterministic structure also supports more advanced integrity patterns.
-
-These are not defined as normative conventions in this section, but AEON is structurally well suited to them.
-
-Examples include:
-
-* **Merkle-style subtree hashing**
-* **tamper-evident event logs**
-
-These patterns are especially relevant for:
-
-* large documents
-* append-only histories
-* auditability
-* selective verification
-* agentic AI trace recording
-
----
-
-# 1. Merkle-Style Subtree Hashing
-
-## Purpose
-
-Merkle-style hashing allows large AEON documents to be verified **partially** rather than always hashing the entire document.
-
-This is useful when:
-
-* documents are large
-* only one subtree needs verification
-* different parts of a document change independently
-* proof-oriented verification is needed
-
----
-
-## Why AEON Supports It Well
-
-AEON already provides the properties needed for subtree hashing:
-
-* canonical paths
-* deterministic object structure
-* canonical value serialization
-* stable hierarchical structure
-
-These make it straightforward to compute hashes for individual subtrees and combine them into a root hash.
-
----
-
-## Basic Model
-
-Instead of hashing only the whole document, a processor may hash selected subtrees.
-
-Example document:
-
-```aeon
-user = {
-  name = "Alice"
-  email = "alice@example.com"
-}
-
-orders = {
-  order1 = { amount = 10 }
-  order2 = { amount = 20 }
-}
-```
-
-A processor could compute hashes for:
-
-```text
-~.user
-~.orders.order1
-~.orders.order2
-```
-
-and then combine them into a root hash.
-
-Conceptually:
-
-```text
-          root hash
-         /        \
-   hash(user)   hash(orders)
-                 /        \
-         hash(order1)  hash(order2)
-```
-
----
-
-## Best Practice
-
-### 1. Use canonical paths as subtree identities
-
-Subtree hashes should always be associated with canonical AEON paths.
-
-Example:
-
-```text
-~.user
-~.orders.order1
-~.orders.order2
-```
-
-This prevents ambiguity and aligns hashing with AEON’s addressing model.
-
-### 2. Hash canonical subtree state
-
-Each subtree should be hashed using the same canonicalization discipline as full-document integrity:
-
-* canonical paths
-* canonical values
-* deterministic ordering
-
-### 3. Sign only the root hash
-
-If signatures are used, best practice is to sign the final root hash rather than signing each subtree independently.
-
-### 4. Keep proofs external or envelope-scoped
-
-Merkle proofs may be:
-
-* kept external to the document
-* stored in a dedicated envelope extension
-* transmitted separately
-
-Avoid mixing proof mechanics directly into ordinary business data unless the use case clearly requires it.
-
----
-
-## Typical Use Cases
-
-* large datasets
-* product manifests
-* chunked document verification
-* content-addressable archives
-* selective disclosure systems
-
----
-
-# 2. Tamper-Evident Event Logs
-
-## Purpose
-
-AEON can also represent event histories that are cryptographically chained over time.
-
-This is useful for:
-
-* audit logs
-* AI action traces
-* system histories
-* append-only records
-* compliance evidence
-
----
-
-## Why AEON Supports It Well
-
-AEON’s structure naturally supports event logging because it already has:
-
-* ordered arrays
-* canonicalization
-* structured records
-* deterministic hashing
-* an Assignment Event Stream model at the processing layer
-
-This makes it suitable for representing sequences of events whose integrity depends on order.
-
----
-
-## Important Distinction
-
-There are two different integrity models:
-
-### State integrity
-
-Protects the **final meaning** of a document.
-
-### Event integrity
-
-Protects the **ordered sequence** of events.
-
-These are not the same thing.
-
-A normal signed AEON document uses **state integrity**.
-An audit log uses **event integrity**.
-
----
-
-## Recommended Representation
-
-For homogeneous event records, use an **array**.
-
-Example:
-
-```aeon
-events = [
-  {
-    id = 1
-    action = "create-user"
-    user = "alice"
-    hashPrev = #000000
-  }
-  {
-    id = 2
-    action = "grant-role"
-    user = "alice"
-    role = "admin"
-    hashPrev = #F1342A
-  }
-]
-```
-
-This is the recommended pattern when:
-
-* events have broadly similar structure
-* order matters
-* each event is one record in a sequence
-
-For heterogeneous ordered traces, nodes may be appropriate, but arrays should be preferred for regular event logs.
-
----
-
-## Best Practice
-
-### 1. Use arrays for uniform event sequences
-
-Arrays make ordering explicit and are easier to validate and process.
-
-### 2. Include a prior-hash field
-
-Each event should carry a hash of the previous event or previous sealed state.
-
-Example:
-
-```aeon
-hashPrev = #F1342A
-```
-
-This makes tampering detectable.
-
-### 3. Hash events in sequence
-
-Unlike document integrity, event-log hashing must preserve event order.
-
-Do not reorder events lexicographically.
-
-### 4. Seal logs periodically
-
-For long-running logs, it is good practice to periodically add a document-level seal or signature over the current event sequence.
-
-This prevents silent rewriting of the tail.
-
-### 5. Distinguish log integrity from document integrity
-
-A log document may still use `aeon.gp.integrity.v1` for overall document sealing, but the log’s internal trust model should treat event order as part of meaning.
-
----
-
-## Typical Use Cases
-
-* user activity logs
-* workflow approval histories
-* AI decision traces
-* infrastructure audit trails
-* evidence chains
-
----
-
-# 3. Practical Relationship to the Existing Security Model
-
-These patterns fit naturally beside the existing conventions.
-
-## Current formal conventions
-
-* `aeon.gp.security.v1`
-* `aeon.gp.integrity.v1`
-* `aeon.gp.signature.v1`
-* `aeon.gp.encryption.v1`
-
-## Advanced best-practice patterns
-
-* Merkle subtree hashing
-* tamper-evident event logs
-
-This gives AEON a visible path toward:
-
-* partial verification
-* large-scale integrity
-* historical traceability
-
-without needing to fully standardize those patterns yet.
-
----
-
-# 4. Recommended Spec Framing
-
-I would present them as:
-
-## Appendix — Advanced Integrity Patterns (Informative)
-
-with two subsections:
-
-* **Merkle-Style Subtree Verification**
-* **Tamper-Evident Event Logs**
-
-That wording makes it clear they are:
-
-* supported by AEON’s structure
-* good implementation patterns
-* not yet formal interoperability conventions
-
----
-
-# 5. Suggested One-Line Summary
-
-> AEON’s deterministic paths, canonicalization model, and structured containers make it suitable not only for whole-document signing, but also for advanced integrity patterns such as subtree hashing and ordered tamper-evident logs.
-
-----
-
-====
-
-Below is a **spec-style appendix** you could drop into the AEON documentation.
-It stays **informative (non-normative)** but clearly shows that AEON supports these patterns.
-
----
-
-# Appendix — Advanced Integrity Patterns (Informative)
+# AEON Advanced Integrity Patterns
 
 ## Status
 
 Informative guidance for implementers.
 
-The patterns described in this appendix are not defined as formal interoperability conventions.
+The patterns described in this document are not defined as formal interoperability conventions.
 They are included to demonstrate how AEON’s deterministic structure supports advanced integrity mechanisms such as subtree hashing and tamper-evident event logs.
 
 Future conventions may formalize these patterns.
 
 ---
 
-# A.1 Merkle-Style Subtree Verification
+# 1. Merkle-Style Subtree Verification
 
-## A.1.1 Overview
+## 1.1 Overview
 
 Merkle-style hashing allows integrity verification of **subsections of a document** without hashing the entire document.
 
@@ -366,7 +43,7 @@ This technique is useful for:
 
 ---
 
-## A.1.2 Why AEON Supports It Well
+## 1.2 Why AEON Supports It Well
 
 AEON provides structural properties that make subtree hashing straightforward:
 
@@ -387,7 +64,7 @@ Example canonical paths:
 
 ---
 
-## A.1.3 Example Document
+## 1.3 Example Document
 
 ```aeon
 user = {
@@ -403,7 +80,7 @@ orders = {
 
 A processor may compute subtree hashes for:
 
-```
+```text
 ~.user
 ~.orders.order1
 ~.orders.order2
@@ -411,7 +88,7 @@ A processor may compute subtree hashes for:
 
 Conceptually forming a tree:
 
-```
+```text
         root
        /    \
    user    orders
@@ -423,7 +100,7 @@ Each node’s hash is derived from the hashes of its children.
 
 ---
 
-## A.1.4 Recommended Practice
+## 1.4 Recommended Practice
 
 Implementations that adopt subtree hashing should:
 
@@ -440,7 +117,7 @@ Proof structures for subtree verification may be:
 
 ---
 
-## A.1.5 Typical Use Cases
+## 1.5 Typical Use Cases
 
 Merkle-style verification is commonly used for:
 
@@ -452,9 +129,9 @@ Merkle-style verification is commonly used for:
 
 ---
 
-# A.2 Tamper-Evident Event Logs
+# 2. Tamper-Evident Event Logs
 
-## A.2.1 Overview
+## 2.1 Overview
 
 AEON documents can also represent ordered sequences of events whose integrity depends on **chronological order**.
 
@@ -470,7 +147,7 @@ Unlike document integrity, which protects the final document state, event-log in
 
 ---
 
-## A.2.2 Event Integrity vs Document Integrity
+## 2.2 Event Integrity vs Document Integrity
 
 Two different integrity models exist:
 
@@ -485,7 +162,7 @@ Event logs therefore require a different approach.
 
 ---
 
-## A.2.3 Recommended Event Representation
+## 2.3 Recommended Event Representation
 
 For homogeneous event records, arrays provide the clearest representation.
 
@@ -516,7 +193,7 @@ This creates a **hash chain** that makes tampering detectable.
 
 ---
 
-## A.2.4 Recommended Practice
+## 2.4 Recommended Practice
 
 Implementations should consider the following practices when representing event logs.
 
@@ -530,7 +207,7 @@ Each event should reference the previous event’s hash or prior sealed state.
 
 Example:
 
-```
+```text
 hashPrev = #F1342A
 ```
 
@@ -546,7 +223,7 @@ This prevents rewriting of the event history.
 
 ---
 
-## A.2.5 Typical Use Cases
+## 2.5 Typical Use Cases
 
 Tamper-evident event logs are useful for:
 
@@ -558,7 +235,7 @@ Tamper-evident event logs are useful for:
 
 ---
 
-# A.3 Relationship to AEON Security Conventions
+# 3. Relationship to AEON Security Conventions
 
 These patterns complement the AEON security conventions.
 
@@ -569,7 +246,7 @@ Formal conventions currently defined include:
 * `aeon.gp.signature.v1`
 * `aeon.gp.encryption.v1`
 
-The patterns described in this appendix demonstrate how AEON’s structure may also support:
+The patterns described in this document demonstrate how AEON’s structure may also support:
 
 * subtree hashing
 * partial document verification
@@ -579,7 +256,7 @@ Future versions of the AEON specification may introduce additional conventions t
 
 ---
 
-# A.4 Summary
+# 4. Summary
 
 AEON’s deterministic paths, canonicalization model, and structured containers allow it to support advanced integrity mechanisms beyond whole-document signing.
 
@@ -591,4 +268,3 @@ These include:
 * scalable verification of large structured datasets
 
 These patterns extend AEON’s security capabilities while preserving the minimal design philosophy of the core language.
-

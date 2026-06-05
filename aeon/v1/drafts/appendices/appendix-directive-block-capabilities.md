@@ -1,20 +1,20 @@
 ---
 id: appendix-directive-block-capabilities-v1
 title: Appendix - Directive Block and Capability Declaration
-description: Informative v1 reservation for directive-block based capability evolution and future v2 activation.
+description: Informative v1 reservation for directive-block based capability evolution and future activation.
 family: appendices-v1
 group: Evolution
-status: "informative v1 reservation; candidate normative activation in v2 or later."
+status: "informative v1 reservation; candidate activation in v2 or later."
 license: CC-BY-4.0
 path: specification/appendices/appendix-directive-block-capabilities-v1
 ---
 # Appendix - Directive Block and Capability Declaration
 
-Status: informative v1 reservation; candidate normative activation in v2 or later.
+Status: informative v1 reservation; candidate activation in v2 or later.
 
 This appendix records a forward-compatibility strategy for evolving AEON through declared capabilities rather than a single global language version.
 
-In AEON Core v1, this proposal does not change parsing requirements. The only operational file-header host directive defined by v1 is the existing `//! format:<id>` preflight signal described in `comments-annotations-v1.md`.
+In AEON Core v1, this reservation does not change parsing requirements. The only operational file-header host directive defined by v1 is the existing `//! format:<id>` preflight signal described in `comments-annotations-v1.md`.
 
 ## 1. Overview
 
@@ -198,7 +198,7 @@ Candidate rules:
 
 ### 6.5 Candidate Ordering
 
-Recommended future normative order:
+Candidate future order:
 
 ```text
 format
@@ -299,7 +299,7 @@ Rules:
 
 ## 10. Anti-Ossification Strategy
 
-This proposal supports:
+This reservation supports:
 
 - no global version lock;
 - capability-based evolution;

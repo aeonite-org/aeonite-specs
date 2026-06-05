@@ -12,9 +12,11 @@ path: specification/appendices/appendix-node-model-v1
 
 ## Status
 
-**Optional, profile-gated feature**
-**Not enabled in AEON Core v1 by default**
-**Active freeze draft:** `specs/01-proposals/r8/r8-node-model-v1-freeze.md`
+Status: optional, profile-gated feature.
+
+The Node Model is not enabled in AEON Core v1 by default.
+
+Canonical topic owner: profile or processor specifications that explicitly enable node syntax.
 
 ---
 

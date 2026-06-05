@@ -179,21 +179,14 @@ This means:
 
 ## 9. Compatibility Governance
 
-- Transitional aliases for deprecated `Elixir` naming are allowed for one major release cycle
-- Implementations using old terminology MUST emit deprecation warnings
-- Final cutoff for deprecated alias support is an open decision (see §10)
+- Public documentation and conformance claims should use `Tonic`.
+- Implementations may support deprecated `Elixir` aliases as a local compatibility policy.
+- Implementations using deprecated terminology should emit deprecation warnings.
+- Deprecated aliases must not change processor behavior or conformance claims.
 
 ---
 
-## 10. Open Items
-
-- Migration cutoff date for deprecated `Elixir` naming aliases
-- Minimum required DoS budget defaults for first public baseline
-- Whether `inline` mode is supported in first public release or deferred to a follow-up
-
----
-
-## 11. Related v1 Sections
+## 10. Related v1 Sections
 
 - `specs/04-official/v1/AEON-spec-v1.md` (core language boundary and conformance)
 - `specs/04-official/v1/AEOS-spec-v1.md` (schema/validation boundary)

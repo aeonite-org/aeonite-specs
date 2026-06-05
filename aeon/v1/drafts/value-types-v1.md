@@ -840,10 +840,3 @@ Implementers should align with:
 - `AEON-v1-compliance.md`
 
 This page is intentionally implementation-cross-checked to reduce inter-implementation drift.
-
-## 8. Out-of-Scope or Non-Distinct in Core v1
-
-Not distinct parser value kinds in current core v1:
-- bare duration literal kind (`P30D`) as dedicated AST/AES node.
-
-These may be represented through profile/schema conventions or string/date-time forms.

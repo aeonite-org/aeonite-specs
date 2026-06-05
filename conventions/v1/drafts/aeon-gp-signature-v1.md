@@ -1,0 +1,401 @@
+---
+id: aeon-gp-signature-v1
+title: AEON GP Signature v1
+description: Draft signature convention defining signature metadata and structure for AEON security envelopes.
+family: conventions
+group: Security Conventions
+status: Draft
+path: specification/conventions/aeon-gp-signature-v1
+license: CC0-1.0
+links:
+  - aeon-gp-security-envelope-v1
+  - aeon-gp-integrity-v1
+---
+
+# AEON GP Signature v1
+
+Convention identifier: `aeon.gp.signature.v1`
+
+## Status
+
+Draft interoperability convention
+
+---
+
+# 1. Purpose
+
+`aeon.gp.signature.v1` defines a minimal, deterministic signature vocabulary for AEON documents.
+
+It standardizes how one or more signatures are represented inside `aeon:envelope`.
+
+It is intended to work with:
+
+* `aeon.gp.security.v1`
+* `aeon.gp.integrity.v1`
+
+This convention defines **signature metadata and structure**, not cryptographic trust policy.
+
+---
+
+# 2. Scope
+
+`aeon.gp.signature.v1` defines:
+
+* where signatures live
+* how signature entries are structured
+* what each field means
+* what a signature covers
+
+It does **not** define:
+
+* trust models
+* certificate formats
+* key discovery
+* algorithm approval policy
+* timestamp authority behavior
+
+---
+
+# 3. Dependency
+
+`aeon.gp.signature.v1` depends on `aeon.gp.integrity.v1`.
+
+A signature under this convention signs the declared integrity hash, not raw source text.
+
+---
+
+# 4. Envelope Placement
+
+Signatures live inside:
+
+```aeon
+aeon:envelope:securityEnvelope = {
+  signatures:signatureSet = [ ... ]
+}
+```
+
+The `signatures` field must be an array.
+
+This allows:
+
+* single signatures
+* multiple signatures
+* countersigning patterns later
+* stable extension without changing shape
+
+---
+
+# 5. Signature Coverage
+
+Each signature covers the document integrity hash declared in:
+
+```aeon
+aeon:envelope.integrity
+```
+
+This means:
+
+* compute canonical document hash using `aeon.gp.integrity.v1`
+* sign that hash
+* store the signature entry in `aeon:envelope.signatures`
+
+A signature does not directly sign:
+
+* comments
+* whitespace
+* envelope contents
+* source formatting
+
+---
+
+# 6. Signature Entry Structure
+
+Each signature entry is an object.
+
+## Required fields
+
+| field | meaning                        |
+| ----- | ------------------------------ |
+| `alg` | signature algorithm identifier |
+| `kid` | signer key identifier          |
+| `sig` | signature value                |
+
+## Minimal form
+
+```aeon
+{
+  alg = "ed25519"
+  kid = "alice"
+  sig = #...
+}
+```
+
+---
+
+# 7. Field Definitions
+
+## 7.1 `alg`
+
+Declares the signature algorithm.
+
+Example:
+
+```aeon
+alg = "ed25519"
+```
+
+This field identifies how `sig` must be verified.
+
+Examples may include:
+
+* `ed25519`
+* `ecdsa-p256`
+* `rsa-pss-sha256`
+
+This convention does not mandate which algorithms are permitted.
+Profiles or processors may restrict them.
+
+---
+
+## 7.2 `kid`
+
+Declares the signer key identifier.
+
+Example:
+
+```aeon
+kid = "alice"
+```
+
+This field identifies which verification key should be used.
+
+The identifier is opaque to AEON.
+
+Possible values may include:
+
+* local ids
+* DID fragments
+* fingerprint-derived ids
+* organization-specific key names
+
+Examples:
+
+```aeon
+kid = "alice"
+kid = "org.example.signing.2026"
+kid = "did:example:alice#key-1"
+```
+
+---
+
+## 7.3 `sig`
+
+Declares the signature value.
+
+Example:
+
+```aeon
+sig = #AABBCC...
+```
+
+This field contains the signature bytes encoded using the agreed binary representation.
+
+AEON does not interpret the bytes.
+
+---
+
+# 8. Optional Fields
+
+The following optional fields may be used if needed.
+
+| field     | meaning                             |
+| --------- | ----------------------------------- |
+| `hashAlg` | hash algorithm used by the signer   |
+| `hash`    | integrity hash signed by this entry |
+| `time`    | signing timestamp label             |
+| `issuer`  | signer identity label               |
+
+These are optional because the minimal model should stay small.
+
+## 8.1 `hashAlg`
+
+Optional explicit copy of the hash algorithm.
+
+```aeon
+hashAlg = "sha256"
+```
+
+Useful when signatures may be detached or exported independently.
+
+## 8.2 `hash`
+
+Optional explicit copy of the signed integrity hash.
+
+```aeon
+hash = #7A91E4C8...
+```
+
+Useful for debugging, detached workflows, or validation traces.
+
+## 8.3 `time`
+
+Optional declared signing time.
+
+```aeon
+time = "2026-03-08T19:00:00Z"
+```
+
+This is informative unless another convention defines trusted timestamp semantics.
+
+## 8.4 `issuer`
+
+Optional signer label.
+
+```aeon
+issuer = "Alice Example"
+```
+
+Informative only.
+
+---
+
+# 9. Minimal Example
+
+```aeon
+aeon:header = {
+  encoding = "utf-8"
+  mode = "strict"
+}
+
+message = {
+  from = "Alice"
+  to = "Bob"
+  text = "Meet at the lighthouse"
+}
+
+aeon:envelope:securityEnvelope = {
+  integrity:integrityBlock = {
+    alg:string = "sha256"
+    hash:bytes = #7A91E4C8...
+  }
+
+  signatures:signatureSet = [
+    {
+      alg:string = "ed25519"
+      kid:string = "alice"
+      sig:bytes = #91A8F2...
+    }
+  ]
+}
+```
+
+---
+
+# 10. Multiple Signatures
+
+Multiple signatures are represented as multiple array entries.
+
+Example:
+
+```aeon
+aeon:envelope:securityEnvelope = {
+  integrity:integrityBlock = {
+    alg:string = "sha256"
+    hash:bytes = #7A91E4C8...
+  }
+
+  signatures:signatureSet = [
+    {
+      alg:string = "ed25519"
+      kid:string = "alice"
+      sig:bytes = #AA11...
+    }
+    {
+      alg:string = "ed25519"
+      kid:string = "bob"
+      sig:bytes = #BB22...
+    }
+  ]
+}
+```
+
+Each signature verifies the same integrity hash.
+
+This allows:
+
+* co-signing
+* approval chains
+* parallel signatures
+
+without changing document coverage.
+
+---
+
+# 11. Verification Procedure
+
+To verify a signature entry, a processor must:
+
+1. Verify the document integrity hash using `aeon.gp.integrity.v1`
+2. Read the signature entry
+3. Resolve the verification key from `kid`
+4. Verify `sig` against the integrity hash using `alg`
+
+If the integrity hash fails, signature verification must fail.
+
+---
+
+# 12. Failure Conditions
+
+A processor should treat the signature as invalid if:
+
+* `alg` is missing
+* `kid` is missing
+* `sig` is missing
+* `alg` is unsupported
+* `kid` cannot be resolved
+* `sig` does not verify against the integrity hash
+
+A document may still parse as AEON even if signature verification fails.
+That is a processor-level security result, not a syntax failure.
+
+---
+
+# 13. Non-Goals
+
+`aeon.gp.signature.v1` does not define:
+
+* trusted signers
+* key servers
+* certificate chains
+* revocation
+* timestamp trust
+* signature policy
+
+These belong to:
+
+* profiles
+* protocols
+* application security models
+
+---
+
+# 14. Relationship to Other Conventions
+
+`aeon.gp.signature.v1` works with:
+
+* `aeon.gp.security.v1` — envelope structure
+* `aeon.gp.integrity.v1` — canonical hash model
+
+It may later be extended or complemented by:
+
+* `aeon.gp.encryption.v1`
+* `aeon.audit.v1`
+* `aeon.merkle.v1`
+
+---
+
+# 15. One-Line Definition
+
+`aeon.gp.signature.v1` defines a minimal signature vocabulary for AEON documents in which one or more signatures inside `aeon:envelope.signatures` verify the integrity hash declared by `aeon.gp.integrity.v1`.
+
+---
