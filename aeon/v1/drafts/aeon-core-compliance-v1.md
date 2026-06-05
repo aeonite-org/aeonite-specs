@@ -239,9 +239,11 @@ Examples:
 Implementations MUST:
 1. accept node forms `<tag(...)>` and empty-node shorthand `<tag>`;
 2. require the closing `>` for child-bearing node forms and reject `<tag(...)` deterministically;
-3. in strict mode, reject inline node-head datatypes other than `:node`;
+3. in strict mode, reject inline node-head datatypes outside the reserved `node` family; `:node` and `:node<T>` are accepted;
 4. in transport/custom modes, continue to accept non-`node` inline node-head datatypes as syntax, for example `<tag:pair("x", "y")>`;
-5. reject other node-like forms deterministically.
+5. reject generic inline node-head datatypes other than `:node<T>` deterministically;
+6. reject ordinary binding-side `node<T>` claims when `T` is a reserved non-`node` value datatype such as `string`;
+7. reject other node-like forms deterministically.
 
 Implementations MUST also:
 1. support anonymous child heads inside ordered containers, including:

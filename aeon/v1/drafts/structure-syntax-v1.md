@@ -211,6 +211,9 @@ SeparatorChar  = ASCIIPrintableNoReservedSeparator ;
 ```
 
 Generic-depth notes:
+- Core v1 reserves generic arguments for `list<T>`, `tuple<T...>`, `object<T>`, `node<T>`, `null<T>`, `nan<T>`, and `infinity<T>`;
+- binding-side `node<T>` accepts `T = node` or custom profile/domain/materialization arguments, but rejects reserved non-`node` value datatype arguments such as `string`;
+- other reserved Core datatypes do not accept generic arguments;
 - generic depth counts nested type annotations that appear inside generic arguments;
 - `tuple<n, n>` has generic depth `0`;
 - `tuple<tuple<n, n>, tuple<n, n>>` has generic depth `1`;
@@ -350,7 +353,9 @@ Nuances:
 - child-bearing nodes require a closing `>` after the closing `)`;
 - canonical printed form uses the closing `>` and prefers `<tag>` over `<tag()>` for empty nodes;
 - node heads MAY carry an inline datatype syntactically, but strict mode limits this form to `:node`;
+- node heads MAY carry `:node<T>`; this is a preserved child-content claim and Core does not validate children against `T`;
 - transport/custom forms MAY use other inline node-head datatypes, for example `<tag:pair("x", "y")>`;
+- generic inline node-head datatypes other than `:node<T>` remain invalid Core v1 syntax;
 - trailing child separator acceptance is implementation-supported and documented in node appendices.
 
 ## 6. Newline Rules
