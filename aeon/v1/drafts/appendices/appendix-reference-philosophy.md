@@ -4,7 +4,7 @@ title: Appendix - Reference Philosophy
 description: Rationale behind clone vs pointer reference semantics and determinism constraints.
 family: appendices-v1
 group: Core Semantics
-status: Draft
+status: informative rationale for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-reference-philosophy-v1
 ---
@@ -222,7 +222,3 @@ By preserving indirection in canonical form, AEON asserts a philosophical positi
 > Data is the reasoning that produced it.**
 
 This principle is foundational to AEON’s design and underpins its role as a deterministic, extensible, and semantically rich data language.
-
----
-
-*End of Reference Philosophy Appendix*

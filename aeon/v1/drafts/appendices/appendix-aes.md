@@ -4,14 +4,14 @@ title: "Appendix - Assignment Event Stream (AES)"
 description: Assignment event stream structure and event-level consistency expectations.
 family: appendices-v1
 group: Core Semantics
-status: Normative
+status: delegated normative companion for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-aes-v1
 ---
 # Appendix — Assignment Event Stream (AES)
 
 **Appendix to:** AEON Specification v1
-**Status:** Normative
+**Status:** delegated normative companion for consolidated v1
 
 This appendix defines the Assignment Event Stream — the canonical, lossless intermediate representation produced by AEON Core. v1 updates cover `TupleLiteral` value kind, indexed canonical paths, and annotation stream separation.
 
@@ -248,7 +248,3 @@ Schemas:
 
 > **AEON does not produce values.
 > AEON produces assignments.**
-
----
-
-*End of AES Appendix — v1*

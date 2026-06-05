@@ -8,9 +8,9 @@ status: informative companion appendix
 license: CC-BY-4.0
 path: specification/appendices/appendix-grammar-flow-v1
 ---
-# Appendix: Grammar Flow Cards
+# Appendix — Grammar Flow Cards
 
-Status: informative companion appendix  
+Status: informative companion appendix
 Scope: parser-context flow illustrations for AEON Core v1.
 
 This appendix illustrates the legal flow through AEON Core v1 syntax by parser context. It is not a replacement for `../structure-syntax-v1.md`; when this appendix and the structure syntax reference conflict, the structure syntax reference wins.

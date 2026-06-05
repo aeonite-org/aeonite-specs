@@ -4,7 +4,7 @@ title: AEOS v1 Compliance Specification
 description: Conformance requirements for AEOS-specific validator and profile behavior layered on top of AEON core.
 family: official-v1
 group: AEOS Specifications
-status: draft scaffold
+status: official v1 compliance draft
 path: specification/aeos-v1-documentation/aeos-v1-compliance-specification
 links:
   - aeos-v1
@@ -14,7 +14,7 @@ license: CC-BY-4.0
 
 # AEOS v1 Compliance Specification
 
-Status: draft scaffold  
+Status: official v1 compliance draft
 Scope: normative conformance requirements for AEOS-specific behavior layered on top of AEON core.
 
 This document is intentionally introduced as a separate compliance line so AEON core compliance and AEOS compliance are not treated as the same surface.
@@ -65,6 +65,8 @@ An AEOS-conforming implementation MUST:
 
 AEOS conformance is not satisfied by passing only representative examples if validator behavior drifts across one of the AEOS behavior families listed above.
 
-## 4. Status
+## 4. Compliance Boundary
 
-Detailed AEOS-specific compliance requirements still need to be extracted and consolidated into this document, but the authority split and anti-drift conformance model are now fixed.
+This document defines the AEOS conformance surface at the behavior-family level. Detailed rule semantics remain owned by `AEOS-spec-v1.md`, while the public CTS manifests define the required executable conformance cases.
+
+If this document, `AEOS-spec-v1.md`, and a published AEOS CTS manifest disagree, the canonical rule text in `AEOS-spec-v1.md` controls the specification meaning and the CTS manifest controls the executable conformance obligation for its release lane.

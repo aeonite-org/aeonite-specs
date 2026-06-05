@@ -8,7 +8,7 @@ status: informative clarification for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-whitespace-boundaries-v1
 ---
-# Appendix - Whitespace Boundaries
+# Appendix — Whitespace Boundaries
 
 Status: informative clarification for consolidated v1
 

@@ -137,7 +137,7 @@ aeon:header = {
   encoding = "utf-8"
   mode = "strict"
   conventions = [
-    "aeon.gp.convention.v1"
+    "aeon.gp.measurement.v1"
   ]
 
 }
@@ -298,7 +298,7 @@ aeon:header = {
   encoding = "utf-8"
   mode = "strict"
   conventions = [
-    "aeon.gp.convention.v1"
+    "aeon.gp.measurement.v1"
     "aeon.gp.security.v1"
   ]
 }

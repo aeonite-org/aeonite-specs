@@ -69,6 +69,20 @@ For the Unicode and quoted-string boundaries clarified in Core v1:
 - raw newlines inside non-backtick quoted strings SHOULD surface as
   `UNTERMINATED_STRING`.
 
+### 4.1 Undefined-Case Review Guidance
+
+When an implementation encounters an edge case that is not clearly defined by Core, an adopted convention, a profile, or explicit processor policy, the implementation should treat the case as a question of authority before treating it as a question of convenience.
+
+Recommended review questions:
+
+1. What exactly is being represented?
+2. What can legitimately be concluded from that representation?
+3. Who or what has authority to make that conclusion?
+
+Claims should not be realized as semantic conclusions until a stage with authority realizes their meaning. Examples of authority-bearing stages include a selected convention, validated schema, trusted profile, processor policy, or consuming application policy.
+
+If no authority-bearing stage is selected, implementations should avoid materializing a conclusion. Depending on the active mode and processing surface, the implementation should preserve the claim as opaque data, ignore the unsupported semantic layer, or fail closed with a deterministic diagnostic.
+
 ## 5. Phase Presentation
 
 Human-facing diagnostics SHOULD present the pipeline phase as a readable label rather than as a bare numeric band.
@@ -96,3 +110,18 @@ When applicable, diagnostics should include:
 - observed depth
 - active policy limit
 - source span (if available)
+
+## 7. Reporting Specification Gaps
+
+When an undefined edge case appears to expose a specification gap, report it to the AEON specification authority with enough information for deterministic review.
+
+Reports should include:
+
+- the smallest AEON input that demonstrates the case
+- the processing stage where the ambiguity appears
+- the active mode, conventions, profiles, schemas, and processor policy
+- observed implementation behavior
+- the expected or proposed behavior, if known
+- whether the issue affects conformance, interoperability, security, or only local implementation behavior
+
+Specification questions belong with `aeonite-org/aeonite-specs`. Conformance-test questions belong with `aeonite-org/aeonite-cts`.

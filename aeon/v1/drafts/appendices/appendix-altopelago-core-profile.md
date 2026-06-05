@@ -11,7 +11,7 @@ path: specification/appendices/appendix-altopelago-core-profile-v1
 # Appendix — Core Profile v1
 
 **Profile Name:** `core`  
-**Status:** informative profile appendix for consolidated v1  
+**Status:** informative profile appendix for consolidated v1
 **Determinism:** Deterministic  
 **Scope:** Minimal, form-only interpretation aligned with AEON v1 core
 

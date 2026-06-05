@@ -4,7 +4,7 @@ title: Appendix - Integrity Envelope
 description: Integrity envelope structure and representation rules for signed or hashed payload metadata.
 family: appendices-v1
 group: Core Semantics
-status: normative v1 appendix
+status: informative legacy appendix for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-integrity-envelope-v1
 ---
@@ -12,11 +12,15 @@ path: specification/appendices/appendix-integrity-envelope-v1
 
 **Appendix to:** AEON Specification v1
 
-**Status:** normative v1 appendix
+**Status:** informative legacy appendix for consolidated v1
 
-Canonical topic owner: `../AEON-spec-v1.md`
+Canonical topic owners:
+- `../../../../conventions/v1/drafts/aeon-gp-security-envelope-v1.md`
+- `../../../../conventions/v1/drafts/aeon-gp-integrity-v1.md`
+- `../../../../conventions/v1/drafts/aeon-gp-signature-v1.md`
+- `../../../../conventions/v1/drafts/aeon-gp-encryption-v1.md`
 
-This appendix defines the standard AEON integrity envelope shape used by the baseline security conventions:
+This appendix records the historical integrity-envelope model for the consolidated v1 appendix set. The GP security convention documents are the current home for security-envelope structure and processing rules:
 
 - `aeon.gp.security.v1`
 - `aeon.gp.integrity.v1`
@@ -266,5 +270,3 @@ close:envelope = {
   }
 }
 ```
-
-*End of Integrity Envelope*

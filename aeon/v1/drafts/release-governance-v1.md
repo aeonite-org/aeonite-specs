@@ -205,7 +205,7 @@ Policy:
 
 This document is the published branching model for AEON v1.
 
-It supersedes the older checklist placeholder target:
+It supersedes the earlier planning target:
 - `setup/branching-release-model.md`
 
 The branching model is intentionally kept inside the versioned spec/governance surface so release policy evolves alongside the language and CTS.
