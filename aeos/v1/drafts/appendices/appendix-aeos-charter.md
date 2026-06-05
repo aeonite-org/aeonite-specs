@@ -8,7 +8,7 @@ status: informative charter for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-aeos-charter-v1
 ---
-# AEOS v1 Charter
+# Appendix — AEOS v1 Charter
 
 **AEON Schema Validation System — Version 1**
 

@@ -1,14 +1,14 @@
 ---
 id: appendix-glossary-v1
 title: Appendix - Glossary
-description: "Normative terminology used across AEON Core, AEOS, and companion references."
+description: "Terminology used across AEON Core, AEOS, and companion references."
 family: appendices-v1
 group: Orientation
-status: Draft
+status: informative glossary for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-glossary-v1
 ---
-# Appendix — Glossary (Normative)
+# Appendix — Glossary
 
 **Appendix to:** AEON Specification v1
 
@@ -379,7 +379,3 @@ See *Appendix: Third-Party Validator Conformance*.
 | Body              | Meaning                             |
 | Envelope          | Integrity                           |
 | Annotation Stream | Parallel structured comment records |
-
----
-
-*End of Glossary — v1*

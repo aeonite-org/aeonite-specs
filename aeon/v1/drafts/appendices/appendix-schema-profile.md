@@ -8,7 +8,7 @@ status: normative authoring profile for AEOS v1 schema documents
 license: CC-BY-4.0
 path: specification/appendices/appendix-schema-profile-v1
 ---
-# AEOS Schema Profile v1
+# Appendix — AEOS Schema Profile v1
 
 **Status:** normative authoring profile for AEOS v1 schema documents
 

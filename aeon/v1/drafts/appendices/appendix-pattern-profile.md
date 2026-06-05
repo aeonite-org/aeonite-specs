@@ -8,7 +8,7 @@ status: implementation-ahead appendix for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-pattern-profile-v1
 ---
-# AEOS Pattern Profile v1
+# Appendix — AEOS Pattern Profile v1
 
 **Status:** implementation-ahead appendix for consolidated v1
 

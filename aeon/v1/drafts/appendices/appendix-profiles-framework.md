@@ -4,7 +4,7 @@ title: Appendix - Profiles Framework
 description: "Profile system architecture, authority model, and integration boundaries."
 family: appendices-v1
 group: AEOS and Profiles
-status: Draft
+status: informative framework for consolidated v1
 license: CC-BY-4.0
 path: specification/appendices/appendix-profiles-framework-v1
 ---
@@ -204,7 +204,3 @@ AEON accepts exactly one active profile per document.
 - Profile composition must be resolved internally
 - AEON itself MUST NOT evaluate multiple profiles simultaneously
 - Runtime/processor selection policy remains authoritative under the zero-trust model in §2.1.
-
----
-
-*End of Profiles Framework*

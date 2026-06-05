@@ -8,7 +8,7 @@ status: "informative v1 reservation; candidate activation in v2 or later."
 license: CC-BY-4.0
 path: specification/appendices/appendix-directive-block-capabilities-v1
 ---
-# Appendix - Directive Block and Capability Declaration
+# Appendix — Directive Block and Capability Declaration
 
 Status: informative v1 reservation; candidate activation in v2 or later.
 
