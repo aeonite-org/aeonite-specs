@@ -25,9 +25,13 @@ containers = {
     unique_keys = true
   }
   node = {
-    child_ordered = true
+    ordered = true
     heterogeneous = true
     unique_attributes = true
     mixed_content = true
   }
+}
+capabilities = {
+  references = true
+  clones = true
 }

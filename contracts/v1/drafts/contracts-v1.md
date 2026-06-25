@@ -89,6 +89,7 @@ Canonical top-level keys for a profile contract:
 | `datatype_policy_default` | no       | string                            | published default datatype policy            |
 | `collections`             | yes      | object<string, collection>        | normative GP semantics for collection shapes |
 | `containers`              | yes      | object<string, container>         | normative GP semantics for object/node shapes |
+| `capabilities`            | yes      | object<string, boolean>           | required processor support for GP profile claims |
 
 `collection` records use these canonical keys:
 
@@ -113,10 +114,17 @@ For `node`:
 
 | Key                 | Required | Type    | Meaning                                                       |
 | ------------------- | -------- | ------- | ------------------------------------------------------------- |
-| `child_ordered`     | yes      | boolean | whether child order is semantically significant               |
+| `ordered`           | yes      | boolean | whether child order is semantically significant               |
 | `heterogeneous`     | yes      | boolean | whether children may have different value shapes              |
 | `unique_attributes` | yes      | boolean | whether attribute keys are unique within one attribute block  |
 | `mixed_content`     | yes      | boolean | whether children may mix scalar and structural value shapes   |
+
+`capabilities` records use these canonical keys:
+
+| Key          | Required | Type    | Meaning                                               |
+| ------------ | -------- | ------- | ----------------------------------------------------- |
+| `references` | yes      | boolean | whether reference syntax support is required          |
+| `clones`     | yes      | boolean | whether clone-reference support is required           |
 
 Current baseline profile artifact:
 
@@ -148,11 +156,15 @@ containers = {
     unique_keys = true
   }
   node = {
-    child_ordered = true
+    ordered = true
     heterogeneous = true
     unique_attributes = true
     mixed_content = true
   }
+}
+capabilities = {
+  references = true
+  clones = true
 }
 ```
 
@@ -160,13 +172,17 @@ Interpretation:
 - this artifact defines the published GP baseline defaults once `aeon.gp.profile.v1` is explicitly selected by trusted policy;
 - it fixes the GP collection meanings for `list` and `tuple`;
 - it fixes the GP container meanings for `object` and `node`;
+- it fixes the required processor capabilities for implementations claiming `aeon.gp.profile.v1` support;
 - `collections` is closed for `aeon.gp.profile.v1`: only `list` and `tuple` have GP v1 collection semantics. Future profiles may define additional collection names without changing this artifact;
 - `containers` is closed for `aeon.gp.profile.v1`: only `object` and `node` have GP v1 container semantics. Future profiles may define additional container names without changing this artifact;
+- profile collection and container semantics are keyed by canonical family name. Alternative or reserved datatype names inherit the semantics of their canonical family, for example `obj`, `o`, and `envelope` inherit `object`;
+- `capabilities` is closed for `aeon.gp.profile.v1`: only `references` and `clones` are defined as GP v1 capability requirements by this artifact;
+- `capabilities.references = true` and `capabilities.clones = true` mean implementations claiming GP profile support must support those features. They do not require every GP document to use references or clones;
 - profile collection and container semantics do not override schema constraints. For example, `list.heterogeneous = true` permits mixed element shapes by default, while a schema can still constrain a particular binding with `list<int32>` or other element rules;
 - `indexed` is intentionally absent because index-addressability is a Core representation guarantee. AEON Core always emits index-addressable list/tuple elements and node child slots; the profile decides whether those positions carry semantic meaning;
 - `ordered` defines whether lexical element order is semantically significant. AEON Core always preserves lexical source order and emits index-addressable elements irrespective of the selected collection semantics;
 - `object.ordered = false` means object member order is not semantically significant in the GP profile. AEON Core may still preserve source order for diagnostics, AES emission, and canonicalization inputs;
-- `node.child_ordered = true` means node child positions are semantically significant. AEON Core preserves node child order and exposes child slots with index-addressable paths;
+- `node.ordered = true` means node child positions are semantically significant. AEON Core preserves node child order and exposes child slots with index-addressable paths;
 - `unique_keys` and `unique_attributes` record GP uniqueness semantics; Core duplicate-key checks remain Core representation guarantees and are not delegated to materializers;
 - materialization properties such as mutability, storage layout, allocation strategy, capacity, contiguous or linked storage, thread safety, lazy evaluation, persistence, sortedness, hash backing, and language-specific collection types belong to tonics or host bindings rather than this GP baseline profile;
 - it does not cause GP behavior to become active merely because no profile is declared.
