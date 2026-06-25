@@ -79,14 +79,44 @@ Rules:
 
 Canonical top-level keys for a profile contract:
 
-| Key                       | Required | Type   | Meaning                           |
-| ------------------------- | -------- | ------ | --------------------------------- |
-| `profile_id`              | yes      | string | contract identifier               |
-| `profile_version`         | yes      | string | semver for the published artifact |
-| `core_id`                 | yes      | string | target Core specification line    |
-| `description`             | no       | string | human-readable summary            |
-| `mode_default`            | no       | string | published default mode            |
-| `datatype_policy_default` | no       | string | published default datatype policy |
+| Key                       | Required | Type                              | Meaning                                      |
+| ------------------------- | -------- | --------------------------------- | -------------------------------------------- |
+| `profile_id`              | yes      | string                            | contract identifier                          |
+| `profile_version`         | yes      | string                            | semver for the published artifact            |
+| `core_id`                 | yes      | string                            | target Core specification line               |
+| `description`             | no       | string                            | human-readable summary                       |
+| `mode_default`            | no       | string                            | published default mode                       |
+| `datatype_policy_default` | no       | string                            | published default datatype policy            |
+| `collections`             | yes      | object<string, collection>        | normative GP semantics for collection shapes |
+| `containers`              | yes      | object<string, container>         | normative GP semantics for object/node shapes |
+
+`collection` records use these canonical keys:
+
+| Key             | Required | Type    | Meaning                                                    |
+| --------------- | -------- | ------- | ---------------------------------------------------------- |
+| `ordered`       | yes      | boolean | whether family semantics treat element order as meaningful |
+| `heterogeneous` | yes      | boolean | whether elements may have different value/datatype shapes  |
+| `unique`        | yes      | boolean | whether duplicate elements are disallowed by the family    |
+| `fixed_length`  | yes      | boolean | whether arity is intrinsic to the family                   |
+
+`container` records use shape-specific canonical keys.
+
+For `object`:
+
+| Key             | Required | Type    | Meaning                                                |
+| --------------- | -------- | ------- | ------------------------------------------------------ |
+| `ordered`       | yes      | boolean | whether member order is semantically significant       |
+| `heterogeneous` | yes      | boolean | whether member values may have different value shapes  |
+| `unique_keys`   | yes      | boolean | whether member keys are unique within one object scope |
+
+For `node`:
+
+| Key                 | Required | Type    | Meaning                                                       |
+| ------------------- | -------- | ------- | ------------------------------------------------------------- |
+| `child_ordered`     | yes      | boolean | whether child order is semantically significant               |
+| `heterogeneous`     | yes      | boolean | whether children may have different value shapes              |
+| `unique_attributes` | yes      | boolean | whether attribute keys are unique within one attribute block  |
+| `mixed_content`     | yes      | boolean | whether children may mix scalar and structural value shapes   |
 
 Current baseline profile artifact:
 
@@ -97,10 +127,48 @@ core_id = "aeon.core.v1"
 description = "General-purpose AEON profile baseline for v1."
 mode_default = "strict"
 datatype_policy_default = "reserved_only"
+collections = {
+  list = {
+    ordered = false
+    heterogeneous = true
+    unique = false
+    fixed_length = false
+  }
+  tuple = {
+    ordered = true
+    heterogeneous = true
+    unique = false
+    fixed_length = true
+  }
+}
+containers = {
+  object = {
+    ordered = false
+    heterogeneous = true
+    unique_keys = true
+  }
+  node = {
+    child_ordered = true
+    heterogeneous = true
+    unique_attributes = true
+    mixed_content = true
+  }
+}
 ```
 
 Interpretation:
 - this artifact defines the published GP baseline defaults once `aeon.gp.profile.v1` is explicitly selected by trusted policy;
+- it fixes the GP collection meanings for `list` and `tuple`;
+- it fixes the GP container meanings for `object` and `node`;
+- `collections` is closed for `aeon.gp.profile.v1`: only `list` and `tuple` have GP v1 collection semantics. Future profiles may define additional collection names without changing this artifact;
+- `containers` is closed for `aeon.gp.profile.v1`: only `object` and `node` have GP v1 container semantics. Future profiles may define additional container names without changing this artifact;
+- profile collection and container semantics do not override schema constraints. For example, `list.heterogeneous = true` permits mixed element shapes by default, while a schema can still constrain a particular binding with `list<int32>` or other element rules;
+- `indexed` is intentionally absent because index-addressability is a Core representation guarantee. AEON Core always emits index-addressable list/tuple elements and node child slots; the profile decides whether those positions carry semantic meaning;
+- `ordered` defines whether lexical element order is semantically significant. AEON Core always preserves lexical source order and emits index-addressable elements irrespective of the selected collection semantics;
+- `object.ordered = false` means object member order is not semantically significant in the GP profile. AEON Core may still preserve source order for diagnostics, AES emission, and canonicalization inputs;
+- `node.child_ordered = true` means node child positions are semantically significant. AEON Core preserves node child order and exposes child slots with index-addressable paths;
+- `unique_keys` and `unique_attributes` record GP uniqueness semantics; Core duplicate-key checks remain Core representation guarantees and are not delegated to materializers;
+- materialization properties such as mutability, storage layout, allocation strategy, capacity, contiguous or linked storage, thread safety, lazy evaluation, persistence, sortedness, hash backing, and language-specific collection types belong to tonics or host bindings rather than this GP baseline profile;
 - it does not cause GP behavior to become active merely because no profile is declared.
 
 ## 6. Schema Contract Shape

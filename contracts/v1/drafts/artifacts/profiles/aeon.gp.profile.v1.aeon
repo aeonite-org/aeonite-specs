@@ -4,3 +4,30 @@ core_id = "aeon.core.v1"
 description = "General-purpose AEON profile baseline for v1."
 mode_default = "strict"
 datatype_policy_default = "reserved_only"
+collections = {
+  list = {
+    ordered = false
+    heterogeneous = true
+    unique = false
+    fixed_length = false
+  }
+  tuple = {
+    ordered = true
+    heterogeneous = true
+    unique = false
+    fixed_length = true
+  }
+}
+containers = {
+  object = {
+    ordered = false
+    heterogeneous = true
+    unique_keys = true
+  }
+  node = {
+    child_ordered = true
+    heterogeneous = true
+    unique_attributes = true
+    mixed_content = true
+  }
+}
