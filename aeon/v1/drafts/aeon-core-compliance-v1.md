@@ -270,6 +270,25 @@ Implementations MUST also:
    - `constructor`
    - `prototype`
 
+Implementations MUST NOT globally reject ordinary object/member names solely
+because those names are dangerous in a particular host runtime. Ordinary member
+names remain AEON data and MUST be preserved by Core/AES unless another
+applicable rule rejects the document.
+
+Processors that materialize AEON/AES into host-language object graphs, JSON
+object projections, typed objects, reflection-based binders, or framework
+payloads MUST apply host-object safety controls appropriate to the target
+runtime. JavaScript-family object materializers MUST defend against prototype
+pollution through `__proto__` and `constructor.prototype` paths by rejecting,
+escaping, or safely representing those names rather than assigning them into
+ordinary prototype-bearing objects.
+
+This obligation also applies at transitive export boundaries. A processor
+implemented in a runtime that is not itself vulnerable to a target-runtime
+object-name hazard MUST NOT claim its exported data is safe for that target
+runtime unless the exported representation remains inert or the processor has
+applied target-appropriate host-object safety controls.
+
 ## 12. Duration Boundary
 
 Implementations MUST NOT treat bare duration tokens as AEON core v1 literals.
