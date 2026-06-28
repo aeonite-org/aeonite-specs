@@ -193,9 +193,10 @@ Implementations MUST:
 4. accept at most one radix decimal point `.` and only between non-empty digit runs;
 5. treat `_` in radix literals as visual spacing valid only between radix digits;
 6. reject radix payload characters `/` and `=`;
-7. accept `encoding`-family payloads (`encoding`, `base64`, `embed`, `inline`) in both standard base64 (`+` and `/`) and URL-safe base64 (`-` and `_`) forms;
-8. canonicalize `encoding`-family payloads to the URL-safe alphabet by rewriting `+` as `-` and `/` as `_`, and strip trailing `=` padding;
-9. continue to treat lexical acceptance as distinct from downstream base-specific radix or base64 semantic validity.
+7. accept `encoding`-family payloads (`encoding`, `base64`, `embed`, `inline`) only in Base64URL alphabet form (`A-Za-z0-9-_`) with optional trailing `=` padding;
+8. reject standard base64 alphabet characters `+` and `/` in `encoding`-family payloads;
+9. canonicalize `encoding`-family payloads by preserving accepted Base64URL spelling, including trailing `=` padding;
+10. continue to treat lexical acceptance as distinct from downstream base-specific radix or base64 semantic validity.
 
 ## 9. Separator-Literal Requirements
 
@@ -268,6 +269,25 @@ Implementations MUST also:
    - `__proto__`
    - `constructor`
    - `prototype`
+
+Implementations MUST NOT globally reject ordinary object/member names solely
+because those names are dangerous in a particular host runtime. Ordinary member
+names remain AEON data and MUST be preserved by Core/AES unless another
+applicable rule rejects the document.
+
+Processors that materialize AEON/AES into host-language object graphs, JSON
+object projections, typed objects, reflection-based binders, or framework
+payloads MUST apply host-object safety controls appropriate to the target
+runtime. JavaScript-family object materializers MUST defend against prototype
+pollution through `__proto__` and `constructor.prototype` paths by rejecting,
+escaping, or safely representing those names rather than assigning them into
+ordinary prototype-bearing objects.
+
+This obligation also applies at transitive export boundaries. A processor
+implemented in a runtime that is not itself vulnerable to a target-runtime
+object-name hazard MUST NOT claim its exported data is safe for that target
+runtime unless the exported representation remains inert or the processor has
+applied target-appropriate host-object safety controls.
 
 ## 12. Duration Boundary
 

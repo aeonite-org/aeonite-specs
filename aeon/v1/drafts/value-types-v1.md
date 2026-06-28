@@ -615,8 +615,9 @@ payload:inline = $QmFzZTY0IQ==
 Nuances:
 - payload captured without `$`.
 - `encoding`, `base64`, `embed`, and `inline` all bind to the same `EncodingLiteral` family in Core v1;
-- encoding/base64 payload accepts both the standard base64 alphabet (`A-Za-z0-9+/` with optional `=` padding) and the URL-safe base64 alphabet (`A-Za-z0-9-_` with optional `=` padding);
-- canonical encoding/base64 rendering prefers the URL-safe alphabet by rewriting `+` to `-` and `/` to `_`, and strips trailing `=` padding;
+- encoding/base64 payload accepts the Base64URL alphabet (`A-Za-z0-9-_`) with optional trailing `=` padding;
+- standard base64 alphabet characters `+` and `/` are invalid in AEON encoding/base64 payloads;
+- canonical encoding/base64 rendering preserves the accepted Base64URL payload spelling, including trailing `=` padding;
 - lexical acceptance is not encoding-family validity;
 - `a = $aa=` is unambiguous in current lexer, because the second `=` remains part of the encoding token rather than being reinterpreted as assignment.
 

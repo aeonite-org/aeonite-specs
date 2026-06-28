@@ -42,6 +42,23 @@ person = { name = "Patrik" }
 { "person": { "name": "Patrik" } }
 ```
 
+AEON member names are data. The JSON profile does not make ordinary member
+names invalid merely because a later host runtime treats those names specially.
+However, a JSON finalizer that materializes AEON-derived members into a
+host-language object graph MUST prevent source-controlled member names from
+mutating, shadowing, or escaping into host object metadata, prototypes,
+constructors, reflection surfaces, or framework control fields.
+
+For JavaScript-family object materialization, `__proto__`, `constructor`, and
+`prototype` are host-dangerous names because they can participate in prototype
+pollution when projected into ordinary objects or later merged into ordinary
+objects. A JavaScript-family JSON materializer MUST defend against that class of
+attack by using a safe representation such as maps or null-prototype objects,
+escaping the dangerous names, or rejecting the projection fail-closed.
+
+This is a materialization/export boundary, not an AEON Core syntax boundary.
+Core and AES may preserve these names as inert member names.
+
 ### Lists → JSON Arrays
 
 Direct mapping. Order preserved.
@@ -150,6 +167,26 @@ Profile notes:
 - `@items` is reserved in finalized/materialized JSON projection for indexed child attributes;
 - this is a projection/profile convention, not a core canonical-path syntax change;
 - exact collisions on `@items` are profile errors.
+
+### Transitive Host-Object Risk
+
+Host-object safety is transitive across processing boundaries.
+
+A processor may be safe in its own implementation language while still exporting
+AEON-derived names into a later runtime where those names become dangerous. For
+example, a Rust service can parse AEON safely, emit JSON containing a
+`__proto__` member, and later deliver that JSON to browser JavaScript where an
+application merge step could trigger prototype pollution.
+
+Non-JavaScript implementations are not required to reject JavaScript-specific
+member names merely because they parse AEON. They MUST NOT, however, describe an
+export as JavaScript-object-safe or host-object-safe unless the export either:
+
+- emits an inert representation that cannot affect the target runtime's object
+  metadata or prototype system;
+- rejects or escapes target-runtime-dangerous names; or
+- documents that the output is transport JSON only and must be revalidated or
+  safely materialized before host-object use.
 
 ### Projected Materialization
 

@@ -69,6 +69,50 @@ A Tonic MUST NOT:
 - Suppress core diagnostics
 - Introduce implicit semantics based on document content
 
+### 3.1 Host-Object Materialization Safety
+
+AEON member names are inert data at the Core and AES layers. A Tonic that
+materializes those names into host-language objects MUST account for the target
+runtime's object model.
+
+Host-object materialization MUST prevent source-controlled AEON names from
+mutating, shadowing, or escaping into host object metadata, prototypes,
+constructors, reflection surfaces, magic attributes, framework control fields,
+or equivalent host-specific authority surfaces.
+
+Acceptable strategies include:
+
+- map-like containers whose keys are always data;
+- null-prototype or otherwise plain-data containers in runtimes with ambient
+  prototype inheritance;
+- fail-closed rejection of host-dangerous names;
+- reversible escaping of host-dangerous names;
+- schema-driven allowlists before materialization.
+
+JavaScript-family Tonics MUST specifically defend against prototype pollution
+through `__proto__` and `constructor.prototype` paths when projecting AEON data
+into ordinary objects. Treating only `__proto__` as dangerous is insufficient
+when `constructor` and `prototype` can still be used together to reach an
+ambient prototype.
+
+This requirement does not make those names invalid AEON member names. It applies
+only when a Tonic, finalizer, binding adapter, or export path gives those names
+meaning in a host runtime.
+
+### 3.2 Transitive Materialization Boundary
+
+A Tonic's own implementation language may be safe while its output is later
+consumed by a less safe host runtime. For example, a Rust or PHP processor can
+emit JSON that is inert in that processor but later merged into an ordinary
+JavaScript object by a browser or Node.js application.
+
+Processors that export AEON-derived names across a declared or reasonably
+expected downstream host boundary SHOULD document whether target-runtime
+dangerous names are preserved, escaped, rejected, or emitted only as inert
+transport data. A processor MUST NOT claim an output is safe for a target host
+object model unless it has applied an appropriate host-object safety strategy
+for that target.
+
 ---
 
 ## 4. Determinism Requirements
