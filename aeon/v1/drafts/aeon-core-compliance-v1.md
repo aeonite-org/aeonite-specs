@@ -193,9 +193,10 @@ Implementations MUST:
 4. accept at most one radix decimal point `.` and only between non-empty digit runs;
 5. treat `_` in radix literals as visual spacing valid only between radix digits;
 6. reject radix payload characters `/` and `=`;
-7. accept `encoding`-family payloads (`encoding`, `base64`, `embed`, `inline`) in both standard base64 (`+` and `/`) and URL-safe base64 (`-` and `_`) forms;
-8. canonicalize `encoding`-family payloads to the URL-safe alphabet by rewriting `+` as `-` and `/` as `_`, and strip trailing `=` padding;
-9. continue to treat lexical acceptance as distinct from downstream base-specific radix or base64 semantic validity.
+7. accept `encoding`-family payloads (`encoding`, `base64`, `embed`, `inline`) only in Base64URL alphabet form (`A-Za-z0-9-_`) with optional trailing `=` padding;
+8. reject standard base64 alphabet characters `+` and `/` in `encoding`-family payloads;
+9. canonicalize `encoding`-family payloads by preserving accepted Base64URL spelling, including trailing `=` padding;
+10. continue to treat lexical acceptance as distinct from downstream base-specific radix or base64 semantic validity.
 
 ## 9. Separator-Literal Requirements
 
