@@ -182,7 +182,7 @@ aeon:profile = "startup.sonograph.api.v1"
 convertRequest = {
   requestId = "req-123"
   encoding = "wav"
-  audio:base64 = $UklGRu4AAA...
+  audio:base64 = &UklGRu4AAA...
 }
 ```
 

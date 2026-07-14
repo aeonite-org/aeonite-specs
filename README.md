@@ -10,6 +10,7 @@ It is the source of truth for:
 
 - AEON specifications
 - AEOS specifications
+- SANSA specifications
 - NEON specifications
 - versioned spec lifecycle state across proposals, drafts, and published releases
 
@@ -43,6 +44,11 @@ aeos/
     proposals/
     drafts/
     published/
+sansa/
+  v1/
+    proposals/
+    drafts/
+    published/
 neon/
   v1/
     proposals/
@@ -65,6 +71,10 @@ conventions/
 Repository-level spec-maintenance utilities may also live under:
 
 - `scripts/`
+
+Release-facing change history is tracked in:
+
+- `CHANGELOG.md`
 
 Before committing, run:
 

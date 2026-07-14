@@ -360,7 +360,7 @@ Suppose an encoder produces a mixed plan like:
 
 ```text
 [
-  { kind: "text",   text: "code:inline = $" },
+  { kind: "text",   text: "code:inline = &" },
   { kind: "binary", bytes: [AA BB CC], renderAs: "base64", sourceText: "qrvM" },
   { kind: "text",   text: "\nmode=\"ok\"\n" }
 ]
@@ -383,7 +383,7 @@ This form supports exact reopen behavior because the binary segment carries its 
 An AEON-aware reconstruction layer can therefore recover:
 
 ```aeon
-code:inline = $qrvM
+code:inline = &qrvM
 mode="ok"
 ```
 
@@ -393,7 +393,7 @@ Suppose an encoder produces:
 
 ```text
 [
-  { kind: "text",   text: "code:inline = $" },
+  { kind: "text",   text: "code:inline = &" },
   { kind: "binary", bytes: [68 65 6C 6C 6F] },
   { kind: "text",   text: "\n" }
 ]
@@ -414,7 +414,7 @@ This is more compact because no source text is stored alongside the bytes.
 However, exact text reopen is no longer guaranteed. A reconstruction layer must choose a textual representation if it wants to show editable AEON again. One valid canonical reopen would be:
 
 ```aeon
-code:inline = $aGVsbG8
+code:inline = &aGVsbG8
 ```
 
 That reconstructed AEON is semantically equivalent for many workflows, but it is not necessarily byte-for-byte the same as the original source spelling that produced the binary payload.
@@ -721,7 +721,7 @@ This distinction is not limited to `:base64`.
 
 The following AEON forms remain textual by default:
 
-- bare `$...` encoding literals
+- bare `&...` encoding literals
 - `:base64`
 - `:encoding`
 - custom encoding-like types that still use ordinary AEON textual syntax
@@ -753,7 +753,7 @@ These are Neon storage decisions, not generic AEON textual ones.
   Stores the payload as inline binary-oriented Neon content. This optimizes storage, but reopening may reconstruct canonical base64 rather than the exact original literal text.
 
 - `:embed`
-  Stores the payload as a packaged directory entry. The primary AEON text may internally reference the payload as `"neon-entry:<key>"`, but tooling may reconstruct it back into editable AEON `$...` form.
+  Stores the payload as a packaged directory entry. The primary AEON text may internally reference the payload as `"neon-entry:<key>"`, but tooling may reconstruct it back into editable AEON `&...` form.
 
 - attachments
   Are separate directory entries that do not live inside the AEON source text itself.
@@ -770,7 +770,7 @@ There are two useful round-trip levels:
 
 Current intended AEON behavior:
 
-- text-preserving forms such as bare `$...`, `:base64`, `:encoding`, and similar textual custom types should remain textual
+- text-preserving forms such as bare `&...`, `:base64`, `:encoding`, and similar textual custom types should remain textual
 - `:embed` should be reconstructible into AEON-friendly editing form
 - `:inline` is allowed to be binary-oriented and reconstructed canonically
 
