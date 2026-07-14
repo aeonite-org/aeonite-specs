@@ -242,7 +242,7 @@ Interpretation:
 | Toggle            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:toggle = on`                                             | `ToggleLiteral`    |
 | Hex               | `#ff00aa`                               | `color = #ff00aa`                           | `color:hex = #ff00aa`                                           | `HexLiteral`       |
 | Radix             | `%1011`                                 | `bits = %1011`                              | `bits:radix[2] = %1011`                                         | `RadixLiteral`     |
-| Encoding          | `$QmFzZTY0IQ==`                         | `payload = $QmFzZTY0IQ==`                   | `payload:base64 = $QmFzZTY0IQ==`                                | `EncodingLiteral`  |
+| Encoding          | `&QmFzZTY0IQ==`                         | `payload = &QmFzZTY0IQ==`                   | `payload:base64 = &QmFzZTY0IQ==`                                | `EncodingLiteral`  |
 | Date              | `2025-01-01`, `2024-02-29`              | `d = 2025-01-01`                            | `d:date = 2025-01-01`                                           | `DateLiteral`      |
 | Time              | `09:`, `09:30`, `09:30Z`, `09:+02:00`, `09:30+02:00`, `09:30:00`, `09:30:00Z` | `t = 09:30:00`                              | `t:time = 09:30:00Z`                                            | `DateTimeLiteral`  |
 | DateTime          | `2025-01-01T09`, `2025-01-01T09Z`, `2025-01-01T09+02:00`, `2025-01-01T09:30:00Z` | `ts = 2025-01-01T09:30:00Z`                 | `ts:datetime = 2025-01-01T09:30:00Z`                            | `DateTimeLiteral`  |
@@ -606,20 +606,21 @@ AES:
 Examples:
 
 ```aeon
-payload = $QmFzZTY0IQ==
-payload:base64 = $QmFzZTY0IQ==
-payload:embed = $QmFzZTY0IQ==
-payload:inline = $QmFzZTY0IQ==
+payload = &QmFzZTY0IQ==
+payload:base64 = &QmFzZTY0IQ==
+payload:embed = &QmFzZTY0IQ==
+payload:inline = &QmFzZTY0IQ==
 ```
 
 Nuances:
-- payload captured without `$`.
+- encoding literals use `&` as the literal prefix;
+- payload captured without `&`;
 - `encoding`, `base64`, `embed`, and `inline` all bind to the same `EncodingLiteral` family in Core v1;
 - encoding/base64 payload accepts the Base64URL alphabet (`A-Za-z0-9-_`) with optional trailing `=` padding;
 - standard base64 alphabet characters `+` and `/` are invalid in AEON encoding/base64 payloads;
 - canonical encoding/base64 rendering preserves the accepted Base64URL payload spelling, including trailing `=` padding;
 - lexical acceptance is not encoding-family validity;
-- `a = $aa=` is unambiguous in current lexer, because the second `=` remains part of the encoding token rather than being reinterpreted as assignment.
+- `a = &aa=` is unambiguous in current lexer, because the second `=` remains part of the encoding token rather than being reinterpreted as assignment.
 
 AES:
 - `EncodingLiteral`.
