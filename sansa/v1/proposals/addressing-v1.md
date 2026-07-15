@@ -1,11 +1,11 @@
 ---
 id: sansa-v1-addressing
 title: SANSA v1 Addressing
-description: Draft address model and selector vocabulary for SANSA.
+description: Proposal-stage address model and selector vocabulary for SANSA.
 family: sansa
 group: SANSA
-status: Draft
-path: specification/sansa/v1/addressing
+status: Proposal
+path: specification/sansa/v1/proposals/addressing
 license: CC-BY-4.0
 links:
   - sansa-v1-resolve
@@ -14,7 +14,7 @@ links:
 
 # SANSA v1 Addressing
 
-Status: Draft  
+Status: Proposal  
 Scope: structural address model and selector vocabulary for SANSA v1.
 
 ## 1. Overview
@@ -37,9 +37,140 @@ A **canonical address** is an exact address that identifies at most one binding 
 
 An **address expression** may identify zero, one, or many bindings when resolved. It may contain expansion, filter, pattern, or local address-space selectors.
 
-## 3. Address Roots
+## 3. Lexical Model
 
-### 3.1 Absolute Root
+SANSA address expressions use a small ASCII structural grammar outside quoted payloads.
+
+Whitespace is not permitted outside quoted payloads.
+
+Bare identifiers use:
+
+```ebnf
+Identifier = [A-Za-z_] [A-Za-z0-9_]* ;
+```
+
+Position indexes use unsigned decimal notation without leading zeroes:
+
+```ebnf
+Index = "0" | [1-9] [0-9]* ;
+```
+
+Quoted member names, local address-space names, name patterns, and quoted qualifier arguments use AEON double-quoted string payload rules. This allows characters that are not part of the bare ASCII selector grammar to be carried without making address parsing context-sensitive.
+
+### 3.1 Qualified Address Literals
+
+A qualified address literal is an address expression followed by an optional qualifier expression.
+
+```ebnf
+QualifiedAddressLiteral
+    = AddressExpression [ ":" QualifierExpression ] ;
+
+QualifierExpression
+    = QualifierTerm ( "|" QualifierTerm )* ;
+
+QualifierTerm
+    = QualifierTypeName
+      QualifierParameterGroup*
+      QualifierArgumentGroup* ;
+
+QualifierTypeName
+    = Identifier ;
+
+QualifierParameterGroup
+    = "<" QualifierTypeParameter
+      ( "," QualifierTypeParameter )*
+      ">" ;
+
+QualifierTypeParameter
+    = QualifierTerm ;
+
+QualifierArgumentGroup
+    = "[" QualifierArgument "]" ;
+
+QualifierArgument
+    = QualifierArgumentToken
+    | DoubleQuotedPayload ;
+
+QualifierArgumentToken
+    = QualifierArgumentChar+ ;
+
+QualifierArgumentChar
+    = one character from A-Za-z0-9!#$%&*+-.:;=?@^_|~<> ;
+```
+
+SANSA owns this qualifier grammar. Host implementations define the accepted qualifier surface.
+
+SANSA Addressing assigns no semantics to qualifier expressions. Host implementations validate the syntax and qualifier surface they support, preserve accepted qualifier structure, and may reject qualifier forms they do not understand. Consumers decide whether to interpret, ignore, or reject accepted qualifiers.
+
+Examples:
+
+```text
+$.result:number|nan
+$.inventory:list<string>
+$.inventory:csv[","]
+$.path:tuple<x><y>
+$.value:type<type>[arg]
+```
+
+The `|` operator is only valid at the top level of a qualifier expression. Nested qualifier unions are not valid in SANSA v1:
+
+```text
+$.value:list<string|number>
+```
+
+Qualifier parameter groups are repeatable. This permits embeddings that avoid raw comma syntax in contexts where comma has host-language meaning:
+
+```text
+$.path:tuple<x><y>
+```
+
+SANSA also permits comma-separated parameters inside one parameter group:
+
+```text
+$.path:tuple<x,y>
+```
+
+Host implementations may prefer or require the repeated-group form if that better fits their parser.
+
+Qualifier argument groups are repeatable:
+
+```text
+$.key:string[","]["."]
+```
+
+Unquoted arguments intentionally form a simple lexical token. Raw comma is excluded from unquoted arguments. More complex payloads use quoted-string syntax:
+
+```text
+$.inventory:csv[","]
+$.field:separator["::"]
+$.line:terminator["\r\n"]
+```
+
+These examples are syntactically valid SANSA. A host implementation may still reject them if they are outside the qualifier surface it accepts.
+
+### 3.2 AST Shape
+
+Parsers should expose qualifier structure rather than treating it only as an opaque string.
+
+```text
+QualifiedAddress
+  address
+  qualifierExpression?
+
+QualifierExpression
+  terms[]
+
+QualifierTerm
+  typeName
+  parameterGroups[]
+  argumentGroups[]
+```
+
+Implementations may also expose flattened convenience views, but repeated parameter and argument groups must remain recoverable from the parse tree.
+
+## 4. Address Roots
+
+### 4.1 Absolute Root
 
 The absolute root is written:
 
@@ -59,7 +190,7 @@ $.contacts[0]
 $.message.@.id
 ```
 
-### 3.2 Contextual Root
+### 4.2 Contextual Root
 
 The contextual root is written:
 
@@ -81,7 +212,7 @@ Examples:
 
 Contextual-root expressions are structurally valid without a context, but they cannot be resolved unless the consumer supplies one.
 
-### 3.3 Relative Selector Fragments
+### 4.3 Relative Selector Fragments
 
 Some consumers, including SANSA.Query, allow selector fragments that begin with a selector rather than a root:
 
@@ -93,11 +224,11 @@ Some consumers, including SANSA.Query, allow selector fragments that begin with 
 
 Such fragments are not complete absolute addresses. Their starting point is supplied by the consuming capability.
 
-## 4. Exact Selectors
+## 5. Exact Selectors
 
 Exact selectors preserve a path that can identify at most one binding.
 
-### 4.1 Named Binding
+### 5.1 Named Binding
 
 ```text
 .name
@@ -112,7 +243,7 @@ Names that cannot be written safely in bare form use a quoted member segment:
 .["spaced name"]
 ```
 
-### 4.2 Positional Binding
+### 5.2 Positional Binding
 
 ```text
 [0]
@@ -123,7 +254,15 @@ Selects the binding at the specified zero-based position in the ordered sequence
 
 Positional syntax is representation independent. It does not itself distinguish lists, tuples, nodes, or implementation-specific ordered structures.
 
-### 4.3 Attribute Address Space
+Chained positional selectors are syntactically valid:
+
+```text
+$.matrix[2][2]
+```
+
+Whether an intermediate binding is indexable is a resolution or schema question, not a lexical-addressing question.
+
+### 5.3 Attribute Address Space
 
 ```text
 .@
@@ -142,7 +281,7 @@ $.message.@.properties.caller.@.by
 
 Compact forms such as `$.message@id` are not normative in SANSA v1. Consumers may accept them as compatibility sugar, but the canonical SANSA form uses `.@`.
 
-### 4.4 Local Address Space
+### 5.4 Local Address Space
 
 ```text
 .<"namespace">
@@ -168,11 +307,11 @@ $.document.<"contact">
 
 The first selects an ordinary child named `contact`. The second enters a local address space named `contact`.
 
-## 5. Expanded Selectors
+## 6. Expanded Selectors
 
 Expanded selectors may produce zero or more bindings.
 
-### 5.1 Direct Expansion
+### 6.1 Direct Expansion
 
 ```text
 .*
@@ -180,7 +319,7 @@ Expanded selectors may produce zero or more bindings.
 
 Expands all direct child bindings of the current binding.
 
-### 5.2 Descendant Expansion
+### 6.2 Descendant Expansion
 
 ```text
 .**
@@ -190,7 +329,7 @@ Expands descendants reachable through the ordinary value hierarchy. The current 
 
 Attribute address spaces and local address spaces are not traversed implicitly. They require explicit selectors.
 
-### 5.3 Name Pattern Selector
+### 6.3 Name Pattern Selector
 
 ```text
 .("id-*")
@@ -208,11 +347,11 @@ Name patterns match complete binding names.
 
 Regular expressions are intentionally excluded from SANSA v1 addressing.
 
-## 6. Filter Selectors
+## 7. Filter Selectors
 
 Filter selectors filter the current Binding Set. They do not evaluate values.
 
-### 6.1 Semantic Type Filter
+### 7.1 Semantic Type Filter
 
 ```text
 #type
@@ -226,7 +365,7 @@ Example:
 $.content.*#text
 ```
 
-### 6.2 Representation Kind Filter
+### 7.2 Representation Kind Filter
 
 ```text
 %kind
@@ -251,7 +390,7 @@ content = {
 
 The expression `$.content.*#text` selects only `a`. The expression `$.content.*%stringLiteral` selects both `a` and `b`.
 
-## 7. Canonical Addresses
+## 8. Canonical Addresses
 
 Canonical addresses identify at most one binding.
 
@@ -277,7 +416,9 @@ $.content.("id-*")
 $.**
 ```
 
-## 8. Local Address-Space Boundaries
+Qualified address literals have a canonical address component and a qualifier component. Canonical rendering preserves repeated qualifier parameter and argument group boundaries.
+
+## 9. Local Address-Space Boundaries
 
 Local address spaces are isolated scopes.
 
@@ -293,7 +434,7 @@ Traversal must not cross a local address-space boundary implicitly. SANSA v1 def
 
 Local address spaces exist only when explicitly exposed or mounted by the resolving consumer, environment, or addressed resource. A syntactically valid local address-space selector does not imply authorization to resolve that space.
 
-## 9. Opaque Local Semantics
+## 10. Opaque Local Semantics
 
 SANSA standardizes the transition into a named local address space. It does not standardize the internal meaning of every local namespace.
 
@@ -309,7 +450,7 @@ Examples of possible local address spaces include:
 
 The provider of a local address space owns its internal semantics, subject to SANSA resolution rules and consumer policy.
 
-## 10. Superseded Anchor Form
+## 11. Superseded Anchor Form
 
 Earlier design notes explored postfix anchor selectors such as:
 
@@ -317,7 +458,7 @@ Earlier design notes explored postfix anchor selectors such as:
 $.document<"contact">
 ```
 
-SANSA v1 drafts prefer the local address-space segment:
+SANSA v1 proposals prefer the local address-space segment:
 
 ```text
 $.document.<"contact">
@@ -325,9 +466,26 @@ $.document.<"contact">
 
 The local address-space form makes the transition explicit as a selector and allows additional navigation within the local space.
 
-## 11. Relationship to AEON Literals
+## 12. Relationship to AEON Literals
 
 The SANSA address model is independent of AEON Core syntax. AEON may define a native SANSA address literal based on this grammar.
 
 When used as an AEON literal, a SANSA address remains declarative. AEON Core is expected to validate structural syntax and transport the value, not resolve the address or evaluate query semantics.
 
+AEON is one host implementation of SANSA address literals. It may restrict the qualifier surface it accepts while still using the broader SANSA grammar as the address-language foundation.
+
+## 13. Parser Requirements
+
+Conforming SANSA Address parsers must reject:
+
+- whitespace outside quoted payloads
+- invalid bare identifiers
+- empty quoted member names
+- empty local address-space names
+- position indexes with leading zeroes
+- invalid quoted payload escapes
+- unterminated or malformed qualifier syntax
+- empty qualifier parameter or argument groups
+- nested qualifier unions
+
+Parsers must not assign semantic meaning to qualifier terms as part of address parsing. Semantic interpretation belongs to the host implementation or consuming capability.

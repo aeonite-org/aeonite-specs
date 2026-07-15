@@ -1,11 +1,11 @@
 ---
 id: sansa-v1-query
 title: SANSA.Query v1
-description: Draft read-only semantic query model built on SANSA.Resolve.
+description: Proposal-stage read-only semantic query model built on SANSA.Resolve.
 family: sansa
 group: SANSA
-status: Draft
-path: specification/sansa/v1/query
+status: Proposal
+path: specification/sansa/v1/proposals/query
 license: CC-BY-4.0
 links:
   - sansa-v1-addressing
@@ -14,7 +14,7 @@ links:
 
 # SANSA.Query v1
 
-Status: Draft  
+Status: Proposal  
 Scope: read-only semantic query pipeline and initial expression model.
 
 ## 1. Overview
@@ -523,4 +523,3 @@ SANSA.Query v1 does not define:
 - dynamic query-source construction
 
 These require separate proposals or future versions.
-
