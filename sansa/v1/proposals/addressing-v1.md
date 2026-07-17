@@ -335,7 +335,7 @@ Attribute address spaces and local address spaces are not traversed implicitly. 
 .("id-*")
 .("*-id")
 .("*id*")
-.("item-__")
+.("item-??")
 ```
 
 Name patterns match complete binding names.
@@ -343,7 +343,9 @@ Name patterns match complete binding names.
 | Operator | Meaning |
 | --- | --- |
 | `*` | zero or more characters |
-| `_` | exactly one character |
+| `?` | exactly one character |
+
+The underscore character `_` has no wildcard meaning in name patterns; it is matched as an ordinary name character.
 
 Regular expressions are intentionally excluded from SANSA v1 addressing.
 

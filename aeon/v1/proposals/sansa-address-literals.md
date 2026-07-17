@@ -47,7 +47,7 @@ quoted:sansa = $.["member.with.dots"]
 indexed:sansa = $.matrix[2][2]
 attribute:sansa = $.message.@.id
 local:sansa = $.document.<"sections">.intro
-rich:sansa = $.items.*#text%stringLiteral.("item_*")
+rich:sansa = $.items.*#text%stringLiteral.("item?*")
 ```
 
 The `sansa` datatype annotation is the reserved AEON datatype for SANSA address literal values. The literal prefix remains the syntactic indicator; consumers may still transport untyped SANSA literals in transport-oriented contexts.
