@@ -103,10 +103,10 @@ For example, AEOS can express object member intent with selectors:
 ]
 ```
 
-Node child intent can be expressed with indexed child rules:
+Node child intent can be expressed with SANSA selectors:
 
 ```json
 [
-  { "path": "$.title[*]", "constraints": { "type": "StringLiteral" } }
+  { "selector": "$.title.*", "constraints": { "type": "StringLiteral" } }
 ]
 ```

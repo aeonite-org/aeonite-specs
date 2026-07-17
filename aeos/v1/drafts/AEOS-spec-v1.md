@@ -197,7 +197,7 @@ interface SchemaRule {
 }
 ```
 
-Rules target AES events by either exact canonical path or by selector.
+Rules target AES events by either exact SANSA path or by SANSA selector.
 
 Each rule MUST provide exactly one of:
 - `path`
@@ -206,27 +206,28 @@ Each rule MUST provide exactly one of:
 A rule with neither target field is invalid.
 A rule with both target fields is invalid.
 
-`path` is an exact canonical path target, with one additional indexed wildcard form:
-- `[*]` matches a single numeric index segment.
+`path` is an exact SANSA path target. It MUST NOT contain expansion, pattern, filter, or wildcard selectors.
 
 Examples:
 - `$.contact`
 - `$.contact.name`
-- `$.items[*]`
-- `$.items[*].name`
+- `$.items[0]`
+- `$.items[0].name`
+- `$.contact.@.unit`
 
-`selector` is a canonical-path selector target.
-Selector strings are root-anchored and use canonical path segment syntax with two additional selector segments:
-- `*` matches exactly one path segment.
-- `**` matches zero or more path segments.
+`selector` is a SANSA selector target.
+Selector strings are root-anchored and use SANSA selector syntax:
+- `.*` matches exactly one structural segment.
+- `.**` matches zero or more structural segments.
 
 Examples:
 - `$.*.contact` matches `contact` at exact depth 2 from root, such as `$.app.contact`.
 - `$.**.contact` matches `contact` at any depth under root, including `$.contact`.
 - `$.*.**.contact` matches `contact` at depth 2 or deeper.
+- `$.pages.*.title` matches indexed or named direct children such as `$.pages[0].title`.
+- `$.width.*.@.unit` matches attributes under direct children.
 
-Selector `[*]` retains the indexed wildcard meaning and matches one numeric index segment.
-For example, `$.pages[*].title` matches `$.pages[0].title`.
+SANSA deliberately does not define `[*]` as a selector form. Schemas that need list/item expansion use `selector` with `.*`.
 
 Selectors do not create virtual paths. They match against actual Core/AES event paths.
 
@@ -406,7 +407,7 @@ Schema-validation failures:
 
 Authoring note:
 - `.aeos` documents SHOULD prefer `reference_target_path` where the allowed target domain can be expressed
-  as a path selector such as `$.ages[*]`.
+  as a SANSA selector such as `$.ages.*`.
 - Loaders MUST project that selector into an equivalent internal target-matching form before AEOS validation.
 
 ### 5.8 `resolve_reference_form`
@@ -636,7 +637,7 @@ Behavior:
 - `open` is the default;
 - `open` validates declared schema rules and ignores unexpected AES binding paths;
 - `closed` rejects any non-header AES binding path not explicitly covered by `schema.rules`;
-- exact `path` rules, indexed `path` wildcard rules, and `selector` rules all participate in closed-world coverage;
+- exact `path` rules and `selector` rules both participate in closed-world coverage;
 - rejection happens before downstream materialization is trusted.
 
 Failure diagnostic:
@@ -696,7 +697,7 @@ Current shipped validator phases:
 2. Baseline invariants
 3. Rule-index build / schema-shape validation
 4. Resource-policy budget checks
-5. Selector and indexed-wildcard rule expansion
+5. Selector rule expansion
 6. Presence checks
 7. Type and reference checks
 8. Container-kind checks
