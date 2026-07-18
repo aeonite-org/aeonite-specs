@@ -51,21 +51,21 @@ Disambiguation examples:
 - Canonical path output uses double-quoted bracket form for non-bare keys.
 - Equivalent escaped spellings resolve to the same decoded key identity.
 
-## 4. Normalized Wildcard Path (Derived)
+## 4. Normalized Selector Path (Derived)
 
-Implementations may expose a derived normalized path string for wildcard dispatch ergonomics:
+Implementations may expose a derived normalized selector string for dispatch ergonomics:
 
 - canonical (authoritative): `$.contacts[3].email`
-- normalized (derived): `contacts[*].email`
+- normalized (derived): `$.contacts.*.email`
 
 Normalization rules:
 
-1. Drop root marker.
+1. Preserve root marker.
 2. Keep member names unchanged.
-3. Replace numeric index segments with `[*]`.
+3. Replace numeric index segments with `.*`.
 4. Preserve member traversal dots.
 
-Normalized path is non-authoritative convenience metadata only.
+Normalized selector path is non-authoritative convenience metadata only.
 
 ## 5. Namespace Neutrality
 

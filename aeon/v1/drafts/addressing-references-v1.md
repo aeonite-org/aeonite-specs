@@ -156,7 +156,7 @@ Nuances:
 - quoted bracket member segments may follow attribute selectors using `.[\"...\"]`;
 - quoted attribute selectors may be followed by ordinary member traversal, quoted member traversal, or index traversal;
 - mixed traversal such as `~a.@.["x.y"].z`, `~a.@.meta.["x.y"]`, and `~$.a.@.["profile.name"][0]` is valid when each traversed segment exists and is otherwise legal;
-- compact forms such as `~a@role` and `$.a@role` are not the canonical AEON v1 spelling;
+- compact forms such as `~a@role` and `$.a@role` are not valid AEON v1 reference or address spellings;
 - malformed or incomplete forms such as `~a.@`, `~$.a.@.[`, and `~.["a"]` are invalid;
 - attribute selectors are part of reference/addressing syntax, not canonical path identity;
 - data namespace and attribute namespace are distinct and must not be merged.
