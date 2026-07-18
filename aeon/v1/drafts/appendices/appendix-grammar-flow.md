@@ -250,7 +250,7 @@ Rules:
 
 - `$` is the explicit root;
 - dot traversal and bracket traversal address data namespace segments;
-- `@key` and `@["key"]` address attribute namespace segments;
+- `.@.key` and `.@.["key"]` address attribute namespace segments;
 - empty quoted member segments and empty quoted attribute segments are invalid.
 
 ## 9. Comments And Trivia Flow

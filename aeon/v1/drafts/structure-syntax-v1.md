@@ -418,7 +418,7 @@ Nuances:
 - `~a.b` means traversal through two member segments;
 - `~"a.b"` and `~["a.b"]` are equivalent initial quoted-member forms;
 - `~["a.b"]` means one quoted member segment;
-- `@key` and `@["key"]` both address attribute namespace segments.
+- `.@.key` and `.@.["key"]` both address attribute namespace segments.
 
 ## 8. Minimum Conformance Reminders
 

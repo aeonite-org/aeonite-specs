@@ -279,7 +279,7 @@ $.message.@.id
 $.message.@.properties.caller.@.by
 ```
 
-Compact forms such as `$.message@id` are not normative in SANSA v1. Consumers may accept them as compatibility sugar, but the canonical SANSA form uses `.@`.
+Compact forms such as `$.message@id` are not normative in SANSA v1. Consumers may accept them as compatibility sugar, but the canonical SANSA form uses `.@.`.
 
 ### 5.4 Local Address Space
 

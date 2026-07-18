@@ -86,7 +86,7 @@ Examples:
 - `$.user.name`
 - `$.items[0]`
 
-Attribute selectors (for example `@meta`, `@["a.b"]`) are valid in addressing expressions but are not canonical path identity segments.
+Attribute selectors (for example `.@.meta`, `.@.["a.b"]`) are valid in addressing expressions but are not canonical path identity segments.
 
 ---
 

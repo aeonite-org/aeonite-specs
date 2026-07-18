@@ -25,12 +25,12 @@ Member segments:
 
 Address-expression attribute selectors:
 
-- bare: `$.a@meta`
-- quoted: `$.a@["profile.name"]`
+- bare: `$.a.@.meta`
+- quoted: `$.a.@.["profile.name"]`
 
 Mixed address-expression examples:
 
-- `$.["key"]@["a"].["b"]`
+- `$.["key"].@.["a"].["b"]`
 - `$.["array key"][2]`
 
 Disambiguation examples:
@@ -40,8 +40,8 @@ Disambiguation examples:
 
 ## 2. Attribute Segment Rule
 
-- Bare attribute segment syntax is `@key`.
-- Quoted-key attribute segment syntax is `@["key with spaces"]`.
+- Bare attribute segment syntax is `.@.key`.
+- Quoted-key attribute segment syntax is `.@.["key with spaces"]`.
 - Attribute selectors participate in addressing expressions, not canonical path identity.
 
 ## 3. Decoding and Equivalence
