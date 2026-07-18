@@ -123,7 +123,15 @@ Attribute selectors enter the attribute address space.
 
 Local address-space selectors enter a named local address space only when the resolving consumer exposes and authorizes that space.
 
+If local address-space traversal is unsupported, the resolver must fail explicitly. If local address-space traversal is supported but the current binding does not expose the requested named space, normal resolution produces no bindings for that branch.
+
 Expansion selectors broaden the Binding Set structurally.
+
+The direct expansion selector `.*` selects the direct structural children of each binding in the current Binding Set.
+
+The descendant expansion selector `.**` selects structural descendants in deterministic preorder. It does not include the current binding.
+
+Expansion selectors do not implicitly enter attribute address spaces or local address spaces. Those spaces are entered only through explicit `.@` or `.<"name">` selectors.
 
 Filter selectors filter by structural metadata such as semantic datatype or representation kind.
 
@@ -183,6 +191,7 @@ Binding order must be deterministic.
 Rules:
 
 - ordered structures preserve structural order;
+- descendant expansion emits descendants in deterministic preorder;
 - AES-backed namespaces preserve deterministic event-derived order;
 - implementations without inherent stable order must expose deterministic ordering or report the operation unsupported.
 
