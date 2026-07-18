@@ -199,6 +199,13 @@ interface SchemaRule {
 
 Rules target AES events by either exact SANSA path or by SANSA selector.
 
+In programmatic schema payloads, `path` and `selector` are strings. In native AEON schema source, they SHOULD be encoded as SANSA literals:
+
+```aeon
+path:sansa = $.contact.name
+selector:sansa = $.items.*.name
+```
+
 Each rule MUST provide exactly one of:
 - `path`
 - `selector`
