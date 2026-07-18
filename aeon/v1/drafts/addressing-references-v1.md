@@ -1,7 +1,7 @@
 ---
 id: aeon-core-v1-addressing-references
-title: AEON v1 Addressing and References Reference
-description: "Reference for canonical paths, quoted segments, attribute selectors, reference forms, and reference legality in AEON Core v1."
+title: AEON v1 Addressing, SANSA Literals, and References Reference
+description: "Reference for AEON canonical paths, SANSA address literal adoption, reference forms, and reference legality in AEON Core v1."
 family: official-v1
 group: Core References
 status: official v1 companion reference
@@ -12,14 +12,35 @@ links:
   - aeon-core-v1-structure-syntax
   - aeon-core-v1-comments-annotations
 ---
-# AEON v1 Addressing and References Reference
+# AEON v1 Addressing, SANSA Literals, and References Reference
 
 Status: official v1 companion reference  
-Scope: canonical paths, reference forms, quoted segments, attribute selectors, and reference legality.
+Scope: canonical AEON paths, SANSA address literal adoption, reference forms, quoted segments, attribute selectors, and reference legality.
+
+## 0. Relationship to SANSA
+
+SANSA means **Semantic Address NameSpace Abstraction**.
+
+SANSA defines the broader address language used to describe paths and selectors over a semantic address namespace. AEON Core adopts SANSA address literals through the reserved `sansa` datatype, and AEON tooling may use SANSA selectors for schema rules, playground extraction, and consumer-defined lookup.
+
+AEON references are related, but narrower:
+
+- `value:sansa = $.contact.name` stores a SANSA address literal as data;
+- `selector:sansa = $.inventory.items.*.sku` stores a SANSA selector as data;
+- `copy = ~contact.name` is an AEON clone reference to an existing target;
+- `pointer = ~>contact` is an AEON pointer reference to an existing target.
+
+The SANSA address language can express selectors such as `*`, `**`, quoted name patterns, local address spaces, and qualified address literals. AEON reference forms do not evaluate SANSA selectors. A reference target must resolve deterministically to an already-bound AEON path under the reference legality rules in this document.
+
+In short:
+
+- SANSA owns the portable address and selector notation;
+- AEON owns reference syntax, reference legality, and the `sansa` literal carrier;
+- consumers own resolution, selector evaluation, authorization, and domain meaning beyond Core syntax.
 
 ## 1. Canonical Path Model
 
-Canonical path identity in AEON v1 uses only:
+Canonical path identity in AEON v1 is the exact-path subset used for AES identity and reference targets. It uses only:
 - member segments
 - index segments
 
@@ -32,19 +53,21 @@ $.items[0]
 $.["a.b"]
 $.page[0]
 $.page[0].a
+$.user.@.role
 ```
 
 Identity rules:
 - `a.b` means two member segments;
 - `["a.b"]` means one member key that contains a dot;
-- attribute selectors are valid in addressing expressions, but are not canonical path identity segments.
+- attribute traversal uses the SANSA-derived `.@.` address-space transition;
+- attribute selectors are valid in addressing expressions, but attribute metadata remains distinct from ordinary member identity.
 
 Authoritative grammar sketch:
 
 ```ebnf
-CanonicalPath = "$" RootPathMember* ;
-RootPathMember = "." BareKey | ".[" QuotedKey "]" | "[" Number "]" ;
-PathMember = "." BareKey | ".[" QuotedKey "]" | "[" Number "]" ;
+CanonicalPath = "$" PathSegment* ;
+PathSegment = "." BareKey | ".[" QuotedKey "]" | "[" Number "]" | ".@." AttributeKey ;
+AttributeKey = BareKey | "[" QuotedKey "]" ;
 ```
 
 Canonical notes:
@@ -102,19 +125,19 @@ Nuances:
 - index segments may be followed by member traversal or attribute selectors.
 - node-child addressing uses the same bracket index form as list and tuple addressing.
 
-## 3. Attribute Selectors
+## 3. Attribute Address Space
 
 Attributes live in a distinct namespace from data members.
 
-Attribute selector forms:
+AEON v1 uses the SANSA-derived `.@.` transition to enter the attribute address space:
 
 ```aeon
-$.user@role
-$.user@["profile.name"]
-$.user@["profile.name"].["display.name"]
-~user@role
-~user@["profile.name"]
-~user@meta.["x.y"]
+$.user.@.role
+$.user.@.["profile.name"]
+$.user.@.["profile.name"].["display.name"]
+~user.@.role
+~user.@.["profile.name"]
+~user.@.meta.["x.y"]
 ```
 
 Grammar sketch:
@@ -123,19 +146,38 @@ Grammar sketch:
 RefPath = RefStart RefSegment* ;
 RefStart = BareKey | QuotedMember | "$" ;
 RefSegment = MemberSegment | IndexSegment | AttributeSegment ;
-AttributeSegment = "@" BareKey | "@[" QuotedKey "]" ;
+AttributeSegment = ".@." (BareKey | "[" QuotedKey "]") ;
 ```
 
 Nuances:
-- `@key` addresses a bare attribute key;
-- `@["key with spaces"]` addresses a quoted attribute key;
+- `.@.key` addresses a bare attribute key;
+- `.@.["key with spaces"]` addresses a quoted attribute key;
 - quoted member and attribute-key segments must not be empty;
 - quoted bracket member segments may follow attribute selectors using `.[\"...\"]`;
 - quoted attribute selectors may be followed by ordinary member traversal, quoted member traversal, or index traversal;
-- mixed traversal such as `~a@["x.y"].z`, `~a@meta.["x.y"]`, and `~$.a@["profile.name"][0]` is valid when each traversed segment exists and is otherwise legal;
-- malformed or incomplete forms such as `~a@`, `~$.a@[`, and `~.["a"]` are invalid;
+- mixed traversal such as `~a.@.["x.y"].z`, `~a.@.meta.["x.y"]`, and `~$.a.@.["profile.name"][0]` is valid when each traversed segment exists and is otherwise legal;
+- compact forms such as `~a@role` and `$.a@role` are not the canonical AEON v1 spelling;
+- malformed or incomplete forms such as `~a.@`, `~$.a.@.[`, and `~.["a"]` are invalid;
 - attribute selectors are part of reference/addressing syntax, not canonical path identity;
 - data namespace and attribute namespace are distinct and must not be merged.
+
+## 3.1 SANSA Address Literal Values
+
+The reserved datatype label `sansa` carries SANSA address text as an AEON value:
+
+```aeon
+path:sansa = $.contact.name
+selector:sansa = $.inventory.items.*.sku
+attribute:sansa = $.contact.name.@.unit
+pattern:sansa = $.items.("item?*").sku
+qualified:sansa = $.result:number|nan
+```
+
+For lexical purposes, a SANSA literal begins where the value begins and continues until ASCII whitespace, a comma, or a line break that closes the value in the current AEON context.
+
+AEON Core validates and preserves the address literal form it accepts. It does not resolve the address, evaluate selectors, apply qualifiers, or prove that the address is meaningful for any particular consumer.
+
+Host implementations may restrict the accepted SANSA qualifier surface while still allowing documents to carry syntactically valid SANSA addresses for other systems.
 
 ## 4. Reference Forms
 
@@ -152,7 +194,7 @@ c = ~$.a
 d = ~"a.b"
 d2 = ~["a.b"]
 e = ~>a
-f = ~user@role
+f = ~user.@.role
 ```
 
 Nuances:
@@ -160,6 +202,7 @@ Nuances:
 - `~>path` preserves alias/pointer intent in the AST/AES model;
 - ASCII inter-token whitespace may appear between `~` or `~>` and the following reference path, but canonical formatting removes it;
 - both forms use the same path grammar after the introducer.
+- reference paths use exact AEON target paths; SANSA selector expansion is not part of `~` or `~>` reference resolution.
 
 AES notes:
 - clone and alias remain distinct value kinds;
@@ -196,9 +239,9 @@ Then:
 
 ```aeon
 ~user        // data binding value
-~user@role   // attribute namespace value
-~a[0].x@b    // nested binding attribute inside container
-~a@meta.["x.y"] // quoted member traversal after attribute selection
+~user.@.role   // attribute namespace value
+~a[0].x.@.b    // nested binding attribute inside container
+~a.@.meta.["x.y"] // quoted member traversal after attribute selection
 ```
 
 These are not the same target.
@@ -206,7 +249,7 @@ These are not the same target.
 Attachment-scope note:
 - attributes attach to bindings (or node heads), not to already-completed literal values;
 - binding-attached attributes remain addressable wherever the binding itself is addressable;
-- therefore `a@{b=1} = [0]` exposes `$.a@b`, and `a = [{x@{b=0}=1}]` exposes `$.a[0].x@b`;
+- therefore `a@{b=1} = [0]` exposes `$.a.@.b`, and `a = [{x@{b=0}=1}]` exposes `$.a[0].x.@.b`;
 - postfix literal forms such as `a = [0]@{b=2}` are invalid Core v1 syntax.
 
 ## 6. Reference Legality
@@ -263,7 +306,7 @@ Canonical output conventions:
 - root marker is `$`;
 - bare member segments use `.name`;
 - non-bare members use `["..."]`;
-- attribute selectors use `@name` or `@["..."]`;
+- attribute address-space traversal uses `.@.name` or `.@.["..."]`;
 - numeric indices use `[n]`.
 
 Examples:
@@ -271,10 +314,10 @@ Examples:
 ```aeon
 $.contacts[3].email
 $.["a.b"]
-$.user@meta
-$.user@["profile.name"]
-$.user@["profile.name"].["display.name"]
-$.a@meta.["x.y"]
+$.user.@.meta
+$.user.@.["profile.name"]
+$.user.@.["profile.name"].["display.name"]
+$.a.@.meta.["x.y"]
 ```
 
 ## 9. Node Model Boundary

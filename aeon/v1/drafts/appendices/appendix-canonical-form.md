@@ -185,7 +185,7 @@ Canonical form MUST NOT:
 
 Canonical reference rendering also applies these normalizations:
 - explicit root prefixes are elided when redundant (`~$.a` → `~a`, `~>$.a` → `~>a`)
-- quoted member or attribute selectors may collapse to bare identifier form when the decoded segment is already a canonical bare identifier (`~a@["meta"]` → `~a@meta`)
+- quoted member or attribute selectors may collapse to bare identifier form when the decoded segment is already a canonical bare identifier (`~a.@.["meta"]` -> `~a.@.meta`)
 
 ## Node Heads
 

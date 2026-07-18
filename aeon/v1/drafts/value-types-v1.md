@@ -65,7 +65,7 @@ a:list = [:n = :n = 3]  // invalid: typed value cannot wrap another typed value
 Container typing and anonymous value typing are not equivalent. `numbers:list<int32> = [1, 2, 3]` declares an expectation on the container binding, while `values:list = [:int32 = 3, :string = "4"]` annotates individual anonymous elements without changing their order or making them named bindings.
 
 In particular:
-- Core recognizes reserved names such as `int`, `uint`, `int32`, `float64`, `obj`, `envelope`, `trimtick`, `prose`, `sep`, and `kadot`;
+- Core recognizes reserved names such as `int`, `uint`, `int32`, `float64`, `obj`, `envelope`, `trimtick`, `prose`, `sep`, `kadot`, and `sansa`;
 - Core checks literal-family compatibility only;
 - stronger semantic enforcement such as integer-only, unsigned-only, width, or range belongs to profile/schema validation layers;
 - `aeon.gp.profile.v1` and `aeon.gp.schema.v1` are the intended general-purpose baseline for making those stronger meanings operational.
@@ -188,6 +188,16 @@ Interpretation:
 | Alternative names | none  |
 | Reserved          | `kadot` |
 
+### `sansa`
+
+| Field             | Names   |
+| ----------------- | ------- |
+| Type              | `sansa` |
+| Alternative names | none    |
+| Reserved          | none    |
+
+`sansa` is the reserved datatype label for SANSA address literals. SANSA means Semantic Address NameSpace Abstraction. Core validates and preserves the accepted literal surface; resolution, selector expansion, authorization, and qualifier meaning belong to consumers.
+
 ### `object`
 
 | Field             | Names      |
@@ -248,6 +258,7 @@ Interpretation:
 | DateTime          | `2025-01-01T09`, `2025-01-01T09Z`, `2025-01-01T09+02:00`, `2025-01-01T09:30:00Z` | `ts = 2025-01-01T09:30:00Z`                 | `ts:datetime = 2025-01-01T09:30:00Z`                            | `DateTimeLiteral`  |
 | ZRUT              | `2025-01-01T00:00:00Z&Australia/Sydney`, `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local` | `z = 2025-01-01T00:00:00Z&Australia/Sydney` | `z:zrut = 2025-01-01T00:00:00Z&Australia/Sydney`                | `DateTimeLiteral`  |
 | Separator Literal | `^300x250`                              | `size = ^300x250`                           | `size:sep[x] = ^300x250`                                        | `SeparatorLiteral` |
+| SANSA Address     | `$.path`, `?.path`, `$.items.*.sku`     | `path:sansa = $.contact.name`               | `selector:sansa = $.inventory.items.*.sku`                      | `SansaAddressLiteral` |
 | Object            | `{ ... }`                               | `user = { name = "John" }`                  | `user:object = { name:string = "John" }`                        | `ObjectNode`       |
 | List              | `[ ... ]`                               | `arr = [1,2,3]`                             | `arr:list = [1,2,3]` or `arr:list<number> = [1,2,3]`            | `ListNode`         |
 | Tuple             | `( ... )`                               | `point = (10,20)`                           | `point:tuple = (10,20)` or `point:tuple<int32,int32> = (10,20)` | `TupleLiteral`     |
@@ -700,6 +711,43 @@ Payload grammar:
 AES:
 - `SeparatorLiteral` with raw payload preserved.
 
+## 3.11 SANSA Address Literal
+
+SANSA means **Semantic Address NameSpace Abstraction**.
+
+Examples:
+
+```aeon
+path:sansa = $.contact.name
+context:sansa = ?.name
+selector:sansa = $.inventory.items.*.sku
+deepSelector:sansa = $.inventory.**
+attribute:sansa = $.contact.name.@.unit
+pattern:sansa = $.items.("item?*").sku
+qualified:sansa = $.result:number|nan
+```
+
+Core role:
+- `:sansa` marks a value as a SANSA address literal;
+- the literal may express an exact path or selector;
+- AEON Core validates and preserves the address form it accepts;
+- AEON Core does not resolve the address, expand selectors, interpret qualifiers, or authorize access to any target.
+
+Lexical boundary:
+- a SANSA literal begins where the value begins;
+- it continues until ASCII whitespace, a comma, or a line break that closes the value in the current AEON context;
+- quoted SANSA segments and qualifier arguments use SANSA/AEON quoted payload rules where the SANSA grammar allows them.
+
+Reference boundary:
+- `target:sansa = $.contact.name` stores an address as data;
+- `copy = ~contact.name` is an AEON clone reference;
+- `pointer = ~>contact` is an AEON pointer reference.
+
+These forms are related by address syntax, but they are not interchangeable. AEON reference legality applies only to `~` and `~>` values.
+
+AES:
+- `SansaAddressLiteral` with parsed address structure and/or source literal preserved by the implementation.
+
 ## 4. Structured Values
 
 ## 4.1 Object
@@ -830,7 +878,7 @@ a = 1
 b = ~a
 c = ~>a
 item = ~$.items[0]
-meta = ~a@ns
+meta = ~a.@.ns
 ```
 
 Nuances:

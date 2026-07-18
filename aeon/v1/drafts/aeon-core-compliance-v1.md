@@ -87,10 +87,10 @@ Implementations MUST:
 Implementations MUST:
 1. support canonical path identity segments for member and index;
 2. support quoted member segments and quoted attribute selectors in addressing expressions;
-3. support attribute reference forms (for example `~a@b`);
-4. support mixed member traversal with quoted bracket member segments after `.` (for example `~a.[\"b.c\"]`, `~a@meta.[\"x.y\"]`, `~a@[\"x.y\"].z`);
+3. support attribute reference forms through the attribute address-space transition (for example `~a.@.b`);
+4. support mixed member traversal with quoted bracket member segments after `.` (for example `~a.[\"b.c\"]`, `~a.@.meta.[\"x.y\"]`, `~a.@.[\"x.y\"].z`);
 5. reject empty quoted path or attribute segments deterministically;
-6. reject malformed or incomplete addressing forms deterministically, including examples such as `~a@`, `~$.a@[`, and `~.[\"a\"]`;
+6. reject malformed or incomplete addressing forms deterministically, including examples such as `~a.@`, `~$.a.@.[`, and `~.[\"a\"]`;
 7. reject missing reference targets deterministically;
 8. reject forward references deterministically;
 9. reject self-references deterministically.
