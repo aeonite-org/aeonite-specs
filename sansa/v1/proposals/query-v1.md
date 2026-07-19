@@ -354,6 +354,17 @@ Example:
 where .active == true and (.age >= 18 or .role == "admin")
 ```
 
+Boolean `and` and `or` evaluate left to right and short-circuit:
+
+- `a and b` does not evaluate `b` when `a` is false.
+- `a or b` does not evaluate `b` when `a` is true.
+
+Short-circuiting is part of the query semantics, not an implementation optimization. It allows guard predicates to prevent missing, cardinality, or type errors in later operands:
+
+```text
+where exists(.id#number) and .id > 2
+```
+
 ## 12. Comparison Expressions
 
 Initial comparison operators:
