@@ -667,7 +667,18 @@ Mounted local namespaces are read-only evaluation inputs in SANSA.Query.
 
 Local address-space binding prevents runtime values from being interpreted as SANSA.Query syntax. It does not by itself prevent unauthorized data access, excessive traversal, excessive result generation, expensive ordering, or information disclosure through permitted namespaces.
 
-## 21. Out of Scope
+## 21. Diagnostics
+
+SANSA.Query evaluation is fail-fast in v1. A query either produces a Result Set or a Diagnostics Set.
+
+Evaluation diagnostics must identify the error category with a stable code and message. They should also include query context when available:
+
+- `phase`: one of `parse`, `from`, `where`, `order`, or `select`
+- `candidateAddress`: the canonical address of the candidate binding being evaluated, when the failure occurs in candidate context
+
+`phase` and `candidateAddress` are diagnostic context. They do not define additional query semantics and must not be used to infer authorization, data visibility, or partial success.
+
+## 22. Out of Scope
 
 SANSA.Query v1 does not define:
 
