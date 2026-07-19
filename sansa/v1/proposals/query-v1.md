@@ -122,7 +122,7 @@ The written order mirrors the logical evaluation order.
 
 ## 5. Parser Conformance Slice
 
-The first implementation slice for SANSA.Query is parser-only. It validates query source shape and returns a structural model, but it does not evaluate expressions or produce query results.
+The first implementation slices for SANSA.Query are parser-only. They validate query source shape and return structural models, but do not evaluate expressions or produce query results.
 
 This slice covers:
 
@@ -135,7 +135,20 @@ This slice covers:
 - `offset` and `limit` as non-negative integers without leading zeroes
 - source comments as lexical trivia removed from canonical rendering
 
-For this slice, `where`, `select`, and order-key expression bodies are preserved as normalized source text. Their internal expression AST and evaluation semantics are intentionally deferred to a later query-expression slice.
+The clause parser covers the outer query pipeline. The expression parser covers the initial syntax AST for `where`, `select`, and order-key expressions.
+
+The expression parser covers:
+
+- resolution expressions beginning with `.`, `$`, or `?`
+- string, number, and Boolean literals
+- comparison operators
+- Boolean operators with the precedence defined in this proposal
+- parenthesized groups
+- cardinality operator shape
+- deterministic function-call shape
+- projection expression shape
+
+The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
 The initial CTS owner is:
 
