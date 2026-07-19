@@ -230,6 +230,8 @@ The value must be a non-negative integer. `limit 0` produces an empty Binding Se
 
 The `select` clause produces the final Result Set.
 
+Each result record represents one candidate binding that survives filtering, ordering, offset, and limit. When the namespace exposes a canonical address for that candidate, the result record carries that address as the result address. The selected value remains separate from the candidate address.
+
 ```text
 select .name
 ```
