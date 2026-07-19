@@ -144,6 +144,7 @@ The expression parser covers:
 - comparison operators
 - Boolean operators with the precedence defined in this proposal
 - parenthesized groups
+- existence operator shape
 - cardinality operator shape
 - deterministic function-call shape
 - projection expression shape
@@ -156,7 +157,7 @@ The initial CTS owner is:
 aeonite-cts/cts/sansa/v1/sansa-query-parser-cts.v1.json
 ```
 
-The first evaluator scaffold is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, string and number order keys, cardinality predicates over resolved binding sets, built-in string functions, and projection expressions.
+The first evaluator scaffold is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved binding sets, built-in string functions, and projection expressions.
 
 The evaluator scaffold explicitly rejects:
 
@@ -379,7 +380,34 @@ The runtime must not define:
 
 Cross-type comparison is invalid unless an applicable semantic contract explicitly defines compatibility.
 
-## 13. Cardinality Operators
+## 13. Existence Operators
+
+Existence operators inspect resolution cardinality rather than scalar value:
+
+```text
+exists(...)
+absent(...)
+```
+
+`exists(expression)` returns true when the resolution expression resolves one or more bindings.
+
+`absent(expression)` returns true when the resolution expression resolves zero bindings.
+
+The operand must be a SANSA resolution expression. Parenthesized grouping around the resolution expression is allowed.
+
+Examples:
+
+```text
+where exists(.email)
+where absent(.deletedAt)
+where exists(.roles) and absent(.roles.*)
+```
+
+The final example means "the roles container exists, and it has no selected entries." `absent(.roles.*)` alone also matches candidates where `.roles` itself is missing.
+
+Existence operators are not ordinary functions. They do not evaluate their operand as a scalar value.
+
+## 14. Cardinality Operators
 
 SANSA.Query does not implicitly collapse Binding Sets into scalar values.
 
@@ -409,9 +437,27 @@ none(empty) = true
 
 These semantics are normative for SANSA.Query v1.
 
+`all(...)` is a universal quantifier. It means every binding in the evaluated Binding Set satisfies the predicate. It does not assert that the Binding Set is non-empty.
+
+For example:
+
+```text
+where all(.roles.* == "admin")
+```
+
+matches bindings where every role is `"admin"`, including bindings where `.roles.*` resolves to an empty Binding Set.
+
+To express "there is at least one role, and every role is admin", combine `any(...)` and `all(...)` explicitly:
+
+```text
+where any(.roles.* == "admin") and all(.roles.* == "admin")
+```
+
+SANSA.Query v1 does not define an `only(...)` cardinality operator. A future version may introduce `only(...)` as a shorthand for a non-empty all-match predicate, but implementations must not treat it as part of the v1 surface.
+
 Cardinality operators are not ordinary functions. They evaluate their operand repeatedly across the relevant Binding Set.
 
-## 14. Functions
+## 15. Functions
 
 Functions are deterministic value-producing expressions.
 
@@ -440,7 +486,7 @@ Function names use lower camel case.
 
 String concatenation must use an explicit function such as `concat`. The `+` operator is reserved for numeric addition.
 
-## 15. Lookup
+## 16. Lookup
 
 `lookup` is a deterministic value-producing expression, not a pipeline clause.
 
@@ -468,7 +514,7 @@ For SANSA.Query v1, `lookup` requires:
 
 Multiple base or key bindings produce a cardinality error. A missing target produces no binding. The consuming context determines whether that is acceptable.
 
-## 16. Projection
+## 17. Projection
 
 Projection may preserve existing bindings or construct derived results.
 
@@ -488,7 +534,7 @@ select {
 
 Constructed values have derived identity and are not written back into the namespace.
 
-## 17. Comments
+## 18. Comments
 
 SANSA.Query supports source comments.
 
@@ -508,7 +554,7 @@ Multi-line:
 
 Comments are lexical trivia. They may appear wherever whitespace is permitted, do not affect query semantics, and are removed from canonical query representations.
 
-## 18. Local Address-Space Binding
+## 19. Local Address-Space Binding
 
 Runtime values intended for use by a query should be supplied through explicitly mounted local address spaces rather than incorporated into query source text.
 
@@ -537,7 +583,7 @@ parsed query evaluation
 
 There must be no fallback between primary and local address spaces.
 
-## 19. Security and Policy
+## 20. Security and Policy
 
 Consumers receiving SANSA.Query expressions from outside their trust boundary may:
 
@@ -554,7 +600,7 @@ Mounted local namespaces are read-only evaluation inputs in SANSA.Query.
 
 Local address-space binding prevents runtime values from being interpreted as SANSA.Query syntax. It does not by itself prevent unauthorized data access, excessive traversal, excessive result generation, expensive ordering, or information disclosure through permitted namespaces.
 
-## 20. Out of Scope
+## 21. Out of Scope
 
 SANSA.Query v1 does not define:
 
