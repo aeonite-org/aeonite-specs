@@ -537,6 +537,18 @@ Documents must not define executable functions.
 
 Function names use lower camel case.
 
+Ordinary value-producing functions evaluate their arguments before invocation. Resolution-expression arguments are consumed in single-binding scalar context:
+
+- zero bindings produce `Missing`;
+- more than one binding produces `CardinalityError`;
+- explicit null values are passed only to functions that declare null handling;
+- NaN and infinity are passed only to functions that declare special numeric handling;
+- unsupported scalar types produce a function-argument diagnostic.
+
+The initial built-in string functions require string arguments. They do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
+
+Special value predicates such as `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
+
 String concatenation must use an explicit function such as `concat`. The `+` operator is reserved for numeric addition.
 
 ## 16. Lookup
