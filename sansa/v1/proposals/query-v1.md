@@ -410,6 +410,18 @@ The runtime must not define:
 
 Cross-type comparison is invalid unless an applicable semantic contract explicitly defines compatibility.
 
+Initial comparison policy:
+
+| Operands | Equality | Ordering | Notes |
+| --- | --- | --- | --- |
+| number and number | allowed | allowed | Finite numbers compare by numeric value. |
+| string and string | allowed | allowed | String ordering requires the active semantic comparison profile. |
+| boolean and boolean | allowed | error | Booleans are not ordered. |
+| explicit null | error | error | Use `isNull(...)` or `isNullReason(...)`. |
+| NaN | error | error | Use `isNaN(...)`. |
+| infinity and number | allowed | allowed | Infinity compares as a numeric bound when numeric comparison is supported. |
+| mixed types | error | error | No implicit coercion. |
+
 `NaN` is not comparable. Equality, inequality, ordering, and order-key evaluation over `NaN` must fail with a comparison diagnostic. Queries test explicit NaN values with `isNaN(...)`.
 
 Infinity values are explicit numeric special values. Where an applicable numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with `isInfinity(...)`.
