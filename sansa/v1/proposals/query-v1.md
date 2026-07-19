@@ -157,7 +157,7 @@ The initial CTS owner is:
 aeonite-cts/cts/sansa/v1/sansa-query-parser-cts.v1.json
 ```
 
-The first evaluator scaffold is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved binding sets, built-in string functions, and projection expressions.
+The first evaluator scaffold is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved binding sets, built-in string functions, value predicates for null and special numeric values, and projection expressions.
 
 The evaluator scaffold explicitly rejects:
 
@@ -330,6 +330,25 @@ absent(.deletedAt)
 
 Explicit absence values require distinct tests, with exact names defined by the relevant Aeonite absence-value specification.
 
+Initial null predicates:
+
+```text
+isNull(...)
+isNullReason(..., "reason")
+```
+
+`isNull(expression)` returns true when the expression resolves exactly one explicit null binding.
+
+`isNullReason(expression, reason)` returns true when the expression resolves exactly one explicit null binding and that binding's surfaced null reason equals `reason`.
+
+These predicates are value-semantic tests, not binding-presence tests. If the operand resolves zero bindings, evaluation produces `Missing`; use `exists(...)` or `absent(...)` when binding presence itself is the question.
+
+Example:
+
+```text
+where exists(.status) and isNullReason(.status, "notSet")
+```
+
 ## 11. Boolean Expressions
 
 Initial Boolean operators:
@@ -390,6 +409,10 @@ The runtime must not define:
 - absence behavior
 
 Cross-type comparison is invalid unless an applicable semantic contract explicitly defines compatibility.
+
+`NaN` is not comparable. Equality, inequality, ordering, and order-key evaluation over `NaN` must fail with a comparison diagnostic. Queries test explicit NaN values with `isNaN(...)`.
+
+Infinity values are explicit numeric special values. Where an applicable numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with `isInfinity(...)`.
 
 ## 13. Existence Operators
 
@@ -483,6 +506,10 @@ startsWith(.code, "AU-")
 lower(.name)
 lookup($.jobs, .job)
 concat(.firstName, " ", .lastName)
+isNull(.status)
+isNullReason(.status, "notSet")
+isNaN(.metric)
+isInfinity(.limit)
 ```
 
 Functions must be:
