@@ -120,9 +120,32 @@ select
 
 The written order mirrors the logical evaluation order.
 
-## 5. Clauses
+## 5. Parser Conformance Slice
 
-### 5.1 From
+The first implementation slice for SANSA.Query is parser-only. It validates query source shape and returns a structural model, but it does not evaluate expressions or produce query results.
+
+This slice covers:
+
+- clause detection and normative clause order
+- required `from` and terminal `select`
+- duplicate clause rejection
+- `from` as exactly one SANSA address expression
+- `order by` split into top-level order keys
+- omitted order direction canonicalized to `asc`
+- `offset` and `limit` as non-negative integers without leading zeroes
+- source comments as lexical trivia removed from canonical rendering
+
+For this slice, `where`, `select`, and order-key expression bodies are preserved as normalized source text. Their internal expression AST and evaluation semantics are intentionally deferred to a later query-expression slice.
+
+The initial CTS owner is:
+
+```text
+aeonite-cts/cts/sansa/v1/sansa-query-parser-cts.v1.json
+```
+
+## 6. Clauses
+
+### 6.1 From
 
 The `from` clause provides the initial SANSA.Resolve expression.
 
@@ -132,7 +155,7 @@ from $.users.*
 
 Any valid SANSA.Resolve expression may be used.
 
-### 5.2 Where
+### 6.2 Where
 
 The `where` clause filters the current Binding Set.
 
@@ -144,7 +167,7 @@ The expression is evaluated for each candidate binding. A candidate remains in t
 
 Boolean evaluation does not use truthiness.
 
-### 5.3 Order By
+### 6.3 Order By
 
 The `order by` clause deterministically reorders the current Binding Set.
 
@@ -156,7 +179,7 @@ If direction is omitted, `asc` is assumed.
 
 Ordering keys are evaluated from left to right. Later keys act as tie-breakers. Ordering must be stable. Bindings that compare equal across every specified key retain their existing relative order.
 
-### 5.4 Offset
+### 6.4 Offset
 
 The `offset` clause removes the first specified number of bindings from the working Binding Set.
 
@@ -166,7 +189,7 @@ offset 20
 
 The value must be a non-negative integer.
 
-### 5.5 Limit
+### 6.5 Limit
 
 The `limit` clause restricts the Binding Set to at most the specified number of bindings.
 
@@ -176,7 +199,7 @@ limit 10
 
 The value must be a non-negative integer. `limit 0` produces an empty Binding Set.
 
-### 5.6 Select
+### 6.6 Select
 
 The `select` clause produces the final Result Set.
 
@@ -193,7 +216,7 @@ select {
 
 Projection is terminal in SANSA.Query v1. No pipeline clause may follow `select`.
 
-## 6. Expressions
+## 7. Expressions
 
 Expressions are evaluated within a candidate context containing:
 
@@ -216,7 +239,7 @@ SANSA.Query v1 recognizes these conceptual expression categories:
 - function expressions
 - projection expressions
 
-## 7. Resolution Expressions
+## 8. Resolution Expressions
 
 A leading dot resolves relative to the current candidate binding.
 
@@ -237,7 +260,7 @@ $.<"params">.username
 
 Resolution expressions always produce Binding Sets. Expression contexts determine how those Binding Sets may be consumed.
 
-## 8. Scalar Context
+## 9. Scalar Context
 
 Some expression positions require exactly one semantic value.
 
@@ -258,7 +281,7 @@ When a resolution expression is consumed in scalar context, it produces one of f
 
 `Missing` is an evaluation state. It is not null, false, an empty string, zero, an explicit AEON absence value, or an accepted empty scalar.
 
-## 9. Missing and Absence
+## 10. Missing and Absence
 
 Missing bindings and explicit absence values are distinct.
 
@@ -280,7 +303,7 @@ absent(.deletedAt)
 
 Explicit absence values require distinct tests, with exact names defined by the relevant Aeonite absence-value specification.
 
-## 10. Boolean Expressions
+## 11. Boolean Expressions
 
 Initial Boolean operators:
 
@@ -304,7 +327,7 @@ Example:
 where .active == true and (.age >= 18 or .role == "admin")
 ```
 
-## 11. Comparison Expressions
+## 12. Comparison Expressions
 
 Initial comparison operators:
 
@@ -330,7 +353,7 @@ The runtime must not define:
 
 Cross-type comparison is invalid unless an applicable semantic contract explicitly defines compatibility.
 
-## 12. Cardinality Operators
+## 13. Cardinality Operators
 
 SANSA.Query does not implicitly collapse Binding Sets into scalar values.
 
@@ -362,7 +385,7 @@ These semantics are normative for SANSA.Query v1.
 
 Cardinality operators are not ordinary functions. They evaluate their operand repeatedly across the relevant Binding Set.
 
-## 13. Functions
+## 14. Functions
 
 Functions are deterministic value-producing expressions.
 
@@ -391,7 +414,7 @@ Function names use lower camel case.
 
 String concatenation must use an explicit function such as `concat`. The `+` operator is reserved for numeric addition.
 
-## 14. Lookup
+## 15. Lookup
 
 `lookup` is a deterministic value-producing expression, not a pipeline clause.
 
@@ -419,7 +442,7 @@ For SANSA.Query v1, `lookup` requires:
 
 Multiple base or key bindings produce a cardinality error. A missing target produces no binding. The consuming context determines whether that is acceptable.
 
-## 15. Projection
+## 16. Projection
 
 Projection may preserve existing bindings or construct derived results.
 
@@ -439,7 +462,7 @@ select {
 
 Constructed values have derived identity and are not written back into the namespace.
 
-## 16. Comments
+## 17. Comments
 
 SANSA.Query supports source comments.
 
@@ -459,7 +482,7 @@ Multi-line:
 
 Comments are lexical trivia. They may appear wherever whitespace is permitted, do not affect query semantics, and are removed from canonical query representations.
 
-## 17. Local Address-Space Binding
+## 18. Local Address-Space Binding
 
 Runtime values intended for use by a query should be supplied through explicitly mounted local address spaces rather than incorporated into query source text.
 
@@ -488,7 +511,7 @@ parsed query evaluation
 
 There must be no fallback between primary and local address spaces.
 
-## 18. Security and Policy
+## 19. Security and Policy
 
 Consumers receiving SANSA.Query expressions from outside their trust boundary may:
 
@@ -505,7 +528,7 @@ Mounted local namespaces are read-only evaluation inputs in SANSA.Query.
 
 Local address-space binding prevents runtime values from being interpreted as SANSA.Query syntax. It does not by itself prevent unauthorized data access, excessive traversal, excessive result generation, expensive ordering, or information disclosure through permitted namespaces.
 
-## 19. Out of Scope
+## 20. Out of Scope
 
 SANSA.Query v1 does not define:
 
