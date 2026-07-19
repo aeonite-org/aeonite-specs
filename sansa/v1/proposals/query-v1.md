@@ -401,9 +401,12 @@ Examples:
 where exists(.email)
 where absent(.deletedAt)
 where exists(.roles) and absent(.roles.*)
+where exists(.id#number) and .id > 2
 ```
 
 The final example means "the roles container exists, and it has no selected entries." `absent(.roles.*)` alone also matches candidates where `.roles` itself is missing.
+
+Semantic and representation filters can be used inside existence operands to guard scalar comparison. In `exists(.id#number) and .id > 2`, the first predicate rejects candidates that do not expose a number-typed `.id` binding before the comparison evaluates. Without the semantic filter, a present non-number `.id` binding may produce a comparison error.
 
 Existence operators are not ordinary functions. They do not evaluate their operand as a scalar value.
 
