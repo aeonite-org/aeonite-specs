@@ -156,12 +156,12 @@ The initial CTS owner is:
 aeonite-cts/cts/sansa/v1/sansa-query-parser-cts.v1.json
 ```
 
-The first evaluator scaffold is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, string and number order keys, and projection expressions.
+The first evaluator scaffold is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, string and number order keys, cardinality predicates over resolved binding sets, and projection expressions.
 
 The evaluator scaffold explicitly rejects:
 
 - function-call expressions
-- cardinality expressions
+- cardinality expressions that do not contain a supported binding-set predicate
 - cross-type comparisons
 - missing scalar values in scalar context
 - multiple bindings in scalar context
