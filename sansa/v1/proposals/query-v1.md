@@ -151,7 +151,7 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, value predicates for null and special numeric values, and projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
 
 The evaluator slice explicitly rejects:
 
@@ -340,12 +340,15 @@ absent(.deletedAt)
 
 Explicit absence values require distinct tests, with exact names defined by the relevant Aeonite absence-value specification.
 
-Initial null predicates:
+Initial value predicates:
 
 ```text
+isValue(...)
 isNull(...)
 isNullReason(..., "reason")
 ```
+
+`isValue(expression)` returns true when the expression resolves exactly one ordinary scalar value: string, Boolean, or finite number. It returns false for missing operands, non-scalar bindings, explicit null, NaN, and infinity. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
 
 `isNull(expression)` returns true when the expression resolves exactly one explicit null binding.
 
@@ -356,6 +359,7 @@ These predicates are value-semantic tests, not binding-presence tests. If the op
 Example:
 
 ```text
+where isValue(.id) and .id > 2
 where exists(.status) and isNullReason(.status, "notSet")
 ```
 
@@ -546,6 +550,7 @@ lookup($.jobs, .job)
 concat(.firstName, " ", .lastName)
 isNull(.status)
 isNullReason(.status, "notSet")
+isValue(.id)
 isNaN(.metric)
 isInfinity(.limit)
 ```
@@ -573,7 +578,7 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 
 The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
 
-Special value predicates such as `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
+Value predicates such as `isValue(...)`, `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
 
 String concatenation must use an explicit function such as `concat`. The `+` operator is reserved for numeric addition.
 
