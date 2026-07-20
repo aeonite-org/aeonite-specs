@@ -588,7 +588,14 @@ select path($.<"params">.field)
 order by path($.<"params">.sortField) asc
 ```
 
-Dynamic `from path(...)` requires the `from` clause to accept a source expression rather than only a literal SANSA address expression, and is therefore a separate source-clause extension.
+In the `from` clause, `path(...)` activates a structured SANSA Address Literal value as the query source:
+
+```text
+from path($.<"params">.source)
+select .sku
+```
+
+The activated address supplies the source Binding Set for the query. A source expression that does not evaluate to a Binding Set is invalid.
 
 ## 16. Fallback
 
