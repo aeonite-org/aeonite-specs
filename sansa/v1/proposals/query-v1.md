@@ -439,7 +439,7 @@ The `in` operator tests scalar membership in a Binding Set:
 where "admin" in .roles.*
 ```
 
-The left operand is consumed in scalar context. The right operand is consumed as a Binding Set. Each right-side binding is consumed as a scalar and compared to the left value using equality comparison rules. Empty Binding Sets and non-matching sets evaluate to false.
+The left operand is consumed in scalar context. The right operand is consumed as a Binding Set. Each right-side binding is consumed as a scalar and compared to the left value using equality comparison rules. Empty Binding Sets and non-matching sets evaluate to false. Membership does not skip incompatible bindings: explicit null, NaN, missing scalar, cardinality, and mixed-type comparison failures surface as diagnostics.
 
 `in` is not string containment and does not introduce list literals. String containment uses an explicit function such as `contains(...)`.
 
