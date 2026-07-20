@@ -15,7 +15,7 @@ links:
 # SANSA.Query v1
 
 Status: Proposal  
-Scope: read-only semantic query pipeline and initial expression model.
+Scope: read-only semantic query pipeline, expression model, and bounded evaluator contract.
 
 ## 1. Overview
 
@@ -120,11 +120,11 @@ select
 
 The written order mirrors the logical evaluation order.
 
-## 5. Parser Conformance Slice
+## 5. Implementation Conformance Slice
 
-The first implementation slices for SANSA.Query are parser-only. They validate query source shape and return structural models, but do not evaluate expressions or produce query results.
+The current implementation slices validate query source shape, return structural models, and evaluate a deliberately bounded subset over host-neutral Binding Sets.
 
-This slice covers:
+The clause parser covers:
 
 - clause detection and normative clause order
 - required `from` and terminal `select`
@@ -135,7 +135,7 @@ This slice covers:
 - `offset` and `limit` as non-negative integers without leading zeroes
 - source comments as lexical trivia removed from canonical rendering
 
-The clause parser covers the outer query pipeline. The expression parser covers the initial syntax AST for `where`, `select`, and order-key expressions.
+The expression parser covers the syntax AST for `where`, `select`, and order-key expressions.
 
 The expression parser covers:
 
@@ -151,15 +151,9 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The initial CTS owner is:
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, value predicates for null and special numeric values, and projection expressions.
 
-```text
-aeonite-cts/cts/sansa/v1/sansa-query-parser-cts.v1.json
-```
-
-The first evaluator scaffold is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved binding sets, built-in string functions, value predicates for null and special numeric values, and projection expressions.
-
-The evaluator scaffold explicitly rejects:
+The evaluator slice explicitly rejects:
 
 - unsupported function names
 - invalid built-in function arity or argument types
@@ -168,7 +162,15 @@ The evaluator scaffold explicitly rejects:
 - missing scalar values in scalar context
 - multiple bindings in scalar context
 
-This evaluator scaffold is not the complete SANSA.Query v1 evaluation contract. It is an implementation milestone used to validate the parser, resolver, and expression model together.
+The CTS owner is:
+
+```text
+aeonite-cts/cts/sansa/v1/suites/04-query-parser.json
+aeonite-cts/cts/sansa/v1/suites/05-query-expression-parser.json
+aeonite-cts/cts/sansa/v1/suites/06-query-evaluate.json
+```
+
+This evaluator slice is not the complete SANSA.Query v1 evaluation contract. It is an implementation milestone used to validate the parser, resolver, and expression model together.
 
 ## 6. Clauses
 
