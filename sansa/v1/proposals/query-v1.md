@@ -401,6 +401,7 @@ Initial comparison operators:
 <=
 >
 >=
+in
 ```
 
 Comparison semantics are defined by the Aeonite semantic model, not by the runtime host language.
@@ -431,6 +432,16 @@ Initial comparison policy:
 `NaN` is not comparable. Equality, inequality, ordering, and order-key evaluation over `NaN` must fail with a comparison diagnostic. Queries test explicit NaN values with `isNaN(...)`.
 
 Infinity values are explicit numeric special values. Where an applicable numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with `isInfinity(...)`.
+
+The `in` operator tests scalar membership in a Binding Set:
+
+```text
+where "admin" in .roles.*
+```
+
+The left operand is consumed in scalar context. The right operand is consumed as a Binding Set. Each right-side binding is consumed as a scalar and compared to the left value using equality comparison rules. Empty Binding Sets and non-matching sets evaluate to false.
+
+`in` is not string containment and does not introduce list literals. String containment uses an explicit function such as `contains(...)`.
 
 ## 13. Existence Operators
 
