@@ -375,6 +375,10 @@ Example:
 where .active == true and (.age >= 18 or .role == "admin")
 ```
 
+Boolean context accepts explicit Boolean scalar values and single resolved bindings that expose a Boolean scalar. It does not apply host-language truthiness to strings, numbers, nulls, objects, or Binding Sets.
+
+Boolean `not` evaluates its operand in Boolean context and returns the negated value.
+
 Boolean `and` and `or` evaluate left to right and short-circuit:
 
 - `a and b` does not evaluate `b` when `a` is false.
