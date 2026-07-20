@@ -348,7 +348,7 @@ isNull(...)
 isNullReason(..., "reason")
 ```
 
-`isValue(expression)` returns true when the expression resolves exactly one ordinary scalar value: string, Boolean, or finite number. It returns false for missing operands, non-scalar bindings, explicit null, NaN, and infinity. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
+`isValue(expression)` returns true when the expression evaluates to one ordinary scalar value: string, Boolean, or finite number. It may inspect scalar expressions directly or consume a Binding Set produced by a resolution expression or `path(...)`. It returns false for missing operands, non-scalar bindings, explicit null, NaN, and infinity. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
 
 `isNull(expression)` returns true when the expression resolves exactly one explicit null binding.
 
@@ -360,6 +360,7 @@ Example:
 
 ```text
 where isValue(.id) and .id > 2
+where isValue(path($.<"params">.statusField))
 where exists(.status) and isNullReason(.status, "notSet")
 ```
 
