@@ -594,6 +594,8 @@ For SANSA.Query v1, `lookup` requires:
 - the key to resolve to exactly one scalar value;
 - the target to resolve to zero or one binding.
 
+String keys select direct member children. Non-negative integer keys select direct positional children. Other key shapes are not part of the initial lookup surface.
+
 Multiple base or key bindings produce a cardinality error. A missing target produces no binding. The consuming context determines whether that is acceptable.
 
 ## 17. Projection
