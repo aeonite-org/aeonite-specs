@@ -569,6 +569,27 @@ Special value predicates such as `isNull(...)`, `isNullReason(...)`, `isNaN(...)
 
 String concatenation must use an explicit function such as `concat`. The `+` operator is reserved for numeric addition.
 
+### Dynamic Address Activation
+
+`path(value)` activates a structured SANSA Address Literal value as an address expression.
+
+Conceptual syntax:
+
+```text
+path(<value>)
+```
+
+The operand is consumed in scalar value context and must be a SANSA Address Literal value. A plain string that happens to contain address-like text is not a SANSA Address Literal and must not be parsed as address syntax by `path`.
+
+In expression positions, `path(...)` returns the Binding Set produced by resolving the activated address in the current candidate context. This supports dynamic selected fields, predicates, and order keys:
+
+```text
+select path($.<"params">.field)
+order by path($.<"params">.sortField) asc
+```
+
+Dynamic `from path(...)` requires the `from` clause to accept a source expression rather than only a literal SANSA address expression, and is therefore a separate source-clause extension.
+
 ## 16. Fallback
 
 `fallback` is a deterministic missing-aware expression, not an ordinary eager function.
