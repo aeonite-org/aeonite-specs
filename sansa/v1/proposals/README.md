@@ -20,6 +20,7 @@ SANSA is independent within the Aeonite ecosystem. AEON, AEOS, AES, runtime obje
 - `addressing-v1.md` defines the SANSA address model and selector vocabulary.
 - `resolve-v1.md` defines deterministic structural resolution over SANSA address expressions.
 - `query-v1.md` defines the initial read-only semantic query pipeline built on SANSA.Resolve.
+- `extensions-v1.md` records candidate selector and query-helper extensions before they enter the core v1 conformance surface.
 
 ## Conceptual Stack
 

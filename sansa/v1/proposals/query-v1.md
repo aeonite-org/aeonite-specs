@@ -142,6 +142,7 @@ The expression parser covers:
 - resolution expressions beginning with `.`, `$`, or `?`
 - string, number, and Boolean literals
 - comparison operators
+- membership operator shape
 - Boolean operators with the precedence defined in this proposal
 - parenthesized groups
 - existence operator shape
@@ -270,6 +271,7 @@ SANSA.Query v1 recognizes these conceptual expression categories:
 - relative resolution expressions
 - root resolution expressions
 - comparison expressions
+- membership expressions
 - Boolean expressions
 - cardinality expressions
 - existence expressions
@@ -346,6 +348,8 @@ Initial value predicates:
 isValue(...)
 isNull(...)
 isNullReason(..., "reason")
+isNaN(...)
+isInfinity(...)
 ```
 
 `isValue(expression)` returns true when the expression evaluates to one ordinary scalar value: string, Boolean, or finite number. It may inspect scalar expressions directly or consume a Binding Set produced by a resolution expression or `path(...)`. It returns false for missing operands, non-scalar bindings, explicit null, NaN, and infinity. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
@@ -354,7 +358,11 @@ isNullReason(..., "reason")
 
 `isNullReason(expression, reason)` returns true when the expression resolves exactly one explicit null binding and that binding's surfaced null reason equals `reason`.
 
-These predicates are value-semantic tests, not binding-presence tests. If the operand resolves zero bindings, evaluation produces `Missing`; use `exists(...)` or `absent(...)` when binding presence itself is the question.
+`isNaN(expression)` returns true when the expression resolves exactly one explicit NaN binding.
+
+`isInfinity(expression)` returns true when the expression resolves exactly one explicit positive or negative infinity binding.
+
+These predicates are value-semantic tests, not binding-presence tests. `isValue(...)` is explicitly missing-aware and returns false when its operand resolves zero bindings. The stricter null and special numeric predicates produce `Missing` when their operand resolves zero bindings; use `exists(...)` or `absent(...)` when binding presence itself is the question.
 
 Example:
 
