@@ -568,7 +568,21 @@ Special value predicates such as `isNull(...)`, `isNullReason(...)`, `isNaN(...)
 
 String concatenation must use an explicit function such as `concat`. The `+` operator is reserved for numeric addition.
 
-## 16. Lookup
+## 16. Fallback
+
+`fallback` is a deterministic missing-aware expression, not an ordinary eager function.
+
+Conceptual syntax:
+
+```text
+fallback(<primary>, <replacement>)
+```
+
+The primary operand is consumed in scalar value context. If the primary operand resolves zero bindings, or otherwise produces a missing-scalar diagnostic, the replacement operand is evaluated and consumed in the same scalar value context. If the primary operand succeeds, the replacement operand is not evaluated.
+
+`fallback` handles only missing primary values. Explicit null values, cardinality errors, type errors, comparison errors, unsupported functions, invalid references, and authorization failures do not trigger fallback.
+
+## 17. Lookup
 
 `lookup` is a deterministic value-producing expression, not a pipeline clause.
 
@@ -598,7 +612,7 @@ String keys select direct member children. Non-negative integer keys select dire
 
 Multiple base or key bindings produce a cardinality error. A missing target produces no binding. The consuming context determines whether that is acceptable.
 
-## 17. Projection
+## 18. Projection
 
 Projection may preserve existing bindings or construct derived results.
 
@@ -618,7 +632,7 @@ select {
 
 Constructed values have derived identity and are not written back into the namespace.
 
-## 18. Comments
+## 19. Comments
 
 SANSA.Query supports source comments.
 
@@ -638,7 +652,7 @@ Multi-line:
 
 Comments are lexical trivia. They may appear wherever whitespace is permitted, do not affect query semantics, and are removed from canonical query representations.
 
-## 19. Local Address-Space Binding
+## 20. Local Address-Space Binding
 
 Runtime values intended for use by a query should be supplied through explicitly mounted local address spaces rather than incorporated into query source text.
 
@@ -667,7 +681,7 @@ parsed query evaluation
 
 There must be no fallback between primary and local address spaces.
 
-## 20. Security and Policy
+## 21. Security and Policy
 
 Consumers receiving SANSA.Query expressions from outside their trust boundary may:
 
@@ -684,7 +698,7 @@ Mounted local namespaces are read-only evaluation inputs in SANSA.Query.
 
 Local address-space binding prevents runtime values from being interpreted as SANSA.Query syntax. It does not by itself prevent unauthorized data access, excessive traversal, excessive result generation, expensive ordering, or information disclosure through permitted namespaces.
 
-## 21. Diagnostics
+## 22. Diagnostics
 
 SANSA.Query evaluation is fail-fast in v1. A query either produces a Result Set or a Diagnostics Set.
 
@@ -695,7 +709,7 @@ Evaluation diagnostics must identify the error category with a stable code and m
 
 `phase` and `candidateAddress` are diagnostic context. They do not define additional query semantics and must not be used to infer authorization, data visibility, or partial success.
 
-## 22. Out of Scope
+## 23. Out of Scope
 
 SANSA.Query v1 does not define:
 
