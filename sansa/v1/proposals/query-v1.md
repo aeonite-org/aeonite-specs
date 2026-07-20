@@ -532,6 +532,7 @@ Examples:
 ```text
 contains(.description, "developer")
 startsWith(.code, "AU-")
+endsWith(.filename, ".aeon")
 lower(.name)
 lookup($.jobs, .job)
 concat(.firstName, " ", .lastName)
@@ -562,7 +563,7 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 - NaN and infinity are passed only to functions that declare special numeric handling;
 - unsupported scalar types produce a function-argument diagnostic.
 
-The initial built-in string functions require string arguments. They do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
+The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
 
 Special value predicates such as `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
 
