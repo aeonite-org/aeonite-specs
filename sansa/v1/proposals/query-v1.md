@@ -741,7 +741,42 @@ Mounted local namespaces are read-only evaluation inputs in SANSA.Query.
 
 Local address-space binding prevents runtime values from being interpreted as SANSA.Query syntax. It does not by itself prevent unauthorized data access, excessive traversal, excessive result generation, expensive ordering, or information disclosure through permitted namespaces.
 
-## 22. Diagnostics
+## 22. Query Recipes
+
+This section is non-normative. These recipe patterns illustrate how the v1 surface composes without adding additional syntax.
+
+### 22.1 Dynamic Address Parameters
+
+Dynamic address literals can parameterize source, predicate, ordering, and projection. The comparison is guarded with `isValue(...)` so explicit null, NaN, infinity, non-scalar, and missing values do not enter scalar comparison.
+
+```text
+from path($.<"params">.source)
+where isValue(path($.<"params">.statusField)) and path($.<"params">.statusField) == "active"
+order by path($.<"params">.sortField) asc
+select path($.<"params">.field)
+```
+
+### 22.2 Status Presence
+
+Ordinary values, explicit nulls, and missing bindings are distinct. A query can include ordinary status values and explicit null status values while excluding missing status bindings:
+
+```text
+from $.inventory.items.*
+where isValue(.status) or (exists(.status) and isNull(.status))
+select { sku = .sku status = fallback(.status, "missing") }
+```
+
+### 22.3 Lookup with Fallback
+
+`lookup(...)` and `fallback(...)` can compose inside projections:
+
+```text
+from $.inventory.items.*
+where .qty >= 4
+select { sku = .sku category = lookup($.inventory.categoryLabels, .category) status = fallback(.status, "missing") }
+```
+
+## 23. Diagnostics
 
 SANSA.Query evaluation is fail-fast in v1. A query either produces a Result Set or a Diagnostics Set.
 
@@ -752,7 +787,7 @@ Evaluation diagnostics must identify the error category with a stable code and m
 
 `phase` and `candidateAddress` are diagnostic context. They do not define additional query semantics and must not be used to infer authorization, data visibility, or partial success.
 
-## 23. Out of Scope
+## 24. Out of Scope
 
 SANSA.Query v1 does not define:
 
