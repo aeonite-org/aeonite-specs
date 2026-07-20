@@ -129,7 +129,7 @@ This slice covers:
 - clause detection and normative clause order
 - required `from` and terminal `select`
 - duplicate clause rejection
-- `from` as exactly one SANSA address expression
+- `from` as one literal SANSA address expression or `path(...)` source expression
 - `order by` split into top-level order keys
 - omitted order direction canonicalized to `asc`
 - `offset` and `limit` as non-negative integers without leading zeroes
@@ -174,13 +174,19 @@ This evaluator scaffold is not the complete SANSA.Query v1 evaluation contract. 
 
 ### 6.1 From
 
-The `from` clause provides the initial SANSA.Resolve expression.
+The `from` clause provides the initial Binding Set.
 
 ```text
 from $.users.*
 ```
 
-Any valid SANSA.Resolve expression may be used.
+A literal SANSA.Resolve expression may be used directly.
+
+```text
+from path($.<"params">.source)
+```
+
+`path(...)` may also be used in the `from` clause to activate a structured SANSA Address Literal value as the query source. The activated address supplies the initial Binding Set for the query.
 
 ### 6.2 Where
 
@@ -753,6 +759,6 @@ SANSA.Query v1 does not define:
 - custom executable functions
 - implicit type coercion
 - regular expressions
-- dynamic query-source construction
+- arbitrary dynamic query-source construction beyond structured SANSA Address Literal activation with `path(...)`
 
 These require separate proposals or future versions.
