@@ -439,7 +439,7 @@ The runtime must not define:
 
 Cross-type comparison is invalid unless an applicable shared value-semantics contract explicitly defines compatibility.
 
-Initial comparison policy:
+The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1 consumer contract:
 
 | Operands | Equality | Ordering | Notes |
 | --- | --- | --- | --- |
@@ -588,7 +588,7 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 
 The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
 
-String comparison, ordering, and case mapping are value-semantics concerns. The initial evaluator slice may use implementation-local behavior for `lower(...)` and string ordering while Shared AEON Value Semantics is still proposal-stage, but normative behavior must not depend on host locale, process locale, database collation, or host-language defaults.
+String comparison, ordering, and case mapping are value-semantics concerns. The initial evaluator slice may use implementation-local behavior for `lower(...)` and string ordering while the Shared AEON Value Semantics canonical string and case-mapping profiles are still proposal-stage, but normative behavior must not depend on host locale, process locale, database collation, or host-language defaults.
 
 Value predicates such as `isValue(...)`, `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
 

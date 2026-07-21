@@ -260,7 +260,124 @@ Profiles must be deterministic and versionable. A profile must not introduce exe
 
 Consumers may restrict which profiles they accept.
 
-## 7. CTS Ownership
+## 7. Minimum v1 Consumer Contract
+
+The first shared contract should cover the behavior already exercised by SANSA.Query and expected by AEOS-style validation.
+
+This section is a candidate minimum profile. It is intentionally small and should become the first shared CTS surface when promoted.
+
+### 7.1 Scalar Value Categories
+
+The minimum profile recognizes these scalar categories:
+
+- finite number;
+- positive infinity;
+- negative infinity;
+- NaN;
+- string;
+- Boolean;
+- explicit null;
+- explicit absence value, when exposed by a consumer;
+- missing binding, when resolution produces no binding.
+
+Missing binding is not a value. It is an evaluation state produced by a consumer such as SANSA.Resolve or AEOS path selection.
+
+Explicit null and explicit absence values are values. They must not be collapsed into missing, false, an empty string, or zero.
+
+### 7.2 Equality
+
+The minimum equality surface is:
+
+| Operands | Equality | Notes |
+| --- | --- | --- |
+| finite number and finite number | allowed | Numeric value equality. |
+| infinity and infinity | allowed | Positive infinity equals positive infinity; negative infinity equals negative infinity. |
+| string and string | allowed | Exact decoded string equality under the active string equality profile. |
+| Boolean and Boolean | allowed | `true` equals `true`; `false` equals `false`. |
+| explicit null | profile-defined or error | Consumers must use an explicit contract such as `isNull(...)` when no equality contract is active. |
+| explicit absence value | profile-defined or error | Absence-value equality belongs to the applicable absence-value contract. |
+| NaN | error | NaN is not equality-comparable in the minimum profile. |
+| mixed categories | error | No implicit coercion. |
+
+Consumers must not coerce strings, numbers, Booleans, nulls, or absence values to make equality succeed.
+
+### 7.3 Ordering
+
+The minimum ordering surface is:
+
+| Operands | Ordering | Notes |
+| --- | --- | --- |
+| finite number and finite number | allowed | Numeric order. |
+| infinity and finite number | allowed | Negative infinity sorts before finite numbers; positive infinity sorts after finite numbers. |
+| string and string | allowed | Uses the active string ordering profile. |
+| Boolean and Boolean | error | Boolean ordering is not part of the minimum profile. |
+| explicit null | error | Use explicit null predicates or profile-defined null ordering. |
+| explicit absence value | error | Use explicit absence predicates or profile-defined absence ordering. |
+| NaN | error | NaN is not orderable. |
+| mixed categories | error | No implicit coercion. |
+
+Ordering must fail closed when the active profile does not define the compared category pair.
+
+### 7.4 Canonical String Profile Placeholder
+
+The minimum profile requires a deterministic string equality and ordering profile, but this proposal does not yet define the final collation algorithm.
+
+Until that algorithm is promoted, consumers should treat string ordering as a named value-semantics dependency rather than redefining it locally.
+
+The canonical string profile must eventually define:
+
+- Unicode unit of comparison;
+- normalization policy;
+- case sensitivity;
+- accent and combining-mark behavior;
+- total-order tie breakers;
+- behavior for invalid or unpaired Unicode representations, if exposed by a host.
+
+Locale-aware, natural-sort, and domain-specific profiles remain future extensions.
+
+### 7.5 Case Mapping
+
+The minimum case-mapping surface is:
+
+```text
+lower(string) -> string
+upper(string) -> string
+```
+
+Case mapping is deterministic and profile-defined. It must not depend on process locale, operating-system locale, database collation, or host-language defaults.
+
+The canonical case-mapping profile must eventually define:
+
+- Unicode case-mapping table or referenced version;
+- locale-sensitive exceptions, if any;
+- normalization behavior before and after mapping;
+- whether one input scalar may expand to multiple output scalars.
+
+Until the canonical case-mapping profile is locked, consumer implementations may expose `lower(...)` or `upper(...)` as implementation-slice behavior, but should document that normative behavior is still owned by Shared Value Semantics.
+
+### 7.6 Consumer Handoff
+
+Consumers own where an operation appears and what diagnostic context is produced.
+
+Shared Value Semantics owns what the operation means.
+
+For example:
+
+```text
+where .age > 18
+```
+
+SANSA.Query owns `where`, candidate filtering, Binding Set handling, and query diagnostics. Shared Value Semantics owns numeric comparison.
+
+For example:
+
+```text
+age minimum 18
+```
+
+AEOS owns the schema rule and validation diagnostic. Shared Value Semantics owns numeric comparison.
+
+## 8. CTS Ownership
 
 Shared Value Semantics should have its own conformance coverage once individual contracts become normative.
 
@@ -279,7 +396,7 @@ Value Semantics contract
 
 This keeps conformance behavior aligned across implementations without duplicating normative definitions.
 
-## 8. Non-Goals
+## 9. Non-Goals
 
 This proposal does not yet define:
 
@@ -293,7 +410,7 @@ This proposal does not yet define:
 
 Those belong in focused follow-up proposals or contract documents.
 
-## 9. Relationship to SANSA.Query
+## 10. Relationship to SANSA.Query
 
 SANSA.Query is the first AEON-family consumer that exercises a broad portion of shared value behavior.
 
@@ -309,7 +426,7 @@ SANSA.Query should reference Shared AEON Value Semantics for:
 
 SANSA.Query still owns query syntax, Binding Set evaluation, candidate filtering, projection, result construction, diagnostics, and resolver integration.
 
-## 10. Relationship to AEOS
+## 11. Relationship to AEOS
 
 AEOS consumes Shared Value Semantics when validating value relationships.
 
@@ -321,13 +438,13 @@ age > 18
 
 AEOS owns the validation rule and diagnostic context. Shared Value Semantics owns what numeric comparison means.
 
-## 11. Relationship to Tonics
+## 12. Relationship to Tonics
 
 Tonics consume Shared Value Semantics when materializing values into runtime environments.
 
 Tonics may expose runtime-specific APIs, but the behavior of shared conversions, comparisons, measurements, and ordering must remain aligned with the shared contracts unless a profile explicitly defines a different accepted surface.
 
-## 12. Design Philosophy
+## 13. Design Philosophy
 
 AEON Core defines representation.
 
