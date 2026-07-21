@@ -131,6 +131,7 @@ The clause parser covers:
 - required `from` and terminal `select`
 - duplicate clause rejection
 - `from` as one literal SANSA address expression or `path(...)` source expression
+- SANSA Address selector parsing, including parent traversal, position ranges, filters, attributes, and local address spaces
 - `order by` split into top-level order keys
 - omitted order direction canonicalized to `asc`
 - `offset` and `limit` as non-negative integers without leading zeroes
@@ -163,6 +164,8 @@ The evaluator slice explicitly rejects:
 - cross-type comparisons
 - missing scalar values in scalar context
 - multiple bindings in scalar context
+
+The implementation slice inherits SANSA Address portability rules. Portable query expressions must not require addressable positional indexes above `999999`. Implementations may support higher local limits, but accepted indexes above that portable ceiling are non-portable and should surface a warning when the host API supports non-fatal diagnostics.
 
 The CTS owner is:
 
@@ -302,6 +305,35 @@ $.<"params">.username
 ```
 
 Resolution expressions always produce Binding Sets. Expression contexts determine how those Binding Sets may be consumed.
+
+Query resolution expressions use SANSA Address selector syntax. Query does not introduce a separate path language. The same structural selector meanings apply:
+
+```text
+.*              direct expansion
+.**             descendant expansion
+.^              parent traversal
+.[2]            positional child
+.[2..5]         inclusive positional range
+.[2..]          range from position 2 through the final exposed positional child
+.[..5]          range from position 0 through position 5
+.("item?*")     direct member name pattern
+.@.origin       explicit attribute-space traversal
+.<"params">     explicit local address-space traversal
+#number         semantic type filter on the current Binding Set
+%string         representation kind filter on the current Binding Set
+```
+
+Position ranges are selector expressions, not slice clauses. They select bindings by addressable position before scalar consumption. `[..]` is invalid because it does not state either bound. Negative positions are not part of SANSA Address v1.
+
+Parent traversal is selector-only surface. It is not part of an exact canonical address because it depends on the current candidate context and the namespace's exposed parent relation.
+
+Semantic filters and representation-kind filters operate on the current Binding Set. They may be used as guards before scalar comparison:
+
+```text
+where exists(.id#number) and .id > 2
+```
+
+The grammar accepts filters anywhere SANSA Address selector syntax allows them. Consumers decide which semantic type and representation kind names they understand.
 
 ## 9. Scalar Context
 
@@ -784,6 +816,8 @@ Mounted local namespaces are read-only evaluation inputs in SANSA.Query.
 
 Local address-space binding prevents runtime values from being interpreted as SANSA.Query syntax. It does not by itself prevent unauthorized data access, excessive traversal, excessive result generation, expensive ordering, or information disclosure through permitted namespaces.
 
+Implementations may impose local resource limits for parsing and evaluation, including maximum address depth, maximum selector count, maximum query source size, maximum result count, maximum traversal cost, maximum sort input, and maximum accepted positional index. Local limits may be stricter than the portable SANSA minimum only when the implementation documents the restriction. Local limits may be broader than the portable minimum, but values that rely on broader limits are not portable.
+
 ## 23. Query Recipes
 
 This section is non-normative. These recipe patterns illustrate how the v1 surface composes without adding additional syntax.
@@ -828,6 +862,29 @@ from $.table.content.*
 select objectFrom($.table.header.*, .*)
 ```
 
+### 23.5 Parent Context
+
+Parent traversal lets a selector move from a selected child back to its exposed parent before continuing:
+
+```text
+from $.inventory.items[1].sku
+select .^.qty
+```
+
+This is useful for selectors that begin at a precise binding but need sibling values. It remains namespace-adapted: a host that does not expose parent traversal must fail explicitly rather than inventing a parent relation.
+
+### 23.6 Position Ranges
+
+Position ranges select contiguous ordered children before later query clauses run:
+
+```text
+from $.inventory.items[1..3]
+order by .sku asc
+select { sku = .sku qty = .qty }
+```
+
+Ranges are inclusive. Open start means zero. Open end means through the final exposed positional child. Query portability follows SANSA Address portability: positions `0` through `999999` are the portable required surface.
+
 ## 24. Diagnostics
 
 SANSA.Query evaluation is fail-fast in v1. A query either produces a Result Set or a Diagnostics Set.
@@ -838,6 +895,8 @@ Evaluation diagnostics must identify the error category with a stable code and m
 - `candidateAddress`: the canonical address of the candidate binding being evaluated, when the failure occurs in candidate context
 
 `phase` and `candidateAddress` are diagnostic context. They do not define additional query semantics and must not be used to infer authorization, data visibility, or partial success.
+
+Non-fatal diagnostics may be surfaced as warnings. Warnings do not change the parsed query or the successful result set. They are intended for portability and policy visibility, such as accepting an address position beyond the portable SANSA Address ceiling under an implementation-specific local limit.
 
 ## 25. Out of Scope
 
