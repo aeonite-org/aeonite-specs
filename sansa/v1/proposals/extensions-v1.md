@@ -139,7 +139,9 @@ Open endpoints are represented as `null`:
 { type: "positionRange", start: null, end: 5 }
 ```
 
-## 4. Tabular Projection Helper
+## 4. Promoted Tabular Projection Helper
+
+The `zipObject(...)` helper was originally tracked here as a candidate extension. It has been promoted into the SANSA.Query v1 proposal.
 
 SANSA.Addressing already supports positional access into ordered row-like structures:
 
@@ -163,9 +165,9 @@ select {
 }
 ```
 
-The unresolved design question is how to link header positions to row positions and construct an object whose field names come from the header row.
+The promoted helper links header positions to row positions and constructs an object whose field names come from the header row.
 
-Candidate conceptual helper:
+Surface syntax:
 
 ```text
 zipObject($.table.header.*, .*)
@@ -178,7 +180,7 @@ from $.table.content.*
 select zipObject($.table.header.*, .*)
 ```
 
-Conceptual result:
+Result:
 
 ```text
 $.table.content[0] = {"name":"Bob","age":22}
@@ -187,15 +189,13 @@ $.table.content[1] = {"name":"Alice","age":31}
 
 This belongs to SANSA.Query projection semantics, not the address selector language. It pairs two ordered Binding Sets by position and uses the left side as object keys and the right side as object values.
 
-### 4.1 Open Questions
+### 4.1 Promoted Contract
 
-- Should the helper be named `zipObject`, `objectFrom`, `records`, or something else?
-- Should key bindings be required to expose string scalar values?
-- Should duplicate keys be rejected, keep first value, keep last value, or produce a multi-value representation?
-- Should mismatched lengths produce a diagnostic or truncate to the shorter side?
-- Should non-scalar row values preserve binding identity or render as derived values?
-
-Until these questions are resolved, table-style projection remains expressible manually with positional selectors.
+- The helper is named `zipObject`.
+- Key bindings must expose string scalar values.
+- Duplicate keys produce a diagnostic.
+- Mismatched key and value lengths produce a cardinality diagnostic.
+- Value bindings must expose scalar values.
 
 ## 5. Promoted String Case Helper
 

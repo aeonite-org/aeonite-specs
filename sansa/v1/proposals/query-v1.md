@@ -153,7 +153,7 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordered binding-set object construction with `zipObject(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
 
 The evaluator slice explicitly rejects:
 
@@ -558,6 +558,7 @@ endsWith(.filename, ".aeon")
 lower(.name)
 upper(.name)
 lookup($.jobs, .job)
+zipObject($.table.header.*, .*)
 concat(.firstName, " ", .lastName)
 isNull(.status)
 isNullReason(.status, "notSet")
@@ -667,7 +668,34 @@ String keys select direct member children. Non-negative integer keys select dire
 
 Multiple base or key bindings produce a cardinality error. A missing target produces no binding. The consuming context determines whether that is acceptable.
 
-## 18. Projection
+## 18. Zip Object
+
+`zipObject` is a deterministic projection helper for ordered binding sets.
+
+Conceptual syntax:
+
+```text
+zipObject(<keys>, <values>)
+```
+
+Example:
+
+```text
+from $.table.content.*
+select zipObject($.table.header.*, .*)
+```
+
+For SANSA.Query v1, `zipObject` requires:
+
+- both arguments to be resolution expressions;
+- the key and value Binding Sets to have equal length;
+- every key binding to expose a string scalar value;
+- every value binding to expose one scalar value;
+- generated keys to be unique.
+
+The helper pairs key and value bindings by their resolved order and constructs one derived object. Duplicate keys, mismatched lengths, non-string keys, and non-scalar values produce diagnostics. The helper does not modify the source namespace or assign semantics to row-like structures.
+
+## 19. Projection
 
 Projection may preserve existing bindings or construct derived results.
 
@@ -687,7 +715,7 @@ select {
 
 Constructed values have derived identity and are not written back into the namespace.
 
-## 19. Comments
+## 20. Comments
 
 SANSA.Query supports source comments.
 
@@ -707,7 +735,7 @@ Multi-line:
 
 Comments are lexical trivia. They may appear wherever whitespace is permitted, do not affect query semantics, and are removed from canonical query representations.
 
-## 20. Local Address-Space Binding
+## 21. Local Address-Space Binding
 
 Runtime values intended for use by a query should be supplied through explicitly mounted local address spaces rather than incorporated into query source text.
 
@@ -736,7 +764,7 @@ parsed query evaluation
 
 There must be no fallback between primary and local address spaces.
 
-## 21. Security and Policy
+## 22. Security and Policy
 
 Consumers receiving SANSA.Query expressions from outside their trust boundary may:
 
@@ -753,11 +781,11 @@ Mounted local namespaces are read-only evaluation inputs in SANSA.Query.
 
 Local address-space binding prevents runtime values from being interpreted as SANSA.Query syntax. It does not by itself prevent unauthorized data access, excessive traversal, excessive result generation, expensive ordering, or information disclosure through permitted namespaces.
 
-## 22. Query Recipes
+## 23. Query Recipes
 
 This section is non-normative. These recipe patterns illustrate how the v1 surface composes without adding additional syntax.
 
-### 22.1 Dynamic Address Parameters
+### 23.1 Dynamic Address Parameters
 
 Dynamic address literals can parameterize source, predicate, ordering, and projection. The comparison is guarded with `isValue(...)` so explicit null, NaN, infinity, non-scalar, and missing values do not enter scalar comparison.
 
@@ -768,7 +796,7 @@ order by path($.<"params">.sortField) asc
 select path($.<"params">.field)
 ```
 
-### 22.2 Status Presence
+### 23.2 Status Presence
 
 Ordinary values, explicit nulls, and missing bindings are distinct. A query can include ordinary status values and explicit null status values while excluding missing status bindings:
 
@@ -778,7 +806,7 @@ where isValue(.status) or (exists(.status) and isNull(.status))
 select { sku = .sku status = fallback(.status, "missing") }
 ```
 
-### 22.3 Lookup with Fallback
+### 23.3 Lookup with Fallback
 
 `lookup(...)` and `fallback(...)` can compose inside projections:
 
@@ -788,7 +816,16 @@ where .qty >= 4
 select { sku = .sku category = lookup($.inventory.categoryLabels, .category) status = fallback(.status, "missing") }
 ```
 
-## 23. Diagnostics
+### 23.4 Table Rows
+
+`zipObject(...)` can project ordered row values into objects using a separate ordered header Binding Set:
+
+```text
+from $.table.content.*
+select zipObject($.table.header.*, .*)
+```
+
+## 24. Diagnostics
 
 SANSA.Query evaluation is fail-fast in v1. A query either produces a Result Set or a Diagnostics Set.
 
@@ -799,7 +836,7 @@ Evaluation diagnostics must identify the error category with a stable code and m
 
 `phase` and `candidateAddress` are diagnostic context. They do not define additional query semantics and must not be used to infer authorization, data visibility, or partial success.
 
-## 24. Out of Scope
+## 25. Out of Scope
 
 SANSA.Query v1 does not define:
 
