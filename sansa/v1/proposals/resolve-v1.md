@@ -93,7 +93,7 @@ $.message.@.id
 ?.address.city
 ```
 
-Exact addresses use only exact selectors and do not include expansion, pattern matching, semantic type filters, or representation kind filters.
+Exact addresses use only exact selectors and do not include expansion, position ranges, pattern matching, semantic type filters, or representation kind filters.
 
 ## 6. Expanded Resolution
 
@@ -105,6 +105,7 @@ Examples:
 $.users.*
 $.content.*#text
 $.content.("id-*")
+$.items[2..5]
 $.**.id
 $.message.@.properties.*
 ```
@@ -118,6 +119,18 @@ SANSA.Resolve uses the selector vocabulary defined by SANSA v1 Addressing.
 Root selectors establish the starting Binding Set.
 
 Named and positional selectors select direct children or ordered positions.
+
+Position range selectors select inclusive ordered positional children:
+
+```text
+$.items[2..5]
+$.items[2..]
+$.items[..5]
+```
+
+Open start means position `0`. Open end means through the final exposed positional child. If `start > end`, the selector resolves to an empty Binding Set rather than a diagnostic.
+
+Position ranges are non-exact selectors. SANSA.Resolve does not infer container categories from range syntax; lists, tuples, nodes, and other host structures may expose ordered positional children according to their profile or host adapter.
 
 Attribute selectors enter the attribute address space.
 

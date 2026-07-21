@@ -74,11 +74,11 @@ Parent traversal must be explicitly authorized by the resolving consumer. It mus
 
 For attribute and local address spaces, the proposed default is immediate address-space parent traversal. For example, resolving parent from inside an attribute address space returns the containing attribute-space binding, not necessarily the owning primary binding. A later proposal may define a separate owner-style selector if that capability is needed.
 
-## 3. Position Range Selector
+## 3. Promoted Position Range Selector
 
-The position range selector is a candidate selector that selects a contiguous inclusive range of positional children.
+The position range selector was originally tracked here as a candidate extension. It has been promoted into the SANSA Addressing and Resolve v1 proposals.
 
-Proposed syntax:
+Surface syntax:
 
 ```text
 [start..end]
@@ -104,7 +104,7 @@ $.items[-1]
 $.items[2..-1]
 ```
 
-### 3.1 Proposed Resolution Semantics
+### 3.1 Resolution Semantics
 
 Ranges are inclusive:
 

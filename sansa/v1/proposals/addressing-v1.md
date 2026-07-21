@@ -53,7 +53,11 @@ Position indexes use unsigned decimal notation without leading zeroes:
 
 ```ebnf
 Index = "0" | [1-9] [0-9]* ;
+
+PositionRange = "[" [Index] ".." [Index] "]" ;
 ```
+
+Position ranges must include at least one endpoint. Negative endpoints and leading zeroes are not valid.
 
 Quoted member names, local address-space names, name patterns, and quoted qualifier arguments use AEON double-quoted string payload rules. This allows characters that are not part of the bare ASCII selector grammar to be carried without making address parsing context-sensitive.
 
@@ -262,7 +266,29 @@ $.matrix[2][2]
 
 Whether an intermediate binding is indexable is a resolution or schema question, not a lexical-addressing question.
 
-### 5.3 Attribute Address Space
+### 5.3 Position Range
+
+```text
+[2..5]
+[2..]
+[..5]
+```
+
+Selects a contiguous inclusive range of positional children exposed by the current binding.
+
+Open start means position `0`. Open end means through the final exposed positional child. A range with both endpoints omitted is invalid:
+
+```text
+[..]
+```
+
+If `start > end`, resolution produces an empty Binding Set rather than a diagnostic.
+
+Position ranges are selector expressions, not exact selectors. An address expression containing a position range is therefore not a canonical address, even when the range happens to resolve to one binding.
+
+Position range syntax is representation independent. Lists, tuples, nodes, and other host structures may expose ordered positional children, but whether a binding has meaningful ordered positional children is a profile or host decision.
+
+### 5.4 Attribute Address Space
 
 ```text
 .@
@@ -281,7 +307,7 @@ $.message.@.properties.caller.@.by
 
 Compact forms such as `$.message@id` are not valid SANSA v1 address syntax. Attribute-space traversal uses the explicit `.@.` segment so attributes remain unambiguous from ordinary member names.
 
-### 5.4 Local Address Space
+### 5.5 Local Address Space
 
 ```text
 .<"namespace">
@@ -415,6 +441,7 @@ Examples of non-canonical address expressions:
 $.users.*
 $.content.*#text
 $.content.("id-*")
+$.items[2..5]
 $.**
 ```
 
