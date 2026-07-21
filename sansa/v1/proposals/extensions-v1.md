@@ -197,31 +197,17 @@ This belongs to SANSA.Query projection semantics, not the address selector langu
 
 Until these questions are resolved, table-style projection remains expressible manually with positional selectors.
 
-## 5. String Case Helper
+## 5. Promoted String Case Helper
 
-The current SANSA.Query string helper set includes:
+The `upper(...)` helper was originally tracked here as a candidate companion to `lower(...)`.
 
-```text
-contains(...)
-startsWith(...)
-endsWith(...)
-lower(...)
-concat(...)
-```
-
-The candidate companion helper is:
-
-```text
-upper(...)
-```
-
-Example:
+It has been promoted into the SANSA.Query v1 proposal as part of the initial string helper set:
 
 ```text
 select upper(.name)
 ```
 
-`upper(...)` should follow the same argument contract as `lower(...)`:
+`upper(...)` follows the same argument contract as `lower(...)`:
 
 - exactly one argument;
 - the argument must evaluate to one string scalar;
@@ -229,7 +215,7 @@ select upper(.name)
 - multiple bindings produce `CardinalityError`;
 - explicit null, NaN, infinity, Boolean, number, object, and Binding Set arguments produce a function-argument diagnostic.
 
-The proposed surface uses `upper(...)` rather than `uppercase(...)`, matching the existing `lower(...)` helper and avoiding aliases in the initial conformance surface.
+The promoted surface uses `upper(...)` rather than `uppercase(...)`, matching the existing `lower(...)` helper and avoiding aliases in the initial conformance surface.
 
 Case mapping is defined by Shared AEON Value Semantics. An implementation slice may use its host runtime's default Unicode case mapping while the shared contract is still proposal-stage, but normative behavior should not depend on host locale, process locale, database collation, or host-language defaults.
 

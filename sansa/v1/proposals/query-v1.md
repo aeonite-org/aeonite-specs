@@ -556,6 +556,7 @@ contains(.description, "developer")
 startsWith(.code, "AU-")
 endsWith(.filename, ".aeon")
 lower(.name)
+upper(.name)
 lookup($.jobs, .job)
 concat(.firstName, " ", .lastName)
 isNull(.status)
@@ -586,9 +587,9 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 - NaN and infinity are passed only to functions that declare special numeric handling;
 - unsupported scalar types produce a function-argument diagnostic.
 
-The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
+The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, `upper`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
 
-String comparison, ordering, and case mapping are value-semantics concerns. The initial evaluator slice may use implementation-local behavior for `lower(...)` and string ordering while the Shared AEON Value Semantics canonical string and case-mapping profiles are still proposal-stage, but normative behavior must not depend on host locale, process locale, database collation, or host-language defaults.
+String comparison, ordering, and case mapping are value-semantics concerns. The initial evaluator slice may use implementation-local behavior for `lower(...)`, `upper(...)`, and string ordering while the Shared AEON Value Semantics canonical string and case-mapping profiles are still proposal-stage, but normative behavior must not depend on host locale, process locale, database collation, or host-language defaults.
 
 Value predicates such as `isValue(...)`, `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
 
