@@ -141,7 +141,7 @@ Open endpoints are represented as `null`:
 
 ## 4. Promoted Tabular Projection Helper
 
-The `zipObject(...)` helper was originally tracked here as a candidate extension. It has been promoted into the SANSA.Query v1 proposal.
+The `objectFrom(...)` helper was originally tracked here as a candidate extension. It has been promoted into the SANSA.Query v1 proposal.
 
 SANSA.Addressing already supports positional access into ordered row-like structures:
 
@@ -170,14 +170,14 @@ The promoted helper links header positions to row positions and constructs an ob
 Surface syntax:
 
 ```text
-zipObject($.table.header.*, .*)
+objectFrom($.table.header.*, .*)
 ```
 
 Example:
 
 ```text
 from $.table.content.*
-select zipObject($.table.header.*, .*)
+select objectFrom($.table.header.*, .*)
 ```
 
 Result:
@@ -191,7 +191,7 @@ This belongs to SANSA.Query projection semantics, not the address selector langu
 
 ### 4.1 Promoted Contract
 
-- The helper is named `zipObject`.
+- The helper is named `objectFrom`.
 - Key bindings must expose string scalar values.
 - Duplicate keys produce a diagnostic.
 - Mismatched key and value lengths produce a cardinality diagnostic.

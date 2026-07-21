@@ -153,7 +153,7 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordered binding-set object construction with `zipObject(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordered binding-set object construction with `objectFrom(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
 
 The evaluator slice explicitly rejects:
 
@@ -558,7 +558,7 @@ endsWith(.filename, ".aeon")
 lower(.name)
 upper(.name)
 lookup($.jobs, .job)
-zipObject($.table.header.*, .*)
+objectFrom($.table.header.*, .*)
 concat(.firstName, " ", .lastName)
 isNull(.status)
 isNullReason(.status, "notSet")
@@ -668,24 +668,24 @@ String keys select direct member children. Non-negative integer keys select dire
 
 Multiple base or key bindings produce a cardinality error. A missing target produces no binding. The consuming context determines whether that is acceptable.
 
-## 18. Zip Object
+## 18. Object From
 
-`zipObject` is a deterministic projection helper for ordered binding sets.
+`objectFrom` is a deterministic projection helper for ordered binding sets.
 
 Conceptual syntax:
 
 ```text
-zipObject(<keys>, <values>)
+objectFrom(<keys>, <values>)
 ```
 
 Example:
 
 ```text
 from $.table.content.*
-select zipObject($.table.header.*, .*)
+select objectFrom($.table.header.*, .*)
 ```
 
-For SANSA.Query v1, `zipObject` requires:
+For SANSA.Query v1, `objectFrom` requires:
 
 - both arguments to be resolution expressions;
 - the key and value Binding Sets to have equal length;
@@ -818,11 +818,11 @@ select { sku = .sku category = lookup($.inventory.categoryLabels, .category) sta
 
 ### 23.4 Table Rows
 
-`zipObject(...)` can project ordered row values into objects using a separate ordered header Binding Set:
+`objectFrom(...)` can project ordered row values into objects using a separate ordered header Binding Set:
 
 ```text
 from $.table.content.*
-select zipObject($.table.header.*, .*)
+select objectFrom($.table.header.*, .*)
 ```
 
 ## 24. Diagnostics
