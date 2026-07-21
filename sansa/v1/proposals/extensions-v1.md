@@ -11,6 +11,7 @@ links:
   - sansa-v1-addressing
   - sansa-v1-resolve
   - sansa-v1-query
+  - aeon-v1-value-semantics
 ---
 
 # SANSA v1 Extension Candidates
@@ -230,7 +231,7 @@ select upper(.name)
 
 The proposed surface uses `upper(...)` rather than `uppercase(...)`, matching the existing `lower(...)` helper and avoiding aliases in the initial conformance surface.
 
-Case mapping is semantic-profile-defined. An implementation slice may use its host runtime's default Unicode case mapping, but the specification should not depend on host locale behavior.
+Case mapping is defined by Shared AEON Value Semantics. An implementation slice may use its host runtime's default Unicode case mapping while the shared contract is still proposal-stage, but normative behavior should not depend on host locale, process locale, database collation, or host-language defaults.
 
 ## 6. Promotion Checklist
 

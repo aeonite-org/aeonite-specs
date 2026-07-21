@@ -40,7 +40,7 @@ SANSA.Query
 Result Set
 ```
 
-SANSA.Resolve discovers semantic structure. SANSA.Query evaluates and transforms semantic bindings according to the Aeonite semantic model.
+SANSA.Resolve discovers semantic structure. SANSA.Query evaluates and transforms semantic bindings while consuming Shared AEON Value Semantics for comparison, ordering, and related value behavior.
 
 ## Capability Families
 

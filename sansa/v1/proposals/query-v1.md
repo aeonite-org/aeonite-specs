@@ -10,6 +10,7 @@ license: CC-BY-4.0
 links:
   - sansa-v1-addressing
   - sansa-v1-resolve
+  - aeon-v1-value-semantics
 ---
 
 # SANSA.Query v1
@@ -425,7 +426,7 @@ Initial comparison operators:
 in
 ```
 
-Comparison semantics are defined by the Aeonite semantic model, not by the runtime host language.
+Comparison semantics are defined by Shared AEON Value Semantics, not by the runtime host language.
 
 The runtime must not define:
 
@@ -436,14 +437,14 @@ The runtime must not define:
 - null behavior
 - absence behavior
 
-Cross-type comparison is invalid unless an applicable semantic contract explicitly defines compatibility.
+Cross-type comparison is invalid unless an applicable shared value-semantics contract explicitly defines compatibility.
 
 Initial comparison policy:
 
 | Operands | Equality | Ordering | Notes |
 | --- | --- | --- | --- |
 | number and number | allowed | allowed | Finite numbers compare by numeric value. |
-| string and string | allowed | allowed | String ordering requires the active semantic comparison profile. |
+| string and string | allowed | allowed | String ordering requires the active value-semantics string ordering profile. |
 | boolean and boolean | allowed | error | Booleans are not ordered. |
 | explicit null | error | error | Use `isNull(...)` or `isNullReason(...)`. |
 | NaN | error | error | Use `isNaN(...)`. |
@@ -452,7 +453,7 @@ Initial comparison policy:
 
 `NaN` is not comparable. Equality, inequality, ordering, and order-key evaluation over `NaN` must fail with a comparison diagnostic. Queries test explicit NaN values with `isNaN(...)`.
 
-Infinity values are explicit numeric special values. Where an applicable numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with `isInfinity(...)`.
+Infinity values are explicit numeric special values. Where an applicable value-semantics numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with `isInfinity(...)`.
 
 The `in` operator tests scalar membership in a Binding Set:
 
@@ -586,6 +587,8 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 - unsupported scalar types produce a function-argument diagnostic.
 
 The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
+
+String comparison, ordering, and case mapping are value-semantics concerns. The initial evaluator slice may use implementation-local behavior for `lower(...)` and string ordering while Shared AEON Value Semantics is still proposal-stage, but normative behavior must not depend on host locale, process locale, database collation, or host-language defaults.
 
 Value predicates such as `isValue(...)`, `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
 
