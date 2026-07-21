@@ -34,11 +34,11 @@ Candidate extensions should preserve these SANSA boundaries:
 - host profiles may restrict semantics without violating SANSA syntax;
 - documents must not define executable behavior.
 
-## 2. Parent Selector
+## 2. Promoted Parent Selector
 
-The parent selector is a candidate selector that moves from the current binding to its exposed parent binding.
+The parent selector was originally tracked here as a candidate extension. It has been promoted into the SANSA Addressing and Resolve v1 proposals.
 
-Proposed syntax:
+Surface syntax:
 
 ```text
 .^
@@ -60,7 +60,7 @@ The caret character is not a bare member selector. A binding literally named `^`
 .["^"]
 ```
 
-### 2.1 Proposed Resolution Semantics
+### 2.1 Resolution Semantics
 
 `.^` selects the immediate parent binding exposed by the resolver.
 

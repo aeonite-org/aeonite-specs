@@ -93,11 +93,11 @@ $.message.@.id
 ?.address.city
 ```
 
-Exact addresses use only exact selectors and do not include expansion, position ranges, pattern matching, semantic type filters, or representation kind filters.
+Exact addresses use only exact selectors and do not include parent traversal, expansion, position ranges, pattern matching, semantic type filters, or representation kind filters.
 
-## 6. Expanded Resolution
+## 6. Non-Exact Resolution
 
-Expanded resolution produces zero or more bindings.
+Non-exact resolution may produce zero or more bindings or depend on resolver context beyond a fixed canonical path.
 
 Examples:
 
@@ -106,6 +106,7 @@ $.users.*
 $.content.*#text
 $.content.("id-*")
 $.items[2..5]
+$.items[2].^
 $.**.id
 $.message.@.properties.*
 ```
@@ -131,6 +132,17 @@ $.items[..5]
 Open start means position `0`. Open end means through the final exposed positional child. If `start > end`, the selector resolves to an empty Binding Set rather than a diagnostic.
 
 Position ranges are non-exact selectors. SANSA.Resolve does not infer container categories from range syntax; lists, tuples, nodes, and other host structures may expose ordered positional children according to their profile or host adapter.
+
+Parent selectors select the immediate parent binding exposed by the resolver:
+
+```text
+$.items[2].^
+?.^.sibling
+```
+
+Parent traversal resolves to one binding when the current binding has an exposed parent. It resolves to an empty Binding Set when the current binding is the effective resolution root. It fails explicitly when the consumer forbids parent traversal or when traversal would escape an authorized boundary.
+
+Parent traversal is non-exact and must be explicitly supported by the resolving consumer. It must not bypass local address-space, attribute address-space, profile, or capability boundaries.
 
 Attribute selectors enter the attribute address space.
 

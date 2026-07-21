@@ -35,7 +35,7 @@ A **selector** is one navigation or filtering operation in an address expression
 
 A **canonical address** is an exact address that identifies at most one binding in a namespace.
 
-An **address expression** may identify zero, one, or many bindings when resolved. It may contain expansion, filter, pattern, or local address-space selectors.
+An **address expression** may identify zero, one, or many bindings when resolved. It may contain parent traversal, expansion, filter, pattern, range, or local address-space selectors.
 
 ## 3. Lexical Model
 
@@ -333,11 +333,37 @@ $.document.<"contact">
 
 The first selects an ordinary child named `contact`. The second enters a local address space named `contact`.
 
-## 6. Expanded Selectors
+## 6. Non-Exact Selectors
 
-Expanded selectors may produce zero or more bindings.
+Non-exact selectors may produce zero or more bindings or depend on resolver context beyond a fixed canonical path.
 
-### 6.1 Direct Expansion
+### 6.1 Parent Selector
+
+```text
+.^
+```
+
+Moves from the current binding to its exposed parent binding.
+
+Examples:
+
+```text
+?.^.id
+?.^.sibling
+$.inventory.items[2].^.metadata
+```
+
+The parent selector is a selector, not part of a fixed canonical address. An address expression containing `.^` is therefore non-canonical even when it resolves to exactly one binding.
+
+The caret character is not a bare member selector. A binding literally named `^` remains addressable with a quoted member selector:
+
+```text
+.["^"]
+```
+
+Parent traversal must be explicitly exposed and authorized by the resolving consumer. It must not bypass local address-space, attribute address-space, profile, or capability boundaries.
+
+### 6.2 Direct Expansion
 
 ```text
 .*
@@ -345,7 +371,7 @@ Expanded selectors may produce zero or more bindings.
 
 Expands all direct child bindings of the current binding.
 
-### 6.2 Descendant Expansion
+### 6.3 Descendant Expansion
 
 ```text
 .**
@@ -355,7 +381,7 @@ Expands descendants reachable through the ordinary value hierarchy. The current 
 
 Attribute address spaces and local address spaces are not traversed implicitly. They require explicit selectors.
 
-### 6.3 Name Pattern Selector
+### 6.4 Name Pattern Selector
 
 ```text
 .("id-*")
@@ -442,6 +468,7 @@ $.users.*
 $.content.*#text
 $.content.("id-*")
 $.items[2..5]
+$.items[2].^
 $.**
 ```
 
