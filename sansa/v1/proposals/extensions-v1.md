@@ -94,7 +94,7 @@ $.items[2..]
 $.items[..5]
 ```
 
-The range endpoints use the same unsigned decimal index syntax as positional selectors. SANSA v1 portable implementations must support endpoints up to at least `1000000`; larger accepted values are implementation-defined and non-portable. Implementations that accept larger endpoints should surface `SANSA_NON_PORTABLE_POSITION_INDEX` through a non-fatal diagnostic channel when available.
+The range endpoints use the same unsigned decimal index syntax as positional selectors. SANSA v1 portable implementations must support endpoints through at least `999999`, representing one million addressable positions from `0` through `999999`; larger accepted values are implementation-defined and non-portable. Implementations that accept larger endpoints should surface `SANSA_NON_PORTABLE_POSITION_INDEX` through a non-fatal diagnostic channel when available.
 
 The following forms are intentionally invalid:
 

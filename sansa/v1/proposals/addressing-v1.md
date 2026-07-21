@@ -59,7 +59,7 @@ PositionRange = "[" [Index] ".." [Index] "]" ;
 
 Position ranges must include at least one endpoint. Negative endpoints and leading zeroes are not valid.
 
-Position indexes and position range endpoints are bounded by the implementation. SANSA v1 portable implementations must accept values from `0` through `1000000` inclusive. Values above `1000000` are implementation-defined and non-portable: an implementation may accept a larger configured maximum or reject them with `SANSA_POSITION_INDEX_LIMIT_EXCEEDED`. Implementations that accept values above the portable support floor SHOULD surface `SANSA_NON_PORTABLE_POSITION_INDEX` through a non-fatal diagnostic channel when available. The warning should identify the observed index or endpoint and the portable support floor.
+Position indexes and position range endpoints are bounded by the implementation. SANSA v1 portable implementations must support at least one million addressable positions, expressed as index values from `0` through `999999` inclusive. Values above `999999` are implementation-defined and non-portable: an implementation may accept a larger configured maximum or reject them with `SANSA_POSITION_INDEX_LIMIT_EXCEEDED`. Implementations that accept values above the portable maximum index SHOULD surface `SANSA_NON_PORTABLE_POSITION_INDEX` through a non-fatal diagnostic channel when available. The warning should identify the observed index or endpoint and the portable maximum index.
 
 Quoted member names, local address-space names, name patterns, and quoted qualifier arguments use AEON double-quoted string payload rules. This allows characters that are not part of the bare ASCII selector grammar to be carried without making address parsing context-sensitive.
 
@@ -286,7 +286,7 @@ Open start means position `0`. Open end means through the final exposed position
 
 If `start > end`, resolution produces an empty Binding Set rather than a diagnostic.
 
-Both endpoints, when present, must be within the implementation's configured position index maximum. The SANSA v1 portable conformance floor is `1000000`; endpoints above that floor are valid only for implementations that explicitly support them and should carry `SANSA_NON_PORTABLE_POSITION_INDEX` when accepted.
+Both endpoints, when present, must be within the implementation's configured position index maximum. The SANSA v1 portable maximum index is `999999`, representing one million addressable positions from `0` through `999999`; endpoints above that value are valid only for implementations that explicitly support them and should carry `SANSA_NON_PORTABLE_POSITION_INDEX` when accepted.
 
 Position ranges are selector expressions, not exact selectors. An address expression containing a position range is therefore not a canonical address, even when the range happens to resolve to one binding.
 
