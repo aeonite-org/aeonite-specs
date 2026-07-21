@@ -321,8 +321,8 @@ Query resolution expressions use SANSA Address selector syntax. Query does not i
 .*              direct expansion
 .**             descendant expansion
 .^              parent traversal
-.[2]            positional child
-.[2..5]         inclusive positional range
+.[2]            positional child of the current candidate binding
+.[2..5]         inclusive positional range from the current candidate binding
 .[2..]          range from position 2 through the final exposed positional child
 .[..5]          range from position 0 through position 5
 .("item?*")     direct member name pattern
@@ -333,6 +333,8 @@ Query resolution expressions use SANSA Address selector syntax. Query does not i
 ```
 
 Position ranges are selector expressions, not slice clauses. They select bindings by addressable position before scalar consumption. `[..]` is invalid because it does not state either bound. Negative positions are not part of SANSA Address v1.
+
+The `.[n]` and `.[a..b]` forms are SANSA.Query current-binding shorthand for positional selection from the current candidate. They are equivalent to contextual SANSA Address expressions such as `?[n]`, but keep query notation parallel with member selection such as `.name`.
 
 Parent traversal is selector-only surface. It is not part of an exact canonical address because it depends on the current candidate context and the namespace's exposed parent relation.
 
