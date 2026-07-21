@@ -224,7 +224,8 @@ The `offset` clause removes the first specified number of bindings from the work
 offset 20
 ```
 
-The value must be a non-negative integer.
+The value must be a non-negative integer. Implementations may bound accepted
+offset values according to their integer model and evaluator resource policy.
 
 ### 6.5 Limit
 
@@ -234,7 +235,9 @@ The `limit` clause restricts the Binding Set to at most the specified number of 
 limit 10
 ```
 
-The value must be a non-negative integer. `limit 0` produces an empty Binding Set.
+The value must be a non-negative integer. `limit 0` produces an empty Binding
+Set. Implementations may bound accepted limit values according to their integer
+model and evaluator resource policy.
 
 ### 6.6 Select
 

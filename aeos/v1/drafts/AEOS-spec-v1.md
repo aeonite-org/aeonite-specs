@@ -685,8 +685,16 @@ Supported fields:
 - `max_string_length_default`
 - `max_container_children_default`
 
-Policy values MUST be positive integers or zero. A value of zero is valid and
+Policy values MUST be non-negative integers. A value of zero is valid and
 means no items in that category may be consumed or expanded.
+
+Resource-policy values are validator budgets, not AEOS language ceilings. The
+default values chosen by an implementation are implementation policy. A schema
+or host may configure lower budgets for stricter resource control or higher
+budgets for larger documents, subject to the implementation's platform and
+runtime capacity. If an implementation rejects a configured budget because it
+exceeds platform limits, that rejection is a resource-policy diagnostic rather
+than a change to AEOS schema semantics.
 
 `max_string_length_default` is reserved as the default string-like payload
 budget. Explicit `min_length` and `max_length` constraints remain the
