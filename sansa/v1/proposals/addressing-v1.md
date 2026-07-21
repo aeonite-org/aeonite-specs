@@ -59,6 +59,8 @@ PositionRange = "[" [Index] ".." [Index] "]" ;
 
 Position ranges must include at least one endpoint. Negative endpoints and leading zeroes are not valid.
 
+Position indexes and position range endpoints are bounded by the implementation. SANSA v1 portable implementations must accept values from `0` through `1000000` inclusive. Values above `1000000` are implementation-defined and non-portable: an implementation may accept a larger configured maximum or reject them with `SANSA_POSITION_INDEX_LIMIT_EXCEEDED`. Implementations that accept values above the portable support floor should surface a warning or diagnostic such as `SANSA_NON_PORTABLE_POSITION_INDEX` when their host API supports non-fatal diagnostics.
+
 Quoted member names, local address-space names, name patterns, and quoted qualifier arguments use AEON double-quoted string payload rules. This allows characters that are not part of the bare ASCII selector grammar to be carried without making address parsing context-sensitive.
 
 ### 3.1 Qualified Address Literals
@@ -283,6 +285,8 @@ Open start means position `0`. Open end means through the final exposed position
 ```
 
 If `start > end`, resolution produces an empty Binding Set rather than a diagnostic.
+
+Both endpoints, when present, must be within the implementation's configured position index maximum. The SANSA v1 portable conformance floor is `1000000`.
 
 Position ranges are selector expressions, not exact selectors. An address expression containing a position range is therefore not a canonical address, even when the range happens to resolve to one binding.
 

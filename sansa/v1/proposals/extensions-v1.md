@@ -94,7 +94,7 @@ $.items[2..]
 $.items[..5]
 ```
 
-The range endpoints use the same unsigned decimal index syntax as positional selectors.
+The range endpoints use the same unsigned decimal index syntax as positional selectors. SANSA v1 portable implementations must support endpoints up to at least `1000000`; larger accepted values are implementation-defined and non-portable.
 
 The following forms are intentionally invalid:
 

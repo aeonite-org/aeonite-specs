@@ -131,6 +131,8 @@ $.items[..5]
 
 Open start means position `0`. Open end means through the final exposed positional child. If `start > end`, the selector resolves to an empty Binding Set rather than a diagnostic.
 
+All present position range endpoints must be within the implementation's configured position index maximum. SANSA v1 portable implementations must support endpoints up to at least `1000000`; larger accepted values are implementation-defined and non-portable.
+
 Position ranges are non-exact selectors. SANSA.Resolve does not infer container categories from range syntax; lists, tuples, nodes, and other host structures may expose ordered positional children according to their profile or host adapter.
 
 Parent selectors select the immediate parent binding exposed by the resolver:
