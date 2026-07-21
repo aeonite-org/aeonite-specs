@@ -275,6 +275,7 @@ Expressions are evaluated within a candidate context containing:
 SANSA.Query v1 recognizes these conceptual expression categories:
 
 - literal expressions
+- current-binding expressions
 - relative resolution expressions
 - root resolution expressions
 - comparison expressions
@@ -305,6 +306,14 @@ $.<"params">.username
 ```
 
 Resolution expressions always produce Binding Sets. Expression contexts determine how those Binding Sets may be consumed.
+
+The expression `.` by itself means the current candidate binding as a one-binding Binding Set. It is useful when the query source already selected the bindings to test or project:
+
+```text
+from $.inventory.items.*.roles.*
+where contains(., "min")
+select .
+```
 
 Query resolution expressions use SANSA Address selector syntax. Query does not introduce a separate path language. The same structural selector meanings apply:
 
@@ -546,6 +555,7 @@ Examples:
 
 ```text
 where any(.roles.* == "admin")
+where any(contains(.roles.*, "min"))
 where all(.scores.* >= 50)
 where none(.flags.* == "blocked")
 ```
@@ -579,6 +589,13 @@ where any(.roles.* == "admin") and all(.roles.* == "admin")
 SANSA.Query v1 does not define an `only(...)` cardinality operator. A future version may introduce `only(...)` as a shorthand for a non-empty all-match predicate, but implementations must not treat it as part of the v1 surface.
 
 Cardinality operators are not ordinary functions. They evaluate their operand repeatedly across the relevant Binding Set.
+
+The initial evaluator slice supports two cardinality predicate forms:
+
+- a comparison expression with exactly one Binding Set side, such as `.roles.* == "admin"`;
+- a deterministic Boolean function call with exactly one Binding Set argument, such as `contains(.roles.*, "min")`.
+
+For function-call predicates, the Binding Set argument is substituted one binding at a time. The function result must be a Boolean scalar for each binding.
 
 ## 15. Functions
 
