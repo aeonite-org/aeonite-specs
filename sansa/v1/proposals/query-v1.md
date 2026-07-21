@@ -590,7 +590,7 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 
 The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, `upper`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
 
-String comparison, ordering, and case mapping are value-semantics concerns. The initial evaluator slice may use implementation-local behavior for `lower(...)`, `upper(...)`, and string ordering while the Shared AEON Value Semantics canonical string and case-mapping profiles are still proposal-stage, but normative behavior must not depend on host locale, process locale, database collation, or host-language defaults.
+String comparison, ordering, and case mapping are value-semantics concerns. Until the Shared AEON Value Semantics canonical string and case-mapping profiles are locked, the initial evaluator slice uses Unicode scalar-value ordering for string comparison and `order by`. Normative behavior must not depend on host locale, process locale, database collation, or host-language defaults. Case mapping for `lower(...)` and `upper(...)` remains tied to the shared value-semantics profile; implementations must document any provisional behavior.
 
 Value predicates such as `isValue(...)`, `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
 
