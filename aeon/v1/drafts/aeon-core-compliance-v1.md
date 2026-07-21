@@ -353,6 +353,19 @@ Implementations claiming AEON v1 conformance MUST support at least:
 
 These floors are minimum interoperability guarantees. Implementations MAY support larger limits.
 
+When an implementation accepts a document or configured policy value that exceeds one of these floors, the document remains valid for that implementation but is no longer guaranteed to be portable to every AEON v1 implementation. Implementations with a non-fatal diagnostic channel SHOULD surface a portability warning when portable floors are exceeded. The warning SHOULD identify the affected floor, observed value, and portable floor value.
+
+Recommended warning codes:
+- `AEON_NON_PORTABLE_STRING_LENGTH`
+- `AEON_NON_PORTABLE_KEY_SEGMENT_LENGTH`
+- `AEON_NON_PORTABLE_NUMERIC_LITERAL_LENGTH`
+- `AEON_NON_PORTABLE_CONTAINER_NESTING_DEPTH`
+- `AEON_NON_PORTABLE_CONTAINER_ELEMENT_COUNT`
+- `AEON_NON_PORTABLE_PATH_LENGTH`
+- `AEON_NON_PORTABLE_STRUCTURED_COMMENT_LENGTH`
+- `AEON_NON_PORTABLE_POLICY_DEPTH`
+- `AEON_NON_PORTABLE_EVENT_BUDGET`
+
 The container nesting floor in item 4 is a required supported processing floor
 whether or not an implementation surfaces `max_nesting_depth` as a public
 runtime or CLI control. When an implementation does expose configurable

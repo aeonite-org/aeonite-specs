@@ -696,6 +696,12 @@ runtime capacity. If an implementation rejects a configured budget because it
 exceeds platform limits, that rejection is a resource-policy diagnostic rather
 than a change to AEOS schema semantics.
 
+When a schema or host configures a resource-policy budget above a documented
+portable floor, implementations with warning support SHOULD emit
+`AEOS_NON_PORTABLE_RESOURCE_POLICY`. The warning should identify the policy key,
+configured budget, and portable floor so authors do not mistake a locally
+accepted schema for one that will run unchanged everywhere.
+
 `max_string_length_default` is reserved as the default string-like payload
 budget. Explicit `min_length` and `max_length` constraints remain the
 normative way to validate string, trimtick/prose, separator, encoding, ZRUT,

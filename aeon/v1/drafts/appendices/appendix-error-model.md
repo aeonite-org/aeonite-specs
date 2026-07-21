@@ -83,7 +83,31 @@ Claims should not be realized as semantic conclusions until a stage with authori
 
 If no authority-bearing stage is selected, implementations should avoid materializing a conclusion. Depending on the active mode and processing surface, the implementation should preserve the claim as opaque data, ignore the unsupported semantic layer, or fail closed with a deterministic diagnostic.
 
-## 5. Phase Presentation
+## 5. Portability Warnings
+
+Portability warnings are non-fatal diagnostics. They report valid documents,
+schemas, or configured policy values that exceed the minimum portability floors
+defined by AEON, SANSA, AEOS, or another layered capability.
+
+Implementations MUST NOT fail validation solely because a portability warning is
+present. Tools SHOULD display portability warnings near errors because they
+indicate that an artifact accepted by the current implementation may not be
+accepted by another conforming implementation with only minimum capability
+floors.
+
+Recommended warning-code families:
+- `AEON_NON_PORTABLE_*`
+- `SANSA_NON_PORTABLE_*`
+- `AEOS_NON_PORTABLE_*`
+
+When applicable, portability warnings should include:
+- the affected path or selector;
+- the observed value;
+- the portable floor value;
+- the implementation limit or configured budget, if different from the portable
+  floor.
+
+## 6. Phase Presentation
 
 Human-facing diagnostics SHOULD present the pipeline phase as a readable label rather than as a bare numeric band.
 
@@ -102,7 +126,7 @@ JSON diagnostics MAY additionally include:
 
 When both are present, `code` remains the stable machine-facing identifier and `phaseLabel` is presentation metadata.
 
-## 6. Payload Expectations
+## 7. Payload Expectations
 
 When applicable, diagnostics should include:
 
@@ -111,7 +135,7 @@ When applicable, diagnostics should include:
 - active policy limit
 - source span (if available)
 
-## 7. Reporting Specification Gaps
+## 8. Reporting Specification Gaps
 
 When an undefined edge case appears to expose a specification gap, report it to the AEON specification authority with enough information for deterministic review.
 
