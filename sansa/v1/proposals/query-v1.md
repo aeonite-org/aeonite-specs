@@ -874,7 +874,19 @@ Implementations may impose local resource limits for parsing and evaluation, inc
 
 This section is non-normative. These recipe patterns illustrate how the v1 surface composes without adding additional syntax.
 
-### 24.1 Dynamic Address Parameters
+### 24.1 Scalar Parameters
+
+Scalar values exposed through a mounted local address space are consumed directly in scalar expression contexts.
+
+```text
+from $.inventory.items.*
+where .name == $.<"params">.name
+select .sku
+```
+
+Local-space selector names use quoted syntax. In this example, `$.<"params">.name` resolves a string scalar from the mounted `params` namespace.
+
+### 24.2 Dynamic Address Parameters
 
 Dynamic address literals can parameterize source, predicate, ordering, and projection. The comparison is guarded with `isValue(...)` so explicit null, NaN, infinity, non-scalar, and missing values do not enter scalar comparison.
 
@@ -885,7 +897,7 @@ order by path($.<"params">.sortField) asc
 select path($.<"params">.field)
 ```
 
-### 24.2 Status Presence
+### 24.3 Status Presence
 
 Ordinary values, explicit nulls, and missing bindings are distinct. A query can include ordinary status values and explicit null status values while excluding missing status bindings:
 
@@ -895,7 +907,7 @@ where isValue(.status) or (exists(.status) and isNull(.status))
 select { sku = .sku status = fallback(.status, "missing") }
 ```
 
-### 24.3 Lookup with Fallback
+### 24.4 Lookup with Fallback
 
 `lookup(...)` and `fallback(...)` can compose inside projections:
 
@@ -905,7 +917,7 @@ where .qty >= 4
 select { sku = .sku category = lookup($.inventory.categoryLabels, .category) status = fallback(.status, "missing") }
 ```
 
-### 24.4 Table Rows
+### 24.5 Table Rows
 
 `objectFrom(...)` can project ordered row values into objects using a separate ordered header Binding Set:
 
@@ -921,7 +933,7 @@ from $.table.content.*
 select fieldsFrom($.table.header.*, .*, "age")
 ```
 
-### 24.5 Parent Context
+### 24.6 Parent Context
 
 Parent traversal lets a selector move from a selected child back to its exposed parent before continuing:
 
@@ -932,7 +944,7 @@ select .^.qty
 
 This is useful for selectors that begin at a precise binding but need sibling values. It remains namespace-adapted: a host that does not expose parent traversal must fail explicitly rather than inventing a parent relation.
 
-### 24.6 Position Ranges
+### 24.7 Position Ranges
 
 Position ranges select contiguous ordered children before later query clauses run:
 
