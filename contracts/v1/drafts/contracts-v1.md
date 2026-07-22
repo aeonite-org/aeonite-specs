@@ -207,6 +207,13 @@ Rules:
 - if `world` is omitted, AEOS treats the schema as `open`
 - the published `aeon.gp.schema.v1` artifact declares `world = "open"` explicitly so the GP baseline policy is visible in the artifact itself
 
+Schema `rules` use the AEOS `SchemaRule` shape. Each rule identifies targets
+with exactly one `path` or `selector` and a `constraints` object. Programmatic
+contract payloads carry `path` and `selector` as strings. Native AEON schema
+authoring SHOULD encode those targets as SANSA literals, such as
+`path:sansa = $.contact.name` or `selector:sansa = $.items.*.sku`, before
+projection into the in-memory AEOS schema object.
+
 Current baseline schema artifact:
 
 ```aeon

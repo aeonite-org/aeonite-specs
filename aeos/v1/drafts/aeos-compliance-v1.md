@@ -37,7 +37,7 @@ AEOS compliance SHALL be evaluated against validator behavior families, not only
 The current AEOS behavior families are:
 - result-envelope and validator output contract
 - schema rule-index integrity
-- selector path targeting and closed-world coverage
+- SANSA path and selector rule targeting, plus closed-world coverage
 - presence and forbid semantics
 - representational type and datatype-label constraints
 - attribute-payload and attribute-closure constraints

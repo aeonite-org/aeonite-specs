@@ -917,7 +917,7 @@ Current v1 behavior-family anchors:
   - `cts/aeos/v1/suites/01-baseline.json`
 - schema rule-index integrity
   - `cts/aeos/v1/suites/02-schema-rules.json`
-- selector path rule targeting and closed-world coverage
+- SANSA path and selector rule targeting, plus closed-world coverage
   - `cts/aeos/v1/suites/22-selector-paths.json`
 - presence and forbid semantics
   - `cts/aeos/v1/suites/03-presence.json`
@@ -974,7 +974,7 @@ AEOS conformance is not satisfied by passing only representative examples.
 
 An implementation must preserve behavior across the AEOS validation families defined in this document and their corresponding CTS lanes, especially:
 - schema rule validation
-- selector path targeting
+- SANSA path and selector rule targeting
 - presence checks
 - type and datatype-label enforcement
 - reference-form, reference-target, and resolved-reference enforcement
