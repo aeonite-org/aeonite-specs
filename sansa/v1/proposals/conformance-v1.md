@@ -105,7 +105,7 @@ SANSA distinguishes:
 - **Experimental extension**: prototype or review-stage behavior that must not be treated as required v1 conformance.
 - **Future capability**: named design direction without v1 conformance requirements.
 
-Experimental extensions do not modify SANSA v1 conformance. Implementations may expose them only when the implementation clearly advertises their experimental status.
+Experimental extensions do not modify SANSA v1 conformance. Implementations may expose them only when the implementation clearly advertises their experimental status. When an implementation recognizes an extension name but the extension is disabled by profile, policy, or caller configuration, it should produce a stable unsupported-extension diagnostic rather than interpreting the expression as core behavior.
 
 ## 4. Capability Advertisement
 
