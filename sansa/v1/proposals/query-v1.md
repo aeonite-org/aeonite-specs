@@ -200,7 +200,7 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordered binding-set object construction with `objectFrom(...)`, optional experimental ordered row field projection with `fieldsFrom(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, ordered binding-set object construction with `objectFrom(...)`, optional experimental ordered row field projection with `fieldsFrom(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
 
 The evaluator slice explicitly rejects:
 
@@ -407,7 +407,7 @@ Examples:
 ```text
 .age >= 18
 order by .name
-lookup($.jobs, .job)
+resolveChild($.jobs, .job)
 ```
 
 When a resolution expression is consumed in scalar context, it produces one of four outcomes:
@@ -672,7 +672,7 @@ startsWith(.code, "AU-")
 endsWith(.filename, ".aeon")
 lower(.name)
 upper(.name)
-lookup($.jobs, .job)
+resolveChild($.jobs, .job)
 objectFrom($.table.header.*, .*)
 fieldsFrom($.table.header.*, .*, "age")
 concat(.firstName, " ", .lastName)
@@ -766,14 +766,14 @@ Fallback propagation:
 | NaN | no | NaN |
 | Infinity | no | infinity |
 
-## 17. Lookup
+## 17. Dynamic Child Resolution
 
-`lookup` is a deterministic structural evaluation form, not an ordinary value function and not a pipeline clause.
+`resolveChild` is a deterministic structural evaluation form, not an ordinary value function and not a pipeline clause.
 
 Conceptual syntax:
 
 ```text
-lookup(<base>, <key>)
+resolveChild(<base>, <key>)
 ```
 
 Example:
@@ -782,17 +782,17 @@ Example:
 from $.contacts.*
 select {
   name = .name
-  title = lookup($.jobs, .job)
+  title = resolveChild($.jobs, .job)
 }
 ```
 
-For SANSA.Query v1, `lookup` requires:
+For SANSA.Query v1, `resolveChild` requires:
 
 - the base to resolve to exactly one addressable container;
 - the key to resolve to exactly one scalar value;
 - the target to resolve to zero or one binding.
 
-String keys select direct member children. Non-negative integer keys select direct positional children. Other key shapes are not part of the initial lookup surface.
+String keys select direct member children. Non-negative integer keys select direct positional children. Other key shapes are not part of the initial `resolveChild` surface.
 
 Multiple base or key bindings produce a cardinality error. A missing target produces no binding. The consuming context determines whether that is acceptable.
 
@@ -1009,12 +1009,12 @@ select { sku = .sku status = fallback(.status, "missing") }
 
 ### 24.4 Lookup with Fallback
 
-`lookup(...)` and `fallback(...)` can compose inside projections:
+`resolveChild(...)` and `fallback(...)` can compose inside projections:
 
 ```text
 from $.inventory.items.*
 where .qty >= 4
-select { sku = .sku category = lookup($.inventory.categoryLabels, .category) status = fallback(.status, "missing") }
+select { sku = .sku category = resolveChild($.inventory.categoryLabels, .category) status = fallback(.status, "missing") }
 ```
 
 ### 24.5 Table Rows
