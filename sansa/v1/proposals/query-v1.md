@@ -1018,14 +1018,20 @@ Budget exhaustion is an evaluation failure, never implicit truncation. Implement
 
 Evaluation diagnostics must identify the error category with a stable code and message. They should also include query context when available:
 
-- `phase`: one of `parse`, `from`, `where`, `order`, or `select`
+- `phase`: one of `parse`, `policy`, `from`, `where`, `order`, or `select`
 - `candidateAddress`: the canonical address of the candidate binding being evaluated, when the failure occurs in candidate context
 
 `phase` and `candidateAddress` are diagnostic context. They do not define additional query semantics and must not be used to infer authorization, data visibility, or partial success.
 
 Non-fatal diagnostics may be surfaced as warnings. Warnings do not change the parsed query or the successful result set. They are intended for portability and policy visibility, such as accepting an address position beyond the portable SANSA Address ceiling under an implementation-specific local limit.
 
-## 26. Out of Scope
+## 26. Policy-Restricted Evaluation
+
+Consumers may evaluate SANSA.Query under policy restrictions. A policy restriction constrains the accepted query surface before evaluation; it does not create document-controlled validation semantics.
+
+The proposal-stage validation policy is intended for read-only schema or meaning-validation consumers. It may reject presentation and transform behavior such as `order by`, `offset`, `limit`, object projection expressions, and transform-library helpers. Rejection should use a stable policy diagnostic such as `SANSA_QUERY_POLICY_VIOLATION` with `phase: policy`.
+
+## 27. Out of Scope
 
 SANSA.Query v1 does not define:
 

@@ -168,7 +168,24 @@ Recommended metadata:
 
 Core CTS lanes should exclude experimental cases by default. Implementations that expose experimental extensions may run explicit experimental lanes.
 
-## 6. Boundaries
+## 6. Query Policy Restrictions
+
+Consumers may run `SANSA.Query` under a named policy restriction without creating a new conformance capability.
+
+The proposal-stage validation policy is intended for schema and meaning-validation consumers that need read-only semantic predicates without presentation or transform behavior. It is a consumer policy, not syntax that a document can use to instruct a schema how to validate itself.
+
+A validation policy may restrict:
+
+- `order by`;
+- `offset`;
+- `limit`;
+- presentation object projection;
+- transform-library helpers such as `objectFrom(...)` and `fieldsFrom(...)`;
+- implementation-specific executable functions.
+
+Policy rejection should produce a stable policy diagnostic before ordinary evaluation. A future specification may promote a stable validation surface into a named profile if multiple consumers converge on the same restrictions.
+
+## 7. Boundaries
 
 Conformance does not imply authorization.
 
