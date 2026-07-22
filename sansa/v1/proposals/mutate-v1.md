@@ -251,7 +251,10 @@ Mutation diagnostics should distinguish:
 - storage conflict;
 - implementation limit exhaustion.
 
-## 10. Open Questions
+## 10. Future Design Questions
+
+The following questions are for future `SANSA.Mutate`, ASP, and host-storage
+design work. They are not required SANSA v1 conformance decisions.
 
 - Should SANSA.Mutate expose a human-authored mutation language, a structured plan format, or both?
 - Should preconditions be expressed as restricted SANSA.Query predicates, a separate predicate grammar, or consumer-owned rule objects?

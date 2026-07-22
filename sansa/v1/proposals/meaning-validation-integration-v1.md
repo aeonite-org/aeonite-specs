@@ -198,7 +198,11 @@ Implementations should preserve this distinction so that downstream users can te
 - a schema target that matches no required AES events;
 - a domain rule violation.
 
-## 7. Open Questions
+## 7. Future Coordination Questions
+
+The following questions are not required to implement `SANSA.Addressing`,
+`SANSA.Resolve`, or `SANSA.Query` v1. They identify coordination points for
+AEOS and future meaning-validation specifications that may consume SANSA.
 
 - Should AEOS directly use SANSA.Resolve for selector expansion, or should a separate meaning-validation layer own all Resolve usage above exact path lookup?
 - Should meaning validation use assertion-style rules, violation-selection rules, or support both?
