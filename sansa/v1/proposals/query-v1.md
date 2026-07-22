@@ -302,6 +302,15 @@ Each result record represents one candidate binding that survives filtering, ord
 
 Projection does not flatten candidates. Each candidate produces at most one ResultRecord. If the projection expression is a resolution expression that resolves multiple bindings, the selected value is a Binding Set carried by that candidate's ResultRecord. Scalar-consuming functions, comparisons, order keys, and projection fields may still reject multi-binding values when their own contracts require one scalar.
 
+For example:
+
+```text
+from $.inventory.items[0]
+select .roles.*
+```
+
+produces one ResultRecord for candidate `$.inventory.items[0]`. The selected value is a Binding Set containing the matching role bindings. It does not produce one ResultRecord per role.
+
 ```text
 select .name
 ```
@@ -824,6 +833,15 @@ select .name
 ```
 
 the candidate address identifies the input candidate, while the selected Binding Set preserves the projected binding address or addresses.
+
+A multi-binding projection remains candidate-local:
+
+```text
+from $.users[0]
+select .roles.*
+```
+
+The ResultRecord candidate address remains `$.users[0]`. The selected Binding Set contains the projected role binding addresses.
 
 For a derived projection:
 
