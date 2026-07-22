@@ -391,6 +391,13 @@ AEOS owns the schema rule and validation diagnostic. Shared Value Semantics owns
 
 Shared Value Semantics should have its own conformance coverage once individual contracts become normative.
 
+The proposal-stage CTS scaffold is:
+
+```text
+aeonite-cts/cts/value-semantics/v1/value-semantics-cts.v1.json
+aeonite-cts/cts/value-semantics/v1/suites/01-minimum-consumer-contract.json
+```
+
 Shared CTS cases can then be reused by consumers:
 
 ```text
