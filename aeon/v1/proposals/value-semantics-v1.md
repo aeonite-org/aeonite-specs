@@ -284,6 +284,8 @@ Missing binding is not a value. It is an evaluation state produced by a consumer
 
 Explicit null and explicit absence values are values. They must not be collapsed into missing, false, an empty string, or zero.
 
+For minimum-profile consumer predicates, an **ordinary scalar value** means one finite number, string, or Boolean value. Positive infinity, negative infinity, NaN, explicit null, explicit absence values, containers, Binding Sets, and Missing are not ordinary scalar values unless a later profile explicitly widens that predicate.
+
 ### 7.2 Equality
 
 The minimum equality surface is:
@@ -291,12 +293,13 @@ The minimum equality surface is:
 | Operands | Equality | Notes |
 | --- | --- | --- |
 | finite number and finite number | allowed | Numeric value equality. |
-| infinity and infinity | allowed | Positive infinity equals positive infinity; negative infinity equals negative infinity. |
+| infinity and finite number | allowed | Positive and negative infinity are not equal to finite numeric values. |
+| infinity and infinity | allowed | Positive infinity equals positive infinity; negative infinity equals negative infinity; opposite infinities are not equal. |
 | string and string | allowed | Exact decoded string equality under the active string equality profile. |
 | Boolean and Boolean | allowed | `true` equals `true`; `false` equals `false`. |
 | explicit null | profile-defined or error | Consumers must use an explicit contract such as `isNull(...)` when no equality contract is active. |
 | explicit absence value | profile-defined or error | Absence-value equality belongs to the applicable absence-value contract. |
-| NaN | error | NaN is not equality-comparable in the minimum profile. |
+| NaN | error | NaN is not equality-comparable in the minimum profile; equality and inequality tests over NaN fail closed. |
 | mixed categories | error | No implicit coercion. |
 
 Consumers must not coerce strings, numbers, Booleans, nulls, or absence values to make equality succeed.
@@ -309,6 +312,7 @@ The minimum ordering surface is:
 | --- | --- | --- |
 | finite number and finite number | allowed | Numeric order. |
 | infinity and finite number | allowed | Negative infinity sorts before finite numbers; positive infinity sorts after finite numbers. |
+| infinity and infinity | allowed | Equal infinities compare equal; negative infinity sorts before positive infinity. |
 | string and string | allowed | Uses the active string ordering profile. |
 | Boolean and Boolean | error | Boolean ordering is not part of the minimum profile. |
 | explicit null | error | Use explicit null predicates or profile-defined null ordering. |
@@ -318,7 +322,13 @@ The minimum ordering surface is:
 
 Ordering must fail closed when the active profile does not define the compared category pair.
 
-### 7.4 Canonical String Profile Placeholder
+### 7.4 Value Predicate Basis
+
+Consumers may expose predicates that classify scalar evaluation results. Those predicates should be defined in terms of the shared scalar categories rather than by host-language truthiness.
+
+For example, a minimum-profile `isValue(...)` predicate should return true for exactly one ordinary scalar value and false for Missing, explicit null, explicit absence values, NaN, infinity, non-scalar containers, and Binding Sets. A predicate that needs to accept infinity, null, or a specific absence value should use a distinct name or a profile-defined contract.
+
+### 7.5 Canonical String Profile Placeholder
 
 The minimum profile requires a deterministic string equality and ordering profile, but this proposal does not yet define the final collation algorithm.
 
@@ -335,7 +345,7 @@ The canonical string profile must eventually define:
 
 Locale-aware, natural-sort, and domain-specific profiles remain future extensions.
 
-### 7.5 Case Mapping
+### 7.6 Case Mapping
 
 The minimum case-mapping surface is:
 
@@ -355,7 +365,7 @@ The canonical case-mapping profile must eventually define:
 
 Until the canonical case-mapping profile is locked, consumer implementations may expose `lower(...)` or `upper(...)` as implementation-slice behavior, but should document that normative behavior is still owned by Shared Value Semantics.
 
-### 7.6 Consumer Handoff
+### 7.7 Consumer Handoff
 
 Consumers own where an operation appears and what diagnostic context is produced.
 

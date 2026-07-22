@@ -453,7 +453,7 @@ isNaN(...)
 isInfinity(...)
 ```
 
-`isValue(expression)` returns true when the expression evaluates to one ordinary scalar value: string, Boolean, or finite number. It may inspect scalar expressions directly or consume a Binding Set produced by a resolution expression or `path(...)`. It returns false for missing operands, non-scalar bindings, explicit null, NaN, and infinity. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
+`isValue(expression)` returns true when the expression evaluates to one ordinary scalar value as defined by Shared AEON Value Semantics: string, Boolean, or finite number. It may inspect scalar expressions directly or consume a Binding Set produced by a resolution expression or `path(...)`. It returns false for missing operands, non-scalar bindings, explicit null, explicit absence values, NaN, and infinity. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
 
 `isNull(expression)` returns true when the expression resolves exactly one explicit null binding.
 
@@ -548,7 +548,8 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 | boolean and boolean | allowed | error | Booleans are not ordered. |
 | explicit null | error | error | Use `isNull(...)` or `isNullReason(...)`. |
 | NaN | error | error | Use `isNaN(...)`. |
-| infinity and number | allowed | allowed | Infinity compares as a numeric bound when numeric comparison is supported. |
+| infinity and finite number | allowed | allowed | Infinity is not equal to finite numeric values and compares as a numeric bound when numeric comparison is supported. |
+| infinity and infinity | allowed | allowed | Equal infinities compare equal; negative infinity sorts before positive infinity. |
 | mixed types | error | error | No implicit coercion. |
 
 `NaN` is not comparable. Equality, inequality, ordering, and order-key evaluation over `NaN` must fail with a comparison diagnostic. Queries test explicit NaN values with `isNaN(...)`.
