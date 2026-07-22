@@ -155,7 +155,7 @@ This boundary is especially important for container semantics. A document can ex
 
 Meaning-validation consumers should not need the full presentation-oriented Query surface.
 
-The proposal-stage validation policy is a restricted `SANSA.Query` policy intended for read-only semantic predicates. It is not a new syntax form and it is not controlled by the source document.
+The proposal-stage validation policy is a restricted `SANSA.Query` policy intended for read-only semantic predicates. It is not a new syntax form, not a separate v1 conformance profile, and not controlled by the source document.
 
 A validation policy may allow:
 
@@ -201,6 +201,5 @@ Implementations should preserve this distinction so that downstream users can te
 ## 7. Open Questions
 
 - Should AEOS directly use SANSA.Resolve for selector expansion, or should a separate meaning-validation layer own all Resolve usage above exact path lookup?
-- Should the validation policy remain a named policy, or eventually become a named conformance profile if multiple consumers converge on the same surface?
 - Should meaning validation use assertion-style rules, violation-selection rules, or support both?
 - Which diagnostics should be standardized by AEOS versus a future meaning-validation specification?

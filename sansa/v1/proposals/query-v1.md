@@ -1046,9 +1046,11 @@ Non-fatal diagnostics may be surfaced as warnings. Warnings do not change the pa
 
 ## 26. Policy-Restricted Evaluation
 
-Consumers may evaluate SANSA.Query under policy restrictions. A policy restriction constrains the accepted query surface before evaluation; it does not create document-controlled validation semantics.
+Consumers may evaluate SANSA.Query under policy restrictions. A policy restriction constrains the accepted query surface before evaluation; it does not create document-controlled validation semantics and does not create a separate Query conformance profile.
 
 The proposal-stage validation policy is intended for read-only schema or meaning-validation consumers. It may reject presentation and transform behavior such as `order by`, `offset`, `limit`, object projection expressions, and transform-library helpers. Rejection should use a stable policy diagnostic such as `SANSA_QUERY_POLICY_VIOLATION` with `phase: policy`.
+
+For SANSA.Query v1, validation is a named policy value such as `validation`, not a `SANSA.Query.Validation` capability. Implementations that support it should advertise policy support under their Query capability metadata.
 
 ## 27. Out of Scope
 
