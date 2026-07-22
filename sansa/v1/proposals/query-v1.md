@@ -154,7 +154,7 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordered binding-set object construction with `objectFrom(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordered binding-set object construction with `objectFrom(...)`, experimental ordered row field projection with `fieldsFrom(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
 
 The evaluator slice explicitly rejects:
 
@@ -613,6 +613,7 @@ lower(.name)
 upper(.name)
 lookup($.jobs, .job)
 objectFrom($.table.header.*, .*)
+fieldsFrom($.table.header.*, .*, "age")
 concat(.firstName, " ", .lastName)
 isNull(.status)
 isNullReason(.status, "notSet")
@@ -749,7 +750,39 @@ For SANSA.Query v1, `objectFrom` requires:
 
 The helper pairs key and value bindings by their resolved order and constructs one derived object. Duplicate keys, mismatched lengths, non-string keys, and non-scalar values produce diagnostics. The helper does not modify the source namespace or assign semantics to row-like structures.
 
-## 19. Projection
+## 19. Fields From
+
+`fieldsFrom` is an experimental deterministic projection helper for ordered row-like binding sets.
+
+Conceptual syntax:
+
+```text
+fieldsFrom(<keys>, <values>, <field-name>, ...)
+```
+
+Example:
+
+```text
+from $.table.content.*
+select fieldsFrom($.table.header.*, .*, "age")
+```
+
+For the current experimental slice, `fieldsFrom` requires:
+
+- the first two arguments to be resolution expressions;
+- the key and value Binding Sets to have equal length;
+- every key binding to expose a string scalar value;
+- every selected value binding to expose one scalar value;
+- at least one requested field name;
+- every requested field name to be a string scalar;
+- requested field names to be unique;
+- every requested field name to exist exactly once in the key Binding Set.
+
+The helper pairs key and value bindings by resolved order, then constructs one derived object containing only the requested fields. Missing requested fields, duplicate requested fields, duplicate matching keys, mismatched lengths, non-string keys, and non-scalar values produce diagnostics.
+
+`fieldsFrom` is optional and experimental. It exists to test ordered row/header projection without introducing dynamic selectors into SANSA.Query v1.
+
+## 20. Projection
 
 Projection may preserve existing bindings or construct derived results.
 
@@ -769,7 +802,7 @@ select {
 
 Constructed values have derived identity and are not written back into the namespace.
 
-## 20. Comments
+## 21. Comments
 
 SANSA.Query supports source comments.
 
@@ -789,7 +822,7 @@ Multi-line:
 
 Comments are lexical trivia. They may appear wherever whitespace is permitted, do not affect query semantics, and are removed from canonical query representations.
 
-## 21. Local Address-Space Binding
+## 22. Local Address-Space Binding
 
 Runtime values intended for use by a query should be supplied through explicitly mounted local address spaces rather than incorporated into query source text.
 
@@ -818,7 +851,7 @@ parsed query evaluation
 
 There must be no fallback between primary and local address spaces.
 
-## 22. Security and Policy
+## 23. Security and Policy
 
 Consumers receiving SANSA.Query expressions from outside their trust boundary may:
 
@@ -837,11 +870,11 @@ Local address-space binding prevents runtime values from being interpreted as SA
 
 Implementations may impose local resource limits for parsing and evaluation, including maximum address depth, maximum selector count, maximum query source size, maximum result count, maximum traversal cost, maximum sort input, and maximum accepted positional index. Local limits may be stricter than the portable SANSA minimum only when the implementation documents the restriction. Local limits may be broader than the portable minimum, but values that rely on broader limits are not portable.
 
-## 23. Query Recipes
+## 24. Query Recipes
 
 This section is non-normative. These recipe patterns illustrate how the v1 surface composes without adding additional syntax.
 
-### 23.1 Dynamic Address Parameters
+### 24.1 Dynamic Address Parameters
 
 Dynamic address literals can parameterize source, predicate, ordering, and projection. The comparison is guarded with `isValue(...)` so explicit null, NaN, infinity, non-scalar, and missing values do not enter scalar comparison.
 
@@ -852,7 +885,7 @@ order by path($.<"params">.sortField) asc
 select path($.<"params">.field)
 ```
 
-### 23.2 Status Presence
+### 24.2 Status Presence
 
 Ordinary values, explicit nulls, and missing bindings are distinct. A query can include ordinary status values and explicit null status values while excluding missing status bindings:
 
@@ -862,7 +895,7 @@ where isValue(.status) or (exists(.status) and isNull(.status))
 select { sku = .sku status = fallback(.status, "missing") }
 ```
 
-### 23.3 Lookup with Fallback
+### 24.3 Lookup with Fallback
 
 `lookup(...)` and `fallback(...)` can compose inside projections:
 
@@ -872,7 +905,7 @@ where .qty >= 4
 select { sku = .sku category = lookup($.inventory.categoryLabels, .category) status = fallback(.status, "missing") }
 ```
 
-### 23.4 Table Rows
+### 24.4 Table Rows
 
 `objectFrom(...)` can project ordered row values into objects using a separate ordered header Binding Set:
 
@@ -881,7 +914,14 @@ from $.table.content.*
 select objectFrom($.table.header.*, .*)
 ```
 
-### 23.5 Parent Context
+Experimental field projection can select a named subset from the same ordered row/header shape:
+
+```text
+from $.table.content.*
+select fieldsFrom($.table.header.*, .*, "age")
+```
+
+### 24.5 Parent Context
 
 Parent traversal lets a selector move from a selected child back to its exposed parent before continuing:
 
@@ -892,7 +932,7 @@ select .^.qty
 
 This is useful for selectors that begin at a precise binding but need sibling values. It remains namespace-adapted: a host that does not expose parent traversal must fail explicitly rather than inventing a parent relation.
 
-### 23.6 Position Ranges
+### 24.6 Position Ranges
 
 Position ranges select contiguous ordered children before later query clauses run:
 
@@ -904,7 +944,7 @@ select { sku = .sku qty = .qty }
 
 Ranges are inclusive. Open start means zero. Open end means through the final exposed positional child. Query portability follows SANSA Address portability: positions `0` through `999999` are the portable required surface.
 
-## 24. Diagnostics
+## 25. Diagnostics
 
 SANSA.Query evaluation is fail-fast in v1. A query either produces a Result Set or a Diagnostics Set.
 
@@ -917,7 +957,7 @@ Evaluation diagnostics must identify the error category with a stable code and m
 
 Non-fatal diagnostics may be surfaced as warnings. Warnings do not change the parsed query or the successful result set. They are intended for portability and policy visibility, such as accepting an address position beyond the portable SANSA Address ceiling under an implementation-specific local limit.
 
-## 25. Out of Scope
+## 26. Out of Scope
 
 SANSA.Query v1 does not define:
 
