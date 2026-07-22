@@ -12,6 +12,7 @@ links:
   - sansa-v1-resolve
   - sansa-v1-query
   - sansa-v1-extensions
+  - sansa-v1-mutate
 ---
 
 # SANSA v1 Conformance and Capabilities
@@ -39,6 +40,8 @@ Future specifications may define:
 Capabilities are cumulative only where a specification requires it. For example, `SANSA.Query` depends on `SANSA.Resolve`, and `SANSA.Resolve` depends on `SANSA.Addressing`. An Addressing-only implementation does not need to expose a namespace resolver.
 
 `SANSA.Transform` names optional transform-library behavior over resolved Binding Sets. It is not required by `SANSA.Query` core conformance.
+
+`SANSA.Mutate` is tracked as a future authority-bearing capability outline. It is not part of required SANSA v1 Addressing, Resolve, Query, or Transform conformance.
 
 ## 2. Profiles
 
