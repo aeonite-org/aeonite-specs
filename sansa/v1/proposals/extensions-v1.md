@@ -157,9 +157,13 @@ Open endpoints are represented as `null`:
 { type: "positionRange", start: null, end: 5 }
 ```
 
-## 4. Promoted Tabular Projection Helper
+## 4. Experimental Transform-Library Helpers
 
-The `objectFrom(...)` helper was originally tracked here as a candidate extension. It has been promoted into the SANSA.Query v1 proposal.
+Category: Transform library extension  
+Maturity: Experimental  
+Capability: `SANSA.Transform`
+
+The `objectFrom(...)` and `fieldsFrom(...)` helpers are experimental transform-library helpers for ordered row-like Binding Sets. They are usable from Query projection contexts in implementations that advertise the relevant extension, but they are not part of required SANSA.Query v1 core conformance.
 
 SANSA.Addressing already supports positional access into ordered row-like structures:
 
@@ -183,12 +187,13 @@ select {
 }
 ```
 
-The promoted helper links header positions to row positions and constructs an object whose field names come from the header row.
+`objectFrom(...)` links header positions to row positions and constructs an object whose field names come from the header row.
 
 Surface syntax:
 
 ```text
 objectFrom($.table.header.*, .*)
+fieldsFrom($.table.header.*, .*, "age")
 ```
 
 Example:
@@ -205,11 +210,10 @@ $.table.content[0] = {"name":"Bob","age":22}
 $.table.content[1] = {"name":"Alice","age":31}
 ```
 
-This belongs to SANSA.Query projection semantics, not the address selector language. It pairs two ordered Binding Sets by position and uses the left side as object keys and the right side as object values.
+These helpers belong to the transform-library surface, not the address selector language and not Query core. They pair two ordered Binding Sets by position and use the left side as object keys and the right side as object values.
 
-### 4.1 Promoted Contract
+### 4.1 `objectFrom(...)` Contract
 
-- The helper is named `objectFrom`.
 - Key bindings must expose string scalar values.
 - Duplicate keys produce a diagnostic.
 - Mismatched key and value lengths produce a cardinality diagnostic.
@@ -239,9 +243,9 @@ Case mapping is defined by Shared AEON Value Semantics. An implementation slice 
 
 ## 6. Experimental Field Projection Helper
 
-Category: Library extension  
+Category: Transform library extension  
 Maturity: Experimental  
-Capability: `SANSA.Query`
+Capability: `SANSA.Transform`
 
 The `fieldsFrom(...)` helper is an experimental companion to `objectFrom(...)`.
 
@@ -277,7 +281,7 @@ Experimental contract:
 - requested field names are unique string scalars;
 - every requested field exists exactly once in the key Binding Set.
 
-`fieldsFrom(...)` is not part of required SANSA.Query v1 conformance. Implementations that expose it must advertise it as an experimental extension.
+`fieldsFrom(...)` is not part of required SANSA.Query v1 conformance. Implementations that expose it must advertise it as an experimental `SANSA.Transform` extension.
 
 ## 7. Promotion Checklist
 

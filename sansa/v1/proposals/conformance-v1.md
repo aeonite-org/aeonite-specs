@@ -28,6 +28,7 @@ SANSA v1 defines independent capability families:
 - `SANSA.Addressing`
 - `SANSA.Resolve`
 - `SANSA.Query`
+- `SANSA.Transform`
 
 Future specifications may define:
 
@@ -36,6 +37,8 @@ Future specifications may define:
 - `SANSA.History`
 
 Capabilities are cumulative only where a specification requires it. For example, `SANSA.Query` depends on `SANSA.Resolve`, and `SANSA.Resolve` depends on `SANSA.Addressing`. An Addressing-only implementation does not need to expose a namespace resolver.
+
+`SANSA.Transform` names optional transform-library behavior over resolved Binding Sets. It is not required by `SANSA.Query` core conformance.
 
 ## 2. Profiles
 
@@ -87,6 +90,7 @@ Supports:
 Does not require:
 
 - experimental extensions;
+- transform-library helpers such as `objectFrom(...)` and `fieldsFrom(...)`;
 - mutation;
 - subscription;
 - history;
@@ -125,12 +129,19 @@ Conceptual example:
   "capabilities": [
     "SANSA.Addressing",
     "SANSA.Resolve",
-    "SANSA.Query"
+    "SANSA.Query",
+    "SANSA.Transform"
   ],
   "extensions": [
     {
-      "id": "sansa.query.fieldsFrom",
-      "capability": "SANSA.Query",
+      "id": "sansa.transform.objectFrom",
+      "capability": "SANSA.Transform",
+      "category": "library",
+      "maturity": "experimental"
+    },
+    {
+      "id": "sansa.transform.fieldsFrom",
+      "capability": "SANSA.Transform",
       "category": "library",
       "maturity": "experimental"
     }

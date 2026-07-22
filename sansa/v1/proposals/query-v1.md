@@ -200,7 +200,9 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, ordered binding-set object construction with `objectFrom(...)`, optional experimental ordered row field projection with `fieldsFrom(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, ordinary value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
+
+Some implementations may also expose transform-library helpers such as `objectFrom(...)` and `fieldsFrom(...)`. These helpers operate across multiple Binding Sets and are not part of SANSA.Query v1 core conformance.
 
 The evaluator slice explicitly rejects:
 
@@ -673,8 +675,6 @@ endsWith(.filename, ".aeon")
 lower(.name)
 upper(.name)
 resolveChild($.jobs, .job)
-objectFrom($.table.header.*, .*)
-fieldsFrom($.table.header.*, .*, "age")
 concat(.firstName, " ", .lastName)
 isNull(.status)
 isNullReason(.status, "notSet")
@@ -796,66 +796,20 @@ String keys select direct member children. Non-negative integer keys select dire
 
 Multiple base or key bindings produce a cardinality error. A missing target produces no binding. The consuming context determines whether that is acceptable.
 
-## 18. Object From
+## 18. Transform-Library Helpers
 
-`objectFrom` is a deterministic projection helper for ordered binding sets.
+Transform-library helpers operate across multiple Binding Sets to construct derived structures. They are useful in projections, but they are not part of SANSA.Query v1 core conformance because they correlate independently resolved Binding Sets by order, cardinality, or interpretation.
 
-Conceptual syntax:
-
-```text
-objectFrom(<keys>, <values>)
-```
-
-Example:
+Examples include:
 
 ```text
-from $.table.content.*
-select objectFrom($.table.header.*, .*)
+objectFrom($.table.header.*, .*)
+fieldsFrom($.table.header.*, .*, "age")
 ```
 
-For SANSA.Query v1, `objectFrom` requires:
+Implementations that expose these helpers must advertise them as extensions under a transform-library capability such as `SANSA.Transform`.
 
-- both arguments to be resolution expressions;
-- the key and value Binding Sets to have equal length;
-- every key binding to expose a string scalar value;
-- every value binding to expose one scalar value;
-- generated keys to be unique.
-
-The helper pairs key and value bindings by their resolved order and constructs one derived object. Duplicate keys, mismatched lengths, non-string keys, and non-scalar values produce diagnostics. The helper does not modify the source namespace or assign semantics to row-like structures.
-
-## 19. Fields From
-
-`fieldsFrom` is an optional experimental projection helper for ordered row-like binding sets.
-
-Conceptual syntax:
-
-```text
-fieldsFrom(<keys>, <values>, <field-name>, ...)
-```
-
-Example:
-
-```text
-from $.table.content.*
-select fieldsFrom($.table.header.*, .*, "age")
-```
-
-For the current experimental slice, `fieldsFrom` requires:
-
-- the first two arguments to be resolution expressions;
-- the key and value Binding Sets to have equal length;
-- every key binding to expose a string scalar value;
-- every selected value binding to expose one scalar value;
-- at least one requested field name;
-- every requested field name to be a string scalar;
-- requested field names to be unique;
-- every requested field name to exist exactly once in the key Binding Set.
-
-The helper pairs key and value bindings by resolved order, then constructs one derived object containing only the requested fields. Missing requested fields, duplicate requested fields, duplicate matching keys, mismatched lengths, non-string keys, and non-scalar values produce diagnostics.
-
-`fieldsFrom` is not part of the required SANSA.Query v1 core conformance surface. It exists to test ordered row/header projection without introducing dynamic selectors into SANSA.Query v1. Implementations that expose it must advertise it as an experimental extension.
-
-## 20. Projection
+## 19. Projection
 
 Projection may preserve existing bindings or construct derived results.
 
@@ -1007,7 +961,7 @@ where isValue(.status) or (exists(.status) and isNull(.status))
 select { sku = .sku status = fallback(.status, "missing") }
 ```
 
-### 24.4 Lookup with Fallback
+### 24.4 Dynamic Child Resolution with Fallback
 
 `resolveChild(...)` and `fallback(...)` can compose inside projections:
 
@@ -1017,9 +971,9 @@ where .qty >= 4
 select { sku = .sku category = resolveChild($.inventory.categoryLabels, .category) status = fallback(.status, "missing") }
 ```
 
-### 24.5 Table Rows
+### 24.5 Transform-Library Table Rows
 
-`objectFrom(...)` can project ordered row values into objects using a separate ordered header Binding Set:
+An implementation that advertises `SANSA.Transform` may expose helpers for ordered row/header shaping. For example, `objectFrom(...)` can project ordered row values into objects using a separate ordered header Binding Set:
 
 ```text
 from $.table.content.*
