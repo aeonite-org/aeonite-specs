@@ -22,6 +22,7 @@ SANSA is independent within the Aeonite ecosystem. AEON, AEOS, AES, runtime obje
 - `query-v1.md` defines the initial read-only semantic query pipeline built on SANSA.Resolve.
 - `conformance-v1.md` defines capability names, conformance profiles, and extension advertisement.
 - `extensions-v1.md` records candidate selector and query-helper extensions before they enter the core v1 conformance surface.
+- `meaning-validation-integration-v1.md` defines the AEON, AEOS, SANSA, and meaning-validation responsibility boundaries.
 
 ## Conceptual Stack
 
@@ -68,5 +69,6 @@ SANSA separates semantic interaction from representation, validation, persistenc
 - AEOS defines how meaning is constrained.
 - AES defines how meaning is persisted.
 - SANSA defines how meaning is accessed.
+- Meaning validators define how domain rules are interpreted and reported.
 
 SANSA does not require data to originate from AEON. It requires only that a conforming implementation expose a deterministic semantic namespace to consumers.

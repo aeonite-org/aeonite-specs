@@ -238,6 +238,10 @@ SANSA deliberately does not define `[*]` as a selector form. Schemas that need l
 
 Selectors do not create virtual paths. They match against actual Core/AES event paths.
 
+AEOS rule targets use SANSA for structural binding discovery only. AEOS remains responsible for schema-declared representation and structural validation, and meaning-validation consumers remain responsible for domain rules and diagnostics above AEOS.
+
+An AEON document may contain SANSA literals as ordinary values, but those literals do not authorize the document to choose its schema, enable query extensions, select validation policy, or instruct AEOS how to interpret itself. Native AEON schema source gives SANSA literals rule-target meaning only because the schema loader and validator assign that role.
+
 ### 4.3 ConstraintsV1
 
 Active shipped constraint surface:
