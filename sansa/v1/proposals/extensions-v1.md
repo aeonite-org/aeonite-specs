@@ -23,6 +23,24 @@ This document records candidate extensions before they are accepted into the cor
 
 The features in this document are not part of the current conformance surface until promoted into the corresponding addressing, resolve, query, and CTS documents.
 
+Extensions have two broad categories:
+
+- **Language extensions** change SANSA syntax, selector vocabulary, AST shape, or parse/render contracts.
+- **Library extensions** add named helpers, functions, or evaluator forms without changing the language grammar.
+
+Extensions have maturity:
+
+- **Draft**: recorded design idea with no implementation expectation.
+- **Experimental**: implemented or prototyped for evaluation, but not part of core conformance.
+- **Candidate**: considered stable enough for promotion review.
+- **Promoted**: moved into the relevant core proposal and CTS conformance surface.
+- **Deprecated**: retained for compatibility but no longer recommended.
+- **Removed**: no longer part of the active extension surface.
+
+Candidate and experimental extensions do not modify SANSA v1 conformance. Implementations may expose them only as explicitly documented implementation extensions until promotion.
+
+Each extension should declare an owning capability, such as `SANSA.Addressing`, `SANSA.Resolve`, `SANSA.Query`, or a future capability.
+
 ## 1. Design Constraints
 
 Candidate extensions should preserve these SANSA boundaries:
@@ -219,7 +237,49 @@ The promoted surface uses `upper(...)` rather than `uppercase(...)`, matching th
 
 Case mapping is defined by Shared AEON Value Semantics. An implementation slice may use its host runtime's default Unicode case mapping while the shared contract is still proposal-stage, but normative behavior should not depend on host locale, process locale, database collation, or host-language defaults.
 
-## 6. Promotion Checklist
+## 6. Experimental Field Projection Helper
+
+Category: Library extension  
+Maturity: Experimental  
+Capability: `SANSA.Query`
+
+The `fieldsFrom(...)` helper is an experimental companion to `objectFrom(...)`.
+
+Surface syntax:
+
+```text
+fieldsFrom(<keys>, <values>, <field-name>, ...)
+```
+
+Example:
+
+```text
+from $.table.content.*
+select fieldsFrom($.table.header.*, .*, "age")
+```
+
+Result:
+
+```text
+$.table.content[0] = {"age":22}
+$.table.content[1] = {"age":31}
+```
+
+The helper pairs an ordered key Binding Set with an ordered value Binding Set, then emits only the requested string-named fields. It is useful for testing row/header projection without adding dynamic selectors to SANSA.Query.
+
+Experimental contract:
+
+- the first two arguments are resolution expressions;
+- key and value Binding Sets have equal length;
+- key bindings expose string scalar values;
+- selected value bindings expose scalar values;
+- at least one requested field name is supplied;
+- requested field names are unique string scalars;
+- every requested field exists exactly once in the key Binding Set.
+
+`fieldsFrom(...)` is not part of required SANSA.Query v1 conformance. Implementations that expose it must advertise it as an experimental extension.
+
+## 7. Promotion Checklist
 
 Before any candidate in this document becomes part of the implemented v1 surface:
 

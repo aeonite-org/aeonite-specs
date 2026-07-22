@@ -30,7 +30,7 @@ Resolve answers:
 
 Query answers:
 
-> What do those bindings mean?
+> What values and derived results can be obtained from those bindings in a declared query context?
 
 ## 2. Design Principles
 
@@ -80,6 +80,52 @@ Result Set
 ```
 
 Each stage has a single responsibility and produces a new logical result.
+
+### 3.1 Query Evaluation Invariants
+
+SANSA.Query v1 follows these evaluation invariants:
+
+1. Query clauses execute in normative written order.
+2. Every clause consumes the complete result of the previous clause.
+3. Candidate evaluation follows Binding Set order.
+4. Resolution expressions always produce Binding Sets.
+5. Scalar contexts require exactly one binding.
+6. Missing is distinct from every explicit value.
+7. No implicit coercion, host truthiness, flattening, or deduplication occurs.
+8. Boolean and membership short-circuiting are normative where specified.
+9. Evaluation stops at the first diagnostic in deterministic evaluation order.
+10. No partial Result Set is returned on failure.
+
+Fail-fast behavior depends on deterministic evaluation order:
+
+- `from` resolves before any other clause;
+- `where` evaluates candidates in Binding Set order;
+- `order by` evaluates candidate keys in Binding Set order and key order;
+- `offset` and `limit` apply only after filtering and ordering;
+- `select` evaluates candidates in the Binding Set order entering projection.
+
+### 3.2 Result Set Model
+
+A successful query produces a Result Set: an ordered sequence of ResultRecords.
+
+Conceptual model:
+
+```text
+ResultRecord
+  candidateAddress?
+  value
+  valueAddress?
+  kind = binding | derived
+  provenance?
+```
+
+`candidateAddress` identifies the candidate binding processed by the pipeline when the namespace exposes a canonical address for that candidate.
+
+`value` is the selected query value. It may be a Binding Set, scalar value, or derived constructed value according to the projection expression.
+
+`valueAddress` is present only when projection preserves one existing binding identity. If the selected value is a multi-binding Binding Set, each binding in that set retains its own canonical address instead of collapsing to one `valueAddress`.
+
+Derived values, including constructed projection objects and function results, do not become addressable namespace bindings.
 
 ## 4. Surface Syntax
 
@@ -154,7 +200,7 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordered binding-set object construction with `objectFrom(...)`, experimental ordered row field projection with `fieldsFrom(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic container lookup with `lookup(...)`, ordered binding-set object construction with `objectFrom(...)`, optional experimental ordered row field projection with `fieldsFrom(...)`, ordinary value predicates, null predicates, special numeric predicates, and projection expressions.
 
 The evaluator slice explicitly rejects:
 
@@ -219,6 +265,10 @@ If direction is omitted, `asc` is assumed.
 
 Ordering keys are evaluated from left to right. Later keys act as tie-breakers. Ordering must be stable. Bindings that compare equal across every specified key retain their existing relative order.
 
+The pre-order Binding Set entering the `order by` stage is the tie-preservation basis.
+
+An order key that evaluates to Missing, explicit null, NaN, a non-scalar value, or multiple bindings produces an evaluation diagnostic unless a future explicit missing-order policy is present. SANSA.Query v1 does not define null-first, null-last, missing-omit, or host-default ordering.
+
 ### 6.4 Offset
 
 The `offset` clause removes the first specified number of bindings from the working Binding Set.
@@ -247,6 +297,8 @@ model and evaluator resource policy.
 The `select` clause produces the final Result Set.
 
 Each result record represents one candidate binding that survives filtering, ordering, offset, and limit. When the namespace exposes a canonical address for that candidate, the result record carries that address as the result address. The selected value remains separate from the candidate address.
+
+Projection does not flatten candidates. Each candidate produces at most one ResultRecord. If the projection expression is a resolution expression that resolves multiple bindings, the selected value is a Binding Set carried by that candidate's ResultRecord. Scalar-consuming functions, comparisons, order keys, and projection fields may still reject multi-binding values when their own contracts require one scalar.
 
 ```text
 select .name
@@ -507,7 +559,16 @@ The `in` operator tests scalar membership in a Binding Set:
 where "admin" in .roles.*
 ```
 
-The left operand is consumed in scalar context. The right operand is consumed as a Binding Set. Each right-side binding is consumed as a scalar and compared to the left value using equality comparison rules. Empty Binding Sets and non-matching sets evaluate to false. Membership does not skip incompatible bindings: explicit null, NaN, missing scalar, cardinality, and mixed-type comparison failures surface as diagnostics.
+The left operand is consumed in scalar context. The right operand is consumed as a Binding Set. Right-side bindings are evaluated in Binding Set order. Each right-side binding is consumed as a scalar and compared to the left value using equality comparison rules.
+
+Membership short-circuits:
+
+- the first successful equality match returns `true`;
+- incompatible values encountered before a successful match fail immediately;
+- values after a successful match are not evaluated;
+- empty Binding Sets and fully evaluated non-matching sets return `false`.
+
+Membership does not skip incompatible bindings before a match: explicit null, NaN, missing scalar, cardinality, and mixed-type comparison failures surface as diagnostics.
 
 `in` is not string containment and does not introduce list literals. String containment uses an explicit function such as `contains(...)`.
 
@@ -693,9 +754,21 @@ The primary operand is consumed in scalar value context. If the primary operand 
 
 `fallback` handles only missing primary values. Explicit null values, cardinality errors, type errors, comparison errors, unsupported functions, invalid references, and authorization failures do not trigger fallback.
 
+Fallback propagation:
+
+| Primary result | Replacement evaluated? | Result |
+| --- | ---: | --- |
+| Value | no | primary value |
+| Missing | yes | replacement result |
+| CardinalityError | no | diagnostic |
+| EvaluationError | no | diagnostic |
+| Explicit null | no | explicit null |
+| NaN | no | NaN |
+| Infinity | no | infinity |
+
 ## 17. Lookup
 
-`lookup` is a deterministic value-producing expression, not a pipeline clause.
+`lookup` is a deterministic structural evaluation form, not an ordinary value function and not a pipeline clause.
 
 Conceptual syntax:
 
@@ -752,7 +825,7 @@ The helper pairs key and value bindings by their resolved order and constructs o
 
 ## 19. Fields From
 
-`fieldsFrom` is an experimental deterministic projection helper for ordered row-like binding sets.
+`fieldsFrom` is an optional experimental projection helper for ordered row-like binding sets.
 
 Conceptual syntax:
 
@@ -780,13 +853,40 @@ For the current experimental slice, `fieldsFrom` requires:
 
 The helper pairs key and value bindings by resolved order, then constructs one derived object containing only the requested fields. Missing requested fields, duplicate requested fields, duplicate matching keys, mismatched lengths, non-string keys, and non-scalar values produce diagnostics.
 
-`fieldsFrom` is optional and experimental. It exists to test ordered row/header projection without introducing dynamic selectors into SANSA.Query v1.
+`fieldsFrom` is not part of the required SANSA.Query v1 core conformance surface. It exists to test ordered row/header projection without introducing dynamic selectors into SANSA.Query v1. Implementations that expose it must advertise it as an experimental extension.
 
 ## 20. Projection
 
 Projection may preserve existing bindings or construct derived results.
 
 Binding projection preserves identity, address, and provenance.
+
+For a binding projection:
+
+```text
+from $.users.*
+select .name
+```
+
+the candidate address identifies the input candidate, while the selected Binding Set preserves the projected binding address or addresses.
+
+For a derived projection:
+
+```text
+from $.users.*
+select concat(.firstName, " ", .lastName)
+```
+
+the ResultRecord retains candidate provenance, but the derived value has no canonical namespace address.
+
+For a constructed object projection:
+
+```text
+from $.users.*
+select { name = .name active = .active }
+```
+
+the constructed object is a derived value. It does not become an addressable namespace binding.
 
 ```text
 select .name
@@ -959,6 +1059,8 @@ Ranges are inclusive. Open start means zero. Open end means through the final ex
 ## 25. Diagnostics
 
 SANSA.Query evaluation is fail-fast in v1. A query either produces a Result Set or a Diagnostics Set.
+
+Budget exhaustion is an evaluation failure, never implicit truncation. Implementations should use stable budget diagnostics such as `SANSA_QUERY_BUDGET_EXCEEDED` with context naming the budget, limit, observed value, and phase when available.
 
 Evaluation diagnostics must identify the error category with a stable code and message. They should also include query context when available:
 
