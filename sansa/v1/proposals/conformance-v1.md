@@ -119,6 +119,7 @@ An implementation should expose human-readable or machine-readable capability in
 - supported capabilities;
 - optional extensions;
 - experimental extensions;
+- caller-supplied budget controls, when supported;
 - implementation-defined limits;
 - portability-warning behavior.
 
@@ -134,6 +135,14 @@ Conceptual example:
     "SANSA.Resolve",
     "SANSA.Query",
     "SANSA.Transform"
+  ],
+  "budgetOptions": [
+    {
+      "id": "maxFromBindings",
+      "capability": "SANSA.Query",
+      "category": "evaluation-budget",
+      "phase": "from"
+    }
   ],
   "extensions": [
     {
