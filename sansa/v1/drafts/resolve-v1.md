@@ -1,11 +1,11 @@
 ---
 id: sansa-v1-resolve
 title: SANSA.Resolve v1
-description: Proposal-stage deterministic structural resolution capability for SANSA.
+description: Draft-stage deterministic structural resolution capability for SANSA.
 family: sansa
 group: SANSA
-status: Proposal
-path: specification/sansa/v1/proposals/resolve
+status: Draft
+path: specification/sansa/v1/drafts/resolve
 license: CC-BY-4.0
 links:
   - sansa-v1-addressing
@@ -14,7 +14,7 @@ links:
 
 # SANSA.Resolve v1
 
-Status: Proposal  
+Status: Draft
 Scope: deterministic structural resolution of SANSA address expressions.
 
 ## 1. Overview

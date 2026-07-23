@@ -1,11 +1,11 @@
 ---
 id: sansa-v1-addressing
 title: SANSA v1 Addressing
-description: Proposal-stage address model and selector vocabulary for SANSA.
+description: Draft-stage address model and selector vocabulary for SANSA.
 family: sansa
 group: SANSA
-status: Proposal
-path: specification/sansa/v1/proposals/addressing
+status: Draft
+path: specification/sansa/v1/drafts/addressing
 license: CC-BY-4.0
 links:
   - sansa-v1-resolve
@@ -14,7 +14,7 @@ links:
 
 # SANSA v1 Addressing
 
-Status: Proposal  
+Status: Draft
 Scope: structural address model and selector vocabulary for SANSA v1.
 
 ## 1. Overview
