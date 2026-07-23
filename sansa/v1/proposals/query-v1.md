@@ -704,7 +704,7 @@ Functions must be:
 
 Documents must not define executable functions.
 
-Function names use lower camel case.
+Function names use lower camel case. Function-name matching is case-sensitive; `objectFrom(...)` and `objectfrom(...)` are different identifiers.
 
 Ordinary value-producing functions evaluate their arguments before invocation. Resolution-expression arguments are consumed in single-binding scalar context:
 
