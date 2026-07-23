@@ -87,10 +87,10 @@ Implementations MUST:
 Implementations MUST:
 1. support canonical path identity segments for member and index;
 2. support quoted member segments and quoted attribute selectors in addressing expressions;
-3. support attribute reference forms (for example `~a@b`);
-4. support mixed member traversal with quoted bracket member segments after `.` (for example `~a.[\"b.c\"]`, `~a@meta.[\"x.y\"]`, `~a@[\"x.y\"].z`);
+3. support attribute reference forms through the attribute address-space transition (for example `~a.@.b`);
+4. support mixed member traversal with quoted bracket member segments after `.` (for example `~a.[\"b.c\"]`, `~a.@.meta.[\"x.y\"]`, `~a.@.[\"x.y\"].z`);
 5. reject empty quoted path or attribute segments deterministically;
-6. reject malformed or incomplete addressing forms deterministically, including examples such as `~a@`, `~$.a@[`, and `~.[\"a\"]`;
+6. reject malformed or incomplete addressing forms deterministically, including examples such as `~a.@`, `~$.a.@.[`, and `~.[\"a\"]`;
 7. reject missing reference targets deterministically;
 8. reject forward references deterministically;
 9. reject self-references deterministically.
@@ -352,6 +352,19 @@ Implementations claiming AEON v1 conformance MUST support at least:
 9. `max_events` configured value of at least `100,000` when the control is exposed.
 
 These floors are minimum interoperability guarantees. Implementations MAY support larger limits.
+
+When an implementation accepts a document or configured policy value that exceeds one of these floors, the document remains valid for that implementation but is no longer guaranteed to be portable to every AEON v1 implementation. Implementations with a non-fatal diagnostic channel SHOULD surface a portability warning when portable floors are exceeded. The warning SHOULD identify the affected floor, observed value, and portable floor value.
+
+Recommended warning codes:
+- `AEON_NON_PORTABLE_STRING_LENGTH`
+- `AEON_NON_PORTABLE_KEY_SEGMENT_LENGTH`
+- `AEON_NON_PORTABLE_NUMERIC_LITERAL_LENGTH`
+- `AEON_NON_PORTABLE_CONTAINER_NESTING_DEPTH`
+- `AEON_NON_PORTABLE_CONTAINER_ELEMENT_COUNT`
+- `AEON_NON_PORTABLE_PATH_LENGTH`
+- `AEON_NON_PORTABLE_STRUCTURED_COMMENT_LENGTH`
+- `AEON_NON_PORTABLE_POLICY_DEPTH`
+- `AEON_NON_PORTABLE_EVENT_BUDGET`
 
 The container nesting floor in item 4 is a required supported processing floor
 whether or not an implementation surfaces `max_nesting_depth` as a public

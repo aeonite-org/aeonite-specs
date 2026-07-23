@@ -37,7 +37,7 @@ AEOS compliance SHALL be evaluated against validator behavior families, not only
 The current AEOS behavior families are:
 - result-envelope and validator output contract
 - schema rule-index integrity
-- selector path targeting and closed-world coverage
+- SANSA path and selector rule targeting, plus closed-world coverage
 - presence and forbid semantics
 - representational type and datatype-label constraints
 - attribute-payload and attribute-closure constraints
@@ -62,6 +62,9 @@ An AEOS-conforming implementation MUST:
 - support exact `path` rules and `selector` rules according to `AEOS-spec-v1.md`
 - avoid treating Core-owned legality failures as schema-validation failures
 - preserve bounded, deterministic behavior for opt-in resolved-reference validation
+- treat `resource_policy` values as validator budgets rather than AEOS language
+  ceilings; implementation defaults may vary, and larger configured budgets are
+  implementation/platform dependent
 
 AEOS conformance is not satisfied by passing only representative examples if validator behavior drifts across one of the AEOS behavior families listed above.
 

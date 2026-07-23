@@ -108,7 +108,7 @@ Tuples and lists use indexed segments in canonical paths:
 ```
 $.a[0]      // first element of a
 $.a[1][2]   // third element of second element of a
-$.a[0]@meta // attribute on first element
+$.a[0].@.meta // attribute on first element
 ```
 
 Index segment model aligns with the addressing appendix (`member / index` identity segments with attribute selectors in addressing expressions).

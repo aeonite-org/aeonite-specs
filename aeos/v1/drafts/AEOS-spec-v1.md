@@ -197,7 +197,14 @@ interface SchemaRule {
 }
 ```
 
-Rules target AES events by either exact canonical path or by selector.
+Rules target AES events by either exact SANSA path or by SANSA selector.
+
+In programmatic schema payloads, `path` and `selector` are strings. In native AEON schema source, they SHOULD be encoded as SANSA literals:
+
+```aeon
+path:sansa = $.contact.name
+selector:sansa = $.items.*.name
+```
 
 Each rule MUST provide exactly one of:
 - `path`
@@ -206,29 +213,34 @@ Each rule MUST provide exactly one of:
 A rule with neither target field is invalid.
 A rule with both target fields is invalid.
 
-`path` is an exact canonical path target, with one additional indexed wildcard form:
-- `[*]` matches a single numeric index segment.
+`path` is an exact SANSA path target. It MUST NOT contain expansion, pattern, filter, or wildcard selectors.
 
 Examples:
 - `$.contact`
 - `$.contact.name`
-- `$.items[*]`
-- `$.items[*].name`
+- `$.items[0]`
+- `$.items[0].name`
+- `$.contact.@.unit`
 
-`selector` is a canonical-path selector target.
-Selector strings are root-anchored and use canonical path segment syntax with two additional selector segments:
-- `*` matches exactly one path segment.
-- `**` matches zero or more path segments.
+`selector` is a SANSA selector target.
+Selector strings are root-anchored and use SANSA selector syntax:
+- `.*` matches exactly one structural segment.
+- `.**` matches zero or more structural segments.
 
 Examples:
 - `$.*.contact` matches `contact` at exact depth 2 from root, such as `$.app.contact`.
 - `$.**.contact` matches `contact` at any depth under root, including `$.contact`.
 - `$.*.**.contact` matches `contact` at depth 2 or deeper.
+- `$.pages.*.title` matches indexed or named direct children such as `$.pages[0].title`.
+- `$.width.*.@.unit` matches attributes under direct children.
 
-Selector `[*]` retains the indexed wildcard meaning and matches one numeric index segment.
-For example, `$.pages[*].title` matches `$.pages[0].title`.
+SANSA deliberately does not define `[*]` as a selector form. Schemas that need list/item expansion use `selector` with `.*`.
 
 Selectors do not create virtual paths. They match against actual Core/AES event paths.
+
+AEOS rule targets use SANSA for structural binding discovery only. AEOS remains responsible for schema-declared representation and structural validation, and meaning-validation consumers remain responsible for domain rules and diagnostics above AEOS.
+
+An AEON document may contain SANSA literals as ordinary values, but those literals do not authorize the document to choose its schema, enable query extensions, select validation policy, or instruct AEOS how to interpret itself. Native AEON schema source gives SANSA literals rule-target meaning only because the schema loader and validator assign that role.
 
 ### 4.3 ConstraintsV1
 
@@ -406,7 +418,7 @@ Schema-validation failures:
 
 Authoring note:
 - `.aeos` documents SHOULD prefer `reference_target_path` where the allowed target domain can be expressed
-  as a path selector such as `$.ages[*]`.
+  as a SANSA selector such as `$.ages.*`.
 - Loaders MUST project that selector into an equivalent internal target-matching form before AEOS validation.
 
 ### 5.8 `resolve_reference_form`
@@ -636,7 +648,7 @@ Behavior:
 - `open` is the default;
 - `open` validates declared schema rules and ignores unexpected AES binding paths;
 - `closed` rejects any non-header AES binding path not explicitly covered by `schema.rules`;
-- exact `path` rules, indexed `path` wildcard rules, and `selector` rules all participate in closed-world coverage;
+- exact `path` rules and `selector` rules both participate in closed-world coverage;
 - rejection happens before downstream materialization is trusted.
 
 Failure diagnostic:
@@ -677,8 +689,22 @@ Supported fields:
 - `max_string_length_default`
 - `max_container_children_default`
 
-Policy values MUST be positive integers or zero. A value of zero is valid and
+Policy values MUST be non-negative integers. A value of zero is valid and
 means no items in that category may be consumed or expanded.
+
+Resource-policy values are validator budgets, not AEOS language ceilings. The
+default values chosen by an implementation are implementation policy. A schema
+or host may configure lower budgets for stricter resource control or higher
+budgets for larger documents, subject to the implementation's platform and
+runtime capacity. If an implementation rejects a configured budget because it
+exceeds platform limits, that rejection is a resource-policy diagnostic rather
+than a change to AEOS schema semantics.
+
+When a schema or host configures a resource-policy budget above a documented
+portable floor, implementations with warning support SHOULD emit
+`AEOS_NON_PORTABLE_RESOURCE_POLICY`. The warning should identify the policy key,
+configured budget, and portable floor so authors do not mistake a locally
+accepted schema for one that will run unchanged everywhere.
 
 `max_string_length_default` is reserved as the default string-like payload
 budget. Explicit `min_length` and `max_length` constraints remain the
@@ -696,7 +722,7 @@ Current shipped validator phases:
 2. Baseline invariants
 3. Rule-index build / schema-shape validation
 4. Resource-policy budget checks
-5. Selector and indexed-wildcard rule expansion
+5. Selector rule expansion
 6. Presence checks
 7. Type and reference checks
 8. Container-kind checks
@@ -891,7 +917,7 @@ Current v1 behavior-family anchors:
   - `cts/aeos/v1/suites/01-baseline.json`
 - schema rule-index integrity
   - `cts/aeos/v1/suites/02-schema-rules.json`
-- selector path rule targeting and closed-world coverage
+- SANSA path and selector rule targeting, plus closed-world coverage
   - `cts/aeos/v1/suites/22-selector-paths.json`
 - presence and forbid semantics
   - `cts/aeos/v1/suites/03-presence.json`
@@ -948,7 +974,7 @@ AEOS conformance is not satisfied by passing only representative examples.
 
 An implementation must preserve behavior across the AEOS validation families defined in this document and their corresponding CTS lanes, especially:
 - schema rule validation
-- selector path targeting
+- SANSA path and selector rule targeting
 - presence checks
 - type and datatype-label enforcement
 - reference-form, reference-target, and resolved-reference enforcement

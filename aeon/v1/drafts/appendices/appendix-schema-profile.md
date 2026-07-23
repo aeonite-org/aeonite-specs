@@ -24,7 +24,7 @@ AEOS Schema Profile v1 defines the **structure and interpretation of AEON docume
 It specifies:
 
 * where schemas store **rules**, **patterns**, and **charsets**
-* how rules bind **data paths** to **constraints**
+* how rules bind **SANSA path or selector targets** to **constraints**
 * what kinds of references are allowed (and forbidden)
 * strict separation between **schema validation** and **data validation**
 
@@ -89,7 +89,7 @@ Canonical form:
 aeos:schema = {
   id                 = "com.example.person"  // REQUIRED
   version            = "1"                   // REQUIRED
-  rules              = { ... }               // REQUIRED
+  rules              = [ ... ]               // REQUIRED
   patterns           = { ... }               // OPTIONAL
   charsets           = { ... }               // OPTIONAL
   world              = "closed"              // OPTIONAL
@@ -123,7 +123,7 @@ Loader requirements:
 
 ### 4.1 Purpose
 
-`$.aeos.rules` binds **data paths** to **constraints**.
+`$.aeos.rules` binds **SANSA path or selector targets** to **constraints**.
 
 Each rule applies independently; rule order has no semantic meaning.
 
@@ -132,23 +132,43 @@ Each rule applies independently; rule order has no semantic meaning.
 ### 4.2 Shape
 
 ```aeon
-rules = {
-  $.user.email = {
-    type = "StringLiteral"
-    apply_pattern = "email"
+rules = [
+  {
+    path:sansa = $.user.email
+    constraints = {
+      type = "StringLiteral"
+      apply_pattern = "email"
+    }
   }
 
-  $.server.port = {
-    type = "IntegerLiteral"
+  {
+    selector:sansa = $.servers.*.port
+    constraints = {
+      type = "IntegerLiteral"
+    }
   }
-}
+]
 ```
 
 Rules:
 
-* `rules` MUST be an object.
-* Each key MUST be a **canonical AEON path**.
-* Each value MUST be a **Rule Object**.
+* `rules` MUST be a list.
+* Each item MUST be a **Rule Object**.
+* Each Rule Object MUST provide exactly one target:
+
+  * `path`
+  * `selector`
+
+* `path` is an exact SANSA path target.
+* `selector` is a SANSA selector target.
+* Native AEON schema source SHOULD encode targets as SANSA literals:
+
+  * `path:sansa = $.user.email`
+  * `selector:sansa = $.servers.*.port`
+
+* Programmatic `SchemaV1` payloads MAY carry `path` and `selector` as strings.
+* Loaders MUST reject a rule with neither target field.
+* Loaders MUST reject a rule with both target fields.
 
 Invalid:
 
@@ -158,7 +178,20 @@ Invalid:
 
 ### 4.3 Rule Object
 
-A Rule Object MAY contain the following keys:
+A Rule Object contains a target and constraints:
+
+| Key           | Required | Meaning                                      |
+| ------------- | -------- | -------------------------------------------- |
+| `path`        | XOR      | Exact SANSA path target                      |
+| `selector`    | XOR      | SANSA selector target                        |
+| `constraints` | YES      | Constraint object applied to each match      |
+
+`path` MUST NOT contain expansion, pattern, filter, or wildcard selectors.
+`selector` MAY contain SANSA selector syntax such as `.*` and `.**`.
+SANSA deliberately does not define `[*]` as a selector form; schema rules that
+need list/item expansion use `selector:sansa = $.items.*`.
+
+The `constraints` object MAY contain the following keys:
 
 | Key                        | Required | Meaning                                 |
 | -------------------------- | -------- | --------------------------------------- |
@@ -188,10 +221,17 @@ Any other key is invalid:
 
 Projection notes:
 
+* `.aeos` loaders MUST project `path:sansa` and `selector:sansa` literals into the in-memory `SchemaV1` `path` or `selector` string fields.
 * `reference_target_path` is the preferred authoring surface.
 * `reference_target_pattern` is an advanced fallback escape hatch.
 * Loaders MUST project `reference_target_path` into an equivalent internal target-matching form before invoking AEOS.
 * The resulting in-memory schema MUST remain compatible with the shipped `SchemaV1` surface.
+
+Authority notes:
+
+* AEOS uses SANSA rule targets for structural binding discovery only.
+* AEOS remains responsible for schema-declared representation and structural validation.
+* A data document that contains SANSA literals as ordinary values does not gain authority to choose its schema, enable query extensions, select validation policy, or instruct AEOS how to interpret itself.
 
 ---
 
@@ -417,7 +457,9 @@ A conforming AEOS Schema Profile v1 implementation MUST:
 * [ ] Require a top-level `aeos:schema` binding in `.aeos` documents
 * [ ] Reject missing or mistyped `$.aeos`
 * [ ] Reject unknown keys in `$.aeos`
-* [ ] Enforce canonical path keys in `rules`
+* [ ] Enforce rule-list shape in `rules`
+* [ ] Require exactly one SANSA target, `path` or `selector`, per rule
+* [ ] Reject non-exact selectors in `path`
 * [ ] Project `.aeos` documents into valid `SchemaV1` objects before validation
 * [ ] Enforce literal-kind-only `type` checks
 * [ ] Apply patterns only after successful type check
@@ -451,12 +493,15 @@ aeos:schema = {
     email = ~$.email_shape_v1
   }
 
-  rules = {
-    $.user.email = {
-      type = "StringLiteral"
-      apply_pattern = "email"
+  rules = [
+    {
+      path:sansa = $.user.email
+      constraints = {
+        type = "StringLiteral"
+        apply_pattern = "email"
+      }
     }
-  }
+  ]
 }
 ```
 

@@ -86,7 +86,7 @@ Examples:
 - `$.user.name`
 - `$.items[0]`
 
-Attribute selectors (for example `@meta`, `@["a.b"]`) are valid in addressing expressions but are not canonical path identity segments.
+Attribute selectors (for example `.@.meta`, `.@.["a.b"]`) are valid in addressing expressions but are not canonical path identity segments.
 
 ---
 
@@ -286,7 +286,7 @@ Schemas constrain; conventions describe meaning; profiles bundle policy.
 The **Schema Profile** defines the structure of AEON documents used as schemas.
 
 Components:
-- `rules` — binds data paths to constraints
+- `rules` — binds SANSA path or selector targets to constraints
 - `patterns` — reusable pattern definitions
 - `charsets` — named character sets
 

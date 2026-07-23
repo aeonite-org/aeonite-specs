@@ -148,11 +148,11 @@ Nuances:
 Reference/addressing forms:
 
 ```aeon
-~user@role
-$.user@role
-$.user@["profile.name"]
-$.user@["profile.name"].["display.name"]
-~user@meta.["x.y"]
+~user.@.role
+$.user.@.role
+$.user.@.["profile.name"]
+$.user.@.["profile.name"].["display.name"]
+~user.@.meta.["x.y"]
 ```
 
 Canonical notes:
@@ -160,7 +160,7 @@ Canonical notes:
 - data namespace and attribute namespace remain distinct.
 - quoted bracket member segments may follow ordinary member or attribute traversal using `.[\"...\"]`.
 - quoted attribute selectors may be followed by ordinary member, quoted member, or index traversal.
-- empty quoted member segments, empty quoted attribute selectors, and incomplete forms such as `~a@` or `~$.a@[` are invalid.
+- empty quoted member segments, empty quoted attribute selectors, and incomplete forms such as `~a.@` or `~$.a.@.[` are invalid.
 
 Examples:
 
@@ -411,14 +411,14 @@ ref1 = ~["a.b"]
 ref2 = ~$.["a.b"]
 
 user@{profile.name="dark"} = 1
-ref3 = ~user@["profile.name"]
+ref3 = ~user.@.["profile.name"]
 ```
 
 Nuances:
 - `~a.b` means traversal through two member segments;
 - `~"a.b"` and `~["a.b"]` are equivalent initial quoted-member forms;
 - `~["a.b"]` means one quoted member segment;
-- `@key` and `@["key"]` both address attribute namespace segments.
+- `.@.key` and `.@.["key"]` both address attribute namespace segments.
 
 ## 8. Minimum Conformance Reminders
 
