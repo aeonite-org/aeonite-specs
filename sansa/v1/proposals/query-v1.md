@@ -1033,14 +1033,17 @@ Ranges are inclusive. Open start means zero. Open end means through the final ex
 
 SANSA.Query evaluation is fail-fast in v1. A query either produces a Result Set or a Diagnostics Set.
 
-Budget exhaustion is an evaluation failure, never implicit truncation. Implementations should use stable budget diagnostics such as `SANSA_QUERY_BUDGET_EXCEEDED` with context naming the budget, limit, observed value, and phase when available.
+Budget exhaustion is an evaluation failure, never implicit truncation. Implementations should use stable budget diagnostics such as `SANSA_QUERY_BUDGET_EXCEEDED` with context naming the budget, limit, observed count, and phase when available.
 
 Evaluation diagnostics must identify the error category with a stable code and message. They should also include query context when available:
 
 - `phase`: one of `parse`, `policy`, `from`, `where`, `order`, or `select`
 - `candidateAddress`: the canonical address of the candidate binding being evaluated, when the failure occurs in candidate context
+- `budget`: the implementation or caller-supplied budget that was exceeded, when the failure is a budget failure
+- `limit`: the configured budget limit, when the failure is a budget failure
+- `observed`: the observed count that exceeded the limit, when the failure is a budget failure
 
-`phase` and `candidateAddress` are diagnostic context. They do not define additional query semantics and must not be used to infer authorization, data visibility, or partial success.
+`phase`, `candidateAddress`, `budget`, `limit`, and `observed` are diagnostic context. They do not define additional query semantics and must not be used to infer authorization, data visibility, or partial success.
 
 Non-fatal diagnostics may be surfaced as warnings. Warnings do not change the parsed query or the successful result set. They are intended for portability and policy visibility, such as accepting an address position beyond the portable SANSA Address ceiling under an implementation-specific local limit.
 
