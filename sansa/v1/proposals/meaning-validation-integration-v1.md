@@ -198,12 +198,35 @@ Implementations should preserve this distinction so that downstream users can te
 - a schema target that matches no required AES events;
 - a domain rule violation.
 
-## 7. Future Coordination Questions
+## 7. Coordination Direction
 
-The following questions are not required to implement `SANSA.Addressing`,
-`SANSA.Resolve`, or `SANSA.Query` v1. They identify coordination points for
+The following direction is not required to implement `SANSA.Addressing`,
+`SANSA.Resolve`, or `SANSA.Query` v1. It identifies coordination points for
 AEOS and future meaning-validation specifications that may consume SANSA.
 
-- Should AEOS directly use SANSA.Resolve for selector expansion, or should a separate meaning-validation layer own all Resolve usage above exact path lookup?
-- Should meaning validation use assertion-style rules, violation-selection rules, or support both?
-- Which diagnostics should be standardized by AEOS versus a future meaning-validation specification?
+AEOS may directly use `SANSA.Resolve` for structural rule-target expansion when
+an AEOS schema names a SANSA selector as a target. AEOS should keep that use
+focused on schema-owned representation and structural validation. Meaning
+validators own higher-level semantic predicates, domain rules, and any
+validation-safe Query use above structural targeting.
+
+Future meaning-validation specifications may support both assertion-style rules
+and violation-selection rules:
+
+- assertion-style rules define what must be true for each target;
+- violation-selection rules define which bindings should be reported as
+  violations.
+
+SANSA does not decide which interpretation a consumer assigns to a query result.
+The meaning-validation layer owns the rule envelope that maps Resolve or Query
+results to pass, fail, warning, or informational diagnostics.
+
+Diagnostic standardization should preserve layer ownership:
+
+- SANSA standardizes address, resolve, query, policy, capability, and limit
+  diagnostics.
+- AEOS standardizes schema, representation, and structural validation
+  diagnostics.
+- Future meaning-validation specifications may standardize domain-rule result
+  envelopes, rule identifiers, severity, assertion failure, violation selection,
+  and consumer-owned semantic diagnostics.

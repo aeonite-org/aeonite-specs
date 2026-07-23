@@ -251,14 +251,53 @@ Mutation diagnostics should distinguish:
 - storage conflict;
 - implementation limit exhaustion.
 
-## 10. Future Design Questions
+## 10. Provisional Design Direction
 
-The following questions are for future `SANSA.Mutate`, ASP, and host-storage
-design work. They are not required SANSA v1 conformance decisions.
+The following direction is provisional. It frames future `SANSA.Mutate`, ASP,
+and host-storage design work without making mutation part of SANSA v1
+Addressing, Resolve, Query, or Transform conformance.
 
-- Should SANSA.Mutate expose a human-authored mutation language, a structured plan format, or both?
-- Should preconditions be expressed as restricted SANSA.Query predicates, a separate predicate grammar, or consumer-owned rule objects?
-- Should replace/create/delete be enough for the first experimental implementation?
-- Should operation targets require exact addresses after planning, or may a plan retain selector provenance?
-- Which mutation diagnostics belong to SANSA and which belong to ASP or host storage?
-- Should atomic multi-operation plans later become `SANSA.Transaction`, or remain a consumer execution contract?
+Initial `SANSA.Mutate` work should prioritize a structured mutation-plan model
+over a human-authored mutation language. A readable mutation syntax may be added
+later if independent implementers need one, but the interoperable contract should
+first be the plan shape, operation vocabulary, target model, precondition model,
+and diagnostics.
+
+Preconditions should reuse a restricted read-only `SANSA.Query` predicate surface
+where possible. Consumer-owned rule objects may wrap or reference those
+predicates, but they must not allow a document being mutated to authorize its own
+validation, mutation, or execution policy.
+
+The first experimental operation vocabulary should remain:
+
+- replace binding value;
+- create binding;
+- delete binding.
+
+An executable mutation operation should target exact resolved bindings. A plan
+may retain selector provenance for explanation, auditing, diagnostics, and
+replanning, but Apply must not depend on unresolved selector expansion.
+
+SANSA.Mutate diagnostics should cover planning-time language and semantic
+failures:
+
+- invalid mutation syntax or plan shape;
+- unsupported operation;
+- target miss;
+- target multiplicity violation;
+- precondition failure;
+- implementation limit exhaustion.
+
+Consumer, ASP, or host-storage diagnostics should cover execution authority and
+storage behavior:
+
+- authorization denial;
+- apply failure;
+- storage conflict;
+- transaction failure;
+- migration or orchestration failure;
+- audit or subscription delivery failure.
+
+Atomic multi-operation apply should remain a consumer or ASP execution contract
+until independent implementations need a separate `SANSA.Transaction`
+capability.
