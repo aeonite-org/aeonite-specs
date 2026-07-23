@@ -20,7 +20,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 ### Added
 
 - Added initial SANSA v1 draft specification tree under `sansa/v1/drafts/`.
-- Added SANSA draft overview, addressing, Resolve, and Query documents.
+- Promoted SANSA Addressing and Resolve documents to draft status.
 - Added SANSA lifecycle placeholders for `sansa/v1/proposals/` and `sansa/v1/published/`.
 
 ### Changed
@@ -40,7 +40,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Spec Impact
 
-- Introduces draft SANSA specification text for semantic addressing, deterministic structural resolution, and read-only query semantics.
+- Introduces draft SANSA specification text for semantic addressing and deterministic structural resolution.
+- Keeps read-only SANSA Query semantics in proposal status while the query surface continues to evolve.
 - Starts the encoding-family literal migration by reserving `&` for `encoding`, `base64`, `embed`, and `inline` payload literals in draft spec text.
 - Keeps the payload alphabet and payload capture semantics unchanged; the payload excludes the literal prefix.
 - Frees `$` for the planned SANSA address literal in the AEON language specification.

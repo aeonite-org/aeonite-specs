@@ -1,7 +1,7 @@
 ---
 id: sansa-v1-proposals
 title: SANSA v1 Proposals
-description: Proposal-stage specification set for SANSA addressing, resolution, and query semantics.
+description: Proposal-stage specification set for SANSA query, conformance, integration, extension, and future mutation semantics.
 family: sansa
 group: SANSA
 status: Proposal
@@ -15,10 +15,15 @@ SANSA is the Semantic Address NameSpace Abstraction. It defines a common way for
 
 SANSA is independent within the Aeonite ecosystem. AEON, AEOS, AES, runtime object graphs, databases, services, and other systems may implement SANSA, but none of those systems owns the abstraction.
 
+## Draft Set
+
+The foundation layer has moved to `../drafts/`:
+
+- `../drafts/addressing-v1.md` defines the SANSA address model and selector vocabulary.
+- `../drafts/resolve-v1.md` defines deterministic structural resolution over SANSA address expressions.
+
 ## Proposal Set
 
-- `addressing-v1.md` defines the SANSA address model and selector vocabulary.
-- `resolve-v1.md` defines deterministic structural resolution over SANSA address expressions.
 - `query-v1.md` defines the initial read-only semantic query pipeline built on SANSA.Resolve.
 - `conformance-v1.md` defines capability names, conformance profiles, and extension advertisement.
 - `extensions-v1.md` records candidate selector and query-helper extensions before they enter the core v1 conformance surface.
@@ -47,7 +52,7 @@ SANSA.Resolve discovers semantic structure. SANSA.Query evaluates and transforms
 
 ## Capability Families
 
-This proposal set covers these conformance capabilities:
+The SANSA v1 draft/proposal set covers these conformance capabilities:
 
 - `SANSA.Addressing`
 - `SANSA.Resolve`
