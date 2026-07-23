@@ -50,7 +50,7 @@ local:sansa = $.document.<"sections">.intro
 rich:sansa = $.items.*#text%stringLiteral.("item?*")
 ```
 
-The `sansa` datatype annotation is the reserved AEON datatype for SANSA address literal values. The literal prefix remains the syntactic indicator; consumers may still transport untyped SANSA literals in transport-oriented contexts.
+The `sansa` datatype annotation is the reserved AEON datatype for SANSA address literal values. Strict mode requires SANSA address literal values to carry `:sansa`. The literal prefix remains the syntactic indicator; transport-oriented profiles may preserve untyped SANSA literals only when that profile explicitly allows them.
 
 ## Qualified Literals
 

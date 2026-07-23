@@ -202,7 +202,7 @@ Filter selectors filter by structural metadata such as semantic datatype or repr
 
 Name pattern selectors match complete binding names deterministically.
 
-Name-pattern matching operates on the exact exposed binding name as a sequence of Unicode code points, without normalization, case folding, or locale-sensitive comparison. The `?` wildcard matches one code point. The `*` wildcard matches zero or more code points.
+Name-pattern matching operates on the exact exposed binding name as a sequence of Unicode code points, without normalization, case folding, or locale-sensitive comparison. The `?` wildcard matches one code point. The `*` wildcard matches zero or more code points. Within the decoded pattern payload, `\?`, `\*`, and `\\` match literal question mark, asterisk, and backslash characters respectively.
 
 ## 8. Attribute Semantics
 

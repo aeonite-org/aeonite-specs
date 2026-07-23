@@ -196,7 +196,7 @@ Interpretation:
 | Alternative names | none    |
 | Reserved          | none    |
 
-`sansa` is the reserved datatype label for SANSA address literals. SANSA means Semantic Address NameSpace Abstraction. Core validates and preserves the accepted literal surface; resolution, selector expansion, authorization, and qualifier meaning belong to consumers.
+`sansa` is the reserved datatype label for SANSA address literals. SANSA means Semantic Address NameSpace Abstraction. In strict mode, SANSA address literal values are written with the `:sansa` datatype annotation. Core validates and preserves the accepted literal surface; resolution, selector expansion, authorization, and qualifier meaning belong to consumers.
 
 ### `object`
 
@@ -729,6 +729,7 @@ qualified:sansa = $.result:number|nan
 
 Core role:
 - `:sansa` marks a value as a SANSA address literal;
+- strict mode requires the reserved `:sansa` datatype annotation for SANSA address literal values;
 - the literal may express an exact path or selector;
 - AEON Core validates and preserves the address form it accepts;
 - AEON Core does not resolve the address, expand selectors, interpret qualifiers, or authorize access to any target.

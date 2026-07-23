@@ -401,6 +401,17 @@ Name patterns match complete binding names.
 | `*` | zero or more characters |
 | `?` | exactly one character |
 
+Within the decoded pattern payload, a backslash escapes literal wildcard
+characters. `\*` matches a literal asterisk, `\?` matches a literal question
+mark, and `\\` matches a literal backslash. Because name patterns are written
+inside AEON double-quoted payloads, the source spelling uses AEON string escaping
+first:
+
+```text
+.("item\\*")  matches item*
+.("item\\?")  matches item?
+```
+
 The underscore character `_` has no wildcard meaning in name patterns; it is matched as an ordinary name character.
 
 Regular expressions are intentionally excluded from SANSA v1 addressing.
