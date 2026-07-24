@@ -269,6 +269,8 @@ Ordering keys are evaluated from left to right. Later keys act as tie-breakers. 
 
 The pre-order Binding Set entering the `order by` stage is the tie-preservation basis.
 
+Ordering semantics are supplied by active Shared AEON Value Semantics profiles. SANSA.Query owns candidate ordering, stable tie preservation, diagnostics, and Binding Set flow. It does not define string collation, temporal comparison, null ordering, or datatype conversion locally.
+
 An order key that evaluates to Missing, explicit null, NaN, a non-scalar value, or multiple bindings produces an evaluation diagnostic unless a future explicit missing-order policy is present. SANSA.Query v1 does not define null-first, null-last, missing-omit, or host-default ordering.
 
 ### 6.4 Offset
@@ -332,7 +334,7 @@ Expressions are evaluated within a candidate context containing:
 - the namespace root
 - mounted local address spaces
 - the query environment
-- datatype and semantic contracts
+- active Shared AEON Value Semantics profiles
 - deterministic function definitions
 
 SANSA.Query v1 recognizes these conceptual expression categories:
@@ -555,6 +557,10 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 | number and number | allowed | allowed | Finite numbers compare by numeric value. |
 | string and string | allowed | allowed | String ordering requires the active value-semantics string ordering profile. |
 | boolean and boolean | allowed | error | Booleans are not ordered. |
+| date and date | profile-defined | profile-defined | Requires an active temporal value-semantics profile. |
+| time and time | profile-defined | profile-defined | Requires an active temporal value-semantics profile. |
+| datetime and datetime | profile-defined | profile-defined | Requires an active temporal value-semantics profile. |
+| zrut and zrut | profile-defined | profile-defined | Requires an active temporal profile with named-zone authority. |
 | explicit null | error | error | Use `isNull(...)` or `isNullReason(...)`. |
 | NaN | error | error | Use `isNaN(...)`. |
 | infinity and finite number | allowed | allowed | Infinity is not equal to finite numeric values and compares as a numeric bound when numeric comparison is supported. |
@@ -564,6 +570,10 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 `NaN` is not comparable. Equality, inequality, ordering, and order-key evaluation over `NaN` must fail with a comparison diagnostic. Queries test explicit NaN values with `isNaN(...)`.
 
 Infinity values are explicit numeric special values. Where an applicable value-semantics numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with `isInfinity(...)`.
+
+Temporal values are not ordinary strings. A host may expose AEON `date`, `time`, `datetime`, or `zrut` values through a string-like transport representation, but SANSA.Query may compare or order them only when an active temporal value-semantics profile defines that behavior. Without that profile, temporal comparison and temporal order keys fail closed.
+
+Temporal query literals are future surface. Current implementations may use host-exposed temporal bindings and semantic filters such as `#date` or `#datetime` before profile-aware temporal comparison is introduced.
 
 The `in` operator tests scalar membership in a Binding Set:
 
@@ -717,6 +727,8 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, `upper`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
 
 String comparison, ordering, and case mapping are value-semantics concerns. Until the Shared AEON Value Semantics canonical string and case-mapping profiles are locked, the initial evaluator slice uses Unicode scalar-value ordering for string comparison and `order by`. Normative behavior must not depend on host locale, process locale, database collation, or host-language defaults. Case mapping for `lower(...)` and `upper(...)` remains tied to the shared value-semantics profile; implementations must document any provisional behavior.
+
+Consumers may configure accepted value-semantics profiles. Documents cannot select a more permissive comparison, ordering, conversion, or case-mapping profile without consumer authorization. Unsupported profile-dependent operations should be rejected rather than evaluated with host defaults.
 
 Value predicates such as `isValue(...)`, `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
 

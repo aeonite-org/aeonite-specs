@@ -260,6 +260,78 @@ Profiles must be deterministic and versionable. A profile must not introduce exe
 
 Consumers may restrict which profiles they accept.
 
+### 6.1 Profile Selection
+
+The active value-semantics context is selected by the consumer, runtime, schema profile, or trusted host configuration.
+
+Documents may carry values that become inputs to semantic operations, but a document must not grant itself a more permissive semantic profile. Profile selection is an authority-bearing consumer boundary, not a document-level escape hatch.
+
+A consumer must make profile selection explicit when behavior would otherwise depend on:
+
+- process locale;
+- operating-system locale;
+- database collation;
+- host-language comparison defaults;
+- installed Unicode, ICU, CLDR, or timezone database versions.
+
+Implementations must not silently inherit those host defaults as normative AEON behavior unless the inherited behavior is identified as part of a named, versioned profile.
+
+### 6.2 Profile Advertisement
+
+Consumers should advertise the value-semantics profiles they support.
+
+Example profile identifiers:
+
+```text
+aeon.value.minimum.v1
+aeon.value.string.codepoint.v1
+aeon.value.string.case.default.v1
+aeon.value.temporal.iso8601.v1
+```
+
+Profile identifiers are examples until promoted by a focused contract document. Implementations may expose local profile identifiers, but local identifiers should be clearly marked as non-portable.
+
+### 6.3 Failure Without an Active Contract
+
+Profile-dependent operations fail closed when no active contract defines their behavior.
+
+This includes:
+
+- string ordering;
+- locale-aware string comparison;
+- temporal comparison;
+- case mapping;
+- string-to-temporal conversion;
+- numeric, decimal, or version-like natural sorting.
+
+Consumers must report a deterministic diagnostic rather than falling back to host defaults.
+
+### 6.4 AEON-Shaped Configuration
+
+Consumer configuration may be represented as ordinary AEON data.
+
+For example:
+
+```aeon
+valueSemantics:object = {
+  profiles:list<string> = [
+    "aeon.value.minimum.v1"
+    "aeon.value.string.codepoint.v1"
+    "aeon.value.temporal.iso8601.v1"
+  ]
+  stringOrder:object = {
+    profile:string = "aeon.value.string.codepoint.v1"
+  }
+  temporal:object = {
+    profile:string = "aeon.value.temporal.iso8601.v1"
+    timezoneAuthority:string = "iana"
+    tzdbVersion:string = "2026a"
+  }
+}
+```
+
+This shape is illustrative until a profile-configuration contract is promoted. The important boundary is authority: a trusted consumer, schema profile, runtime, or host configuration may select this context; an arbitrary document being queried or mutated does not select its own value-semantics authority.
+
 ## 7. Minimum v1 Consumer Contract
 
 The first shared contract should cover the behavior already exercised by SANSA.Query and expected by AEOS-style validation.
@@ -345,7 +417,58 @@ The canonical string profile must eventually define:
 
 Locale-aware, natural-sort, and domain-specific profiles remain future extensions.
 
-### 7.6 Case Mapping
+### 7.6 Canonical Codepoint String Profile Candidate
+
+The first portable string ordering candidate is a codepoint profile.
+
+Candidate identifier:
+
+```text
+aeon.value.string.codepoint.v1
+```
+
+The candidate profile orders strings by decoded Unicode scalar values from left to right.
+
+The candidate profile:
+
+- performs no normalization;
+- performs no case folding;
+- does not ignore accents, combining marks, punctuation, or whitespace;
+- compares each decoded scalar value numerically;
+- sorts the shorter string first when every shared scalar compares equal.
+
+Exact string equality compares the decoded scalar sequence exactly.
+
+This profile is a stable portability floor. It is not intended to model human-language collation.
+
+### 7.7 String Collation Profile Framework
+
+Richer string ordering profiles must define the full ordering contract they apply.
+
+A string collation profile should define:
+
+- normalization behavior before comparison;
+- case-sensitive or case-insensitive behavior;
+- accent and combining-mark behavior;
+- ignored characters, if any;
+- punctuation grouping;
+- contraction and expansion rules;
+- numeric-region recognition;
+- decimal, version-like, or segmented-number behavior;
+- tie-breaker behavior when primary comparison keys match.
+
+Numeric-looking regions must not require fixed-width machine-number conversion. Profiles that support natural sorting should compare numeric regions by a deterministic arbitrary-precision or digit-sequence algorithm.
+
+For example, a natural-sort profile must explicitly define whether:
+
+```text
+job-2 < job-10
+1.10 < 1.2
+```
+
+and why.
+
+### 7.8 Case Mapping
 
 The minimum case-mapping surface is:
 
@@ -365,7 +488,71 @@ The canonical case-mapping profile must eventually define:
 
 Until the canonical case-mapping profile is locked, consumer implementations may expose `lower(...)` or `upper(...)` as implementation-slice behavior, but should document that normative behavior is still owned by Shared Value Semantics.
 
-### 7.7 Consumer Handoff
+### 7.9 Temporal Profile Candidate
+
+AEON Core recognizes temporal datatype names such as:
+
+- `date`;
+- `time`;
+- `datetime`;
+- `zrut`.
+
+Shared Value Semantics must define temporal comparison before consumers rely on temporal ordering, validation, or mutation compatibility.
+
+Candidate identifier:
+
+```text
+aeon.value.temporal.iso8601.v1
+```
+
+A temporal profile should define:
+
+- recognized temporal categories;
+- equality and ordering domains for each category;
+- whether cross-category comparison is allowed;
+- normalization before comparison;
+- relationship to applicable temporal conventions such as `aeon.gp.temporal.v1`;
+- timezone offset behavior;
+- named-zone authority and timezone database version, when applicable;
+- precision and fractional-second behavior;
+- diagnostics for unsupported or ambiguous temporal values.
+
+A conservative temporal comparison surface is:
+
+| Operands | Equality | Ordering | Notes |
+| --- | --- | --- | --- |
+| date and date | profile-defined | profile-defined | Calendar-date comparison. |
+| time and time | profile-defined | profile-defined | Time-of-day comparison only when the profile does not require date or timezone context. |
+| datetime and datetime | profile-defined | profile-defined | The profile must define offset and instant normalization. |
+| zrut and zrut | profile-defined | profile-defined | Requires a named-zone authority and versioned timezone database. |
+| temporal and string | error | error | No implicit string comparison. |
+| mixed temporal categories | error | error | Allowed only when a profile explicitly defines cross-category comparison. |
+
+Temporal transport as text does not imply string comparison. Without an active temporal profile, temporal comparison and temporal ordering fail closed.
+
+### 7.10 Mutation Compatibility
+
+Future mutation operations should consume the same Shared Value Semantics contracts used by query and validation.
+
+Mutation compatibility includes:
+
+- whether a write value is compatible with a target datatype;
+- whether conversion is allowed;
+- which normalization, if any, is applied before storage;
+- how null, absence values, and Missing interact with a write target;
+- how temporal precision, timezone offsets, and named zones are preserved or normalized.
+
+SANSA.Mutate, AEOS, Tonics, and storage adapters should not define separate compatibility behavior for the same AEON value family.
+
+For example:
+
+```text
+set $.invoice.dueDate:date = 2026-07-24
+```
+
+SANSA.Mutate identifies the target and operation. AEON Core parses the represented value. Shared Value Semantics decides whether the represented value is compatible with `date` and what normalization, if any, is required. The host or schema authority decides whether the mutation is authorized.
+
+### 7.11 Consumer Handoff
 
 Consumers own where an operation appears and what diagnostic context is produced.
 
@@ -418,8 +605,9 @@ This keeps conformance behavior aligned across implementations without duplicati
 This proposal does not yet define:
 
 - the complete numeric comparison contract;
-- the canonical string collation algorithm;
-- locale profile identifiers;
+- the final canonical string collation algorithm beyond the codepoint candidate;
+- final locale profile identifiers;
+- final temporal profile identifiers or timezone database authority;
 - conversion syntax in any consumer;
 - arithmetic operators;
 - consumer-specific authorization;

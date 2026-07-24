@@ -27,6 +27,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 - Changed AEON draft encoding-family literal syntax from `$payload` to `&payload`.
 - Changed NEON draft AEON integration examples and text-preservation guidance to use `&...` encoding literals.
+- Expanded Shared AEON Value Semantics proposal with explicit profile-selection, string collation, temporal comparison, and mutation-compatibility guidance.
+- Clarified SANSA.Query consumes active Shared AEON Value Semantics profiles for ordering, comparison, case mapping, and future temporal behavior.
 - Updated the repository README layout to include SANSA as a first-class specification family.
 - Updated the repository README to point to this changelog as the release-facing change history.
 
@@ -45,6 +47,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Starts the encoding-family literal migration by reserving `&` for `encoding`, `base64`, `embed`, and `inline` payload literals in draft spec text.
 - Keeps the payload alphabet and payload capture semantics unchanged; the payload excludes the literal prefix.
 - Frees `$` for the planned SANSA address literal in the AEON language specification.
+- Establishes Shared AEON Value Semantics as the common prerequisite for SANSA.Query temporal comparison and future SANSA.Mutate typed write compatibility.
 - Migration: update encoding-family literals from `$payload` to `&payload`.
 
 ### CTS Impact

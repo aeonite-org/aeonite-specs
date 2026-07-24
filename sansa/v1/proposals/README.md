@@ -50,6 +50,8 @@ Result Set
 
 SANSA.Resolve discovers semantic structure. SANSA.Query evaluates and transforms semantic bindings while consuming Shared AEON Value Semantics for comparison, ordering, and related value behavior.
 
+Shared value behavior should be settled before expanding SANSA.Mutate. Query can fail closed when a comparison profile is missing; mutation needs the same contracts to decide whether an AEON-shaped write value is compatible with the target semantic datatype.
+
 ## Capability Families
 
 The SANSA v1 draft/proposal set covers these conformance capabilities:
