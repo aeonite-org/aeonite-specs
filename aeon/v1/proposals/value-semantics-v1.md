@@ -879,6 +879,8 @@ This profile is a stable portability floor. It is not intended to model human-la
 
 Richer string ordering profiles must define the full ordering contract they apply.
 
+A string profile defines the complete string comparison and mapping contract, including normalization, case mapping, locale or domain rules, numeric-region handling, and tie-breaker behavior. Partial profile definitions are not permitted; a consumer must not combine unrelated normalization, collation, case-mapping, natural-sort, or host-default behaviors into one implicit algorithm.
+
 A string collation profile should define:
 
 - normalization behavior before comparison;
