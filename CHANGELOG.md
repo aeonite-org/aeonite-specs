@@ -82,5 +82,6 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 ### CTS Impact
 
 - Updated proposal-stage Value Semantics CTS expectations so `isValue(...)` follows the concrete-value basis, including accepting infinity and container values while excluding Missing, explicit null, explicit absence values, and NaN.
+- Added proposal-stage Value Semantics CTS coverage for portable `aeon.value.default.v1` and `aeon.value.string.codepoint.v1` profile selection.
 - Updated SANSA.Query CTS expectations to align query `isValue(...)` behavior with the Shared AEON Value Semantics concrete-value basis.
 - Future CTS work is expected for SANSA address parsing/canonicalization and the AEON encoding literal prefix migration.
