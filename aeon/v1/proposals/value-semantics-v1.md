@@ -285,13 +285,14 @@ Example profile identifiers:
 ```text
 aeon.value.default.v1
 aeon.value.string.codepoint.v1
+aeon.value.string.natural.ascii.v1
 aeon.value.string.locale.fr.v1
 aeon.value.temporal.iso8601.v1
 ```
 
 `aeon.value.default.v1` is the candidate minimum consumer profile. It composes the minimum equality, ordering, concrete-value, and provisional case-mapping behavior defined in this proposal with the portable codepoint string profile.
 
-`aeon.value.string.codepoint.v1` is the portable locale-independent string-ordering floor. Locale-aware profiles, such as a French collation profile, must be named explicitly and remain profile-selected behavior rather than host-locale defaults.
+`aeon.value.string.codepoint.v1` is the portable locale-independent string-ordering floor. Natural-sort profiles, such as `aeon.value.string.natural.ascii.v1`, and locale-aware profiles, such as a French collation profile, must be named explicitly and remain profile-selected behavior rather than host-locale defaults.
 
 Profile identifiers remain proposal-stage until promoted by focused contract documents. Implementations may expose local profile identifiers, but local identifiers should be clearly marked as non-portable.
 
@@ -321,6 +322,7 @@ valueSemantics:object = {
   profiles:list<string> = [
     "aeon.value.default.v1"
     "aeon.value.string.codepoint.v1"
+    "aeon.value.string.natural.ascii.v1"
     "aeon.value.string.locale.fr.v1"
     "aeon.value.temporal.iso8601.v1"
   ]
@@ -903,6 +905,20 @@ job-2 < job-10
 ```
 
 and why.
+
+An exploratory ASCII numeric-region profile may be identified as:
+
+```text
+aeon.value.string.natural.ascii.v1
+```
+
+Under that profile, non-numeric regions are compared by decoded Unicode scalar value, while consecutive ASCII digit regions are compared as arbitrary-precision digit sequences. For example:
+
+```text
+part-2 < part-10
+```
+
+This profile is useful for testing human-oriented numeric ordering without making natural sort the default string behavior.
 
 For example, a French locale profile such as `aeon.value.string.locale.fr.v1` may order `éclair` before `zebre`, while the codepoint profile orders by scalar value and therefore produces a different result. Both behaviors are valid only when selected through their named profiles; neither may be silently inherited from the host process locale.
 
