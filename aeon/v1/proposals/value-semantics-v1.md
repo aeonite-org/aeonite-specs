@@ -332,6 +332,58 @@ valueSemantics:object = {
 
 This shape is illustrative until a profile-configuration contract is promoted. The important boundary is authority: a trusted consumer, schema profile, runtime, or host configuration may select this context; an arbitrary document being queried or mutated does not select its own value-semantics authority.
 
+### 6.5 Value Family Semantic Classification
+
+AEON Core value families do not all enter the same semantic domain.
+
+Some families have intrinsic shared semantics. Some reuse a shared string, numeric, temporal, or structural contract. Others are only lexical carriers until a consumer, schema, convention, or profile selects a more specific interpretation.
+
+A consumer must not treat every represented payload as a string merely because it has a textual source form. Textual transport and semantic string behavior are different contracts.
+
+Initial classification:
+
+| AEON family or label | Semantic basis | Minimum shared behavior | Profile or consumer surface |
+| --- | --- | --- | --- |
+| `string` | string | exact decoded string equality; string ordering only through active string profile | locale collation, natural sort, normalization, case mapping |
+| `trimtick`, `prose` | string plus formatting convention | string value after trimtick normalization | prose format semantics such as Markdown belong to conventions or applications |
+| `number` | numeric | finite numeric equality and ordering | integer-only, unsigned-only, width, precision, decimal policy, arithmetic |
+| `int`, `uint`, `int32`, `float64`, and other reserved numeric labels | numeric plus profile/schema constraints | inherit finite numeric comparison after compatibility is established | range, width, signedness, integer-only, float-family behavior |
+| `infinity` | numeric special value | equality and ordering only where active numeric profile admits infinities | domain parameter such as `infinity<speedofmass>` is profile/schema-defined |
+| `nan` | numeric special non-value | not equality-comparable or orderable in the minimum profile | explicit predicates and domain-specific missing/error semantics |
+| `boolean` | Boolean | Boolean equality | Boolean ordering is not in the minimum profile |
+| `toggle` | toggle | exact toggle-domain equality when exposed as toggle | conversion or materialization to Boolean is profile-defined; no implicit Boolean comparison |
+| `null` and null reasons | absence/null | explicit null identity and reason preservation | null equality, null ordering, and absence-domain meaning are profile/schema-defined |
+| `hex` | lexical structured scalar | exact payload preservation | color, byte sequence, identifier, numeric, or other interpretation is profile-defined |
+| `radix`, `radix2`, `radix8`, and related labels | radix numeric representation | exact representation preservation; base metadata preservation | base-specific numeric validity, conversion, equality, and ordering are profile-defined |
+| `encoding`, `base64`, `embed`, `inline` | encoded payload | exact payload preservation | byte identity, media type, decoding, hashing, or ordering are profile-defined |
+| `date` | temporal | literal recognition and preservation | equality, ordering, precision, calendar, and conversion require an active temporal profile |
+| `time` | temporal | literal recognition and preservation | equality, ordering, offset handling, and date-context rules require an active temporal profile |
+| `datetime` | temporal | literal recognition and preservation | equality, ordering, offset normalization, precision, and instant semantics require an active temporal profile |
+| `zrut` | temporal with named-zone data | literal recognition and zone payload preservation | equality and ordering require a named-zone authority and timezone database profile |
+| `sep`, `kadot` | separator-structured lexical scalar | literal-family recognition and raw payload preservation | IP address, semantic version, dimensions, product codes, and similar meanings are profile-defined |
+| `sansa` | address expression | address literal parsing and preservation | resolution, selector expansion, canonical-address equality, authorization, and qualifier meaning belong to SANSA consumers |
+| `object`, `obj`, `o`, `envelope` | structural container | member identity and Core object shape | deep equality, ordering, envelope meaning, and member-value constraints are profile/schema-defined |
+| `list` | structural collection | element order preservation and index-addressability | whether order is semantically meaningful, element constraints, and deep equality are profile/schema-defined |
+| `tuple` | positional structural collection | positional element preservation | arity, element constraints, positional meaning, and tuple equality are profile/schema-defined |
+| `node` | tagged structural value | tag, attributes, child order, and child slots are preserved | tag vocabulary, child-content semantics, rendering, and deep equality are profile/schema-defined |
+| clone reference `~...` | reference operation | Core reference legality and resolved clone behavior | post-resolution value semantics apply to the resolved value |
+| pointer reference `~>...` | reference operation | Core reference legality and pointer identity preservation | aliasing, mutation authority, and dereference behavior belong to consumers/profiles |
+| custom datatype labels | host/profile semantic claim over a Core-compatible value family | no shared meaning by label alone | consumer, schema, convention, or profile defines accepted semantics |
+
+Separator literals illustrate why this classification is necessary:
+
+```aeon
+ip:kadot = ^192.3.3.222
+dim:sep[x] = ^300x250
+semver:kadot = ^3.14.15
+```
+
+All three values share separator-literal mechanics. They do not share one ordering contract.
+
+An IP profile might compare numeric address components. A dimensions profile might compare width, height, area, or aspect ratio. A semantic-version profile might compare major, minor, and patch segments with version-specific pre-release rules. A generic string collation profile is not a safe fallback for any of those meanings unless the consumer explicitly selects string treatment.
+
+When no active shared or profile-defined semantic basis exists for an operation, the operation fails closed.
+
 ## 7. Minimum v1 Consumer Contract
 
 The first shared contract should cover the behavior already exercised by SANSA.Query and expected by AEOS-style validation.
