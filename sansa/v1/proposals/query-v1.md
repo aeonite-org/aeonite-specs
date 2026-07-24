@@ -579,10 +579,10 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 | list and tuple | error | error | Requires explicit coercion or a profile-defined compatibility domain. |
 | reference form and reference form | allowed | error | Reference-kind identity and canonical target-path identity; no implicit follow. |
 | followed reference value | as target value | as target value | Requires explicit `follow(...)` or consumer-declared followed-value mode. |
-| date and date | profile-defined | profile-defined | Requires an active temporal value-semantics profile. |
-| time and time | profile-defined | profile-defined | Requires an active temporal value-semantics profile. |
-| datetime and datetime | profile-defined | profile-defined | Requires an active temporal value-semantics profile. |
-| zrut and zrut | profile-defined | profile-defined | Requires an active temporal profile with named-zone authority. |
+| date and date | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical ISO-style date payloads. |
+| time and time | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical time payloads. |
+| datetime and datetime | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical datetime payloads. |
+| zrut and zrut | allowed | allowed | Uses the active temporal value-semantics profile; named-zone authority may be required by richer profiles. |
 | explicit null | error | error | Use `isNull(...)` or `isNullReason(...)`. |
 | NaN | error | error | Use `isNaN(...)`. |
 | infinity and finite number | allowed | allowed | Infinity is not equal to finite numeric values and compares as a numeric bound when numeric comparison is supported. |
@@ -593,9 +593,17 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 
 Infinity values are explicit numeric special values. Where an applicable value-semantics numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with `isInfinity(...)`.
 
-Temporal values are not ordinary strings. A host may expose AEON `date`, `time`, `datetime`, or `zrut` values through a string-like transport representation, but SANSA.Query may compare or order them only when an active temporal value-semantics profile defines that behavior. Without that profile, temporal comparison and temporal order keys fail closed.
+Temporal values are not ordinary strings. A host may expose AEON `date`, `time`, `datetime`, or `zrut` values through a string-like transport representation, but SANSA.Query compares or orders them through Shared AEON Value Semantics, not string collation. The minimum profile supports same-family canonical temporal payload comparison. Cross-family temporal comparison fails closed unless a richer active profile explicitly defines compatibility.
 
-Temporal query literals may be parsed as source literals so query syntax can carry the same lexical family as AEON values. Temporal comparison and temporal order keys still require an active temporal value-semantics profile; without one they fail closed. Implementations may also use host-exposed temporal bindings and semantic filters such as `#date` or `#datetime` before profile-aware temporal comparison is introduced.
+Temporal query literals may be parsed as source literals so query syntax can carry the same lexical family as AEON values:
+
+```text
+from $.types.*#date
+where . > 2025-01-01
+select .
+```
+
+The semantic filter constrains the Binding Set to date values before comparison. A `date` literal does not implicitly compare with `datetime`, `time`, `zrut`, or string values.
 
 The `in` operator tests scalar membership in a Binding Set:
 
