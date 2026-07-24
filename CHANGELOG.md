@@ -44,6 +44,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Clarified reference semantics by separating reference-form identity, read-only followed-value inspection through conceptual `follow(reference)`, and reference resolution/materialization.
 - Renamed the schema proposal's reference-inspection control from `resolve_reference_form` to `follow_reference_form` to avoid implying materialization or value substitution.
 - Clarified SANSA.Query consumes active Shared AEON Value Semantics profiles for ordering, comparison, case mapping, and future temporal behavior.
+- Aligned Shared AEON Value Semantics proposal-stage profile identifiers with the implementation surface, including `aeon.value.default.v1`, `aeon.value.string.codepoint.v1`, and explicit locale profile examples such as `aeon.value.string.locale.fr.v1`.
 - Updated the repository README layout to include SANSA as a first-class specification family.
 - Updated the repository README to point to this changelog as the release-facing change history.
 
@@ -80,5 +81,6 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### CTS Impact
 
-- No CTS changes yet.
+- Updated proposal-stage Value Semantics CTS expectations so `isValue(...)` follows the concrete-value basis, including accepting infinity and container values while excluding Missing, explicit null, explicit absence values, and NaN.
+- Updated SANSA.Query CTS expectations to align query `isValue(...)` behavior with the Shared AEON Value Semantics concrete-value basis.
 - Future CTS work is expected for SANSA address parsing/canonicalization and the AEON encoding literal prefix migration.

@@ -283,13 +283,17 @@ Consumers should advertise the value-semantics profiles they support.
 Example profile identifiers:
 
 ```text
-aeon.value.minimum.v1
+aeon.value.default.v1
 aeon.value.string.codepoint.v1
-aeon.value.string.case.default.v1
+aeon.value.string.locale.fr.v1
 aeon.value.temporal.iso8601.v1
 ```
 
-Profile identifiers are examples until promoted by a focused contract document. Implementations may expose local profile identifiers, but local identifiers should be clearly marked as non-portable.
+`aeon.value.default.v1` is the candidate minimum consumer profile. It composes the minimum equality, ordering, concrete-value, and provisional case-mapping behavior defined in this proposal with the portable codepoint string profile.
+
+`aeon.value.string.codepoint.v1` is the portable locale-independent string-ordering floor. Locale-aware profiles, such as a French collation profile, must be named explicitly and remain profile-selected behavior rather than host-locale defaults.
+
+Profile identifiers remain proposal-stage until promoted by focused contract documents. Implementations may expose local profile identifiers, but local identifiers should be clearly marked as non-portable.
 
 ### 6.3 Failure Without an Active Contract
 
@@ -315,12 +319,16 @@ For example:
 ```aeon
 valueSemantics:object = {
   profiles:list<string> = [
-    "aeon.value.minimum.v1"
+    "aeon.value.default.v1"
     "aeon.value.string.codepoint.v1"
+    "aeon.value.string.locale.fr.v1"
     "aeon.value.temporal.iso8601.v1"
   ]
   stringOrder:object = {
     profile:string = "aeon.value.string.codepoint.v1"
+  }
+  caseMapping:object = {
+    profile:string = "aeon.value.default.v1"
   }
   temporal:object = {
     profile:string = "aeon.value.temporal.iso8601.v1"
@@ -708,7 +716,7 @@ Following a reference:
 - must preserve diagnostics that identify both the reference source and the target path;
 - must not rewrite, substitute, inline, alias, or erase the original reference form.
 
-After `follow(...)`, ordinary Shared Value Semantics apply to the resulting target value. For example, a followed reference to a number compares as a number, and a followed reference to a list participates in structural list equality.
+After `follow(...)`, active Shared Value Semantics apply to the resulting target value. For example, a followed reference to a number compares as a number, and a followed reference to a list participates in structural list equality.
 
 Without an explicit follow operation or consumer-declared followed-value mode, constraints and comparisons apply to the reference form itself. This allows schemas to ask either:
 
@@ -725,7 +733,7 @@ Pointer references may carry aliasing, identity, or mutation-authority semantics
 
 The first shared contract should cover the behavior already exercised by SANSA.Query and expected by AEOS-style validation.
 
-This section is a candidate minimum profile. It is intentionally small and should become the first shared CTS surface when promoted.
+This section is the candidate `aeon.value.default.v1` profile. It is intentionally small and should become the first shared CTS surface when promoted.
 
 ### 7.1 Value Categories
 
@@ -826,7 +834,7 @@ For example, a minimum-profile `isValue(...)` predicate should return true when 
 
 ### 7.5 Canonical String Profile Placeholder
 
-The minimum profile requires a deterministic string equality and ordering profile, but this proposal does not yet define the final collation algorithm.
+The minimum/default profile requires a deterministic string equality and ordering profile, but this proposal does not yet define the final collation algorithm beyond the codepoint candidate.
 
 Until that algorithm is promoted, consumers should treat string ordering as a named value-semantics dependency rather than redefining it locally.
 
@@ -839,7 +847,7 @@ The canonical string profile must eventually define:
 - total-order tie breakers;
 - behavior for invalid or unpaired Unicode representations, if exposed by a host.
 
-Locale-aware, natural-sort, and domain-specific profiles remain future extensions.
+Locale-aware, natural-sort, and domain-specific profiles remain explicit extensions.
 
 ### 7.6 Canonical Codepoint String Profile Candidate
 
@@ -864,6 +872,8 @@ The candidate profile:
 Exact string equality compares the decoded scalar sequence exactly.
 
 This profile is a stable portability floor. It is not intended to model human-language collation.
+
+`aeon.value.default.v1` uses this codepoint profile for string ordering unless a consumer explicitly selects another string profile.
 
 ### 7.7 String Collation Profile Framework
 
@@ -891,6 +901,8 @@ job-2 < job-10
 ```
 
 and why.
+
+For example, a French locale profile such as `aeon.value.string.locale.fr.v1` may order `éclair` before `zebre`, while the codepoint profile orders by scalar value and therefore produces a different result. Both behaviors are valid only when selected through their named profiles; neither may be silently inherited from the host process locale.
 
 ### 7.8 Case Mapping
 

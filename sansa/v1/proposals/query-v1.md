@@ -203,7 +203,7 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, ordinary value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, concrete-value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
 
 Some implementations may also expose transform-library helpers such as `objectFrom(...)` and `fieldsFrom(...)`. These helpers operate across multiple Binding Sets and are not part of SANSA.Query v1 core conformance.
 
@@ -763,7 +763,7 @@ follow(<reference>)
 
 Without `follow(...)`, a reference is evaluated as a reference form. Reference-form comparison uses the reference kind and canonical exact target path, and does not inspect the target value.
 
-With `follow(...)`, SANSA.Query walks the reference target path under the consumer's reference policy and then applies ordinary Shared AEON Value Semantics to the target value.
+With `follow(...)`, SANSA.Query walks the reference target path under the consumer's reference policy and then applies active Shared AEON Value Semantics to the target value.
 
 For example:
 
@@ -1033,7 +1033,7 @@ select .sku
 
 ### 24.3 Status Presence
 
-Ordinary values, explicit nulls, and missing bindings are distinct. A query can include ordinary status values and explicit null status values while excluding missing status bindings:
+Concrete values, explicit nulls, and missing bindings are distinct. A query can include concrete status values and explicit null status values while excluding missing status bindings:
 
 ```text
 from $.inventory.items.*
