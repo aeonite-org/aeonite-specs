@@ -758,8 +758,9 @@ Core role:
 - the literal may express an exact path or selector;
 - AEON Core validates and preserves the address form it accepts;
 - AEON Core does not resolve the address, expand selectors, interpret qualifiers, or authorize access to any target.
-- AEON-backed consumers may resolve SANSA literals against AEON document paths, but `:sansa` values are not limited to AEON path domains.
-- A SANSA literal may address another semantic namespace, such as an RDF-like graph, database, service resource tree, or runtime object graph, when a consumer exposes that namespace.
+- SANSA member selectors describe semantic traversal rather than object traversal.
+- AEON-backed consumers may resolve SANSA literals against AEON bindings and canonical paths, but `:sansa` values are not limited to AEON path domains.
+- A SANSA literal may address another semantic namespace, such as an RDF-like graph, database, service resource tree, filesystem namespace, or runtime object graph, when a consumer exposes that namespace.
 - Exact address-expression identity, canonical target identity, selector equivalence, and resolved Binding Set equality are distinct semantic questions.
 
 Lexical boundary:

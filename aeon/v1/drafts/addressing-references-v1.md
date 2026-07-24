@@ -23,6 +23,8 @@ SANSA means **Semantic Address NameSpace Abstraction**.
 
 SANSA defines the broader address language used to describe paths and selectors over a semantic address namespace. AEON Core adopts SANSA address literals through the reserved `sansa` datatype, and AEON tooling may use SANSA selectors for schema rules, playground extraction, and consumer-defined lookup.
 
+SANSA is namespace- and domain-neutral. SANSA member selectors describe semantic traversal rather than object traversal. In an AEON-backed namespace, that traversal maps to AEON bindings and canonical paths; in another namespace, the same syntax may map to graph terms, database entities, service resources, filesystem nodes, runtime objects, or another semantic model.
+
 AEON references are related, but narrower:
 
 - `value:sansa = $.contact.name` stores a SANSA address literal as data;

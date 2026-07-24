@@ -39,6 +39,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Added separator-literal naïve order over canonical separator payloads, while reserving IP, version, dimension, delimited-record, and other domain ordering for explicit profiles.
 - Clarified that naïve separator order never splits payloads, and profile-defined splitting/order must treat separator specs as claims unless trusted or validated.
 - Clarified SANSA address-literal semantics: address-expression identity/order are syntactic defaults, while exact target identity, selector equivalence, resolution, and AEON versus non-AEON namespace meaning belong to consumers.
+- Strengthened SANSA namespace- and domain-neutrality language, clarifying that SANSA member selectors describe semantic traversal rather than AEON object traversal.
 - Clarified structural container semantics for `object`, `list`, `tuple`, and `node`, including minimum structural equality, lack of default structural ordering, and schema/profile ownership of mutation compatibility.
 - Clarified reference semantics by separating reference-form identity, read-only followed-value inspection through conceptual `follow(reference)`, and reference resolution/materialization.
 - Renamed the schema proposal's reference-inspection control from `resolve_reference_form` to `follow_reference_form` to avoid implying materialization or value substitution.
@@ -72,6 +73,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Gives separator literals a deterministic portable fallback order without assigning domain meaning to separator characters.
 - Prevents document-local separator specs such as `sep[.]` from silently authorizing semantic splitting, IP parsing, version parsing, or domain ordering.
 - Prevents AEON-hosted `:sansa` values from being treated as AEON paths by default when they may target another SANSA-compatible semantic namespace.
+- Makes AEON's relationship to SANSA explicit as an AEON binding-model namespace adapter rather than the owner of SANSA traversal semantics.
 - Defines minimum structural equality for objects, lists, tuples, and nodes while keeping list/tuple coercion, structural ordering, and mutation behavior explicit.
 - Prevents implicit reference following in comparison and validation contexts while keeping reference resolution/materialization separate from explicit read-only followed-value checks.
 - Migration: update encoding-family literals from `$payload` to `&payload`.

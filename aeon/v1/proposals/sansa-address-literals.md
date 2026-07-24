@@ -28,7 +28,9 @@ The `$` and `?` prefixes are available for SANSA because encoding-family literal
 
 AEON parses and preserves the SANSA address literal. AEON Core does not resolve the address, traverse the target namespace, evaluate selectors, or assign semantic meaning to qualifiers.
 
-An AEON document may carry SANSA address literals for AEON-backed namespaces or for other SANSA-compatible domains. The address syntax does not by itself say that member selectors are AEON object keys.
+SANSA is namespace- and domain-neutral. An AEON document may carry SANSA address literals for AEON-backed namespaces or for other SANSA-compatible domains. The address syntax does not by itself say that member selectors are AEON binding keys, object keys, graph terms, database fields, service resources, filesystem nodes, or runtime object properties.
+
+SANSA member selectors describe semantic traversal rather than object traversal. AEON-backed consumers may map that traversal to the AEON binding model and canonical paths, but that mapping is an AEON namespace adapter concern rather than a SANSA grammar rule.
 
 ## Boundary
 
@@ -36,7 +38,7 @@ SANSA defines the address grammar. AEON Core accepts the embedded value when it 
 
 AEON-internal consumers may define narrower interpretation surfaces when they resolve, validate, or act on an address. Those restrictions are consumer semantics, not Core parse restrictions.
 
-For example, an AEON-backed consumer may resolve this against AEON document structure:
+For example, an AEON-backed consumer may resolve this against AEON bindings and canonical paths:
 
 ```aeon
 aeonPath:sansa = $.inventory.items[2].sku

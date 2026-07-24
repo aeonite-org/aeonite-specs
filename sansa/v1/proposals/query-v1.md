@@ -24,6 +24,8 @@ SANSA.Query is a declarative, read-only semantic transformation interface.
 
 It builds on SANSA.Resolve. Resolve discovers bindings. Query evaluates, filters, orders, slices, and projects them.
 
+SANSA.Query queries Binding Sets, not AEON documents directly. A Binding Set may be produced by an AEON-backed resolver, RDF-like graph resolver, SQL resolver, filesystem resolver, service-resource resolver, runtime object resolver, or another namespace adapter. The resolver determines how a SANSA address becomes bindings; Query then operates over those bindings.
+
 Resolve answers:
 
 > Which bindings match?
@@ -40,6 +42,7 @@ SANSA.Query v1 is:
 - read-only
 - deterministic
 - based on Binding Sets
+- namespace- and domain-neutral
 - independent of host programming languages
 - explicit about missing and multi-binding behavior
 - side-effect free

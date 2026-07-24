@@ -363,7 +363,7 @@ Initial classification:
 | `datetime` | temporal | literal recognition and preservation | equality, ordering, offset normalization, precision, and instant semantics require an active temporal profile |
 | `zrut` | temporal with named-zone data | literal recognition and zone payload preservation | equality and ordering require a named-zone authority and timezone database profile |
 | `sep`, `kadot` | separator-structured lexical scalar | canonical separator-payload identity; naïve separator order | IP address, semantic version, dimensions, product codes, delimited records, and similar meanings are profile-defined |
-| `sansa` | structured address expression | canonical address-expression identity; naïve address-expression order | resolution, selector expansion, canonical target identity, selector equivalence, namespace-domain meaning, authorization, and qualifier meaning belong to SANSA consumers |
+| `sansa` | structured address expression | canonical address-expression identity; naïve address-expression order | resolution, selector expansion, canonical target identity, selector equivalence, namespace/domain meaning, authorization, and qualifier meaning belong to SANSA consumers |
 | `object`, `obj`, `o`, `envelope` | structural container | member identity, Core object shape, and structural equality | ordering, envelope meaning, and member-value constraints are profile/schema-defined |
 | `list` | structural collection | element order preservation, index-addressability, and ordered structural equality | whether order has domain meaning and element constraints are profile/schema-defined |
 | `tuple` | positional structural collection | positional element preservation, arity preservation, and ordered structural equality | element constraints, positional meaning, and coercion from lists are profile/schema-defined |
@@ -591,6 +591,8 @@ Profile-defined separator ordering must also account for trust. A profile may us
 
 SANSA address literals are structured address expressions carried as AEON values.
 
+SANSA is namespace- and domain-neutral. It defines how semantic locations are expressed, not what those locations represent.
+
 The same `:sansa` value family can carry:
 
 - exact address paths;
@@ -610,7 +612,7 @@ qualified:sansa = $.result:number|nan
 rdfLike:sansa = $.["john"].isLocatedAt.["Brussels"]
 ```
 
-AEON Core validates and preserves the SANSA literal. It does not decide whether the literal targets an AEON document, an RDF-like graph, a database, a service resource tree, or another semantic namespace.
+AEON Core validates and preserves the SANSA literal. It does not decide whether the literal targets AEON bindings, an RDF-like graph, a database, a service resource tree, a filesystem namespace, a runtime object graph, or another semantic namespace.
 
 The minimum shared behavior for SANSA address literals is:
 
@@ -635,7 +637,7 @@ These are separate questions:
 
 Exact addresses and selectors must not be collapsed merely because a selector happens to resolve to one binding in a particular namespace snapshot.
 
-A consumer must not assume that SANSA member selectors are AEON object keys unless the active namespace is an AEON-backed namespace or another trusted adapter defines that mapping. SANSA is the address language; the addressed domain belongs to the namespace.
+A consumer must not assume that SANSA member selectors are AEON binding keys or object traversal unless the active namespace is an AEON-backed namespace or another trusted adapter defines that mapping. SANSA member selectors describe semantic traversal; the addressed domain belongs to the namespace.
 
 ### 6.12 Structural Container Semantics
 
