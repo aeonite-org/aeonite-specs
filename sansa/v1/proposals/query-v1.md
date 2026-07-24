@@ -191,7 +191,7 @@ The expression parser covers the syntax AST for `where`, `select`, and order-key
 The expression parser covers:
 
 - resolution expressions beginning with `.`, `$`, or `?`
-- string, number, and Boolean literals
+- string, number, Boolean, and AEON toggle literals
 - comparison operators
 - membership operator shape
 - Boolean operators with the precedence defined in this proposal
@@ -203,7 +203,7 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, concrete-value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals including AEON toggle literal spellings (`yes`, `no`, `on`, `off`), resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, concrete-value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
 
 Some implementations may also expose transform-library helpers such as `objectFrom(...)` and `fieldsFrom(...)`. These helpers operate across multiple Binding Sets and are not part of SANSA.Query v1 core conformance.
 
