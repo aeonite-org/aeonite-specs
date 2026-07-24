@@ -191,7 +191,9 @@ The expression parser covers the syntax AST for `where`, `select`, and order-key
 The expression parser covers:
 
 - resolution expressions beginning with `.`, `$`, or `?`
-- string, number, Boolean, and AEON toggle literals
+- string, number, Boolean, AEON toggle literals, and AEON scalar source
+  literal families such as hex, radix, encoding, separator, explicit-null, and
+  temporal-looking literals
 - comparison operators
 - membership operator shape
 - Boolean operators with the precedence defined in this proposal
@@ -203,7 +205,7 @@ The expression parser covers:
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals including AEON toggle literal spellings (`yes`, `no`, `on`, `off`), resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, concrete-value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals including AEON toggle literal spellings (`yes`, `no`, `on`, `off`) and selected AEON scalar source literal families (`#hex`, `%radix`, `&encoding`, `^separator`, `!null`, and temporal-looking literals), resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, concrete-value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
 
 Some implementations may also expose transform-library helpers such as `objectFrom(...)` and `fieldsFrom(...)`. These helpers operate across multiple Binding Sets and are not part of SANSA.Query v1 core conformance.
 
@@ -593,7 +595,7 @@ Infinity values are explicit numeric special values. Where an applicable value-s
 
 Temporal values are not ordinary strings. A host may expose AEON `date`, `time`, `datetime`, or `zrut` values through a string-like transport representation, but SANSA.Query may compare or order them only when an active temporal value-semantics profile defines that behavior. Without that profile, temporal comparison and temporal order keys fail closed.
 
-Temporal query literals are future surface. Current implementations may use host-exposed temporal bindings and semantic filters such as `#date` or `#datetime` before profile-aware temporal comparison is introduced.
+Temporal query literals may be parsed as source literals so query syntax can carry the same lexical family as AEON values. Temporal comparison and temporal order keys still require an active temporal value-semantics profile; without one they fail closed. Implementations may also use host-exposed temporal bindings and semantic filters such as `#date` or `#datetime` before profile-aware temporal comparison is introduced.
 
 The `in` operator tests scalar membership in a Binding Set:
 
