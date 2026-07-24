@@ -346,29 +346,38 @@ Initial classification:
 | --- | --- | --- | --- |
 | `string` | string | exact decoded string equality; string ordering only through active string profile | locale collation, natural sort, normalization, case mapping |
 | `trimtick`, `prose` | string plus formatting convention | string value after trimtick normalization | prose format semantics such as Markdown belong to conventions or applications |
-| `number` | numeric | finite numeric equality and ordering | integer-only, unsigned-only, width, precision, decimal policy, arithmetic |
-| `int`, `uint`, `int32`, `float64`, and other reserved numeric labels | numeric plus profile/schema constraints | inherit finite numeric comparison after compatibility is established | range, width, signedness, integer-only, float-family behavior |
+| `number`, `n` | numeric | finite numeric equality and ordering | precision, decimal policy, arithmetic |
+| `int`, `int8`, `int16`, `int32`, `int64` | numeric plus integer/profile constraints | inherit finite numeric comparison after compatibility is established | integer-only validation, width, signed range, overflow policy |
+| `uint`, `uint8`, `uint16`, `uint32`, `uint64` | numeric plus unsigned/profile constraints | inherit finite numeric comparison after compatibility is established | integer-only validation, unsigned range, width, overflow policy |
+| `float`, `float32`, `float64` | numeric plus floating/profile constraints | inherit finite numeric comparison after compatibility is established | floating precision, rounding, signed zero, decimal/binary conversion policy |
 | `infinity` | numeric special value | equality and ordering only where active numeric profile admits infinities | domain parameter such as `infinity<speedofmass>` is profile/schema-defined |
 | `nan` | numeric special non-value | not equality-comparable or orderable in the minimum profile | explicit predicates and domain-specific missing/error semantics |
-| `boolean` | Boolean | Boolean equality | Boolean ordering is not in the minimum profile |
-| `toggle` | toggle | exact toggle-domain equality when exposed as toggle | conversion or materialization to Boolean is profile-defined; no implicit Boolean comparison |
-| `null` and null reasons | absence/null | explicit null identity and reason preservation | null equality, null ordering, and absence-domain meaning are profile/schema-defined |
-| `hex` | lexical structured scalar | exact payload preservation | color, byte sequence, identifier, numeric, or other interpretation is profile-defined |
-| `radix`, `radix2`, `radix8`, and related labels | radix numeric representation | exact representation preservation; base metadata preservation | base-specific numeric validity, conversion, equality, and ordering are profile-defined |
-| `encoding`, `base64`, `embed`, `inline` | encoded payload | exact payload preservation | byte identity, media type, decoding, hashing, or ordering are profile-defined |
+| `boolean`, `bool` | Boolean | Boolean equality | Boolean ordering is not in the minimum profile |
+| `toggle` | toggle | exact toggle-token equality when exposed as toggle | conversion or materialization to Boolean is profile-defined; no implicit Boolean comparison |
+| `null`, `!none`, `!notSet`, `!notApplicable`, `!tombstone`, `!"..."` | absence/null | explicit null identity and reason preservation | null equality, null ordering, and absence-domain meaning are profile/schema-defined |
+| `hex` | hexadecimal lexical structured scalar | canonical hex-payload identity; source spelling remains representation metadata | color, byte sequence, identifier, numeric, or other interpretation is profile-defined |
+| `radix`, `radix2`, `radix6`, `radix8`, `radix12` | radix numeric representation | exact representation preservation; base metadata preservation | base-specific numeric validity, conversion, equality, and ordering are profile-defined |
+| `encoding`, `base64`, `embed`, `inline` | encoded lexical payload | exact payload-string identity; naïve payload order; no implicit decoding | byte identity, media type, text decoding, hashing, or decoded-content ordering are profile-defined |
 | `date` | temporal | literal recognition and preservation | equality, ordering, precision, calendar, and conversion require an active temporal profile |
 | `time` | temporal | literal recognition and preservation | equality, ordering, offset handling, and date-context rules require an active temporal profile |
 | `datetime` | temporal | literal recognition and preservation | equality, ordering, offset normalization, precision, and instant semantics require an active temporal profile |
 | `zrut` | temporal with named-zone data | literal recognition and zone payload preservation | equality and ordering require a named-zone authority and timezone database profile |
-| `sep`, `kadot` | separator-structured lexical scalar | literal-family recognition and raw payload preservation | IP address, semantic version, dimensions, product codes, and similar meanings are profile-defined |
-| `sansa` | address expression | address literal parsing and preservation | resolution, selector expansion, canonical-address equality, authorization, and qualifier meaning belong to SANSA consumers |
-| `object`, `obj`, `o`, `envelope` | structural container | member identity and Core object shape | deep equality, ordering, envelope meaning, and member-value constraints are profile/schema-defined |
-| `list` | structural collection | element order preservation and index-addressability | whether order is semantically meaningful, element constraints, and deep equality are profile/schema-defined |
-| `tuple` | positional structural collection | positional element preservation | arity, element constraints, positional meaning, and tuple equality are profile/schema-defined |
-| `node` | tagged structural value | tag, attributes, child order, and child slots are preserved | tag vocabulary, child-content semantics, rendering, and deep equality are profile/schema-defined |
-| clone reference `~...` | reference operation | Core reference legality and resolved clone behavior | post-resolution value semantics apply to the resolved value |
-| pointer reference `~>...` | reference operation | Core reference legality and pointer identity preservation | aliasing, mutation authority, and dereference behavior belong to consumers/profiles |
+| `sep`, `kadot` | separator-structured lexical scalar | canonical separator-payload identity; naïve separator order | IP address, semantic version, dimensions, product codes, delimited records, and similar meanings are profile-defined |
+| `sansa` | structured address expression | canonical address-expression identity; naïve address-expression order | resolution, selector expansion, canonical target identity, selector equivalence, namespace-domain meaning, authorization, and qualifier meaning belong to SANSA consumers |
+| `object`, `obj`, `o`, `envelope` | structural container | member identity, Core object shape, and structural equality | ordering, envelope meaning, and member-value constraints are profile/schema-defined |
+| `list` | structural collection | element order preservation, index-addressability, and ordered structural equality | whether order has domain meaning and element constraints are profile/schema-defined |
+| `tuple` | positional structural collection | positional element preservation, arity preservation, and ordered structural equality | element constraints, positional meaning, and coercion from lists are profile/schema-defined |
+| `node` | tagged structural value | tag, attributes, child order, child slots, and structural equality are preserved | tag vocabulary, child-content semantics, rendering, and mutation compatibility are profile/schema-defined |
+| clone reference `~...` | reference form plus follow operation | reference-kind identity, canonical target-path identity, and followed-value semantics when explicitly followed | reference-form ordering, clone materialization, and diagnostics belong to consumers/profiles |
+| pointer reference `~>...` | reference form plus follow operation | reference-kind identity, canonical target-path identity, and followed-value semantics when explicitly followed | aliasing, mutation authority, identity preservation, and dereference behavior belong to consumers/profiles |
 | custom datatype labels | host/profile semantic claim over a Core-compatible value family | no shared meaning by label alone | consumer, schema, convention, or profile defines accepted semantics |
+
+Notes:
+
+- `nan` is an operational Core compatibility label for `NaNLiteral`. It must be listed with the same audit weight as `infinity`, even though NaN does not enter equality or ordering in the minimum profile.
+- Null sentinel spellings such as `!none` are value forms, not datatype labels. They are included in this table because they define the accepted null-value surface that value semantics must preserve.
+- Reserved aliases inherit their canonical family's semantic basis. They do not create a separate semantic domain unless a profile explicitly adds one.
+- Generic parameters and bracket arguments refine claims. They do not by themselves create comparison, ordering, conversion, or mutation compatibility behavior.
 
 Separator literals illustrate why this classification is necessary:
 
@@ -384,15 +393,341 @@ An IP profile might compare numeric address components. A dimensions profile mig
 
 When no active shared or profile-defined semantic basis exists for an operation, the operation fails closed.
 
+### 6.6 Classification Edge Cases
+
+The following families need special care before their behavior is promoted beyond the minimum profile:
+
+- `toggle` has Boolean-like materialization in some outputs, but it is not automatically the same semantic family as `boolean`. A profile may define conversion, but comparison must not silently collapse `yes`, `on`, `true`, and `1`.
+- `hex` has no single natural meaning. It may represent color, bytes, an identifier, a hash prefix, or a numeric value. It is distinct from every `radix` family, including any radix profile that uses base 16. Equality beyond canonical hex-payload identity and ordering require a profile.
+- `radix` is number-like, but Core preserves representation and does not perform base-specific digit validation as a semantic operation. Numeric comparison requires base validation and conversion under a profile.
+- `encoding` is payload-like. The encoded payload is surfaced as characters and may be ordered naïvely by that payload surface, but that does not make decoded bytes, decoded text, radix comparison, media type, or decoded-content ordering a default interpretation.
+- `sep` and `kadot` intentionally defer meaning. They are useful exactly because profiles can define IP addresses, dimensions, semantic versions, delimited records, product codes, or other structured scalar domains without changing Core syntax.
+- `sansa` may contain exact paths or selectors, and may target AEON or non-AEON semantic namespaces. Address-expression identity, canonical target identity, selector equivalence, and resolved Binding Set equality are distinct questions and must not be collapsed.
+- `object`, `list`, `tuple`, and `node` have preserved structure and minimum structural equality. Semantic ordering, coercion between structural families, and mutation compatibility are profile/schema responsibilities.
+- References have two semantic surfaces: the reference form itself and the followed value. Consumers must be explicit about which surface an operation uses.
+
+### 6.7 Toggle Semantics
+
+Toggle values have two separate semantic surfaces:
+
+- toggle-token identity;
+- Boolean conversion or materialization.
+
+Toggle-token identity is exact:
+
+| Expression | Result |
+| --- | --- |
+| `yes == yes` | true |
+| `on == on` | true |
+| `no == no` | true |
+| `off == off` | true |
+| `yes == on` | false |
+| `no == off` | false |
+
+Boolean conversion is a distinct operation:
+
+| Toggle token | Boolean conversion result |
+| --- | --- |
+| `yes` | true |
+| `on` | true |
+| `no` | false |
+| `off` | false |
+
+A consumer may materialize toggles as Booleans in an output format, such as finalized JSON, but materialization does not rewrite AEON value semantics. `yes == true`, `on == true`, `no == false`, and `off == false` require explicit conversion or a profile-defined comparison domain.
+
+Without explicit conversion or an active profile-defined compatibility rule, toggle and Boolean values are cross-type comparisons and fail closed.
+
+### 6.8 Hex Semantics
+
+Hex values are their own AEON value family.
+
+They are not radix literals, even when a radix profile uses base 16.
+
+Examples:
+
+```aeon
+color:hex = #ff00aa
+mask:radix[16] = %ff00aa
+octal:radix8 = %70
+```
+
+These values differ in:
+
+- literal family: `HexLiteral` versus `RadixLiteral`;
+- source sigil: `#` versus `%`;
+- accepted payload grammar;
+- datatype compatibility;
+- canonicalization behavior;
+- profile surface.
+
+Core hex canonicalization removes `_` visual separators and lowercases hex digits. Therefore canonical hex-payload identity treats these as the same hex payload:
+
+```aeon
+#Ff_00_Aa
+#ff00aa
+```
+
+That does not imply numeric comparison, byte comparison, color comparison, or radix comparison.
+
+A consumer that wants to compare hex values as numbers, bytes, colors, hashes, or identifiers must select an explicit profile for that interpretation. A consumer must not compare `hex:hex = #10` and `mask:radix[16] = %10` as equal merely because the payloads contain compatible base-16 digits.
+
+Core v1 does not reserve `radix16` as a shorthand alias. Use `radix[16]` when a value is intended to remain in the radix-family numeric-representation surface. This keeps base-16 radix values explicit and avoids implying that `hex` and base-16 radix are interchangeable.
+
+### 6.9 Encoding Semantics
+
+Encoding values are encoded lexical payloads.
+
+The Core v1 encoding-family labels are:
+
+- `encoding`;
+- `base64`;
+- `embed`;
+- `inline`.
+
+All four labels bind to `EncodingLiteral`. The labels reserve compatibility surface, but they do not create four independent Core value families.
+
+The accepted payload alphabet is Base64URL-shaped:
+
+```text
+A-Z a-z 0-9 - _ =
+```
+
+This is a lexical transport alphabet. It is not a radix alphabet, and it is not a guarantee that the payload has been decoded, interpreted, or validated as bytes by Core.
+
+Examples:
+
+```aeon
+payload:encoding = &QmFzZTY0IQ==
+blob:base64 = &QmFzZTY0IQ==
+asset:embed = &QmFzZTY0IQ==
+snippet:inline = &QmFzZTY0IQ==
+base64ish:radix[64] = %QmFzZTY0IQ
+```
+
+`base64` and `radix[64]` are different semantic surfaces:
+
+- `base64` is an encoding-family compatibility label over `EncodingLiteral`;
+- `radix[64]` is a radix-family numeric-representation claim over `RadixLiteral`;
+- encoding payloads may use `-`, `_`, and trailing `=` padding;
+- radix payloads use the radix digit sequence defined for `RadixLiteral`;
+- decoding bytes and converting a radix number are different operations.
+
+By default, value semantics may compare encoding values by exact payload-string identity and naïve payload order.
+
+Naïve payload order compares the preserved encoded payload characters using the active canonical codepoint string profile. It does not decode bytes, decode text, compare media content, compare hashes, or apply radix interpretation.
+
+A profile may define richer behavior, such as:
+
+- Base64URL decode validity;
+- byte equality after decoding;
+- MIME or media-type interpretation;
+- embedded AEON or text decoding;
+- hash or digest comparison;
+- ordering by payload length, decoded byte length, decoded text, media content, or domain-specific metadata.
+
+Those meanings require an explicit profile. A consumer must not treat `base64` as `radix[64]`, must not apply generic string collation as byte ordering, and must not assume that `encoding`, `embed`, or `inline` always means Base64 data with a particular media type.
+
+### 6.10 Separator Semantics
+
+Separator literals are compact structured lexical scalars.
+
+They are powerful because the same literal family can carry many domain shapes:
+
+```aeon
+version:kadot = ^0.11.0
+ip1:sep = ^127.0.0.1
+ip2:sep[.] = ^127.0.0.1
+dim:sep[w][h][d] = ^300w400h200d
+psv:sep[|] = ^"id"|"name"|"phone"
+```
+
+Core preserves the literal family, payload, and datatype separator specs. Core does not assign domain meaning to the separator characters. A separator spec such as `[.]` is preserved metadata and may be a useful claim, but it is not trusted parsing authority by itself.
+
+The minimum shared behavior for separator literals is:
+
+- canonical separator-payload identity;
+- naïve separator order.
+
+Canonical separator-payload identity compares the canonical separator payload as preserved separator-literal content. It does not compare decoded records, numeric parts, dimensions, versions, IP octets, or table columns.
+
+Naïve separator order compares canonical separator payloads by the active canonical codepoint string profile. This is a deterministic fallback order over the preserved payload surface. It is not a domain order.
+
+Naïve separator order does not split the payload, even when the datatype includes enough separator specs to make splitting possible.
+
+For example:
+
+```aeon
+ip1:sep = ^192.0.0.255
+ip2:sep[.] = ^192.0.0.255
+```
+
+Both values are ordered by their whole canonical payload. The `[.]` spec on `ip2` does not cause naïve order to split the payload into `["192", "0", "0", "255"]`, compare numeric octets, or infer an IP address.
+
+For example, naïve separator order may produce a different result from semantic-version ordering:
+
+```aeon
+a:kadot = ^0.11.0
+b:kadot = ^0.9.9
+```
+
+Under naïve separator order, the payload characters are compared directly. Under a semantic-version profile, the payload would be tokenized into numeric version components before comparison.
+
+Profiles may define separator-domain behavior such as:
+
+- semantic-version comparison;
+- IPv4 or IPv6 parsing and address comparison;
+- dimensions parsed into width, height, depth, area, volume, or aspect ratio;
+- delimited-record parsing such as pipe-separated values;
+- product-code segmentation;
+- numeric segment validation;
+- trailing-delimiter policy;
+- duplicate or repeated separator handling.
+
+Datatype separator specs and labels such as `kadot` may help a profile select or validate a domain, but they do not create domain order by themselves. A consumer that needs dimensions sorted by aspect ratio, IP addresses sorted by numeric address, or versions sorted by numeric components must select an explicit profile.
+
+Profile-defined separator ordering must also account for trust. A profile may use separator specs only when the consumer trusts the source of the claim, validates the claim against the payload, or supplies the separator structure from trusted configuration. Untrusted document-local separator specs should be treated as data claims, not as authority to choose parsing or ordering behavior.
+
+### 6.11 SANSA Address Semantics
+
+SANSA address literals are structured address expressions carried as AEON values.
+
+The same `:sansa` value family can carry:
+
+- exact address paths;
+- selector expressions that may resolve to zero, one, or many bindings;
+- contextual-root expressions;
+- qualified address literals;
+- address expressions targeting AEON namespaces;
+- address expressions targeting non-AEON semantic namespaces.
+
+Examples:
+
+```aeon
+exact:sansa = $.contact.name
+selector:sansa = $.inventory.items.*.sku
+contextual:sansa = ?.name
+qualified:sansa = $.result:number|nan
+rdfLike:sansa = $.["john"].isLocatedAt.["Brussels"]
+```
+
+AEON Core validates and preserves the SANSA literal. It does not decide whether the literal targets an AEON document, an RDF-like graph, a database, a service resource tree, or another semantic namespace.
+
+The minimum shared behavior for SANSA address literals is:
+
+- canonical address-expression identity;
+- naïve address-expression order.
+
+Canonical address-expression identity compares the canonical parsed address expression, including root kind, selector sequence, quoted payloads, and qualifier structure. It is syntactic identity of the address expression as data.
+
+Naïve address-expression order compares canonical address-expression renderings by the active canonical codepoint string profile. It is a deterministic fallback order over address expressions as preserved values. It does not resolve the addresses.
+
+These are separate questions:
+
+| Question | Default owner |
+| --- | --- |
+| Do two address literals have the same canonical expression? | Shared Value Semantics |
+| Does an exact address identify the same target in a namespace? | SANSA.Resolve consumer and namespace |
+| Are two selector expressions equivalent? | Consumer/profile, usually requiring resolver semantics |
+| Do two selector expressions resolve to the same Binding Set now? | SANSA.Resolve or SANSA.Query evaluation |
+| Does `$.contact.name` mean an AEON binding path? | AEON-backed namespace adapter |
+| Does `$.["john"].isLocatedAt.["Brussels"]` mean an RDF-like relation path? | Non-AEON namespace adapter/profile |
+| What does a qualifier such as `:number|nan` mean? | Consumer/profile |
+
+Exact addresses and selectors must not be collapsed merely because a selector happens to resolve to one binding in a particular namespace snapshot.
+
+A consumer must not assume that SANSA member selectors are AEON object keys unless the active namespace is an AEON-backed namespace or another trusted adapter defines that mapping. SANSA is the address language; the addressed domain belongs to the namespace.
+
+### 6.12 Structural Container Semantics
+
+AEON structural values have two separate surfaces:
+
+- preserved representation;
+- shared structural semantics.
+
+Core preserves object members, list elements, tuple elements, node tags, node attributes, node children, lexical order, and index-addressable child slots where applicable.
+
+Shared Value Semantics may then define structural equality over the preserved values.
+
+The minimum structural equality surface is:
+
+| Family | Equality basis |
+| --- | --- |
+| `object` | same object family, same member keys, and equal member values; object member order is not significant |
+| `list` | same list family, same length, and equal element values at each index |
+| `tuple` | same tuple family, same arity, and equal element values at each position |
+| `node` | same node family, same tag, same attribute keys with equal attribute values, same child count, and equal child values at each child position |
+
+Structural equality is recursive and uses the active Shared Value Semantics equality rule for each contained value. If a contained value cannot be compared under the active equality profile, the structural comparison fails closed.
+
+List and tuple values do not compare equal by default, even when they contain equal values in the same order. A profile may define an explicit coercion or compatibility operation, but the minimum profile does not silently collapse structural families.
+
+Object member order is not significant for structural equality in the GP profile. Core may still preserve object member order for diagnostics, AES emission, canonicalization inputs, or source fidelity.
+
+Node child order is significant for structural equality. Attribute order is not significant when attributes are represented as keyed attributes; duplicate-attribute rejection remains a Core representation guarantee.
+
+Datatype annotations, generic parameters, and bracket arguments are preserved claims. They do not by themselves make two otherwise equal structural values unequal unless an active profile or schema declares annotation-sensitive equality.
+
+Structural ordering is intentionally absent from the minimum profile. There is no portable default order for objects, lists, tuples, or nodes. Consumers that need sorted containers must provide an explicit order key, schema rule, or profile-defined container ordering.
+
+Structural mutation compatibility is also profile/schema-owned. Mutation rules must define replace versus merge behavior, list insertion and reindexing, tuple arity compatibility, object member creation and deletion, node child mutation, attribute mutation, and conflict handling. A document-local datatype claim such as `node<node>` is an input to validation; it does not authorize the document to choose schema behavior for itself.
+
+### 6.13 Reference Semantics
+
+AEON references have two distinct semantic surfaces:
+
+- the reference form;
+- the followed value.
+
+The reference form is the represented reference value. It includes:
+
+- reference kind: clone reference `~` or pointer reference `~>`;
+- canonical exact AEON target path;
+- source/provenance metadata, when retained by a consumer.
+
+Reference-form identity compares the reference kind and canonical target path. For example, `~a` and `~$.a` identify the same clone-reference form after canonical path normalization, while `~a` and `~>a` do not identify the same reference form because clone intent and pointer intent are distinct.
+
+Reference-form identity does not inspect the target value. It uses the canonical exact-path subset of AEON/SANSA addressing used by reference legality; selectors such as `.*`, `.**`, patterns, filters, and contextual roots are not part of AEON reference targets.
+
+The followed value is the value reached by explicitly walking a legal reference path and evaluating the target value under the active consumer policy.
+
+Conceptual operation:
+
+```text
+follow(reference) -> value
+```
+
+`follow(...)` is not a Core parse operation and not a materialization operation. It is a read-only consumer operation used by schemas, queries, tonics, storage adapters, or runtime APIs when they intentionally want to inspect target-value semantics instead of reference-form semantics.
+
+Following a reference:
+
+- requires a legal reference target;
+- must respect Core missing, forward-reference, and self-reference failures;
+- must be bounded by consumer recursion/depth policy;
+- must preserve diagnostics that identify both the reference source and the target path;
+- must not rewrite, substitute, inline, alias, or erase the original reference form.
+
+After `follow(...)`, ordinary Shared Value Semantics apply to the resulting target value. For example, a followed reference to a number compares as a number, and a followed reference to a list participates in structural list equality.
+
+Without an explicit follow operation or consumer-declared followed-value mode, constraints and comparisons apply to the reference form itself. This allows schemas to ask either:
+
+- "is this value a reference to the expected target?"; or
+- "does the referenced value satisfy this constraint?"
+
+Those are different operations and should produce different diagnostics.
+
+Reference resolution is a separate operation. In reference-resolution or materialization mode, the value carrying the reference may be replaced, inlined, cloned, aliased, or represented as an explicit runtime reference according to clone/pointer policy. That operation belongs to Tonics, runtime materializers, storage adapters, or explicit consumer profiles. It must not be confused with `follow(...)`.
+
+Pointer references may carry aliasing, identity, or mutation-authority semantics during reference resolution. Those meanings belong to the consuming layer. Shared Value Semantics can define target-value comparison after following, but it does not decide whether a pointer may be mutated, aliased, inlined, or materialized as host identity.
+
 ## 7. Minimum v1 Consumer Contract
 
 The first shared contract should cover the behavior already exercised by SANSA.Query and expected by AEOS-style validation.
 
 This section is a candidate minimum profile. It is intentionally small and should become the first shared CTS surface when promoted.
 
-### 7.1 Scalar Value Categories
+### 7.1 Value Categories
 
-The minimum profile recognizes these scalar categories:
+The minimum profile recognizes these value and evaluation categories:
 
 - finite number;
 - positive infinity;
@@ -400,6 +735,12 @@ The minimum profile recognizes these scalar categories:
 - NaN;
 - string;
 - Boolean;
+- toggle;
+- temporal value;
+- lexical structured scalar;
+- SANSA address literal;
+- structural container;
+- reference form;
 - explicit null;
 - explicit absence value, when exposed by a consumer;
 - missing binding, when resolution produces no binding.
@@ -408,7 +749,16 @@ Missing binding is not a value. It is an evaluation state produced by a consumer
 
 Explicit null and explicit absence values are values. They must not be collapsed into missing, false, an empty string, or zero.
 
-For minimum-profile consumer predicates, an **ordinary scalar value** means one finite number, string, or Boolean value. Positive infinity, negative infinity, NaN, explicit null, explicit absence values, containers, Binding Sets, and Missing are not ordinary scalar values unless a later profile explicitly widens that predicate.
+For minimum-profile consumer predicates, a **concrete value** means a present value that is not part of the non-value group.
+
+The minimum non-value group is:
+
+- Missing;
+- explicit null;
+- explicit absence values;
+- NaN.
+
+Finite numbers, infinities, strings, Booleans, toggles, temporal values, lexical structured scalars, SANSA address literals, container values, and legal reference forms are concrete values for `isValue(...)` purposes.
 
 ### 7.2 Equality
 
@@ -421,12 +771,24 @@ The minimum equality surface is:
 | infinity and infinity | allowed | Positive infinity equals positive infinity; negative infinity equals negative infinity; opposite infinities are not equal. |
 | string and string | allowed | Exact decoded string equality under the active string equality profile. |
 | Boolean and Boolean | allowed | `true` equals `true`; `false` equals `false`. |
+| toggle and toggle | allowed | Exact toggle-token equality; `yes` does not equal `on`, and `no` does not equal `off`. |
+| toggle and Boolean | error | Boolean compatibility requires explicit conversion or a profile-defined comparison domain. |
+| encoding and encoding | allowed | Exact payload-string identity; no decoding. |
+| separator and separator | allowed | Canonical separator-payload identity; no domain tokenization. |
+| SANSA address and SANSA address | allowed | Canonical address-expression identity; no resolution or selector equivalence. |
+| object and object | allowed | Structural member equality; object member order is not significant. |
+| list and list | allowed | Ordered structural equality by index. |
+| tuple and tuple | allowed | Ordered structural equality by position and arity. |
+| node and node | allowed | Structural equality by tag, attributes, and ordered child slots. |
+| list and tuple | error | Requires explicit coercion or a profile-defined compatibility domain. |
+| reference form and reference form | allowed | Reference-kind identity and canonical target-path identity; no implicit follow. |
+| followed reference value | as target value | Requires explicit `follow(...)` or consumer-declared followed-value mode. |
 | explicit null | profile-defined or error | Consumers must use an explicit contract such as `isNull(...)` when no equality contract is active. |
 | explicit absence value | profile-defined or error | Absence-value equality belongs to the applicable absence-value contract. |
 | NaN | error | NaN is not equality-comparable in the minimum profile; equality and inequality tests over NaN fail closed. |
 | mixed categories | error | No implicit coercion. |
 
-Consumers must not coerce strings, numbers, Booleans, nulls, or absence values to make equality succeed.
+Consumers must not coerce strings, numbers, Booleans, toggles, nulls, absence values, structural families, or reference forms to make equality succeed. For example, a list and tuple with the same contained values require explicit coercion or a profile-defined compatibility domain before equality can be considered. A reference form and its followed target value are also distinct unless an explicit `follow(...)` operation or followed-value mode is active.
 
 ### 7.3 Ordering
 
@@ -439,6 +801,12 @@ The minimum ordering surface is:
 | infinity and infinity | allowed | Equal infinities compare equal; negative infinity sorts before positive infinity. |
 | string and string | allowed | Uses the active string ordering profile. |
 | Boolean and Boolean | error | Boolean ordering is not part of the minimum profile. |
+| toggle and toggle | error | Toggle ordering is not part of the minimum profile. |
+| encoding and encoding | allowed | Naïve payload order over preserved encoded payload characters. |
+| separator and separator | allowed | Naïve separator order over canonical separator payloads. |
+| SANSA address and SANSA address | allowed | Naïve address-expression order over canonical address expression renderings. |
+| object, list, tuple, or node | error | Structural containers have no portable default total order. |
+| reference form | error | Reference-form ordering is not part of the minimum profile. Use explicit target-path ordering or `follow(...)` plus target-value ordering where authorized. |
 | explicit null | error | Use explicit null predicates or profile-defined null ordering. |
 | explicit absence value | error | Use explicit absence predicates or profile-defined absence ordering. |
 | NaN | error | NaN is not orderable. |
@@ -448,9 +816,11 @@ Ordering must fail closed when the active profile does not define the compared c
 
 ### 7.4 Value Predicate Basis
 
-Consumers may expose predicates that classify scalar evaluation results. Those predicates should be defined in terms of the shared scalar categories rather than by host-language truthiness.
+Consumers may expose predicates that classify evaluation results. Those predicates should be defined in terms of the shared value categories rather than by host-language truthiness.
 
-For example, a minimum-profile `isValue(...)` predicate should return true for exactly one ordinary scalar value and false for Missing, explicit null, explicit absence values, NaN, infinity, non-scalar containers, and Binding Sets. A predicate that needs to accept infinity, null, or a specific absence value should use a distinct name or a profile-defined contract.
+For example, a minimum-profile `isValue(...)` predicate should return true when its operand evaluates to exactly one concrete value and false for Missing, explicit null, explicit absence values, and NaN. If the operand resolves more than one binding, the predicate should produce a cardinality diagnostic rather than choosing one binding.
+
+`isValue(...)` is not a comparison guard. A query or validator that needs a number, string, temporal value, structural value, or other specific comparable domain should combine `isValue(...)` with semantic filters or profile-defined predicates for that domain.
 
 ### 7.5 Canonical String Profile Placeholder
 
@@ -592,7 +962,9 @@ Mutation compatibility includes:
 - whether conversion is allowed;
 - which normalization, if any, is applied before storage;
 - how null, absence values, and Missing interact with a write target;
-- how temporal precision, timezone offsets, and named zones are preserved or normalized.
+- how temporal precision, timezone offsets, and named zones are preserved or normalized;
+- whether structural writes replace, merge, insert, delete, or reindex;
+- how tuple arity, object member constraints, list element constraints, node child constraints, and node attribute constraints are enforced.
 
 SANSA.Mutate, AEOS, Tonics, and storage adapters should not define separate compatibility behavior for the same AEON value family.
 
@@ -603,6 +975,8 @@ set $.invoice.dueDate:date = 2026-07-24
 ```
 
 SANSA.Mutate identifies the target and operation. AEON Core parses the represented value. Shared Value Semantics decides whether the represented value is compatible with `date` and what normalization, if any, is required. The host or schema authority decides whether the mutation is authorized.
+
+For structural values, Shared Value Semantics supplies compatibility concepts and equality behavior, while schema/profile authority decides the permitted mutation shape. For example, a tuple mutation may require exact arity compatibility, a list mutation may permit insertion and reindexing, an object mutation may permit member creation, and a node mutation may restrict child tags or attribute sets. Those policies must not be inferred from a document-local datatype claim alone.
 
 ### 7.11 Consumer Handoff
 

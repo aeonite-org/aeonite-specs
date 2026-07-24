@@ -46,7 +46,8 @@ SchemaV1 + AES_data → AEOS → Result Envelope
 AEOS NEVER:
 
 * mutates either AES
-* resolves data references
+* materializes or rewrites data references
+* follows data references unless an explicit schema rule opts in
 * coerces values
 * interprets semantics beyond form
 
@@ -201,7 +202,7 @@ The `constraints` object MAY contain the following keys:
 | `reference_kind`           | NO       | Required reference kind                 |
 | `reference_target_path`    | NO       | Author-friendly reference target path selector |
 | `reference_target_pattern` | NO       | AEOS portable-pattern fallback for target path |
-| `resolve_reference_form`   | NO       | Opt in to bounded resolved-form checks  |
+| `follow_reference_form`    | NO       | Opt in to bounded followed-value checks |
 | `type_is`                  | NO       | Container kind requirement              |
 | `length_exact`             | NO       | Exact tuple/list arity                  |
 | `sign`                     | NO       | Numeric sign policy                     |
@@ -392,17 +393,19 @@ There is NO fallback, coercion, or continuation.
 
 If the data value at a rule path is a `Reference`:
 
-* Type checking applies to the **Reference literal itself**
-* Patterns MUST NOT be applied to `Reference`
+* Default type checking applies to the **Reference literal itself**
+* Patterns MUST NOT be applied to the reference form
 
 Violation:
 
 * runtime `code = "constraint_inapplicable"`
 
-AEOS MUST NOT:
+By default, AEOS MUST NOT:
 
-* resolve references
+* follow references
 * peek at referenced values
+
+A schema rule may opt in to bounded followed-value checks through an explicit follow control such as `follow_reference_form`. In that mode, AEOS walks the reference target path and evaluates the target value under the active Shared AEON Value Semantics contract while preserving the original reference form and reference diagnostics. This is not reference resolution or materialization; AEOS does not rewrite the data value carrying the reference.
 
 ---
 

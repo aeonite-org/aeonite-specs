@@ -464,7 +464,7 @@ isNaN(...)
 isInfinity(...)
 ```
 
-`isValue(expression)` returns true when the expression evaluates to one ordinary scalar value as defined by Shared AEON Value Semantics: string, Boolean, or finite number. It may inspect scalar expressions directly or consume a Binding Set produced by a resolution expression or `path(...)`. It returns false for missing operands, non-scalar bindings, explicit null, explicit absence values, NaN, and infinity. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
+`isValue(expression)` returns true when the expression evaluates to exactly one concrete value as defined by Shared AEON Value Semantics. It may inspect value expressions directly or consume a Binding Set produced by a resolution expression or `path(...)`. It returns false for missing operands, explicit null, explicit absence values, and NaN. Finite numbers, infinities, strings, Booleans, toggles, temporal values, lexical structured scalars, SANSA address literals, objects, lists, tuples, nodes, and legal reference forms are concrete values for this predicate. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
 
 `isNull(expression)` returns true when the expression resolves exactly one explicit null binding.
 
@@ -475,6 +475,8 @@ isInfinity(...)
 `isInfinity(expression)` returns true when the expression resolves exactly one explicit positive or negative infinity binding.
 
 These predicates are value-semantic tests, not binding-presence tests. `isValue(...)` is explicitly missing-aware and returns false when its operand resolves zero bindings. The stricter null and special numeric predicates produce `Missing` when their operand resolves zero bindings; use `exists(...)` or `absent(...)` when binding presence itself is the question.
+
+`isValue(...)` is not a scalar-comparison guard. Use semantic filters such as `#number`, `#string`, or profile-defined predicates when a following expression needs a specific comparable domain.
 
 Example:
 
@@ -557,6 +559,18 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 | number and number | allowed | allowed | Finite numbers compare by numeric value. |
 | string and string | allowed | allowed | String ordering requires the active value-semantics string ordering profile. |
 | boolean and boolean | allowed | error | Booleans are not ordered. |
+| toggle and toggle | allowed | error | Toggle equality is exact token equality; `yes` does not equal `on`, and `no` does not equal `off`. |
+| toggle and boolean | error | error | Boolean compatibility requires explicit conversion or a profile-defined comparison domain. |
+| encoding and encoding | allowed | allowed | Uses naïve payload order over preserved encoded payload characters; no decoding. |
+| separator and separator | allowed | allowed | Uses naïve separator order over whole canonical separator payloads; no splitting occurs unless a trusted profile supplies domain order. |
+| SANSA address and SANSA address | allowed | allowed | Uses canonical address-expression identity and naïve address-expression order; no resolution or selector equivalence. |
+| object and object | allowed | error | Structural member equality; object member order is not significant. |
+| list and list | allowed | error | Ordered structural equality by index; no portable default order. |
+| tuple and tuple | allowed | error | Ordered structural equality by position and arity; no portable default order. |
+| node and node | allowed | error | Structural equality by tag, attributes, and ordered child slots; no portable default order. |
+| list and tuple | error | error | Requires explicit coercion or a profile-defined compatibility domain. |
+| reference form and reference form | allowed | error | Reference-kind identity and canonical target-path identity; no implicit follow. |
+| followed reference value | as target value | as target value | Requires explicit `follow(...)` or consumer-declared followed-value mode. |
 | date and date | profile-defined | profile-defined | Requires an active temporal value-semantics profile. |
 | time and time | profile-defined | profile-defined | Requires an active temporal value-semantics profile. |
 | datetime and datetime | profile-defined | profile-defined | Requires an active temporal value-semantics profile. |
@@ -724,7 +738,7 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 - NaN and infinity are passed only to functions that declare special numeric handling;
 - unsupported scalar types produce a function-argument diagnostic.
 
-The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, `upper`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
+The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, `upper`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, reference form, or Binding Set arguments.
 
 String comparison, ordering, and case mapping are value-semantics concerns. Until the Shared AEON Value Semantics canonical string and case-mapping profiles are locked, the initial evaluator slice uses Unicode scalar-value ordering for string comparison and `order by`. Normative behavior must not depend on host locale, process locale, database collation, or host-language defaults. Case mapping for `lower(...)` and `upper(...)` remains tied to the shared value-semantics profile; implementations must document any provisional behavior.
 
@@ -733,6 +747,30 @@ Consumers may configure accepted value-semantics profiles. Documents cannot sele
 Value predicates such as `isValue(...)`, `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
 
 String concatenation must use an explicit function such as `concat`. The `+` operator is reserved for numeric addition.
+
+### Reference Following
+
+`follow(reference)` explicitly evaluates the target value of a legal AEON reference.
+
+Conceptual syntax:
+
+```text
+follow(<reference>)
+```
+
+Without `follow(...)`, a reference is evaluated as a reference form. Reference-form comparison uses the reference kind and canonical exact target path, and does not inspect the target value.
+
+With `follow(...)`, SANSA.Query walks the reference target path under the consumer's reference policy and then applies ordinary Shared AEON Value Semantics to the target value.
+
+For example:
+
+```text
+where follow(.priceRef) > 10
+```
+
+Following a reference must be bounded, non-mutating, and diagnostic-preserving. It does not rewrite, inline, clone, alias, or erase the reference form. A query diagnostic should identify both the source reference binding and the referenced target path when following fails.
+
+Pointer references may carry aliasing or mutation-authority semantics outside Query. SANSA.Query only consumes followed target values for read-only evaluation unless a future mutation-capable consumer explicitly declares broader behavior.
 
 ### Dynamic Address Activation
 
@@ -973,13 +1011,21 @@ Local-space selector names use quoted syntax. In this example, `$.<"params">.nam
 
 ### 24.2 Dynamic Address Parameters
 
-Dynamic address literals can parameterize source, predicate, ordering, and projection. The comparison is guarded with `isValue(...)` so explicit null, NaN, infinity, non-scalar, and missing values do not enter scalar comparison.
+Dynamic address literals can parameterize source, predicate, ordering, and projection. The comparison is guarded with `isValue(...)` so explicit null, NaN, and missing values do not enter scalar comparison. The selected binding must still be string-compatible or the comparison fails with a deterministic diagnostic.
 
 ```text
 from path($.<"params">.source)
 where isValue(path($.<"params">.statusField)) and path($.<"params">.statusField) == "active"
 order by path($.<"params">.sortField) asc
 select path($.<"params">.field)
+```
+
+When the address is static, semantic filters can be used as an additional domain guard:
+
+```text
+from $.inventory.items.*
+where isValue(.status) and exists(.status#string) and .status == "active"
+select .sku
 ```
 
 ### 24.3 Status Presence

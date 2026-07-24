@@ -28,11 +28,27 @@ The `$` and `?` prefixes are available for SANSA because encoding-family literal
 
 AEON parses and preserves the SANSA address literal. AEON Core does not resolve the address, traverse the target namespace, evaluate selectors, or assign semantic meaning to qualifiers.
 
+An AEON document may carry SANSA address literals for AEON-backed namespaces or for other SANSA-compatible domains. The address syntax does not by itself say that member selectors are AEON object keys.
+
 ## Boundary
 
 SANSA defines the address grammar. AEON Core accepts the embedded value when it is a syntactically valid SANSA address literal.
 
 AEON-internal consumers may define narrower interpretation surfaces when they resolve, validate, or act on an address. Those restrictions are consumer semantics, not Core parse restrictions.
+
+For example, an AEON-backed consumer may resolve this against AEON document structure:
+
+```aeon
+aeonPath:sansa = $.inventory.items[2].sku
+```
+
+Another consumer may treat the same SANSA grammar as an address language over an RDF-like semantic graph:
+
+```aeon
+rdfLike:sansa = $.["john"].isLocatedAt.["Brussels"]
+```
+
+Both are valid SANSA address literals when they satisfy the address grammar. Only the resolving consumer decides which namespace, profile, and authorization rules apply.
 
 ## Value Shape
 
@@ -48,6 +64,7 @@ indexed:sansa = $.matrix[2][2]
 attribute:sansa = $.message.@.id
 local:sansa = $.document.<"sections">.intro
 rich:sansa = $.items.*#text%stringLiteral.("item?*")
+rdfLike:sansa = $.["john"].isLocatedAt.["Brussels"]
 ```
 
 The `sansa` datatype annotation is the reserved AEON datatype for SANSA address literal values. Strict mode requires SANSA address literal values to carry `:sansa`. The literal prefix remains the syntactic indicator; transport-oriented profiles may preserve untyped SANSA literals only when that profile explicitly allows them.
