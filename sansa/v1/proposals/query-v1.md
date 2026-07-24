@@ -564,6 +564,9 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 | boolean and boolean | allowed | error | Booleans are not ordered. |
 | toggle and toggle | allowed | error | Toggle equality is exact token equality; `yes` does not equal `on`, and `no` does not equal `off`. |
 | toggle and boolean | error | error | Boolean compatibility requires explicit conversion or a profile-defined comparison domain. |
+| hex and hex | allowed | error | Uses canonical hex-payload identity; no numeric, byte, color, hash, or radix interpretation. |
+| radix and radix | allowed | error | Uses preserved radix payload and radix-family metadata identity; no numeric base conversion. |
+| hex and radix | error | error | Hex and radix are distinct value families even when payload characters overlap. |
 | encoding and encoding | allowed | allowed | Uses naïve payload order over preserved encoded payload characters; no decoding. |
 | separator and separator | allowed | allowed | Uses naïve separator order over whole canonical separator payloads; no splitting occurs unless a trusted profile supplies domain order. |
 | SANSA address and SANSA address | allowed | allowed | Uses canonical address-expression identity and naïve address-expression order; no resolution or selector equivalence. |
