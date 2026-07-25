@@ -276,6 +276,10 @@ The pre-order Binding Set entering the `order by` stage is the tie-preservation 
 
 Ordering semantics are supplied by active Shared AEON Value Semantics profiles. SANSA.Query owns candidate ordering, stable tie preservation, diagnostics, and Binding Set flow. It does not define string collation, temporal comparison, null ordering, or datatype conversion locally.
 
+The default value-semantics profile uses portable codepoint string ordering. Implementations must not silently apply natural sorting, locale collation, process locale, database collation, or host-language string defaults. For example, under the default profile `part-10` sorts before `part-2` because the comparison is over codepoints. Under an explicitly selected Natural ASCII profile such as `aeon.value.string.natural.ascii.v1`, ASCII digit runs may compare numerically so `part-2` sorts before `part-10`.
+
+Profile selection is consumer authority. A document being queried may contain values that participate in ordering, but it must not select a more permissive comparison or ordering profile for itself.
+
 An order key that evaluates to Missing, explicit null, NaN, a non-scalar value, or multiple bindings produces an evaluation diagnostic unless a future explicit missing-order policy is present. SANSA.Query v1 does not define null-first, null-last, missing-omit, or host-default ordering.
 
 ### 6.4 Offset
@@ -757,6 +761,8 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, `upper`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, reference form, or Binding Set arguments.
 
 String comparison, ordering, and case mapping are value-semantics concerns. Until the Shared AEON Value Semantics canonical string and case-mapping profiles are locked, the initial evaluator slice uses Unicode scalar-value ordering for string comparison and `order by`. Normative behavior must not depend on host locale, process locale, database collation, or host-language defaults. Case mapping for `lower(...)` and `upper(...)` remains tied to the shared value-semantics profile; implementations must document any provisional behavior.
+
+String profiles are not domain profiles for non-string lexical value families. Selecting a locale or Natural ASCII string profile must not cause `hex`, `radix`, `encoding`, `separator`, or `sansa` values to be interpreted as numbers, bytes, decoded text, segmented records, semantic versions, target identity, or selector equivalence. Those meanings require an explicit shared value-semantics contract, consumer profile, or resolver/profile authority for that value family.
 
 Consumers may configure accepted value-semantics profiles. Documents cannot select a more permissive comparison, ordering, conversion, or case-mapping profile without consumer authorization. Unsupported profile-dependent operations should be rejected rather than evaluated with host defaults.
 
