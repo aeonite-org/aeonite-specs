@@ -200,6 +200,12 @@ fingerprint, or equivalent precondition.
 Opaque binding handles are local execution artifacts. SANSA does not require
 them to be portable or serializable across implementations.
 
+Current mutation plans are inspectable execution artifacts, not portable
+serialized plan documents. A plan may retain live resolver bindings and
+adapter-local continuity artifacts such as `bindingHandle` and `observedState`.
+Serialized or cloned plans must not be assumed executable unless a future
+profile defines a portable serialization and rehydration contract.
+
 `sourceProvenance` is inert request-level metadata preserved for audit and
 diagnostics. Operation-level `provenance` is similarly inert metadata on the
 planned operation. Provenance must not be interpreted as SANSA source text,
