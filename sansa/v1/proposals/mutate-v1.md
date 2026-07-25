@@ -187,6 +187,8 @@ MutationOperation
   placement?
   name?
   value?
+  datatype?
+  kind?
   provenance?
 ```
 
@@ -209,6 +211,12 @@ exceed the portable v1 floor. For example, an implementation may accept a
 position index above the portable ceiling under an explicit local limit. If the
 target resolves exactly, the plan remains inspectable but should preserve the
 warning so consumers do not mistake the plan for portable SANSA v1 behavior.
+
+`datatype` and `kind` are optional value-intent hints on value-carrying
+operations. `datatype` preserves semantic type intent, while `kind` preserves
+representation or literal-family intent. SANSA.Mutate preserves these fields but
+does not decide whether the supplied value is legal for the hinted datatype or
+kind.
 
 The plan must be inspectable before authorization or apply. Producing it must not
 mutate the namespace.
@@ -237,6 +245,8 @@ op = create
 parent = <exact existing parent>
 name = <new exposed member name>
 value = <structured semantic value>
+datatype? = <semantic type hint>
+kind? = <representation or literal-family hint>
 ```
 
 The parent must resolve exactly once. The requested name must not already exist
@@ -258,6 +268,8 @@ Conceptual fields:
 op = replace
 target = <exact existing binding>
 value = <structured semantic value>
+datatype? = <semantic type hint>
+kind? = <representation or literal-family hint>
 ```
 
 Replacement does not implicitly rename, move, merge, patch, follow, clone, or
@@ -283,6 +295,17 @@ consumer or storage concerns.
 ### 7.4 Insert
 
 `insert` adds one new binding to an exact exposed ordered container.
+
+Conceptual fields:
+
+```text
+op = insert
+container = <exact ordered container>
+placement = <first | last | before anchor | after anchor>
+value = <structured semantic value>
+datatype? = <semantic type hint>
+kind? = <representation or literal-family hint>
+```
 
 Conceptual placements:
 
@@ -396,6 +419,12 @@ reinterpreted as SANSA source or executable mutation text.
 SANSA.Mutate does not decide whether a supplied value is legal under an AEON
 datatype, AEOS schema, application rule, or domain profile. The responsible
 consumer validates proposed values before apply.
+
+Optional `datatype` and `kind` hints are preserved as operation intent. They do
+not retype an existing binding by themselves, do not authorize the operation, and
+do not make a value schema-valid. A host adapter or validator may consume them to
+materialize host-specific literal forms, apply schema rules, or reject the
+operation.
 
 An exact target that carries a reference identifies the reference binding
 itself. Mutate does not implicitly follow the reference and modify its target.
@@ -539,11 +568,15 @@ resource limits. Limit exhaustion must fail explicitly and must not produce a
 partial executable plan.
 
 Budget diagnostics should name the phase, budget, limit, and observed count when
-available. The first implementation slice exposes `maxOperations` and
-`maxPreconditions` budgets for both planning and apply. Later implementations may
-add target-count, resolved-binding, predicate-work, supplied-value-size, or
-implementation-resource budgets without changing the all-or-nothing failure
-rule.
+available. The first implementation slice exposes `maxOperations`,
+`maxPreconditions`, `maxValueNodes`, `maxValueDepth`, and `maxStringLength`
+budgets for planning and apply. `maxValueNodes` counts all supplied value nodes
+for value-carrying operations, with arrays and objects counting as one node plus
+their entries. `maxValueDepth` limits the deepest supplied value tree, with
+scalar values at depth `1`. `maxStringLength` limits the longest supplied string
+payload. Later implementations may add target-count, resolved-binding,
+predicate-work, or implementation-resource budgets without changing the
+all-or-nothing failure rule.
 
 ## 15. Diagnostics
 
@@ -613,7 +646,9 @@ The first implementation slice should:
 6. report affected bindings and resulting canonical addresses;
 7. preserve inert provenance and portability warnings on inspectable plans;
 8. expose explicit operation, precondition, capability, stale-target, and apply
-   diagnostics.
+   diagnostics;
+9. preserve datatype/kind value intent and enforce operation, precondition, and
+   supplied-value budgets.
 
 Human-authored syntax, portable plan serialization, cross-process opaque target
 identity, broad bulk mutation syntax, Transform operations, and transaction
