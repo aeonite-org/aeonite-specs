@@ -156,11 +156,13 @@ Conceptual plan model:
 ```text
 MutationPlan
   planVersion
+  planId?
   namespaceState
   operations[]
   preconditions[]
   sourceProvenance?
   portabilityWarnings?
+  diagnostics[]
 ```
 
 Conceptual exact target reference:
@@ -171,6 +173,7 @@ MutationTarget
   canonicalAddress
   bindingHandle?
   observedState?
+  portabilityWarnings?
 ```
 
 Conceptual operation:
@@ -194,6 +197,18 @@ fingerprint, or equivalent precondition.
 
 Opaque binding handles are local execution artifacts. SANSA does not require
 them to be portable or serializable across implementations.
+
+`sourceProvenance` is inert request-level metadata preserved for audit and
+diagnostics. Operation-level `provenance` is similarly inert metadata on the
+planned operation. Provenance must not be interpreted as SANSA source text,
+authorization policy, validation policy, resolver configuration, or mutation
+profile.
+
+`portabilityWarnings` carries diagnostics for locally accepted SANSA inputs that
+exceed the portable v1 floor. For example, an implementation may accept a
+position index above the portable ceiling under an explicit local limit. If the
+target resolves exactly, the plan remains inspectable but should preserve the
+warning so consumers do not mistake the plan for portable SANSA v1 behavior.
 
 The plan must be inspectable before authorization or apply. Producing it must not
 mutate the namespace.
@@ -412,6 +427,14 @@ A read-only namespace may support Addressing, Resolve, and Query while rejecting
 Mutate entirely. A mutation adapter may support only a subset of core operation
 kinds and must reject unsupported operations explicitly.
 
+If an operation capability flag is omitted, an implementation may infer support
+from the corresponding adapter hook. If an operation capability flag is
+explicitly `false`, apply must reject that operation before invoking mutation
+hooks. `supportsStableBindingIdentity` advertises an adapter's ability to prove
+target continuity through opaque handles, observed state, address/state tokens,
+or an equivalent adapter contract. `supportsAtomicApply` is required only when a
+consumer selects atomic apply.
+
 Plan construction is all-or-nothing: a planning failure must not produce a
 partially executable plan. Apply atomicity is a consumer requirement and adapter
 capability, not an implicit transaction promise made by the plan itself. When a
@@ -433,14 +456,27 @@ MutationResult
 MutationOperationResult
   operationIndex
   status
+  targetAddress?
+  parentAddress?
+  containerAddress?
+  sourceAddress?
+  anchorAddress?
   previousAddress?
+  affectedAddress?
   resultingAddress?
   affectedBinding?
 ```
 
-Resulting canonical addresses matter because insert, remove, and move operations
-may change positional addresses even when semantic binding identities remain
-stable.
+Role addresses such as `targetAddress`, `parentAddress`, `containerAddress`,
+`sourceAddress`, and `anchorAddress` describe the planned mutation intent.
+`previousAddress` identifies the pre-apply address for operations that change or
+remove an existing binding. `affectedAddress` identifies the binding affected by
+the operation when known. `resultingAddress` identifies the post-apply binding
+address when such a binding exists or is reported by the adapter. A remove
+operation affects the removed binding but does not invent a resulting address.
+
+Resulting canonical addresses matter because insert and move operations may
+change positional addresses even when semantic binding identities remain stable.
 
 ## 13. Representation And ASP Boundary
 
@@ -502,18 +538,27 @@ resolved bindings, predicate work, supplied value size, and implementation
 resource limits. Limit exhaustion must fail explicitly and must not produce a
 partial executable plan.
 
+Budget diagnostics should name the phase, budget, limit, and observed count when
+available. The first implementation slice exposes `maxOperations` and
+`maxPreconditions` budgets for both planning and apply. Later implementations may
+add target-count, resolved-binding, predicate-work, supplied-value-size, or
+implementation-resource budgets without changing the all-or-nothing failure
+rule.
+
 ## 15. Diagnostics
 
 SANSA.Mutate planning diagnostics should distinguish:
 
 - invalid plan shape or unsupported mutation syntax;
 - unsupported operation or placement;
+- unsupported adapter operation or disabled operation capability;
 - target miss;
 - target multiplicity violation;
 - duplicate or conflicting target;
 - invalid move relationship;
 - precondition failure;
 - stale target or anchor;
+- non-portable but locally accepted target diagnostics;
 - implementation limit exhaustion.
 
 Consumer, ASP, or host-storage diagnostics should distinguish:
@@ -565,7 +610,10 @@ The first implementation slice should:
 3. add representation-neutral `insert` and same-container `move`;
 4. preserve target and anchor identity or reject stale plans;
 5. keep authorization and physical apply behind a consumer adapter;
-6. report affected bindings and resulting canonical addresses.
+6. report affected bindings and resulting canonical addresses;
+7. preserve inert provenance and portability warnings on inspectable plans;
+8. expose explicit operation, precondition, capability, stale-target, and apply
+   diagnostics.
 
 Human-authored syntax, portable plan serialization, cross-process opaque target
 identity, broad bulk mutation syntax, Transform operations, and transaction
