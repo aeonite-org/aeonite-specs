@@ -1,7 +1,7 @@
 ---
 id: sansa-v1-mutate
 title: SANSA.Mutate v1
-description: Proposal-stage future capability outline for deterministic semantic mutation intent.
+description: Proposal-stage boundary and conservative core model for deterministic semantic mutation intent.
 family: sansa
 group: SANSA
 status: Proposal
@@ -17,16 +17,16 @@ links:
 
 # SANSA.Mutate v1
 
-Status: Proposal outline  
-Scope: future authority-bearing mutation capability built on SANSA Addressing, Resolve, and read-only predicate evaluation.
+Status: Proposal
+Scope: authority-bearing mutation planning built on SANSA Addressing, Resolve, and restricted read-only predicate evaluation.
 
 ## 1. Overview
 
-SANSA.Mutate is a future capability for describing intentional semantic change.
+SANSA.Mutate describes intentional semantic change over a namespace.
 
 It is not part of SANSA.Query. Query remains read-only. Mutate may consume SANSA addresses, Binding Sets, and Query-like preconditions, but mutation crosses a stronger trust boundary than read-only resolution or evaluation.
 
-SANSA.Mutate should produce deterministic change intent or immutable mutation plans. It should not decide authorization, transaction semantics, storage layout, orchestration, migrations, retries, or conflict policy.
+SANSA.Mutate produces deterministic change intent as an immutable mutation plan. It does not decide authorization, transaction semantics, storage layout, orchestration, migrations, retries, or conflict policy.
 
 ## 2. Design Principles
 
@@ -84,65 +84,93 @@ path($.<"params">.target)
 
 ## 4. Conceptual Mutation Pipeline
 
-A mutation-capable consumer should distinguish these phases:
+A mutation-capable consumer distinguishes these phases:
 
 ```text
 1. Target
-   Resolve the intended bindings.
+   Resolve intended bindings against one namespace state.
 
 2. Preconditions
-   Evaluate read-only predicates.
+   Evaluate restricted read-only predicates against that state.
 
 3. Plan
-   Produce an immutable mutation plan.
+   Freeze exact targets and produce an immutable mutation plan.
 
 4. Authorize
    Consumer approves each proposed operation.
 
 5. Apply
-   Consumer applies the plan atomically where supported.
+   Consumer or adapter maps the plan to namespace changes.
 
 6. Report
-   Return affected bindings and diagnostics.
+   Return affected bindings, resulting addresses, and diagnostics.
 ```
 
-SANSA.Mutate owns Target, Preconditions, and Plan shape only to the extent required to produce deterministic change intent. Authorization, Apply, transactions, storage behavior, and orchestration remain consumer responsibilities.
+SANSA.Mutate owns the semantic contract for Target, Preconditions, Plan, and
+portable result reporting. Authorization, physical Apply behavior, transactions,
+storage behavior, and orchestration remain consumer responsibilities.
+
+Planning is side-effect free. An implementation must not partially apply changes
+while it is still resolving targets, evaluating preconditions, or constructing a
+plan.
 
 ## 5. Relationship To Query
 
-Query can select targets and evaluate preconditions:
+Query can select candidate targets and evaluate read-only conditions:
 
 ```text
-from $.users.alice
+from $.users.*
 where .version == 14
-select .handle
+select .
 ```
 
-A future mutation surface may reuse those read-only concepts, but must not add mutation clauses to SANSA.Query.
+Mutate may consume the resulting Binding Set, but mutation clauses do not become
+part of SANSA.Query. Query evaluates state; Mutate expresses requested state
+changes.
 
-The following style is intentionally out of scope for Query:
+When candidate targets originate from a selector or Query, the complete candidate
+set must be resolved against one namespace state before planning continues. The
+planner then expands the candidate set into exact mutation operations. Apply must
+not rerun the original selector or Query.
+
+This snapshot rule prevents a mutation from changing its own target set while it
+is being applied.
+
+## 6. Structured Plan First
+
+The interoperable center of SANSA.Mutate is a structured plan model, not a
+human-authored mutation language.
+
+A readable syntax may be standardized later. Examples such as:
 
 ```text
-from $.users.alice
-where .version == 14
-set .handle = "alice"
+insert "X" before $.items[2]
+move $.items[4] after $.items[1]
 ```
 
-The design direction is that Query evaluates state, while Mutate expresses requested state changes.
+are explanatory notation only in this proposal. They do not define a parser
+surface.
 
-## 6. Mutation Plan Model
-
-A mutation plan is an immutable description of intended changes after target resolution and precondition evaluation.
-
-Conceptual model:
+Conceptual plan model:
 
 ```text
 MutationPlan
+  planVersion
+  namespaceState
   operations[]
   preconditions[]
-  targetProvenance?
-  diagnostics?
+  sourceProvenance?
   portabilityWarnings?
+```
+
+Conceptual exact target reference:
+
+```text
+MutationTarget
+  requestedAddress
+  canonicalAddress
+  bindingHandle?
+  observedState?
 ```
 
 Conceptual operation:
@@ -150,83 +178,309 @@ Conceptual operation:
 ```text
 MutationOperation
   op
-  target
+  target?
+  parent?
+  source?
+  placement?
+  name?
   value?
-  expected?
   provenance?
 ```
 
-The plan should be inspectable before authorization or apply. Producing a plan must not mutate the namespace.
+`requestedAddress` preserves what the caller supplied. `canonicalAddress`
+identifies the resolved binding at planning time. `bindingHandle` is an optional
+opaque adapter identity. `observedState` is an adapter-defined revision, version,
+fingerprint, or equivalent precondition.
 
-## 7. Initial Operation Vocabulary
+Opaque binding handles are local execution artifacts. SANSA does not require
+them to be portable or serializable across implementations.
 
-The first mutation operation vocabulary should be conservative:
+The plan must be inspectable before authorization or apply. Producing it must not
+mutate the namespace.
 
-- replace binding value;
-- create binding;
-- delete binding.
+## 7. Conservative Core Operations
 
-More complex operations should remain out of the initial surface until identity, ordering, concurrency, and conflict semantics are clearer:
+The conservative operation vocabulary is:
 
-- move;
-- copy;
-- ordered insertion;
-- ordered reindexing;
-- merge;
-- patch;
-- structural migration.
+- `create`
+- `replace`
+- `remove`
+- `insert`
+- `move`
 
-These may become extensions or later promoted operations.
+These operations express semantic intent. They do not expose physical storage
+operations.
 
-## 8. ASP Boundary
+### 7.1 Create
 
-ASP may use SANSA.Mutate as the semantic change-intent layer.
+`create` adds one named binding to an exact existing parent binding.
 
-Likely ASP relationship:
+Conceptual fields:
 
 ```text
-Request
-  |
-  v
-SANSA.Query
-  determine targets and evaluate preconditions
-  |
-  v
-Authorization
-  determine whether the requested operation is permitted
-  |
-  v
-SANSA.Mutate
-  produce deterministic change intent
-  |
-  v
-ASP Orchestrator
-  expand rules, migrations, mirrored writes, and invariants
-  |
-  v
-Storage Transaction
-  commit atomically
-  |
-  v
-History / Subscription
+op = create
+parent = <exact existing parent>
+name = <new exposed member name>
+value = <structured semantic value>
 ```
 
-ASP remains responsible for:
+The parent must resolve exactly once. The requested name must not already exist
+in that parent under the adapter's exposed member-name rules. `create` is not
+upsert and must not silently replace an existing binding.
 
-- authorization;
-- orchestration;
-- migrations;
-- transactions;
-- retries;
-- storage-specific conflict handling;
-- versioning;
-- audit behavior.
+A missing destination address is not itself a resolved mutation target. Creation
+therefore targets the existing parent and carries the requested child name
+separately.
 
-SANSA.Mutate should not decide whether a requested change is permitted, how many storage records are touched, whether derived writes are required, or how rollback is implemented.
+### 7.2 Replace
 
-## 9. Authority And Safety
+`replace` changes the semantic value of one exact existing binding while
+preserving that binding's identity and structural location.
 
-Mutation authority must be separate from read authority.
+Conceptual fields:
+
+```text
+op = replace
+target = <exact existing binding>
+value = <structured semantic value>
+```
+
+Replacement does not implicitly rename, move, merge, patch, follow, clone, or
+retype a binding. Attributes that are independently exposed as bindings may be
+targeted through their own exact SANSA addresses.
+
+### 7.3 Remove
+
+`remove` removes one exact existing binding from its containing semantic
+structure.
+
+Conceptual fields:
+
+```text
+op = remove
+target = <exact existing binding>
+```
+
+Removing the namespace root is outside the conservative core. Cascading,
+referential cleanup, tombstones, history retention, and physical deletion are
+consumer or storage concerns.
+
+### 7.4 Insert
+
+`insert` adds one new binding to an exact exposed ordered container.
+
+Conceptual placements:
+
+```text
+first  in <container>
+last   in <container>
+before <anchor>
+after  <anchor>
+```
+
+For `before` and `after`, the anchor must be an exact existing positional child
+of the target container. `first` and `last` also support insertion into an empty
+container.
+
+The operation preserves relative-order intent. SANSA does not prescribe whether
+the adapter implements that intent using an array, linked list, rank key, tree,
+cursor, event projection, or another representation.
+
+### 7.5 Move
+
+`move` relocates one exact existing positional binding within the same exposed
+ordered container.
+
+Its placement uses the same `first`, `last`, `before`, and `after` forms as
+`insert`. The source binding retains semantic identity; `move` is not remove plus
+create and is not copy.
+
+Moving relative to the same source binding is invalid. Cross-container movement
+is outside the conservative core because identity, ownership, validation, and
+referential behavior may change across container boundaries.
+
+## 8. Exact Targets And Cardinality
+
+Every executable operation in a plan uses exact resolved bindings.
+
+A plan may retain a selector or Query as source provenance for explanation,
+auditing, diagnostics, and explicit replanning. Apply must not depend on
+unresolved selector expansion.
+
+The conservative cardinality rules are:
+
+- `create` requires exactly one parent;
+- `replace` and `remove` each require exactly one target per operation;
+- `insert` requires exactly one container and, when used, exactly one anchor;
+- `move` requires exactly one source, one container, and, when used, one anchor.
+
+A caller may explicitly request bulk `replace` or bulk `remove`. The planner must
+freeze the complete Binding Set and emit one exact operation per binding in
+deterministic Binding Set order.
+
+Bulk behavior is not inferred merely because a selector happens to return
+multiple bindings. A request that expects one binding and receives more than one
+fails with a target multiplicity diagnostic.
+
+Because SANSA.Resolve does not implicitly deduplicate Binding Sets, a planner
+must detect when the same binding would receive conflicting or repeated
+destructive operations in one plan. The conservative core rejects such a plan
+unless a later composition contract defines the interaction explicitly.
+
+## 9. Target Stability And Index Drift
+
+A canonical positional address alone is not sufficient to preserve a target
+between planning and apply.
+
+For example:
+
+```text
+$.items[2]
+```
+
+may identify a different binding after another operation inserts at position
+zero.
+
+An executable adapter must therefore preserve each resolved target by at least
+one reliable mechanism, such as:
+
+- an opaque stable binding handle plus an observed namespace revision;
+- an exact address plus an expected state token that detects structural drift;
+- another adapter contract that proves the target still denotes the same
+  binding.
+
+If the adapter cannot prove target continuity, it must reject the plan as stale.
+It must not apply the operation to whichever binding now occupies the old
+position.
+
+The same rule applies to ordered anchors. Relative-order intent is evaluated
+against the resolved source and anchor identities, not against unprotected
+numeric indexes retained from planning.
+
+## 10. Preconditions And Value Semantics
+
+Preconditions should reuse a restricted read-only SANSA.Query predicate surface
+where possible.
+
+All target resolution and precondition evaluation for one plan occur against the
+same logical namespace state. A failed precondition produces no executable plan.
+
+Comparison, ordering, temporal interpretation, case behavior, and other value
+operations use the consumer-selected Shared AEON Value Semantics profile. The
+document being mutated must not select a more permissive comparison, validation,
+authorization, or mutation profile for itself.
+
+Preconditions describe expected state. They do not authorize the requested
+change and do not replace stale-target checks.
+
+## 11. Values, Validation, And References
+
+Mutation values are structured semantic values. Runtime strings must not be
+reinterpreted as SANSA source or executable mutation text.
+
+SANSA.Mutate does not decide whether a supplied value is legal under an AEON
+datatype, AEOS schema, application rule, or domain profile. The responsible
+consumer validates proposed values before apply.
+
+An exact target that carries a reference identifies the reference binding
+itself. Mutate does not implicitly follow the reference and modify its target.
+Any future followed-target operation must be explicit, authorized separately,
+and preserve the distinction between inspecting a referenced value and changing
+reference identity or target state.
+
+Copy, clone, rebind, reference redirection, recursive merge, structural patch,
+and implicit coercion are outside the conservative core.
+
+## 12. Apply And Result Contract
+
+SANSA.Mutate defines the plan's semantic intent but does not define a storage
+transaction engine.
+
+An adapter should advertise capabilities such as:
+
+```text
+supportsCreate
+supportsReplace
+supportsRemove
+supportsOrderedInsert
+supportsMove
+supportsStableBindingIdentity
+supportsAtomicApply
+```
+
+A read-only namespace may support Addressing, Resolve, and Query while rejecting
+Mutate entirely. A mutation adapter may support only a subset of core operation
+kinds and must reject unsupported operations explicitly.
+
+Plan construction is all-or-nothing: a planning failure must not produce a
+partially executable plan. Apply atomicity is a consumer requirement and adapter
+capability, not an implicit transaction promise made by the plan itself. When a
+consumer requires atomic apply and the adapter does not advertise it, the
+consumer must reject the operation before apply. A consumer-selected non-atomic
+execution mode is implementation-specific. Partial success in such a mode must
+never be reported as full plan success.
+
+Conceptual result model:
+
+```text
+MutationResult
+  planId?
+  stateBefore?
+  stateAfter?
+  operationResults[]
+  diagnostics[]
+
+MutationOperationResult
+  operationIndex
+  status
+  previousAddress?
+  resultingAddress?
+  affectedBinding?
+```
+
+Resulting canonical addresses matter because insert, remove, and move operations
+may change positional addresses even when semantic binding identities remain
+stable.
+
+## 13. Representation And ASP Boundary
+
+SANSA.Mutate defines observable semantic intent, not substrate mechanics.
+
+| Concern | Owner |
+| --- | --- |
+| Meaning of create, replace, remove, insert, and move | SANSA.Mutate |
+| Address and selector structure | SANSA.Addressing |
+| Target resolution and Binding Set order | SANSA.Resolve |
+| Read-only predicates and candidate selection | SANSA.Query |
+| Stable internal binding identity | namespace adapter or ASP |
+| Array, link, rank, tree, cursor, event, or CRDT representation | namespace adapter or storage |
+| Value and schema legality | consumer, AEOS, or domain validator |
+| Authorization | consumer or ASP |
+| Atomic commit, rollback, and retries | ASP or storage transaction |
+| Events, audit, and history retention | AES, ASP, or persistence layer |
+
+ASP may consume a SANSA mutation plan and translate it into stable identities,
+ordering changes, derived writes, and storage operations:
+
+```text
+SANSA.Mutate
+  semantic operation
+        |
+        v
+ASP mutation adapter
+  stable identities and ordering model
+        |
+        v
+storage transaction
+```
+
+SANSA does not decide how many records are touched, whether rank keys are
+rebalanced, whether links are rewritten, whether derived writes are required, or
+how rollback is implemented.
+
+## 14. Authority And Safety
+
+Mutation authority is separate from read authority.
 
 A consumer may support:
 
@@ -237,67 +491,82 @@ SANSA.Query       yes
 SANSA.Mutate      no
 ```
 
-or may allow mutation only for specific address spaces, operation kinds, or authenticated principals.
+or may allow mutation only for specific namespaces, address spaces, operation
+kinds, principals, or budgets.
 
-Mutation diagnostics should distinguish:
+Authorization occurs after a plan is inspectable and before apply. Consumers may
+also reject requests earlier to avoid disclosing protected namespace structure.
 
-- invalid mutation syntax;
-- unsupported operation;
+Planning and apply should expose budgets for target count, operation count,
+resolved bindings, predicate work, supplied value size, and implementation
+resource limits. Limit exhaustion must fail explicitly and must not produce a
+partial executable plan.
+
+## 15. Diagnostics
+
+SANSA.Mutate planning diagnostics should distinguish:
+
+- invalid plan shape or unsupported mutation syntax;
+- unsupported operation or placement;
 - target miss;
 - target multiplicity violation;
+- duplicate or conflicting target;
+- invalid move relationship;
 - precondition failure;
-- authorization denial;
-- apply failure;
-- storage conflict;
+- stale target or anchor;
 - implementation limit exhaustion.
 
-## 10. Provisional Design Direction
-
-The following direction is provisional. It frames future `SANSA.Mutate`, ASP,
-and host-storage design work without making mutation part of SANSA v1
-Addressing, Resolve, Query, or Transform conformance.
-
-Initial `SANSA.Mutate` work should prioritize a structured mutation-plan model
-over a human-authored mutation language. A readable mutation syntax may be added
-later if independent implementers need one, but the interoperable contract should
-first be the plan shape, operation vocabulary, target model, precondition model,
-and diagnostics.
-
-Preconditions should reuse a restricted read-only `SANSA.Query` predicate surface
-where possible. Consumer-owned rule objects may wrap or reference those
-predicates, but they must not allow a document being mutated to authorize its own
-validation, mutation, or execution policy.
-
-The first experimental operation vocabulary should remain:
-
-- replace binding value;
-- create binding;
-- delete binding.
-
-An executable mutation operation should target exact resolved bindings. A plan
-may retain selector provenance for explanation, auditing, diagnostics, and
-replanning, but Apply must not depend on unresolved selector expansion.
-
-SANSA.Mutate diagnostics should cover planning-time language and semantic
-failures:
-
-- invalid mutation syntax or plan shape;
-- unsupported operation;
-- target miss;
-- target multiplicity violation;
-- precondition failure;
-- implementation limit exhaustion.
-
-Consumer, ASP, or host-storage diagnostics should cover execution authority and
-storage behavior:
+Consumer, ASP, or host-storage diagnostics should distinguish:
 
 - authorization denial;
+- value or schema validation failure;
+- unsupported adapter capability;
 - apply failure;
 - storage conflict;
+- atomicity unavailable;
 - transaction failure;
 - migration or orchestration failure;
 - audit or subscription delivery failure.
 
-Atomic multi-operation apply should remain a consumer or ASP execution contract
-until independent implementations need a separate `SANSA.Transaction`
-capability.
+## 16. Deliberately Deferred Growth Path
+
+The following capabilities may be useful, but they are not folded into Mutate
+Core:
+
+| Future surface | Likely owner |
+| --- | --- |
+| `copy`, cross-container move, rename, upsert, increment, clear, and append/prepend convenience spellings | later Mutate extensions |
+| map, filter, sort, deduplicate, merge, patch, and structural reshaping | `SANSA.Transform` |
+| atomic groups, cross-binding invariants, expected revisions, and commit semantics | possible `SANSA.Transaction` |
+| migrations, business rules, mirrored writes, retries, and conflict workflows | ASP orchestrator |
+| authorization policy and principal evaluation | consumer or ASP |
+| storage representation and physical change operations | adapter or storage engine |
+
+An integrated human-authored Query-and-mutation syntax, correlated writes,
+conditional branches, compositional dynamic target construction, arithmetic
+updates, and transaction syntax are also deferred. They require independent
+contracts for snapshotting, cost, authority, operation ordering, failure
+propagation, and atomicity. This does not prevent a planner from consuming an
+already resolved Binding Set under the bulk `replace` and `remove` rules above.
+
+This boundary leaves a clear growth path without turning Mutate Core into Query,
+Transform, Transaction, authorization, and orchestration at once.
+
+## 17. Proposal Status
+
+This proposal defines the intended conservative boundary for implementation
+experiments. It does not make SANSA.Mutate part of required SANSA v1 Addressing,
+Resolve, Query, or Transform conformance.
+
+The first implementation slice should:
+
+1. expose a structured mutation-plan API;
+2. implement exact-target planning for `create`, `replace`, and `remove`;
+3. add representation-neutral `insert` and same-container `move`;
+4. preserve target and anchor identity or reject stale plans;
+5. keep authorization and physical apply behind a consumer adapter;
+6. report affected bindings and resulting canonical addresses.
+
+Human-authored syntax, portable plan serialization, cross-process opaque target
+identity, broad bulk mutation syntax, Transform operations, and transaction
+composition remain later design work.

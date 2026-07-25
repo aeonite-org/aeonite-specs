@@ -28,7 +28,7 @@ The foundation layer has moved to `../drafts/`:
 - `conformance-v1.md` defines capability names, conformance profiles, and extension advertisement.
 - `extensions-v1.md` records candidate selector and query-helper extensions before they enter the core v1 conformance surface.
 - `meaning-validation-integration-v1.md` defines the AEON, AEOS, SANSA, and meaning-validation responsibility boundaries.
-- `mutate-v1.md` outlines the future authority-bearing mutation capability and ASP boundary.
+- `mutate-v1.md` defines the conservative authority-bearing mutation-plan boundary and its growth path.
 
 ## Conceptual Stack
 
@@ -41,16 +41,14 @@ SANSA.Resolve
   v
 Binding Set
   |
-  v
-SANSA.Query
+  +--> SANSA.Query  --> Result Set
   |
-  v
-Result Set
+  +--> SANSA.Mutate --> Mutation Plan --> Consumer Apply
 ```
 
-SANSA.Resolve discovers semantic structure. SANSA.Query evaluates and transforms semantic bindings while consuming Shared AEON Value Semantics for comparison, ordering, and related value behavior.
+SANSA.Resolve discovers semantic structure. SANSA.Query evaluates semantic bindings without changing namespace state. SANSA.Mutate freezes exact targets and expresses change intent without owning authorization, transactions, orchestration, or physical storage behavior.
 
-Shared value behavior should be settled before expanding SANSA.Mutate. Query can fail closed when a comparison profile is missing; mutation needs the same contracts to decide whether an AEON-shaped write value is compatible with the target semantic datatype.
+SANSA.Mutate reuses consumer-selected Shared AEON Value Semantics for preconditions. Value legality remains the responsibility of the consumer, AEOS schema, or domain validator; a document being mutated cannot select its own mutation, validation, or authorization policy.
 
 ## Capability Families
 
@@ -76,7 +74,7 @@ SANSA separates semantic interaction from representation, validation, persistenc
 - AEON defines how meaning is represented.
 - AEOS defines how meaning is constrained.
 - AES defines how meaning is persisted.
-- SANSA defines how meaning is accessed.
+- SANSA defines how meaning is accessed and, through future Mutate capability, how change intent is expressed.
 - Meaning validators define how domain rules are interpreted and reported.
 - Future mutation consumers define how accepted change intent is authorized, orchestrated, and applied.
 
