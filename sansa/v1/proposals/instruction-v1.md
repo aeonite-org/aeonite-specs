@@ -23,7 +23,9 @@ Resolve, Query, and Mutate vocabulary into one declared change intent.
 
 ## 1. Overview
 
-A SANSA Instruction is a composition layer.
+SANSA Instruction does not define new addressing, query, or mutation semantics.
+It is a human authoring surface that composes existing SANSA vocabularies into
+one declared change intent.
 
 It is not a replacement for SANSA.Addressing, SANSA.Query, or SANSA.Mutate.
 Instead, it combines their vocabularies:
@@ -34,9 +36,16 @@ Instead, it combines their vocabularies:
 - Mutate describes requested changes.
 - Instruction packages those pieces into a human-authored source form.
 
+SANSA.Query describes which bindings are selected. SANSA.Mutate describes how
+exact bindings change. SANSA.Instruction combines both into a single
+human-authored declaration while preserving the existing execution boundary.
+
 The conservative SANSA.Mutate structured-plan API remains the execution
 boundary. An Instruction is parsed, resolved, checked, and lowered into exact
 mutation operations before authorization and apply.
+
+An Instruction is a single declared change intent, not an arbitrary sequence of
+commands.
 
 ## 2. Design Principles
 
@@ -84,7 +93,25 @@ The final mutation plan must contain exact targets. Expanded selectors and
 candidate-relative paths are instruction/query conveniences before planning;
 they are not stored as executable mutation targets.
 
-## 4. Value Syntax
+## 4. Instruction Values
+
+An Instruction value has three conceptual parts:
+
+```text
+InstructionValue
+  datatypeIntent?        optional semantic datatype hint
+  representationFamily   literal family or representation kind
+  literalPayload          parsed value payload
+```
+
+For example:
+
+```sansa
+replace .qty with :int32, 10
+```
+
+contains datatype intent `int32`, number-literal representation, and numeric
+payload `10`.
 
 Instruction value syntax is type-first:
 
@@ -137,10 +164,10 @@ datatype outside the address expression:
 replace .selector with :sansa, $.name:string
 ```
 
-## 5. Literal-Derived Kind
+## 5. Representation Family
 
 When no datatype annotation is present, the value literal may still carry an
-obvious representation kind:
+obvious representation family:
 
 ```sansa
 create status with "active"
@@ -151,7 +178,7 @@ create state with yes
 create selector with $.inventory.items.*
 ```
 
-These lower to mutation operations with a representation kind inferred from the
+These lower to mutation operations with representation intent inferred from the
 literal family. For example:
 
 ```sansa
@@ -181,7 +208,27 @@ create total with :int32, 344
 These preserve semantic type intent while still allowing the literal family to
 provide representation intent.
 
-## 6. Core Mutation Verbs
+## 6. Instruction Identity
+
+An Instruction contains a single mutation intent. The source may use Query-shaped
+clauses to select candidates, but the mutation section describes one verb
+applied over those candidates.
+
+```sansa
+from $.inventory.items.*
+where .qty == 0
+replace .qty with 10
+```
+
+This is one Instruction with one `replace` intent. It may lower to multiple
+structured `replace` operations if multiple candidate bindings survive the
+selection clauses.
+
+Future documents may define an instruction batch or script format, but that is a
+different layer. A batch would contain multiple Instructions; it would not make
+one Instruction into a general command sequence.
+
+## 7. Core Mutation Verbs
 
 Initial instruction verbs should map directly to the conservative
 SANSA.Mutate operation vocabulary:
@@ -204,7 +251,11 @@ existing structured operation model:
 - `insert`
 - `move`
 
-## 7. Deferred Verbs
+Internally, each accepted verb can be modeled as a normalized verb plus target
+and argument fields before lowering into a structured Mutate operation. This
+normal form is an implementation aid, not a user-visible syntax requirement.
+
+## 8. Deferred Verbs
 
 The following verbs are useful vocabulary candidates but are outside the
 conservative instruction surface until separately specified:
@@ -225,7 +276,7 @@ Each deferred verb needs its own target shape, identity semantics, cardinality
 rules, authorization boundary, and apply/result contract before it can enter
 the instruction vocabulary.
 
-## 8. Lowering Boundary
+## 9. Lowering Boundary
 
 Instruction parsing produces instruction intent, not an executable plan.
 
@@ -246,3 +297,16 @@ This preserves the existing boundary:
 - authorization, validation, transactions, retries, and storage mapping remain
   consumer or adapter responsibilities.
 
+Tooling may expose each lowering step for preview and audit:
+
+```text
+Instruction Source
+  -> Parsed Instruction
+  -> Candidate Binding Set
+  -> Structured Mutation Operations
+  -> Mutation Plan
+  -> Preview / Authorize / Apply
+```
+
+This makes Instruction useful for editors and workbenches without turning it
+into a runtime execution language.
