@@ -661,3 +661,56 @@ Diagnostics should preserve enough context for authoring tools to identify:
 - lowered operation index when the failure occurs after operations are emitted;
 - original downstream diagnostic when the failure comes from Resolve, Query, or
   Mutate.
+
+## 13. Parser And Lowering Fixture Seeds
+
+The following examples are intended as seed material for future parser and
+lowering fixtures. They are not a complete CTS surface.
+
+### 13.1 Positive Parse And Lowering Seeds
+
+| Source | Expected lowering shape |
+| --- | --- |
+| `create $.inventory.status with "active"` | one `create` operation, parent `$.inventory`, name `status`, kind `string` |
+| `create $.inventory.total with :int32, 344` | one `create` operation, parent `$.inventory`, name `total`, datatype `int32`, kind `number` |
+| `replace $.inventory.color with #fff` | one `replace` operation, target `$.inventory.color`, kind `hex` |
+| `replace $.inventory.selector with :sansa, $.inventory.items.*:number` | one `replace` operation, datatype `sansa`, kind `sansa` |
+| `remove $.inventory.oldStatus` | one `remove` operation, target `$.inventory.oldStatus` |
+| `insert last in $.tags with "sale"` | one `insert` operation, container `$.tags`, placement `last`, kind `string` |
+| `insert before $.tags[2] in $.tags with :string, "featured"` | one `insert` operation, container `$.tags`, placement `before`, anchor `$.tags[2]`, datatype `string` |
+| `move $.tags[0] after $.tags[2] in $.tags` | one `move` operation, source `$.tags[0]`, container `$.tags`, placement `after`, anchor `$.tags[2]` |
+
+Candidate-relative seeds:
+
+| Source | Expected lowering shape |
+| --- | --- |
+| `from $.inventory\ncreate status with "active"` | one `create` operation per candidate, parent from candidate, name `status` |
+| `from $.inventory.items.*\nwhere .qty == 0\nreplace .qty with :int32, 10` | one `replace` operation per surviving candidate, target `.qty` resolved relative to candidate |
+| `from $.inventory.items.*\nwhere .discontinued == true\nremove .status` | one `remove` operation per surviving candidate, target `.status` resolved relative to candidate |
+| `from $.inventory.items.*\ninsert last in .tags with "sale"` | one `insert` operation per candidate, container `.tags` resolved relative to candidate |
+
+### 13.2 Negative Parse Seeds
+
+| Source | Expected failure class |
+| --- | --- |
+| `from $.inventory.items.*` | missing mutation verb |
+| `rename $.inventory.sku to code` | unsupported or deferred verb syntax |
+| `create $.inventory.status, "active"` | malformed `create` clause; expected `with` |
+| `create $.inventory.status with :int32,, 344` | malformed instruction value |
+| `create $.inventory.status with :int32 344,` | comma delimiter used outside `:datatype, value` |
+| `from $.items.*\norder by .sku\nreplace .qty with 1` | unsupported query clause in instruction source |
+| `replace .qty with 10\nremove .oldQty` | multiple mutation verbs in one Instruction |
+| `insert "sale" after $.tags[1]` | ambiguous ordered insertion without explicit container |
+
+### 13.3 Negative Lowering Seeds
+
+| Source | Expected failure class |
+| --- | --- |
+| `create $.tags[2] with "sale"` | destination-address `create` ends in a position selector |
+| `create $ with "active"` | destination-address `create` cannot split root into parent and member name |
+| `replace $.inventory.missing with "active"` | `replace` target resolved no bindings |
+| `remove $` | root removal attempt |
+| `insert last in $.inventory.sku with "sale"` | `insert` container is not ordered |
+| `insert before $.otherTags[0] in $.tags with "sale"` | ordered anchor is not a child of the named container |
+| `move $.todo[0] last in $.done` | cross-container move attempt |
+| `move $.tags[0] before $.tags[0] in $.tags` | invalid move relationship; source and anchor are the same binding |
