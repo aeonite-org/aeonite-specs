@@ -11,6 +11,7 @@ links:
   - sansa-v1-addressing
   - sansa-v1-resolve
   - sansa-v1-query
+  - sansa-v1-instruction
   - sansa-v1-conformance
   - sansa-v1-meaning-validation-integration
 ---
@@ -27,6 +28,10 @@ SANSA.Mutate describes intentional semantic change over a namespace.
 It is not part of SANSA.Query. Query remains read-only. Mutate may consume SANSA addresses, Binding Sets, and Query-like preconditions, but mutation crosses a stronger trust boundary than read-only resolution or evaluation.
 
 SANSA.Mutate produces deterministic change intent as an immutable mutation plan. It does not decide authorization, transaction semantics, storage layout, orchestration, migrations, retries, or conflict policy.
+
+Human-authored SANSA Instruction syntax, if adopted, sits above this layer. An
+instruction may combine Query-style selection with mutation verbs, but it must
+lower into exact structured Mutate operations before authorization and apply.
 
 ## 2. Design Principles
 

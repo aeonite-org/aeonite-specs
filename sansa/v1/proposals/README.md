@@ -1,7 +1,7 @@
 ---
 id: sansa-v1-proposals
 title: SANSA v1 Proposals
-description: Proposal-stage specification set for SANSA query, conformance, integration, extension, and future mutation semantics.
+description: Proposal-stage specification set for SANSA query, conformance, integration, extension, instruction, and future mutation semantics.
 family: sansa
 group: SANSA
 status: Proposal
@@ -29,6 +29,7 @@ The foundation layer has moved to `../drafts/`:
 - `extensions-v1.md` records candidate selector and query-helper extensions before they enter the core v1 conformance surface.
 - `meaning-validation-integration-v1.md` defines the AEON, AEOS, SANSA, and meaning-validation responsibility boundaries.
 - `mutate-v1.md` defines the conservative authority-bearing mutation-plan boundary and its growth path.
+- `instruction-v1.md` defines a proposed human-authored source surface that combines Addressing, Query, and Mutate vocabulary.
 
 ## Conceptual Stack
 
@@ -48,6 +49,10 @@ Binding Set
 
 SANSA.Resolve discovers semantic structure. SANSA.Query evaluates semantic bindings without changing namespace state. SANSA.Mutate freezes exact targets and expresses change intent without owning authorization, transactions, orchestration, or physical storage behavior.
 
+SANSA.Instruction is a proposed source-level composition layer. It is intended
+to lower into structured Query and Mutate behavior rather than replace those
+capabilities.
+
 SANSA.Mutate reuses consumer-selected Shared AEON Value Semantics for preconditions. Value legality remains the responsibility of the consumer, AEOS schema, or domain validator; a document being mutated cannot select its own mutation, validation, or authorization policy.
 
 ## Capability Families
@@ -63,6 +68,7 @@ Implementations should advertise supported capabilities rather than claim unqual
 Future specifications may cover:
 
 - `SANSA.Mutate`
+- `SANSA.Instruction`
 - `SANSA.Subscribe`
 - `SANSA.History`
 - self-description and capability discovery
