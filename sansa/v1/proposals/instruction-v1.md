@@ -546,3 +546,49 @@ Instruction Source
 
 This makes Instruction useful for editors and workbenches without turning it
 into a runtime execution language.
+
+## 11. Diagnostics
+
+SANSA Instruction diagnostics should distinguish parse-time failures,
+lowering-time failures, and downstream Mutate planning failures.
+
+Instruction parse diagnostics include:
+
+- unknown mutation verb;
+- malformed instruction value;
+- malformed datatype annotation;
+- comma delimiter used outside `:datatype, value`;
+- multiple mutation verbs in one Instruction;
+- unsupported or deferred verb syntax;
+- ambiguous ordered insertion without an explicit container.
+
+Instruction lowering diagnostics include:
+
+- candidate selector produced a Resolve diagnostic;
+- candidate selector produced no candidates where the consumer requires at
+  least one;
+- candidate-relative target failed to resolve;
+- target resolved no bindings;
+- target resolved multiple bindings where the verb requires one exact binding;
+- destination-address `create` could not split into parent and member name;
+- `create` destination already exists;
+- `replace` or `remove` target is missing;
+- `insert` or `move` container is not ordered;
+- ordered anchor is not a child of the named container;
+- `move` source is not a child of the named container;
+- cross-container move attempt;
+- root removal attempt.
+
+Downstream Mutate planning diagnostics keep their SANSA.Mutate identity. An
+Instruction consumer should not collapse Mutate diagnostics into generic
+Instruction failures, because the lowered plan boundary is useful for tooling,
+auditing, and user repair.
+
+Diagnostics should preserve enough context for authoring tools to identify:
+
+- instruction phase: parse, lower, plan, authorize, or apply;
+- source span or clause when available;
+- candidate address when the failure occurs inside candidate-relative lowering;
+- lowered operation index when the failure occurs after operations are emitted;
+- original downstream diagnostic when the failure comes from Resolve, Query, or
+  Mutate.
