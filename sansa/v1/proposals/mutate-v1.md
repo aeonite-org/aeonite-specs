@@ -101,19 +101,25 @@ A mutation-capable consumer distinguishes these phases:
 3. Plan
    Freeze exact targets and produce an immutable mutation plan.
 
-4. Authorize
+4. Target Surface
+   Validate that the planned operations can be represented by the intended
+   host format or adapter surface.
+
+5. Authorize
    Consumer approves each proposed operation.
 
-5. Apply
+6. Apply
    Consumer or adapter maps the plan to namespace changes.
 
-6. Report
+7. Report
    Return affected bindings, resulting addresses, and diagnostics.
 ```
 
 SANSA.Mutate owns the semantic contract for Target, Preconditions, Plan, and
-portable result reporting. Authorization, physical Apply behavior, transactions,
-storage behavior, and orchestration remain consumer responsibilities.
+portable result reporting. Target-surface validation is a host-format or adapter
+boundary layered after planning. Authorization, physical Apply behavior,
+transactions, storage behavior, and orchestration remain consumer
+responsibilities.
 
 Planning is side-effect free. An implementation must not partially apply changes
 while it is still resolving targets, evaluating preconditions, or constructing a
@@ -228,6 +234,14 @@ operations. `datatype` preserves semantic type intent, while `kind` preserves
 representation or literal-family intent. SANSA.Mutate preserves these fields but
 does not decide whether the supplied value is legal for the hinted datatype or
 kind.
+
+Target surfaces define what planned operations can be represented by a host
+format, storage adapter, or interchange profile. For example, an AEON target
+surface may reject a datatype hint that is not legal for AEON values, while a
+JSON-compatible target surface may reject AEON attributes, node or tuple
+containers, references, non-finite numbers, or SANSA selector literals. This is
+not a mutation-planning failure. It means the plan is valid SANSA.Mutate intent
+that the selected target cannot carry.
 
 The plan must be inspectable before authorization or apply. Producing it must not
 mutate the namespace.
@@ -437,6 +451,13 @@ do not make a value schema-valid. A host adapter or validator may consume them t
 materialize host-specific literal forms, apply schema rules, or reject the
 operation.
 
+A target-surface check may reject planned values before authorization or apply
+when the intended host format cannot represent them. This check is distinct from
+schema validation. For example, JSON target validation can reject an AEON
+attribute mutation because JSON has no attribute-space representation, while an
+AEON schema validator may separately reject a value whose datatype is
+representable but not allowed at that address.
+
 An exact target that carries a reference identifies the reference binding
 itself. Mutate does not implicitly follow the reference and modify its target.
 Any future followed-target operation must be explicit, authorized separately,
@@ -609,6 +630,7 @@ SANSA.Mutate planning diagnostics should distinguish:
 - precondition failure;
 - stale target or anchor;
 - non-portable but locally accepted target diagnostics;
+- target-surface representability failure;
 - implementation limit exhaustion.
 
 Consumer, ASP, or host-storage diagnostics should distinguish:
