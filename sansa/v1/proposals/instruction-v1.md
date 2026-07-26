@@ -393,6 +393,21 @@ Internally, each accepted verb can be modeled as a normalized verb plus target
 and argument fields before lowering into a structured Mutate operation. This
 normal form is an implementation aid, not a user-visible syntax requirement.
 
+### 7.6 Lowering Examples
+
+The following examples show instruction surface forms and their corresponding
+structured operation intent. These examples omit plan metadata, frozen binding
+identity, preconditions, and diagnostics.
+
+| Instruction | Structured operation intent |
+| --- | --- |
+| `create $.inventory.status with "active"` | `op=create`, `parent=$.inventory`, `name=status`, `kind=string`, `value="active"` |
+| `replace $.inventory.qty with :int32, 10` | `op=replace`, `target=$.inventory.qty`, `datatype=int32`, `kind=number`, `value=10` |
+| `remove $.inventory.oldStatus` | `op=remove`, `target=$.inventory.oldStatus` |
+| `insert first in $.tags with "new"` | `op=insert`, `container=$.tags`, `placement=first`, `kind=string`, `value="new"` |
+| `insert before $.tags[2] in $.tags with :string, "featured"` | `op=insert`, `container=$.tags`, `placement=before`, `anchor=$.tags[2]`, `datatype=string`, `kind=string`, `value="featured"` |
+| `move $.tags[0] after $.tags[2] in $.tags` | `op=move`, `source=$.tags[0]`, `container=$.tags`, `placement=after`, `anchor=$.tags[2]` |
+
 ## 8. Deferred Verbs
 
 The following verbs are useful vocabulary candidates but are outside the
