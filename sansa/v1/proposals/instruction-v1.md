@@ -429,7 +429,90 @@ Each deferred verb needs its own target shape, identity semantics, cardinality
 rules, authorization boundary, and apply/result contract before it can enter
 the instruction vocabulary.
 
-## 9. Lowering Boundary
+## 9. Rejected Core Forms
+
+The conservative instruction surface should reject forms that look convenient
+but would hide important mutation semantics.
+
+### 9.1 Positional Create
+
+Creating a missing positional child by spelling a destination position is not a
+core `create` form:
+
+```sansa
+create $.tags[2] with "sale"
+```
+
+Use ordered `insert` instead:
+
+```sansa
+insert after $.tags[1] in $.tags with "sale"
+```
+
+### 9.2 Implicit Upsert
+
+`create` must not silently replace an existing member, and `replace` must not
+silently create a missing member:
+
+```sansa
+create $.inventory.status with "active"   // fails if status already exists
+replace $.inventory.status with "active"  // fails if status is missing
+```
+
+An eventual `upsert` verb may define this behavior explicitly.
+
+### 9.3 Cross-Container Move
+
+Moving across containers is outside the conservative core:
+
+```sansa
+move $.todo[0] last in $.done
+```
+
+Cross-container movement changes ownership and validation context. It needs a
+separate operation contract before entering the instruction vocabulary.
+
+### 9.4 Ambiguous Ordered Insert
+
+Ordered insertion should not infer the container only from an anchor:
+
+```sansa
+insert "sale" after $.tags[1]
+```
+
+The portable form names the container:
+
+```sansa
+insert after $.tags[1] in $.tags with "sale"
+```
+
+### 9.5 Multi-Verb Instruction
+
+One Instruction contains one mutation intent. Multiple verbs in one source unit
+are outside the core surface:
+
+```sansa
+replace .qty with 10
+remove .oldQty
+```
+
+A future batch format may contain multiple Instructions, but batching does not
+change the identity of one Instruction.
+
+### 9.6 Runtime Source Reinterpretation
+
+Instruction consumers must not construct executable instruction text by
+concatenating runtime values:
+
+```sansa
+replace .target with <runtime text>
+```
+
+Runtime data may provide structured values or structured address literals
+through explicit host APIs, but it must not become executable SANSA Instruction
+source text.
+
+## 10. Lowering Boundary
 
 Instruction parsing produces instruction intent, not an executable plan.
 
