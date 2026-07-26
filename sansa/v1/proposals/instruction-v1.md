@@ -512,7 +512,74 @@ Runtime data may provide structured values or structured address literals
 through explicit host APIs, but it must not become executable SANSA Instruction
 source text.
 
-## 10. Lowering Boundary
+## 10. Provisional Surface Grammar
+
+This proposal uses the following grammar sketch to make the intended source
+shape explicit. It is explanatory and may be refined before implementation.
+
+```text
+Instruction
+  = [ FromClause ]
+    [ WhereClause ]
+    MutationClause
+
+FromClause
+  = "from" AddressExpression
+
+WhereClause
+  = "where" QueryExpression
+
+MutationClause
+  = CreateClause
+  | ReplaceClause
+  | RemoveClause
+  | InsertClause
+  | MoveClause
+
+CreateClause
+  = "create" MemberDestination "with" InstructionValue
+
+ReplaceClause
+  = "replace" AddressExpression "with" InstructionValue
+
+RemoveClause
+  = "remove" AddressExpression
+
+InsertClause
+  = "insert" Placement "in" AddressExpression "with" InstructionValue
+
+MoveClause
+  = "move" AddressExpression Placement "in" AddressExpression
+
+Placement
+  = "first"
+  | "last"
+  | "before" AddressExpression
+  | "after" AddressExpression
+
+InstructionValue
+  = [ ":" DatatypeExpression [ "," ] ] ValueLiteral
+```
+
+`AddressExpression` is parsed by SANSA.Addressing. `QueryExpression` is parsed
+by the SANSA.Query expression grammar and evaluated as a read-only predicate.
+`DatatypeExpression` preserves datatype intent; it does not validate the value.
+`ValueLiteral` is the instruction value payload and supplies representation
+family when the literal form is unambiguous.
+
+`MemberDestination` is either a bare or quoted member name relative to the
+current candidate parent, or a SANSA address expression that can be split into
+an exact parent address plus a final member name. A destination that ends in a
+position selector is not a valid `create` destination in the conservative core.
+
+The initial grammar admits at most one `from` clause and at most one `where`
+clause, in that order. Additional query clauses such as `order by`, `offset`,
+`limit`, or projection are not part of the conservative instruction surface.
+Candidate selection should remain simple until mutation ordering, target
+cardinality, and authorization behavior are specified for broader query-shaped
+instructions.
+
+## 11. Lowering Boundary
 
 Instruction parsing produces instruction intent, not an executable plan.
 
@@ -547,17 +614,19 @@ Instruction Source
 This makes Instruction useful for editors and workbenches without turning it
 into a runtime execution language.
 
-## 11. Diagnostics
+## 12. Diagnostics
 
 SANSA Instruction diagnostics should distinguish parse-time failures,
 lowering-time failures, and downstream Mutate planning failures.
 
 Instruction parse diagnostics include:
 
+- missing mutation verb;
 - unknown mutation verb;
 - malformed instruction value;
 - malformed datatype annotation;
 - comma delimiter used outside `:datatype, value`;
+- unsupported query clause in instruction source;
 - multiple mutation verbs in one Instruction;
 - unsupported or deferred verb syntax;
 - ambiguous ordered insertion without an explicit container.
