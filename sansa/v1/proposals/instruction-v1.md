@@ -178,6 +178,9 @@ create state with yes
 create selector with $.inventory.items.*
 ```
 
+These examples use contextual `create`, where the current candidate binding is
+the parent. Exact destination forms are described in the core verb vocabulary.
+
 These lower to mutation operations with representation intent inferred from the
 literal family. For example:
 
@@ -238,18 +241,153 @@ create status with "active"
 replace .qty with :int32, 10
 remove .deprecated
 insert last in .tags with "sale"
-move .tags[0] after .tags[2]
+move .tags[0] after .tags[2] in .tags
 ```
 
-The exact spelling of ordered `insert` and `move` forms remains provisional.
-The important constraint is that each accepted instruction must lower to the
-existing structured operation model:
+The portable core forms are:
+
+```text
+create <member-destination> with <instruction-value>
+replace <target-address> with <instruction-value>
+remove <target-address>
+insert <placement> in <container-address> with <instruction-value>
+move <source-address> <placement> in <container-address>
+```
+
+where:
+
+```text
+placement =
+  first
+  last
+  before <anchor-address>
+  after <anchor-address>
+```
+
+Each accepted instruction must lower to the existing structured operation
+model:
 
 - `create`
 - `replace`
 - `remove`
 - `insert`
 - `move`
+
+### 7.1 Create
+
+`create` adds one named binding under an exact existing parent.
+
+Contextual form:
+
+```sansa
+from $.inventory
+create status with "active"
+```
+
+This lowers to:
+
+```json
+{
+  "op": "create",
+  "parent": "$.inventory",
+  "name": "status",
+  "kind": "string",
+  "value": "active"
+}
+```
+
+Destination-address form:
+
+```sansa
+create $.inventory.status with "active"
+```
+
+This also lowers to `parent = $.inventory` and `name = status`. The destination
+address must end in a member selector that can be split into an exact existing
+parent address plus a new member name. Creating positional children by spelling
+a missing position address is not part of `create`; ordered insertion uses
+`insert`.
+
+`create` is not `upsert`. The named member must not already exist under the
+resolved parent.
+
+### 7.2 Replace
+
+`replace` changes the value of one exact existing binding while preserving its
+binding identity and structural location:
+
+```sansa
+replace $.inventory.items[1].qty with :int32, 10
+```
+
+Candidate-relative form:
+
+```sansa
+from $.inventory.items.*
+where .qty == 0
+replace .qty with :int32, 10
+```
+
+Each surviving candidate resolves `.qty` relative to itself. Each resolved
+target must be exact before lowering into a structured `replace` operation.
+
+### 7.3 Remove
+
+`remove` deletes one exact existing binding:
+
+```sansa
+remove $.inventory.oldStatus
+```
+
+Candidate-relative form:
+
+```sansa
+from $.inventory.items.*
+where .discontinued == true
+remove .status
+```
+
+`remove` never removes the root binding. If the target selector expands to
+multiple bindings, the instruction must either lower through candidate
+selection into exact operations or fail before producing a plan.
+
+### 7.4 Insert
+
+`insert` adds a value to an ordered container. The portable form names the
+container explicitly:
+
+```sansa
+insert first in .tags with "new"
+insert last in .tags with "sale"
+insert before .tags[2] in .tags with :string, "featured"
+insert after .tags[2] in .tags with :string, "clearance"
+```
+
+`insert` lowers to a structured `insert` operation with:
+
+- `container` from the `in` address;
+- `placement` from `first`, `last`, `before`, or `after`;
+- optional `anchor` for `before` and `after`;
+- value, datatype intent, and representation family from the instruction value.
+
+The container must resolve to one ordered container. Anchor addresses must
+resolve to children of that container.
+
+### 7.5 Move
+
+`move` repositions an existing binding within one ordered container:
+
+```sansa
+move .tags[0] first in .tags
+move .tags[0] last in .tags
+move .tags[0] before .tags[2] in .tags
+move .tags[0] after .tags[2] in .tags
+```
+
+`move` lowers to a structured `move` operation with `source`, `container`, and
+`placement`. The source must be a child of the named container. For `before` and
+`after`, the anchor must also be a child of the same container. Cross-container
+move remains outside the conservative core.
 
 Internally, each accepted verb can be modeled as a normalized verb plus target
 and argument fields before lowering into a structured Mutate operation. This
