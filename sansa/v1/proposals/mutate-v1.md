@@ -478,6 +478,12 @@ consumer must reject the operation before apply. A consumer-selected non-atomic
 execution mode is implementation-specific. Partial success in such a mode must
 never be reported as full plan success.
 
+If a mutation hook rejects or fails during non-atomic apply, the overall result
+must fail. The result may include operation records for hooks that completed
+before the failure, but those records describe partial execution only. Rollback,
+retry, compensation, and transaction semantics remain adapter or consumer
+responsibilities.
+
 Conceptual result model:
 
 ```text
