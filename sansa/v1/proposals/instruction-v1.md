@@ -42,7 +42,7 @@ human-authored declaration while preserving the existing execution boundary.
 
 The conservative SANSA.Mutate structured-plan API remains the execution
 boundary. An Instruction is parsed, resolved, checked, and lowered into exact
-mutation operations before authorization and apply.
+mutation operations before target-surface validation, authorization, and apply.
 
 An Instruction is a single declared change intent, not an arbitrary sequence of
 commands.
@@ -590,13 +590,16 @@ A consumer lowers an instruction by:
 3. evaluating `where` predicates, if present;
 4. resolving candidate-relative mutation targets;
 5. producing exact structured mutation operations;
-6. applying normal SANSA.Mutate planning, authorization, budgets, stale-target
-   checks, and adapter apply rules.
+6. applying normal SANSA.Mutate planning, budgets, and stale-target checks;
+7. validating the plan against the intended target surface, if one is selected;
+8. applying authorization, adapter apply rules, and result reporting.
 
 This preserves the existing boundary:
 
 - source text is human-authored instruction;
 - structured mutation plans are same-process execution artifacts;
+- target-surface checks decide whether the plan can be represented by the
+  intended host format or adapter surface;
 - authorization, validation, transactions, retries, and storage mapping remain
   consumer or adapter responsibilities.
 
@@ -608,6 +611,7 @@ Instruction Source
   -> Candidate Binding Set
   -> Structured Mutation Operations
   -> Mutation Plan
+  -> Target Surface Check
   -> Preview / Authorize / Apply
 ```
 
@@ -617,7 +621,8 @@ into a runtime execution language.
 ## 12. Diagnostics
 
 SANSA Instruction diagnostics should distinguish parse-time failures,
-lowering-time failures, and downstream Mutate planning failures.
+lowering-time failures, downstream Mutate planning failures, target-surface
+failures, authorization failures, and apply failures.
 
 Instruction parse diagnostics include:
 
@@ -653,9 +658,16 @@ Instruction consumer should not collapse Mutate diagnostics into generic
 Instruction failures, because the lowered plan boundary is useful for tooling,
 auditing, and user repair.
 
+Target-surface diagnostics keep their target identity. For example, an
+Instruction may lower to valid SANSA.Mutate intent while an AEON target surface
+rejects a datatype annotation that AEON cannot express, or a JSON-compatible
+target surface rejects attributes, tuples, nodes, references, non-finite
+numbers, or SANSA selector literals. These failures are not Instruction parse
+or lowering errors.
+
 Diagnostics should preserve enough context for authoring tools to identify:
 
-- instruction phase: parse, lower, plan, authorize, or apply;
+- instruction phase: parse, lower, plan, target, authorize, or apply;
 - source span or clause when available;
 - candidate address when the failure occurs inside candidate-relative lowering;
 - lowered operation index when the failure occurs after operations are emitted;

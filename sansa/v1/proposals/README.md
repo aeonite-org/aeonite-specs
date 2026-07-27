@@ -44,10 +44,14 @@ Binding Set
   |
   +--> SANSA.Query  --> Result Set
   |
-  +--> SANSA.Mutate --> Mutation Plan --> Consumer Apply
+  +--> SANSA.Mutate --> Mutation Plan --> Target Surface --> Consumer Apply
 ```
 
 SANSA.Resolve discovers semantic structure. SANSA.Query evaluates semantic bindings without changing namespace state. SANSA.Mutate freezes exact targets and expresses change intent without owning authorization, transactions, orchestration, or physical storage behavior.
+
+Target surfaces are host-format or adapter boundaries layered after mutation
+planning. They decide whether valid SANSA.Mutate intent can be represented by
+AEON, JSON-compatible output, ASP storage, or another consumer-selected target.
 
 SANSA.Instruction is a proposed source-level composition layer. It is intended
 to lower into structured Query and Mutate behavior rather than replace those
