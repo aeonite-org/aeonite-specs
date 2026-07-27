@@ -31,7 +31,8 @@ SANSA.Mutate produces deterministic change intent as an immutable mutation plan.
 
 Human-authored SANSA Instruction syntax, if adopted, sits above this layer. An
 instruction may combine Query-style selection with mutation verbs, but it must
-lower into exact structured Mutate operations before authorization and apply.
+lower into exact structured Mutate operations before target-surface validation,
+authorization, and apply.
 
 ## 2. Design Principles
 
