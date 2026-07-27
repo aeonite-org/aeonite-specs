@@ -32,7 +32,7 @@ SANSA v1 defines independent capability families:
 - `SANSA.Query`
 - `SANSA.Transform`
 
-Future specifications may define:
+Proposal-stage or future specifications may define:
 
 - `SANSA.Mutate`
 - `SANSA.Instruction`
@@ -43,7 +43,9 @@ Capabilities are cumulative only where a specification requires it. For example,
 
 `SANSA.Transform` names optional transform-library behavior over resolved Binding Sets. It is not required by `SANSA.Query` core conformance.
 
-`SANSA.Mutate` is tracked as a future authority-bearing capability with a conservative structured-plan boundary. `SANSA.Instruction` is tracked as a possible source-level composition capability that may lower Addressing, Query, and Mutate vocabulary into structured requests. Neither capability is part of required SANSA v1 Addressing, Resolve, Query, or Transform conformance.
+`SANSA.Mutate` is tracked as a proposal-stage authority-bearing capability with a conservative structured-plan boundary. `SANSA.Instruction` is tracked as a proposal-stage source-level composition capability that may lower Addressing, Query, and Mutate vocabulary into structured requests. Neither capability is part of required SANSA v1 Addressing, Resolve, Query, or Transform conformance.
+
+Implementations may advertise proposal-stage `SANSA.Mutate` or `SANSA.Instruction` support only as experimental capabilities until those specifications define a stable conformance profile. Such advertisements should identify the exact supported slice, such as structured mutation planning, target-surface validation, Instruction parsing, Instruction lowering, or Instruction-to-Mutate planning.
 
 ## 2. Profiles
 

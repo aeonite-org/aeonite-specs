@@ -73,7 +73,7 @@ The SANSA v1 draft/proposal set covers these conformance capabilities:
 
 Implementations should advertise supported capabilities rather than claim unqualified support for "SANSA". For example, a parser may support `SANSA.Addressing` without supporting `SANSA.Resolve`, and a resolver may support `SANSA.Resolve` without supporting `SANSA.Query`.
 
-Future specifications may cover:
+Proposal-stage or future specifications may cover:
 
 - `SANSA.Mutate`
 - `SANSA.Instruction`
