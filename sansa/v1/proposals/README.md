@@ -59,6 +59,10 @@ capabilities.
 
 SANSA.Mutate reuses consumer-selected Shared AEON Value Semantics for preconditions. Value legality remains the responsibility of the consumer, AEOS schema, or domain validator; a document being mutated cannot select its own mutation, validation, or authorization policy.
 
+Mutation policy is a trusted consumer boundary layered after planning and before
+apply. It may authorize or deny planned intent, but it does not become SANSA
+Instruction source and does not rewrite the mutation plan.
+
 ## Capability Families
 
 The SANSA v1 draft/proposal set covers these conformance capabilities:

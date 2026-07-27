@@ -601,6 +601,26 @@ kinds, principals, or budgets.
 Authorization occurs after a plan is inspectable and before apply. Consumers may
 also reject requests earlier to avoid disclosing protected namespace structure.
 
+Mutation policy is consumer authority, not document authority. A trusted
+consumer, host, AEOS profile, ASP layer, application, or adapter may evaluate a
+mutation plan against policy before apply. The document being mutated must not
+define the policy that authorizes its own change.
+
+A policy layer may consider:
+
+- operation kind;
+- exact target, parent, source, container, or anchor addresses;
+- matched namespace or address space;
+- supplied or inferred datatype and representation-kind intent;
+- proposed value payload shape;
+- principal, role, session, tenancy, or other external authority context;
+- consumer budgets, rate limits, or product rules.
+
+These checks authorize or deny already planned intent. They must not silently
+rewrite the plan, reinterpret runtime strings as SANSA Instruction source, or
+make schema-invalid values valid. If a policy wants a different operation, the
+consumer should request and plan that operation explicitly.
+
 Planning and apply should expose budgets for target count, operation count,
 resolved bindings, predicate work, supplied value size, and implementation
 resource limits. Limit exhaustion must fail explicitly and must not produce a
