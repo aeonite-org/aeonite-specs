@@ -621,6 +621,11 @@ rewrite the plan, reinterpret runtime strings as SANSA Instruction source, or
 make schema-invalid values valid. If a policy wants a different operation, the
 consumer should request and plan that operation explicitly.
 
+Policy inputs should fail closed on unsupported fields rather than ignoring
+them. This prevents claimed provenance such as Instruction `by` metadata, or
+future-looking fields such as `rewrite`, from being mistaken for active
+authorization behavior.
+
 Planning and apply should expose budgets for target count, operation count,
 resolved bindings, predicate work, supplied value size, and implementation
 resource limits. Limit exhaustion must fail explicitly and must not produce a
