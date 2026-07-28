@@ -74,24 +74,33 @@ Instruction source may combine Query-shaped selection with Mutate verbs:
 ```sansa
 from $.inventory.items.*
 where .qty == 0
+require .status == "open"
 replace .qty with :int32, 10
 ```
 
-The `from` and `where` clauses come from SANSA.Query vocabulary. The contextual
-address `.qty` comes from SANSA.Addressing. The `replace` verb comes from
-SANSA.Mutate.
+The `from`, `where`, and `require` clauses use SANSA.Query expression
+vocabulary. The contextual address `.qty` comes from SANSA.Addressing. The
+`replace` verb comes from SANSA.Mutate.
 
 The instruction above means:
 
 1. Resolve `$.inventory.items.*`.
 2. Keep candidates whose `.qty` value is zero.
-3. For each surviving candidate, resolve `.qty` relative to that candidate.
-4. Produce an exact `replace` operation with datatype intent `int32`, number
+3. Preserve a candidate-scoped Mutate precondition that `.status` remains
+   `"open"`.
+4. For each surviving candidate, resolve `.qty` relative to that candidate.
+5. Produce an exact `replace` operation with datatype intent `int32`, number
    representation, and value `10`.
 
 The final mutation plan must contain exact targets. Expanded selectors and
 candidate-relative paths are instruction/query conveniences before planning;
 they are not stored as executable mutation targets.
+
+`where` and `require` have different authority roles. `where` selects which
+candidate bindings participate in lowering. `require` creates fail-closed
+SANSA.Mutate preconditions that are evaluated during planning and may be
+rechecked before apply. For candidate-relative instructions, each surviving
+candidate receives its own precondition target.
 
 ## 4. Instruction Values
 
@@ -528,6 +537,7 @@ shape explicit. It is explanatory and may be refined before implementation.
 Instruction
   = [ FromClause ]
     [ WhereClause ]
+    { RequireClause }
     MutationClause
 
 FromClause
@@ -535,6 +545,9 @@ FromClause
 
 WhereClause
   = "where" QueryExpression
+
+RequireClause
+  = "require" QueryExpression
 
 MutationClause
   = CreateClause
@@ -584,11 +597,11 @@ an exact parent address plus a final member name. A destination that ends in a
 position selector is not a valid `create` destination in the conservative core.
 
 The initial grammar admits at most one `from` clause and at most one `where`
-clause, in that order. Additional query clauses such as `order by`, `offset`,
-`limit`, or projection are not part of the conservative instruction surface.
-Candidate selection should remain simple until mutation ordering, target
-cardinality, and authorization behavior are specified for broader query-shaped
-instructions.
+clause, followed by zero or more `require` clauses, in that order. Additional
+query clauses such as `order by`, `offset`, `limit`, or projection are not part
+of the conservative instruction surface. Candidate selection should remain
+simple until mutation ordering, target cardinality, and authorization behavior
+are specified for broader query-shaped instructions.
 
 ## 11. Lowering Boundary
 
@@ -599,11 +612,12 @@ A consumer lowers an instruction by:
 1. parsing source syntax;
 2. resolving `from` candidates, if present;
 3. evaluating `where` predicates, if present;
-4. resolving candidate-relative mutation targets;
-5. producing exact structured mutation operations;
-6. applying normal SANSA.Mutate planning, budgets, and stale-target checks;
-7. validating the plan against the intended target surface, if one is selected;
-8. applying authorization, adapter apply rules, and result reporting.
+4. lowering `require` predicates into structured SANSA.Mutate preconditions;
+5. resolving candidate-relative mutation targets;
+6. producing exact structured mutation operations;
+7. applying normal SANSA.Mutate planning, budgets, and stale-target checks;
+8. validating the plan against the intended target surface, if one is selected;
+9. applying authorization, adapter apply rules, and result reporting.
 
 This preserves the existing boundary:
 
@@ -642,6 +656,7 @@ Instruction parse diagnostics include:
 - malformed instruction value;
 - malformed datatype annotation;
 - comma delimiter used outside `:datatype, value`;
+- malformed `require` clause;
 - unsupported query clause in instruction source;
 - multiple mutation verbs in one Instruction;
 - unsupported or deferred verb syntax;
@@ -709,6 +724,7 @@ Candidate-relative seeds:
 | --- | --- |
 | `from $.inventory\ncreate status with "active"` | one `create` operation per candidate, parent from candidate, name `status` |
 | `from $.inventory.items.*\nwhere .qty == 0\nreplace .qty with :int32, 10` | one `replace` operation per surviving candidate, target `.qty` resolved relative to candidate |
+| `from $.inventory.items.*\nwhere .sku == "A-100"\nrequire .qty == 7\nreplace .qty with :int32, 10` | one `replace` operation with one candidate-scoped Mutate precondition |
 | `from $.inventory.items.*\nwhere .discontinued == true\nremove .status` | one `remove` operation per surviving candidate, target `.status` resolved relative to candidate |
 | `from $.inventory.items.*\ninsert last in .tags with "sale"` | one `insert` operation per candidate, container `.tags` resolved relative to candidate |
 | `from $.inventory.items.*\nappend .tags with "sale"` | one `insert` operation per candidate with `placement: "last"`, container `.tags` resolved relative to candidate |
@@ -722,6 +738,7 @@ Candidate-relative seeds:
 | `create $.inventory.status, "active"` | malformed `create` clause; expected `with` |
 | `create $.inventory.status with :int32,, 344` | malformed instruction value |
 | `create $.inventory.status with :int32 344,` | comma delimiter used outside `:datatype, value` |
+| `require\nreplace $.inventory.qty with 1` | malformed `require` clause |
 | `from $.items.*\norder by .sku\nreplace .qty with 1` | unsupported query clause in instruction source |
 | `replace .qty with 10\nremove .oldQty` | multiple mutation verbs in one Instruction |
 | `insert "sale" after $.tags[1]` | ambiguous ordered insertion without explicit container |
