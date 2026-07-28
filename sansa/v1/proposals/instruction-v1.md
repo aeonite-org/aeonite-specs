@@ -678,7 +678,9 @@ Instruction parse diagnostics include:
 - malformed instruction value;
 - malformed datatype annotation;
 - comma delimiter used outside `:datatype, value`;
+- malformed `because` or `by` provenance clause;
 - malformed `require` clause;
+- duplicate or out-of-order instruction clause;
 - unsupported query clause in instruction source;
 - multiple mutation verbs in one Instruction;
 - unsupported or deferred verb syntax;
