@@ -241,6 +241,7 @@ create status with "active"
 replace .qty with :int32, 10
 remove .deprecated
 insert last in .tags with "sale"
+append .tags with "sale"
 move .tags[0] after .tags[2] in .tags
 ```
 
@@ -251,6 +252,8 @@ create <member-destination> with <instruction-value>
 replace <target-address> with <instruction-value>
 remove <target-address>
 insert <placement> in <container-address> with <instruction-value>
+append <container-address> with <instruction-value>
+append in <container-address> with <instruction-value>
 move <source-address> <placement> in <container-address>
 ```
 
@@ -272,6 +275,10 @@ model:
 - `remove`
 - `insert`
 - `move`
+
+`append` is source-level sugar for `insert last in <container-address> with
+<instruction-value>`. It must lower to the existing `insert` operation with
+`placement: "last"` and must not introduce a distinct SANSA.Mutate operation.
 
 ### 7.1 Create
 
@@ -405,6 +412,7 @@ identity, preconditions, and diagnostics.
 | `replace $.inventory.qty with :int32, 10` | `op=replace`, `target=$.inventory.qty`, `datatype=int32`, `kind=number`, `value=10` |
 | `remove $.inventory.oldStatus` | `op=remove`, `target=$.inventory.oldStatus` |
 | `insert first in $.tags with "new"` | `op=insert`, `container=$.tags`, `placement=first`, `kind=string`, `value="new"` |
+| `append $.tags with "new"` | `op=insert`, `container=$.tags`, `placement=last`, `kind=string`, `value="new"` |
 | `insert before $.tags[2] in $.tags with :string, "featured"` | `op=insert`, `container=$.tags`, `placement=before`, `anchor=$.tags[2]`, `datatype=string`, `kind=string`, `value="featured"` |
 | `move $.tags[0] after $.tags[2] in $.tags` | `op=move`, `source=$.tags[0]`, `container=$.tags`, `placement=after`, `anchor=$.tags[2]` |
 
@@ -420,7 +428,6 @@ conservative instruction surface until separately specified:
 - `patch`
 - `upsert`
 - `clear`
-- `append`
 - followed-target replace or rebind operations
 - reference redirection
 - multi-target bulk mutation syntax
@@ -534,6 +541,7 @@ MutationClause
   | ReplaceClause
   | RemoveClause
   | InsertClause
+  | AppendClause
   | MoveClause
 
 CreateClause
@@ -547,6 +555,9 @@ RemoveClause
 
 InsertClause
   = "insert" Placement "in" AddressExpression "with" InstructionValue
+
+AppendClause
+  = "append" [ "in" ] AddressExpression "with" InstructionValue
 
 MoveClause
   = "move" AddressExpression Placement "in" AddressExpression
@@ -700,6 +711,7 @@ Candidate-relative seeds:
 | `from $.inventory.items.*\nwhere .qty == 0\nreplace .qty with :int32, 10` | one `replace` operation per surviving candidate, target `.qty` resolved relative to candidate |
 | `from $.inventory.items.*\nwhere .discontinued == true\nremove .status` | one `remove` operation per surviving candidate, target `.status` resolved relative to candidate |
 | `from $.inventory.items.*\ninsert last in .tags with "sale"` | one `insert` operation per candidate, container `.tags` resolved relative to candidate |
+| `from $.inventory.items.*\nappend .tags with "sale"` | one `insert` operation per candidate with `placement: "last"`, container `.tags` resolved relative to candidate |
 
 ### 13.2 Negative Parse Seeds
 
