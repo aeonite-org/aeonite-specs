@@ -72,15 +72,18 @@ SANSA Instruction should not be:
 Instruction source may combine Query-shaped selection with Mutate verbs:
 
 ```sansa
+because "manual correction"
+by "Bob"
 from $.inventory.items.*
 where .qty == 0
 require .status == "open"
 replace .qty with :int32, 10
 ```
 
-The `from`, `where`, and `require` clauses use SANSA.Query expression
-vocabulary. The contextual address `.qty` comes from SANSA.Addressing. The
-`replace` verb comes from SANSA.Mutate.
+The `because` and `by` clauses carry source-level claimed provenance. The
+`from`, `where`, and `require` clauses use SANSA.Query expression vocabulary.
+The contextual address `.qty` comes from SANSA.Addressing. The `replace` verb
+comes from SANSA.Mutate.
 
 The instruction above means:
 
@@ -95,6 +98,12 @@ The instruction above means:
 The final mutation plan must contain exact targets. Expanded selectors and
 candidate-relative paths are instruction/query conveniences before planning;
 they are not stored as executable mutation targets.
+
+`because` and `by` are inert source metadata. `because` records a
+human-readable reason. `by` records claimed attribution. Neither clause grants
+authorization, proves authentication, signs the instruction, records approval,
+or replaces a host audit trail. Actor identity, delegation, policy authority,
+signatures, and audit evidence belong to the host envelope or mutation adapter.
 
 `where` and `require` have different authority roles. `where` selects which
 candidate bindings participate in lowering. `require` creates fail-closed
@@ -535,10 +544,18 @@ shape explicit. It is explanatory and may be refined before implementation.
 
 ```text
 Instruction
-  = [ FromClause ]
+  = [ BecauseClause ]
+    [ ByClause ]
+    [ FromClause ]
     [ WhereClause ]
     { RequireClause }
     MutationClause
+
+BecauseClause
+  = "because" QuotedText
+
+ByClause
+  = "by" QuotedText
 
 FromClause
   = "from" AddressExpression
@@ -590,18 +607,21 @@ by the SANSA.Query expression grammar and evaluated as a read-only predicate.
 `DatatypeExpression` preserves datatype intent; it does not validate the value.
 `ValueLiteral` is the instruction value payload and supplies representation
 family when the literal form is unambiguous.
+`QuotedText` uses the same quoted payload rules as SANSA string payloads and is
+preserved as source provenance without semantic authority.
 
 `MemberDestination` is either a bare or quoted member name relative to the
 current candidate parent, or a SANSA address expression that can be split into
 an exact parent address plus a final member name. A destination that ends in a
 position selector is not a valid `create` destination in the conservative core.
 
-The initial grammar admits at most one `from` clause and at most one `where`
-clause, followed by zero or more `require` clauses, in that order. Additional
-query clauses such as `order by`, `offset`, `limit`, or projection are not part
-of the conservative instruction surface. Candidate selection should remain
-simple until mutation ordering, target cardinality, and authorization behavior
-are specified for broader query-shaped instructions.
+The initial grammar admits at most one `because` clause, at most one `by`
+clause, at most one `from` clause, and at most one `where` clause, followed by
+zero or more `require` clauses, in that order. Additional query clauses such as
+`order by`, `offset`, `limit`, or projection are not part of the conservative
+instruction surface. Candidate selection should remain simple until mutation
+ordering, target cardinality, and authorization behavior are specified for
+broader query-shaped instructions.
 
 ## 11. Lowering Boundary
 
@@ -610,18 +630,20 @@ Instruction parsing produces instruction intent, not an executable plan.
 A consumer lowers an instruction by:
 
 1. parsing source syntax;
-2. resolving `from` candidates, if present;
-3. evaluating `where` predicates, if present;
-4. lowering `require` predicates into structured SANSA.Mutate preconditions;
-5. resolving candidate-relative mutation targets;
-6. producing exact structured mutation operations;
-7. applying normal SANSA.Mutate planning, budgets, and stale-target checks;
-8. validating the plan against the intended target surface, if one is selected;
-9. applying authorization, adapter apply rules, and result reporting.
+2. preserving inert `because` and `by` source provenance, if present;
+3. resolving `from` candidates, if present;
+4. evaluating `where` predicates, if present;
+5. lowering `require` predicates into structured SANSA.Mutate preconditions;
+6. resolving candidate-relative mutation targets;
+7. producing exact structured mutation operations;
+8. applying normal SANSA.Mutate planning, budgets, and stale-target checks;
+9. validating the plan against the intended target surface, if one is selected;
+10. applying authorization, adapter apply rules, and result reporting.
 
 This preserves the existing boundary:
 
 - source text is human-authored instruction;
+- `because` and `by` are claimed source provenance, not execution authority;
 - structured mutation plans are same-process execution artifacts;
 - target-surface checks decide whether the plan can be represented by the
   intended host format or adapter surface;
@@ -717,6 +739,7 @@ lowering fixtures. They are not a complete CTS surface.
 | `insert last in $.tags with "sale"` | one `insert` operation, container `$.tags`, placement `last`, kind `string` |
 | `insert before $.tags[2] in $.tags with :string, "featured"` | one `insert` operation, container `$.tags`, placement `before`, anchor `$.tags[2]`, datatype `string` |
 | `move $.tags[0] after $.tags[2] in $.tags` | one `move` operation, source `$.tags[0]`, container `$.tags`, placement `after`, anchor `$.tags[2]` |
+| `because "manual correction"\nby "Bob"\nreplace $.inventory.qty with :int32, 10` | one `replace` operation with source provenance reason `manual correction` and claimed author `Bob` |
 
 Candidate-relative seeds:
 
@@ -738,6 +761,9 @@ Candidate-relative seeds:
 | `create $.inventory.status, "active"` | malformed `create` clause; expected `with` |
 | `create $.inventory.status with :int32,, 344` | malformed instruction value |
 | `create $.inventory.status with :int32 344,` | comma delimiter used outside `:datatype, value` |
+| `because Bob\nreplace $.inventory.qty with 1` | malformed `because` clause; expected quoted text |
+| `by\nreplace $.inventory.qty with 1` | malformed `by` clause; expected quoted text |
+| `because "a"\nbecause "b"\nreplace $.inventory.qty with 1` | duplicate provenance clause |
 | `require\nreplace $.inventory.qty with 1` | malformed `require` clause |
 | `from $.items.*\norder by .sku\nreplace .qty with 1` | unsupported query clause in instruction source |
 | `replace .qty with 10\nremove .oldQty` | multiple mutation verbs in one Instruction |

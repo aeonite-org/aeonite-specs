@@ -43,7 +43,7 @@ Capabilities are cumulative only where a specification requires it. For example,
 
 `SANSA.Transform` names optional transform-library behavior over resolved Binding Sets. It is not required by `SANSA.Query` core conformance.
 
-`SANSA.Mutate` is tracked as a proposal-stage authority-bearing capability with a conservative structured-plan boundary. `SANSA.Instruction` is tracked as a proposal-stage source-level composition capability that may lower Addressing, Query, and Mutate vocabulary into structured requests. Neither capability is part of required SANSA v1 Addressing, Resolve, Query, or Transform conformance.
+`SANSA.Mutate` is tracked as a proposal-stage authority-bearing capability with a conservative structured-plan boundary. `SANSA.Instruction` is tracked as a proposal-stage source-level composition capability that may lower Addressing, Query, and Mutate vocabulary into structured requests. Instruction source provenance such as claimed reason or claimed author is inert metadata, not authorization or authentication. Neither capability is part of required SANSA v1 Addressing, Resolve, Query, or Transform conformance.
 
 Implementations may advertise proposal-stage `SANSA.Mutate` or `SANSA.Instruction` support only as experimental capabilities until those specifications define a stable conformance profile. Such advertisements should identify the exact supported slice, such as structured mutation planning, target-surface validation, Instruction parsing, Instruction lowering, or Instruction-to-Mutate planning.
 
@@ -207,4 +207,4 @@ For SANSA v1, validation remains a named Query policy restriction rather than a 
 
 Conformance does not imply authorization.
 
-A resolver can conform to `SANSA.Resolve` while rejecting a specific local address space for policy reasons. A query implementation can conform to `SANSA.Query` while refusing implementation-specific functions. A future mutation implementation will require stronger authority boundaries than read-only Query.
+A resolver can conform to `SANSA.Resolve` while rejecting a specific local address space for policy reasons. A query implementation can conform to `SANSA.Query` while refusing implementation-specific functions. A mutation or instruction implementation can preserve provenance while still requiring a trusted host envelope for actor identity, delegation, authorization, and audit evidence.

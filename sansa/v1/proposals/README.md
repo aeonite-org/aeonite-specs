@@ -55,7 +55,9 @@ AEON, JSON-compatible output, ASP storage, or another consumer-selected target.
 
 SANSA.Instruction is a proposed source-level composition layer. It is intended
 to lower into structured Query and Mutate behavior rather than replace those
-capabilities.
+capabilities. Claimed source provenance in Instruction, such as reason or
+author text, is preserved for explanation but does not authorize the change or
+prove actor identity.
 
 SANSA.Mutate reuses consumer-selected Shared AEON Value Semantics for preconditions. Value legality remains the responsibility of the consumer, AEOS schema, or domain validator; a document being mutated cannot select its own mutation, validation, or authorization policy.
 
