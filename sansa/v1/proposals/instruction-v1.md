@@ -42,7 +42,8 @@ human-authored declaration while preserving the existing execution boundary.
 
 The conservative SANSA.Mutate structured-plan API remains the execution
 boundary. An Instruction is parsed, resolved, checked, and lowered into exact
-mutation operations before target-surface validation, authorization, and apply.
+mutation operations before consumer policy or authorization, target-surface
+validation, and apply.
 
 An Instruction is a single declared change intent, not an arbitrary sequence of
 commands.
@@ -644,14 +645,16 @@ A consumer lowers an instruction by:
 6. resolving candidate-relative mutation targets;
 7. producing exact structured mutation operations;
 8. applying normal SANSA.Mutate planning, budgets, and stale-target checks;
-9. validating the plan against the intended target surface, if one is selected;
-10. applying authorization, adapter apply rules, and result reporting.
+9. applying consumer policy or authorization checks, if selected;
+10. validating the plan against the intended target surface, if one is selected;
+11. applying adapter apply rules and result reporting.
 
 This preserves the existing boundary:
 
 - source text is human-authored instruction;
 - `because` and `by` are claimed source provenance, not execution authority;
 - structured mutation plans are same-process execution artifacts;
+- policy and authorization checks approve or deny already planned intent;
 - target-surface checks decide whether the plan can be represented by the
   intended host format or adapter surface;
 - authorization, validation, transactions, retries, and storage mapping remain
@@ -665,12 +668,17 @@ Instruction Source
   -> Candidate Binding Set
   -> Structured Mutation Operations
   -> Mutation Plan
+  -> Consumer Policy / Authorization
   -> Target Surface Check
-  -> Preview / Authorize / Apply
+  -> Preview / Apply
 ```
 
 This makes Instruction useful for editors and workbenches without turning it
 into a runtime execution language.
+
+Consumers may choose the order of post-plan policy and target-surface checks,
+provided both happen after a plan is inspectable and before apply. The order is
+therefore a host/tooling behavior, not Instruction syntax.
 
 Mutation policy is not embedded in Instruction source. An Instruction may carry
 claimed provenance such as:

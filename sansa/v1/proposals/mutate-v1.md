@@ -31,8 +31,8 @@ SANSA.Mutate produces deterministic change intent as an immutable mutation plan.
 
 Human-authored SANSA Instruction syntax, if adopted, sits above this layer. An
 instruction may combine Query-style selection with mutation verbs, but it must
-lower into exact structured Mutate operations before target-surface validation,
-authorization, and apply.
+lower into exact structured Mutate operations before consumer policy or
+authorization, target-surface validation, and apply.
 
 ## 2. Design Principles
 
@@ -110,12 +110,12 @@ A mutation-capable consumer distinguishes these phases:
 3. Plan
    Freeze exact targets and produce an immutable mutation plan.
 
-4. Target Surface
+4. Consumer Policy / Authorization
+   Consumer approves or denies each proposed operation.
+
+5. Target Surface
    Validate that the planned operations can be represented by the intended
    host format or adapter surface.
-
-5. Authorize
-   Consumer approves each proposed operation.
 
 6. Apply
    Consumer or adapter maps the plan to namespace changes.
@@ -125,10 +125,11 @@ A mutation-capable consumer distinguishes these phases:
 ```
 
 SANSA.Mutate owns the semantic contract for Target, Preconditions, Plan, and
-portable result reporting. Target-surface validation is a host-format or adapter
-boundary layered after planning. Authorization, physical Apply behavior,
-transactions, storage behavior, and orchestration remain consumer
-responsibilities.
+portable result reporting. Consumer policy or authorization and target-surface
+validation are post-plan checks. A host or tool may run them in either order,
+provided both happen after the plan is inspectable and before apply. Physical
+Apply behavior, transactions, storage behavior, and orchestration remain
+consumer responsibilities.
 
 Planning is side-effect free. An implementation must not partially apply changes
 while it is still resolving targets, evaluating preconditions, or constructing a
@@ -466,6 +467,11 @@ schema validation. For example, JSON target validation can reject an AEON
 attribute mutation because JSON has no attribute-space representation, while an
 AEON schema validator may separately reject a value whose datatype is
 representable but not allowed at that address.
+
+Target-surface validation is also distinct from mutation policy. Policy answers
+whether a trusted consumer allows the planned operation. Target-surface
+validation answers whether the intended format or adapter surface can represent
+the planned value and address role.
 
 An exact target that carries a reference identifies the reference binding
 itself. Mutate does not implicitly follow the reference and modify its target.
