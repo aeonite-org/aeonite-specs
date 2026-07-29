@@ -47,6 +47,13 @@ Capabilities are cumulative only where a specification requires it. For example,
 
 Implementations may advertise proposal-stage `SANSA.Mutate` or `SANSA.Instruction` support only as experimental capabilities until those specifications define a stable conformance profile. Such advertisements should identify the exact supported slice, such as structured mutation planning, target-surface validation, Instruction parsing, Instruction lowering, or Instruction-to-Mutate planning.
 
+Experimental mutation-policy support should be advertised separately from
+mutation planning and apply. A policy checker may conform to an implementation
+slice that filters inspectable mutation plans, fails closed on unsupported
+policy fields, and reports policy diagnostics, without claiming to provide
+authentication, delegation, principal management, schema validation, audit, or a
+complete authorization system.
+
 ## 2. Profiles
 
 ### 2.1 Addressing Profile
@@ -159,6 +166,12 @@ Conceptual example:
       "id": "sansa.transform.fieldsFrom",
       "capability": "SANSA.Transform",
       "category": "library",
+      "maturity": "experimental"
+    },
+    {
+      "id": "sansa.mutate.policy.planFilter",
+      "capability": "SANSA.Mutate",
+      "category": "policy",
       "maturity": "experimental"
     }
   ]

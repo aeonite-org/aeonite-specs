@@ -665,6 +665,29 @@ Instruction Source
 This makes Instruction useful for editors and workbenches without turning it
 into a runtime execution language.
 
+Mutation policy is not embedded in Instruction source. An Instruction may carry
+claimed provenance such as:
+
+```sansa
+because "manual correction"
+by "Bob"
+from $.inventory.items.*
+where .sku == "A-100"
+replace .qty with :int32, 10
+```
+
+This provenance may be preserved on the lowered plan and shown to a user,
+reviewer, host policy engine, or audit surface. It must not be treated as proof
+that Bob authenticated, delegated authority, approved the change, or selected
+the policy profile. A trusted host envelope may separately carry authenticated
+actor, account, agent, delegation, tenancy, signature, or approval data. That
+host envelope may then authorize or deny the already lowered mutation plan.
+
+Consumers should reject policy-shaped or authorization-shaped fields embedded in
+Instruction provenance rather than silently interpreting them. For example,
+`by "Bob"` is a claimed author string, not a policy rule, principal matcher, or
+permission grant.
+
 ## 12. Diagnostics
 
 SANSA Instruction diagnostics should distinguish parse-time failures,

@@ -626,6 +626,55 @@ them. This prevents claimed provenance such as Instruction `by` metadata, or
 future-looking fields such as `rewrite`, from being mistaken for active
 authorization behavior.
 
+The current experimental policy surface used by implementation workbenches is a
+plan filter, not a general authorization language. Its shape is intentionally
+small:
+
+```json
+{
+  "default": "deny",
+  "rules": [
+    {
+      "allow": true,
+      "operations": ["replace"],
+      "target": "$.inventory.sku",
+      "datatypes": ["string"]
+    }
+  ]
+}
+```
+
+`default` is either `allow` or `deny`. Each rule declares `allow` as `true` or
+`false` and may narrow by operation, address role, datatype, representation
+kind, member name, or literal value. The supported rule fields in this
+experimental surface are:
+
+- `operation` or `operations`;
+- `target`;
+- `parent`;
+- `source`;
+- `container`;
+- `anchor`;
+- `datatype` or `datatypes`;
+- `kind` or `kinds`;
+- `name` or `names`;
+- `value` or `values`.
+
+Singular and plural matcher fields are equivalent. Plural fields accept a list
+of accepted values. Operation lists may use `*` as an explicit wildcard.
+Address-role fields contain SANSA address expressions evaluated by the consumer
+against the same namespace view used for policy checking; the resolved canonical
+addresses are matched against the corresponding planned operation role. Invalid
+address matchers fail closed as policy errors.
+
+This policy surface deliberately does not include `by`, `because`, `actor`,
+`principal`, `role`, `rewrite`, `schema`, or executable function fields.
+Principal identity, delegation, authentication, signatures, audit evidence, and
+host-specific policy functions belong to the trusted host envelope or a
+separate authorization system. Provenance preserved on an Instruction or plan
+may be displayed to a policy decision-maker, but it is not itself policy
+authority.
+
 Planning and apply should expose budgets for target count, operation count,
 resolved bindings, predicate work, supplied value size, and implementation
 resource limits. Limit exhaustion must fail explicitly and must not produce a
