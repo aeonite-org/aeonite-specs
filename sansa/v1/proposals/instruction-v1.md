@@ -777,6 +777,14 @@ target surface rejects attributes, tuples, nodes, references, non-finite
 numbers, or SANSA selector literals. These failures are not Instruction parse
 or lowering errors.
 
+Target-surface checks are representability checks, not semantic approval. For
+example, `:list<string>, ["adapter"]` is valid SANSA Instruction intent and can
+be represented by an AEON target surface that supports parameterized list
+datatypes. A JSON-compatible target surface may reject the same plan because
+JSON has arrays but no portable representation for the `list<string>` datatype
+annotation. The plan remains valid SANSA.Mutate intent; the selected target
+surface cannot carry all of its metadata.
+
 Diagnostics should preserve enough context for authoring tools to identify:
 
 - instruction phase: parse, lower, plan, target, authorize, or apply;
