@@ -271,6 +271,7 @@ replace .qty with :int32, 10
 remove .deprecated
 insert last in .tags with "sale"
 append .tags with "sale"
+insert before .tags[2] in .tags with "featured"
 move .tags[0] after .tags[2] in .tags
 ```
 
@@ -308,6 +309,7 @@ model:
 `append` is source-level sugar for `insert last in <container-address> with
 <instruction-value>`. It must lower to the existing `insert` operation with
 `placement: "last"` and must not introduce a distinct SANSA.Mutate operation.
+Canonical rendering should use the normalized `insert last ...` form.
 
 ### 7.1 Create
 
@@ -408,6 +410,10 @@ insert after .tags[2] in .tags with :string, "clearance"
 
 The container must resolve to one ordered container. Anchor addresses must
 resolve to children of that container.
+
+`first` and `last` describe container-relative destination positions. `before`
+and `after` describe container-relative destination positions anchored by an
+existing child binding of the same container.
 
 ### 7.5 Move
 
