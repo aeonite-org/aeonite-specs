@@ -146,6 +146,11 @@ ValueIntent =
 
 The optional `:Datatype` prefix preserves semantic datatype intent. The literal
 payload determines the representation or literal family when it is unambiguous.
+Top-level datatype intent and literal representation family are preserved on the
+structured mutation operation after lowering. For example,
+`:csv[","], "sku,name"` is string-shaped payload with `csv[","]` datatype
+intent, while `:tuple, ("sku", 7)` is tuple-shaped payload with `tuple`
+datatype intent.
 Object value literals preserve field names as authoring intent. Field names
 must be unique within one instruction object literal; duplicate fields are
 rejected rather than silently applying last-value-wins behavior.
@@ -160,6 +165,13 @@ create total with :int32, 344
 The comma is optional and may appear only immediately after an explicit
 datatype annotation. It is a readability delimiter between datatype intent and
 the value payload; it is not a general instruction separator.
+
+Container value literals may contain nested Instruction values, so their parsed
+AST and canonical source can retain nested datatype annotations. The
+conservative structured Mutate operation, however, carries the plain container
+payload plus top-level value intent only. Per-child datatype intent for newly
+created nested bindings is outside this conservative slice unless expressed as
+separate exact operations or by a later structured value-intent model.
 
 ### 4.1 Type-First Rationale
 
