@@ -822,6 +822,55 @@ select .sku
 
 The activated address supplies the source Binding Set for the query. A source expression that does not evaluate to a Binding Set is invalid.
 
+Activating an Address value is an exercise of address authority. The Address
+value does not carry or acquire authority merely because its syntax is valid.
+Before target resolution, the receiving evaluation context must either provide
+an explicit trusted activation mode or authorize the parsed address under a
+constrained activation policy. Unrestricted activation must not be inferred
+from the ability to read the binding that contains the Address value.
+
+The parameter read and the activated target are separate resolutions with
+separate authority:
+
+```text
+resolve parameter binding
+    |
+    v
+obtain SANSA Address Literal value
+    |
+    v
+authorize parsed address activation
+    |
+    v
+resolve activated target under bounds
+```
+
+A constrained activation policy may restrict:
+
+- permitted exact structural roots;
+- absolute or contextual-root activation;
+- member, position, range, wildcard, recursive, pattern, filter, attribute,
+  local-space, and parent selector capabilities;
+- activated-address depth;
+- produced Binding Set cardinality.
+
+Root containment is evaluated over parsed address structure, not string
+prefixes. Parent traversal must be normalized before the containment decision;
+activation fails when containment cannot be proven. Contextual addresses require
+an exact canonical address for the current binding when the policy relies on
+structural root containment.
+
+Scope and selector checks occur before target resolution. Bounds that can only
+be known during resolution, such as result cardinality, must abort resolution
+without exposing partial results when exceeded. A consumer may instead expose a
+pre-scoped namespace view and explicitly treat activation within that reduced
+view as trusted.
+
+Query source may further narrow consumer authority in a future syntax, but it
+must never grant or expand activation authority. A schema or validator may
+check that a path-valued slot satisfies externally supplied constraints; that
+legality decision does not authorize `path(...)` to read the target.
+
 ## 16. Fallback
 
 `fallback` is a deterministic missing-aware expression, not an ordinary eager function.
@@ -1006,6 +1055,12 @@ Consumers receiving SANSA.Query expressions from outside their trust boundary ma
 - expose reduced namespace views;
 - set maximum local address-space depth;
 - reject queries whose cost or traversal exceeds consumer-defined limits.
+
+Consumers that permit `path(...)` must separately authorize the activated
+Address value. A syntactically valid Address value is inert data until explicit
+activation, and permission to read its source binding does not grant permission
+to resolve its target. Dynamic activation should fail closed when no applicable
+activation policy or pre-scoped trusted namespace is present.
 
 A syntactically valid local address does not imply authorization to resolve it.
 

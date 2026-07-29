@@ -88,6 +88,14 @@ Example shared activation form:
 path($.<"params">.target)
 ```
 
+Shared activation does not imply shared authority. Reading the parameter value
+and resolving the activated address are separate authorization decisions. Each
+consumer must apply its own host-supplied activation policy before target
+resolution. AEOS or another validator may check whether a path-valued slot is
+legal under an externally supplied schema, but SANSA.Mutate remains responsible
+only for mutation intent and planning; neither the path value nor the document
+being mutated may grant its own activation or mutation authority.
+
 ## 4. Conceptual Mutation Pipeline
 
 A mutation-capable consumer distinguishes these phases:
@@ -602,9 +610,11 @@ Authorization occurs after a plan is inspectable and before apply. Consumers may
 also reject requests earlier to avoid disclosing protected namespace structure.
 
 Mutation policy is consumer authority, not document authority. A trusted
-consumer, host, AEOS profile, ASP layer, application, or adapter may evaluate a
-mutation plan against policy before apply. The document being mutated must not
-define the policy that authorizes its own change.
+consumer, host, ASP layer, application, or adapter may evaluate a mutation plan
+against policy before apply. An externally selected AEOS schema or validator may
+determine whether the proposed state is legal, but it does not own Mutate and
+does not grant mutation authority. The document being mutated must not define
+the policy that authorizes its own change.
 
 A policy layer may consider:
 

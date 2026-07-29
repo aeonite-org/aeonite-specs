@@ -43,6 +43,14 @@ Capabilities are cumulative only where a specification requires it. For example,
 
 `SANSA.Transform` names optional transform-library behavior over resolved Binding Sets. It is not required by `SANSA.Query` core conformance.
 
+Dynamic Address activation through Query `path(...)` is part of Query behavior,
+not a separate capability. Implementations must distinguish reading an Address
+value from exercising authority to resolve it, accept an explicit trusted or
+constrained activation context, and fail closed when activation authority is
+absent. A constrained policy compares parsed address structure rather than text
+prefixes and may restrict roots, selector capabilities, contextual activation,
+depth, and Binding Set cardinality.
+
 `SANSA.Mutate` is tracked as a proposal-stage authority-bearing capability with a conservative structured-plan boundary. `SANSA.Instruction` is tracked as a proposal-stage source-level composition capability that may lower Addressing, Query, and Mutate vocabulary into structured requests. Instruction source provenance such as claimed reason or claimed author is inert metadata, not authorization or authentication. Neither capability is part of required SANSA v1 Addressing, Resolve, Query, or Transform conformance.
 
 Implementations may advertise proposal-stage `SANSA.Mutate` or `SANSA.Instruction` support only as experimental capabilities until those specifications define a stable conformance profile. Such advertisements should identify the exact supported slice, such as structured mutation planning, target-surface validation, Instruction parsing, Instruction lowering, or Instruction-to-Mutate planning.
