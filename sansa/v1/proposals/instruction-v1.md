@@ -48,6 +48,11 @@ validation, and apply.
 An Instruction is a single declared change intent, not an arbitrary sequence of
 commands.
 
+That single intent may still lower to multiple exact structured operations when
+a candidate selector matches multiple bindings. This is candidate expansion, not
+batch syntax. Multiple source-level mutation clauses, including repeated uses of
+the same verb, are rejected in the conservative surface.
+
 ## 2. Design Principles
 
 SANSA Instruction should be:
