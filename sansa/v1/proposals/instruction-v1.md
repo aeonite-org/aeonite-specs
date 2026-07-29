@@ -825,5 +825,10 @@ Candidate-relative seeds:
 | `remove $` | root removal attempt |
 | `insert last in $.inventory.sku with "sale"` | `insert` container is not ordered |
 | `insert before $.otherTags[0] in $.tags with "sale"` | ordered anchor is not a child of the named container |
+| `from $.inventory.items.*\nremove .missing` | candidate-relative `remove` target resolved no bindings |
+| `from $.inventory.items.*\nappend .sku with "x"` | candidate-relative `append` resolves a non-ordered container |
+| `from $.inventory.items.*\ninsert after .tags[99] in .tags with "x"` | candidate-relative `insert` anchor resolved no bindings |
+| `from $.inventory.items.*\nmove .tags[99] first in .tags` | candidate-relative `move` source resolved no bindings |
+| `from $.inventory.items.*\nmove .sku first in .sku` | candidate-relative `move` resolves a non-ordered container |
 | `move $.todo[0] last in $.done` | cross-container move attempt |
 | `move $.tags[0] before $.tags[0] in $.tags` | invalid move relationship; source and anchor are the same binding |
