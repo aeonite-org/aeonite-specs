@@ -140,6 +140,9 @@ ValueIntent =
 
 The optional `:Datatype` prefix preserves semantic datatype intent. The literal
 payload determines the representation or literal family when it is unambiguous.
+Object value literals preserve field names as authoring intent. Field names
+must be unique within one instruction object literal; duplicate fields are
+rejected rather than silently applying last-value-wins behavior.
 
 Both of these are equivalent:
 
@@ -704,6 +707,7 @@ Instruction parse diagnostics include:
 - unknown mutation verb;
 - malformed instruction value;
 - malformed datatype annotation;
+- duplicate object field in an instruction value;
 - comma delimiter used outside `:datatype, value`;
 - malformed `because` or `by` provenance clause;
 - malformed `require` clause;
@@ -797,6 +801,14 @@ Candidate-relative seeds:
 | `create $.inventory.status, "active"` | malformed `create` clause; expected `with` |
 | `create $.inventory.status with :int32,, 344` | malformed instruction value |
 | `create $.inventory.status with :int32 344,` | comma delimiter used outside `:datatype, value` |
+| `create $.x with :object, { enabled = true enabled = false }` | duplicate object field in an instruction value |
+| `create $.x with :list, ["a", , "b"]` | empty list item |
+| `create $.x with :tuple, ("a", )` | empty tuple item |
+| `create $.x with :node, <123("a")>` | invalid node tag |
+| `create $.x with :list<string\|number>, [1]` | nested datatype union in datatype intent |
+| `replace $.x with lower("A")` | instruction value payload is not a literal |
+| `replace $.x with "a" in $.list.*` | instruction value payload is not a literal |
+| `replace $.qty with 1 /* unterminated` | unterminated instruction block comment |
 | `because Bob\nreplace $.inventory.qty with 1` | malformed `because` clause; expected quoted text |
 | `by\nreplace $.inventory.qty with 1` | malformed `by` clause; expected quoted text |
 | `because "a"\nbecause "b"\nreplace $.inventory.qty with 1` | duplicate provenance clause |
