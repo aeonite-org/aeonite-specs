@@ -683,6 +683,11 @@ against the same namespace view used for policy checking; the resolved canonical
 addresses are matched against the corresponding planned operation role. Invalid
 address matchers fail closed as policy errors.
 
+Experimental policy diagnostics should preserve enough context for tools to
+identify the failed operation, rule, policy field, policy scope, and invalid
+matcher address where available. Suggested context fields are `operationIndex`,
+`ruleIndex`, `policyField`, `policyScope`, and `policyAddress`.
+
 This policy surface deliberately does not include `by`, `because`, `actor`,
 `principal`, `role`, `rewrite`, `schema`, or executable function fields.
 Principal identity, delegation, authentication, signatures, audit evidence, and
