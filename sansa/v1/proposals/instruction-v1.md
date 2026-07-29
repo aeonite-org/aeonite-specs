@@ -778,12 +778,14 @@ numbers, or SANSA selector literals. These failures are not Instruction parse
 or lowering errors.
 
 Target-surface checks are representability checks, not semantic approval. For
-example, `:list<string>, ["adapter"]` is valid SANSA Instruction intent and can
-be represented by an AEON target surface that supports parameterized list
-datatypes. A JSON-compatible target surface may reject the same plan because
-JSON has arrays but no portable representation for the `list<string>` datatype
-annotation. The plan remains valid SANSA.Mutate intent; the selected target
-surface cannot carry all of its metadata.
+example, `:list<string>, ["adapter"]`, `:object<node>, { ... }`,
+`:tuple<string>, (...)`, and `:node<node>, <...>` are valid SANSA Instruction
+intent and can be represented by an AEON target surface that supports
+parameterized container datatype families. A JSON-compatible target surface may
+reject the same plan because JSON has arrays and objects but no portable
+representation for those datatype annotations. The plan remains valid
+SANSA.Mutate intent; the selected target surface cannot carry all of its
+metadata.
 
 Diagnostics should preserve enough context for authoring tools to identify:
 
@@ -813,9 +815,11 @@ lowering fixtures. They are not a complete CTS surface.
 | `replace $.inventory.selector with :sansa, $.inventory.items.*:number` | one `replace` operation, datatype `sansa`, kind `sansa` |
 | `create $.inventory.settings with :object, { enabled = true, status = false }` | one `create` operation, datatype `object`, kind `object`, value containing `enabled` and `status` fields |
 | `create $.inventory.aliases with :list<string>, ["adapter", "driver"]` | one `create` operation, datatype `list<string>`, kind `list` |
+| `create $.inventory.pair with :tuple<string>, ("sku", "A-100")` | one `create` operation, datatype `tuple<string>`, kind `tuple` |
 | `create $.inventory.badge with :node, <badge("new", 3)>` | one `create` operation, datatype `node`, kind `node` |
 | `remove $.inventory.oldStatus` | one `remove` operation, target `$.inventory.oldStatus` |
 | `insert last in $.tags with "sale"` | one `insert` operation, container `$.tags`, placement `last`, kind `string` |
+| `append in $.tags with :csv[","], "sale,new"` | one `insert` operation, container `$.tags`, placement `last`, datatype `csv[","]`, kind `string` |
 | `insert before $.tags[2] in $.tags with :string, "featured"` | one `insert` operation, container `$.tags`, placement `before`, anchor `$.tags[2]`, datatype `string` |
 | `move $.tags[0] after $.tags[2] in $.tags` | one `move` operation, source `$.tags[0]`, container `$.tags`, placement `after`, anchor `$.tags[2]` |
 | `because "manual correction"\nby "Bob"\nreplace $.inventory.qty with :int32, 10` | one `replace` operation with source provenance reason `manual correction` and claimed author `Bob` |
