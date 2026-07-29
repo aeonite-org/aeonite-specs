@@ -727,7 +727,7 @@ Core:
 
 | Future surface | Likely owner |
 | --- | --- |
-| `copy`, cross-container move, rename, upsert, increment, clear, and append/prepend convenience spellings | later Mutate extensions |
+| `copy`, cross-container move, rename, upsert, increment, clear, and structured Mutate append/prepend operation aliases | later Mutate extensions |
 | map, filter, sort, deduplicate, merge, patch, and structural reshaping | `SANSA.Transform` |
 | atomic groups, cross-binding invariants, expected revisions, and commit semantics | possible `SANSA.Transaction` |
 | migrations, business rules, mirrored writes, retries, and conflict workflows | ASP orchestrator |
