@@ -724,6 +724,10 @@ SANSA.Mutate planning diagnostics should distinguish:
 - target-surface representability failure;
 - implementation limit exhaustion.
 
+Target-surface representability diagnostics should preserve target context when
+available, including `targetFormat`, rejected `datatype`, and rejected
+`valuePath` for value representability failures.
+
 Consumer, ASP, or host-storage diagnostics should distinguish:
 
 - authorization denial;

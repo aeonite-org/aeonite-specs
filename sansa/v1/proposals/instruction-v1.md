@@ -791,6 +791,8 @@ Diagnostics should preserve enough context for authoring tools to identify:
 - source span or clause when available;
 - candidate address when the failure occurs inside candidate-relative lowering;
 - lowered operation index when the failure occurs after operations are emitted;
+- target format, rejected datatype, and rejected value path for target-surface
+  representability failures when known;
 - original downstream diagnostic when the failure comes from Resolve, Query, or
   Mutate.
 
