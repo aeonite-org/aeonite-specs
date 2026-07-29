@@ -90,7 +90,7 @@ SANSA separates semantic interaction from representation, validation, persistenc
 - AEON defines how meaning is represented.
 - AEOS defines how meaning is constrained.
 - AES defines how meaning is persisted.
-- SANSA defines how meaning is accessed and, through future Mutate capability, how change intent is expressed.
+- SANSA defines how meaning is accessed and, through proposal-stage Mutate capability, how change intent is expressed.
 - Meaning validators define how domain rules are interpreted and reported.
 - Future mutation consumers define how accepted change intent is authorized, orchestrated, and applied.
 
