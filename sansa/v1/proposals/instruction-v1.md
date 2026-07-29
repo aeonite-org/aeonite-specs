@@ -194,6 +194,8 @@ create enabled with true
 create count with 10
 create state with yes
 create selector with $.inventory.items.*
+create "display name" with "Adapter"
+create $.inventory.@.selector with :sansa, $.inventory.items.*
 ```
 
 These examples use contextual `create`, where the current candidate binding is
@@ -614,6 +616,8 @@ preserved as source provenance without semantic authority.
 current candidate parent, or a SANSA address expression that can be split into
 an exact parent address plus a final member name. A destination that ends in a
 position selector is not a valid `create` destination in the conservative core.
+Attribute-space destinations use ordinary SANSA address syntax, for example
+`create $.inventory.@.selector with :sansa, $.inventory.items.*`.
 
 The initial grammar admits at most one `because` clause, at most one `by`
 clause, at most one `from` clause, and at most one `where` clause, followed by
@@ -757,9 +761,14 @@ lowering fixtures. They are not a complete CTS surface.
 | Source | Expected lowering shape |
 | --- | --- |
 | `create $.inventory.status with "active"` | one `create` operation, parent `$.inventory`, name `status`, kind `string` |
+| `create "display name" with "Adapter"` | one contextual `create` operation, name `display name`, kind `string` |
 | `create $.inventory.total with :int32, 344` | one `create` operation, parent `$.inventory`, name `total`, datatype `int32`, kind `number` |
+| `create $.inventory.@.selector with :sansa, $.inventory.items.*` | one `create` operation, parent `$.inventory.@`, name `selector`, datatype `sansa`, kind `sansa` |
 | `replace $.inventory.color with #fff` | one `replace` operation, target `$.inventory.color`, kind `hex` |
 | `replace $.inventory.selector with :sansa, $.inventory.items.*:number` | one `replace` operation, datatype `sansa`, kind `sansa` |
+| `create $.inventory.settings with :object, { enabled = true, status = false }` | one `create` operation, datatype `object`, kind `object`, value containing `enabled` and `status` fields |
+| `create $.inventory.aliases with :list<string>, ["adapter", "driver"]` | one `create` operation, datatype `list<string>`, kind `list` |
+| `create $.inventory.badge with :node, <badge("new", 3)>` | one `create` operation, datatype `node`, kind `node` |
 | `remove $.inventory.oldStatus` | one `remove` operation, target `$.inventory.oldStatus` |
 | `insert last in $.tags with "sale"` | one `insert` operation, container `$.tags`, placement `last`, kind `string` |
 | `insert before $.tags[2] in $.tags with :string, "featured"` | one `insert` operation, container `$.tags`, placement `before`, anchor `$.tags[2]`, datatype `string` |
@@ -794,7 +803,14 @@ Candidate-relative seeds:
 | `replace .qty with 10\nremove .oldQty` | multiple mutation verbs in one Instruction |
 | `insert "sale" after $.tags[1]` | ambiguous ordered insertion without explicit container |
 
-### 13.3 Negative Lowering Seeds
+### 13.3 Negative Target-Surface Seeds
+
+| Source | Expected failure class |
+| --- | --- |
+| `create $.inventory.selectorProbe with :sansa, $.inventory.items.*` against a JSON target | target surface rejects SANSA datatype intent |
+| `create $.inventory.textProbe with :string<null>, ""` against an AEON target | target surface rejects unsupported generic datatype intent |
+
+### 13.4 Negative Lowering Seeds
 
 | Source | Expected failure class |
 | --- | --- |
