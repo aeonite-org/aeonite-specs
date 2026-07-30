@@ -641,10 +641,14 @@ preserved as source provenance without semantic authority.
 
 `MemberDestination` is either a bare or quoted member name relative to the
 current candidate parent, or a SANSA address expression that can be split into
-an exact parent address plus a final member name. A destination that ends in a
-position selector is not a valid `create` destination in the conservative core.
-Attribute-space destinations use ordinary SANSA address syntax, for example
-`create $.inventory.@.selector with :sansa, $.inventory.items.*`.
+an exact parent address plus a final member selector. Quoted member selectors
+are valid destinations because they still name one semantic member, for example
+`create $.inventory.["display name"] with "Adapter"`. A destination that ends
+in a position selector, wildcard selector, descendant selector, parent
+selector, local-space selector, pattern selector, kind filter, type filter, or
+other expanded selector is not a valid `create` destination in the conservative
+core. Attribute-space destinations use ordinary SANSA address syntax, for
+example `create $.inventory.@.selector with :sansa, $.inventory.items.*`.
 
 The initial grammar admits at most one `because` clause, at most one `by`
 clause, at most one `from` clause, and at most one `where` clause, followed by
@@ -701,7 +705,10 @@ into a runtime execution language.
 
 Consumers may choose the order of post-plan policy and target-surface checks,
 provided both happen after a plan is inspectable and before apply. The order is
-therefore a host/tooling behavior, not Instruction syntax.
+therefore a host/tooling behavior, not Instruction syntax. Diagnostic phase
+names should remain stable across that host choice: `policy` identifies
+consumer authorization or policy denial, while `target` identifies
+representability failure against a selected target surface.
 
 Mutation policy is not embedded in Instruction source. An Instruction may carry
 claimed provenance such as:
@@ -789,7 +796,7 @@ metadata.
 
 Diagnostics should preserve enough context for authoring tools to identify:
 
-- instruction phase: parse, lower, plan, target, authorize, or apply;
+- instruction phase: parse, lower, plan, policy, target, or apply;
 - source span or clause when available;
 - candidate address when the failure occurs inside candidate-relative lowering;
 - lowered operation index when the failure occurs after operations are emitted;
@@ -817,6 +824,7 @@ lowering fixtures. They are not a complete CTS surface.
 | `create $.inventory.aliases with :list<string>, ["adapter", "driver"]` | one `create` operation, datatype `list<string>`, kind `list` |
 | `create $.inventory.pair with :tuple<string>, ("sku", "A-100")` | one `create` operation, datatype `tuple<string>`, kind `tuple` |
 | `create $.inventory.badge with :node, <badge("new", 3)>` | one `create` operation, datatype `node`, kind `node` |
+| `create $.inventory.["display name"] with "Adapter"` | one `create` operation, parent `$.inventory`, name `display name`, kind `string` |
 | `remove $.inventory.oldStatus` | one `remove` operation, target `$.inventory.oldStatus` |
 | `insert last in $.tags with "sale"` | one `insert` operation, container `$.tags`, placement `last`, kind `string` |
 | `append in $.tags with :csv[","], "sale,new"` | one `insert` operation, container `$.tags`, placement `last`, datatype `csv[","]`, kind `string` |
@@ -877,6 +885,8 @@ Candidate-relative seeds:
 | Source | Expected failure class |
 | --- | --- |
 | `create $.tags[2] with "sale"` | destination-address `create` ends in a position selector |
+| `create $.inventory.* with "sale"` | destination-address `create` ends in an expanded selector |
+| `create $.inventory.("item*") with "sale"` | destination-address `create` ends in a pattern selector |
 | `create $ with "active"` | destination-address `create` cannot split root into parent and member name |
 | `replace $.inventory.missing with "active"` | `replace` target resolved no bindings |
 | `remove $` | root removal attempt |

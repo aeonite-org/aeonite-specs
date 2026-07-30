@@ -131,6 +131,11 @@ provided both happen after the plan is inspectable and before apply. Physical
 Apply behavior, transactions, storage behavior, and orchestration remain
 consumer responsibilities.
 
+For diagnostics and interoperable tooling, the post-plan authorization phase is
+reported as `policy`. The phase name covers consumer policy, host
+authorization, delegated approval checks, and other trusted authority decisions.
+The `target` phase is reserved for target-surface representability failures.
+
 Planning is side-effect free. An implementation must not partially apply changes
 while it is still resolving targets, evaluating preconditions, or constructing a
 plan.
@@ -461,7 +466,7 @@ do not make a value schema-valid. A host adapter or validator may consume them t
 materialize host-specific literal forms, apply schema rules, or reject the
 operation.
 
-A target-surface check may reject planned values before authorization or apply
+A target-surface check may reject planned values before policy or apply
 when the intended host format cannot represent them. This check is distinct from
 schema validation. For example, JSON target validation can reject an AEON
 attribute mutation because JSON has no attribute-space representation, while an
@@ -782,11 +787,13 @@ The first implementation slice should:
 3. add representation-neutral `insert` and same-container `move`;
 4. preserve target and anchor identity or reject stale plans;
 5. keep authorization and physical apply behind a consumer adapter;
-6. report affected bindings and resulting canonical addresses;
-7. preserve inert provenance and portability warnings on inspectable plans;
-8. expose explicit operation, precondition, capability, stale-target, and apply
+6. expose post-plan `policy` and `target` diagnostics without treating either
+   as a planning failure;
+7. report affected bindings and resulting canonical addresses;
+8. preserve inert provenance and portability warnings on inspectable plans;
+9. expose explicit operation, precondition, capability, stale-target, and apply
    diagnostics;
-9. preserve datatype/kind value intent and enforce operation, precondition, and
+10. preserve datatype/kind value intent and enforce operation, precondition, and
    supplied-value budgets.
 
 Human-authored syntax, portable plan serialization, cross-process opaque target
