@@ -471,7 +471,10 @@ when the intended host format cannot represent them. This check is distinct from
 schema validation. For example, JSON target validation can reject an AEON
 attribute mutation because JSON has no attribute-space representation, while an
 AEON schema validator may separately reject a value whose datatype is
-representable but not allowed at that address.
+representable but not allowed at that address. An AEON target surface may also
+reject a planned `date` value such as `"2025-02-29"` because the value is not a
+valid AEON date literal payload, even though the structured Mutate plan can
+still preserve the requested `datatype` and `kind` intent for inspection.
 
 Target-surface validation is also distinct from mutation policy. Policy answers
 whether a trusted consumer allows the planned operation. Target-surface

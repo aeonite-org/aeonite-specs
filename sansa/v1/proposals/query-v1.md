@@ -193,13 +193,21 @@ The expression parser covers:
 - resolution expressions beginning with `.`, `$`, or `?`
 - string, number, Boolean, AEON toggle literals, and AEON scalar source
   literal families such as hex, radix, encoding, separator, explicit-null, and
-  temporal-looking literals
+  temporal source literals
 - comparison operators
 - membership operator shape
 - Boolean operators with the precedence defined in this proposal
 - parenthesized groups
 - existence operator shape
 - cardinality operator shape
+
+Temporal source literals use AEON Core lexical recognition, including
+reduced-precision temporal forms and calendar/clock range validation. For
+example, `09:`, `2025-01-01T09Z`, and
+`2025-01-01T09Z&Europe/Belgium/Brussels` are temporal source literals.
+Invalid ranges such as `2025-02-29`, `2025-13-40`, `24:00`, and `23:59:60`
+are parse errors rather than temporal values deferred to comparison semantics.
+
 - deterministic function-call shape
 - projection expression shape
 
@@ -608,6 +616,10 @@ select .
 ```
 
 The semantic filter constrains the Binding Set to date values before comparison. A `date` literal does not implicitly compare with `datetime`, `time`, `zrut`, or string values.
+
+Reduced-precision forms accepted by AEON Core remain temporal values in
+SANSA.Query. For example, `2025-01-01T09Z` is a `datetime` value, and
+`2025-01-01T09Z&Europe/Belgium/Brussels` is a `zrut` value.
 
 The `in` operator tests scalar membership in a Binding Set:
 

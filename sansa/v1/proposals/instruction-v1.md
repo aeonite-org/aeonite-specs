@@ -154,6 +154,9 @@ datatype intent.
 Object value literals preserve field names as authoring intent. Field names
 must be unique within one instruction object literal; duplicate fields are
 rejected rather than silently applying last-value-wins behavior.
+Temporal value literals use the same lexical recognition as SANSA.Query and
+AEON Core, including reduced-precision forms such as `09:`,
+`2025-01-01T09Z`, and `2025-01-01T09Z&Europe/Belgium/Brussels`.
 
 Both of these are equivalent:
 
@@ -824,6 +827,7 @@ lowering fixtures. They are not a complete CTS surface.
 | `create $.inventory.aliases with :list<string>, ["adapter", "driver"]` | one `create` operation, datatype `list<string>`, kind `list` |
 | `create $.inventory.pair with :tuple<string>, ("sku", "A-100")` | one `create` operation, datatype `tuple<string>`, kind `tuple` |
 | `create $.inventory.badge with :node, <badge("new", 3)>` | one `create` operation, datatype `node`, kind `node` |
+| `create $.inventory.availableAt with :datetime, 2026-10-10T09Z` | one `create` operation, datatype `datetime`, kind `datetime` |
 | `create $.inventory.["display name"] with "Adapter"` | one `create` operation, parent `$.inventory`, name `display name`, kind `string` |
 | `remove $.inventory.oldStatus` | one `remove` operation, target `$.inventory.oldStatus` |
 | `insert last in $.tags with "sale"` | one `insert` operation, container `$.tags`, placement `last`, kind `string` |
@@ -861,6 +865,8 @@ Candidate-relative seeds:
 | `create $.x with :list<string\|number>, [1]` | nested datatype union in datatype intent |
 | `replace $.x with lower("A")` | instruction value payload is not a literal |
 | `replace $.x with "a" in $.list.*` | instruction value payload is not a literal |
+| `create $.x with :date, 2025-02-29` | invalid temporal value literal |
+| `create $.x with :time, 24:00` | invalid temporal value literal |
 | `replace $.qty with 1 /* unterminated` | unterminated instruction block comment |
 | `because Bob\nreplace $.inventory.qty with 1` | malformed `because` clause; expected quoted text |
 | `by\nreplace $.inventory.qty with 1` | malformed `by` clause; expected quoted text |
