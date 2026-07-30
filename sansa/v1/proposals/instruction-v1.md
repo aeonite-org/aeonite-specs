@@ -797,6 +797,14 @@ representation for those datatype annotations. The plan remains valid
 SANSA.Mutate intent; the selected target surface cannot carry all of its
 metadata.
 
+For AEON targets, representability also includes reserved lexical metadata and
+literal-family shape. `radix[03]` is not representable as AEON Core radix
+metadata, `radix16` is not a reserved Core v1 radix alias, and quoted
+encoding-looking text such as `:base64, "abc+/=="` remains a string literal
+family rather than an encoding literal. These checks do not decide whether a
+lexically valid radix payload is meaningful for a declared base; that remains a
+schema, profile, or consumer responsibility.
+
 Diagnostics should preserve enough context for authoring tools to identify:
 
 - instruction phase: parse, lower, plan, policy, target, or apply;
@@ -885,6 +893,9 @@ Candidate-relative seeds:
 | `create $.inventory.textProbe with :string<null>, ""` against an AEON target | target surface rejects unsupported generic datatype intent |
 | `create $.inventory.badToggle with :toggle, "maybe"` against an AEON target | target surface rejects reserved datatype and literal-family mismatch |
 | `create $.inventory.badDate with :date, "2026-10-10"` against an AEON target | target surface rejects quoted text as a date literal |
+| `create $.inventory.badRadix with :radix[03], %101` against an AEON target | target surface rejects invalid reserved radix metadata |
+| `create $.inventory.badRadixAlias with :radix16, %10` against an AEON target | target surface rejects unsupported reserved-looking radix alias |
+| `create $.inventory.badEncoding with :base64, "abc+/=="` against an AEON target | target surface rejects quoted text as an encoding literal |
 | `create $.inventory.pair with :tuple, ("sku", 7)` against a JSON target | target surface rejects tuple datatype intent |
 | `create $.inventory.badge with :node, <badge("new", 3)>` against a JSON target | target surface rejects node datatype intent |
 | `create $.inventory.copy with :number, ~target` against a JSON target | target surface rejects reference-family payload |

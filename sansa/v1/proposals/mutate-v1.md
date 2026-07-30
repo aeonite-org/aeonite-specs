@@ -475,6 +475,12 @@ representable but not allowed at that address. An AEON target surface may also
 reject a planned `date` value such as `"2025-02-29"` because the value is not a
 valid AEON date literal payload, even though the structured Mutate plan can
 still preserve the requested `datatype` and `kind` intent for inspection.
+Likewise, an AEON target surface may reject malformed reserved datatype
+metadata such as `radix[03]`, unsupported reserved-looking aliases such as
+`radix16`, or malformed source-family payloads such as radix `1__0` or
+encoding `abc+/==`. This is still representability validation. Base-specific
+radix digit meaning, decoded encoding meaning, color meaning, version meaning,
+and other domain semantics remain schema, profile, or consumer concerns.
 
 Target-surface validation is also distinct from mutation policy. Policy answers
 whether a trusted consumer allows the planned operation. Target-surface
