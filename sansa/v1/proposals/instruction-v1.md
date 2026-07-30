@@ -157,6 +157,9 @@ rejected rather than silently applying last-value-wins behavior.
 Temporal value literals use the same lexical recognition as SANSA.Query and
 AEON Core, including reduced-precision forms such as `09:`,
 `2025-01-01T09Z`, and `2025-01-01T09Z&Europe/Belgium/Brussels`.
+Comment markers do not begin inside a contiguous temporal value literal. For
+example, `2025-01-01T09Z&Europe//Brussels` is an invalid ZRUT value literal,
+not a shorter ZRUT value followed by a comment.
 
 Both of these are equivalent:
 

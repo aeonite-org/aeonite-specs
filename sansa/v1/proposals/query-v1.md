@@ -1027,6 +1027,9 @@ Multi-line:
 ```
 
 Comments are lexical trivia. They may appear wherever whitespace is permitted, do not affect query semantics, and are removed from canonical query representations.
+Comment markers do not begin inside a contiguous source literal payload. For
+example, `2025-01-01T09Z&Europe//Brussels` is an invalid ZRUT literal rather
+than `2025-01-01T09Z&Europe` followed by a comment.
 
 ## 22. Local Address-Space Binding
 

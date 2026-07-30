@@ -675,6 +675,7 @@ Nuances:
 - `datetime` extends that same reduced-precision rule after the `T`, so forms such as `2025-01-01T09Z`, `2025-01-01T09+02:00`, and `2025-01-01T09:30Z` are valid;
 - ZRUT extends the same reduced-precision datetime bases with a named zone suffix, so forms such as `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, and `2025-01-01T09:30Z&Local` are valid `zrut` literals;
 - named-zone ZRUT suffixes may contain `/`, `_`, `-`, and `+` when used as part of a contiguous zone identifier, so forms such as `America/Port-au-Prince`, `GB-Eire`, `Etc/GMT-1`, and `Etc/GMT+1` are valid zone payloads;
+- comment markers do not begin inside a contiguous ZRUT zone payload; forms such as `Europe//Brussels` and `Europe/*Brussels*/` are invalid zone payloads, not shortened values followed by comments;
 - uppercase `Z` is the Core v1 UTC marker form; lowercase `z` is not a temporal literal marker;
 - invalid ranges such as `2025-13-40`, `2025-02-29`, `24:00`, `99:99`, and `23:59:60` are not temporal literals in Core v1;
 - strict datatype compatibility treats `:time`, `:datetime`, and `:zrut` as `DateTimeLiteral`-compatible;
