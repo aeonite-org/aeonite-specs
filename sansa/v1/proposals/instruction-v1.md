@@ -878,6 +878,7 @@ Candidate-relative seeds:
 | `create $.inventory.@.reviewed with true` against a JSON target | target surface rejects attribute-space mutation |
 | `create $.inventory.textProbe with :string<null>, ""` against an AEON target | target surface rejects unsupported generic datatype intent |
 | `create $.inventory.badToggle with :toggle, "maybe"` against an AEON target | target surface rejects reserved datatype and literal-family mismatch |
+| `create $.inventory.badDate with :date, "2026-10-10"` against an AEON target | target surface rejects quoted text as a date literal |
 | `create $.inventory.pair with :tuple, ("sku", 7)` against a JSON target | target surface rejects tuple datatype intent |
 | `create $.inventory.badge with :node, <badge("new", 3)>` against a JSON target | target surface rejects node datatype intent |
 | `create $.inventory.copy with :number, ~target` against a JSON target | target surface rejects reference-family payload |
