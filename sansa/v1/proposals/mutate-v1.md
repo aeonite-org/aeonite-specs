@@ -782,11 +782,18 @@ Core:
 | Future surface | Likely owner |
 | --- | --- |
 | `copy`, cross-container move, rename, upsert, increment, clear, and structured Mutate append/prepend operation aliases | later Mutate extensions |
+| nested binding-tree materialization with per-child datatype or kind intent | later Mutate or Instruction extension |
 | map, filter, sort, deduplicate, merge, patch, and structural reshaping | `SANSA.Transform` |
 | atomic groups, cross-binding invariants, expected revisions, and commit semantics | possible `SANSA.Transaction` |
 | migrations, business rules, mirrored writes, retries, and conflict workflows | ASP orchestrator |
 | authorization policy and principal evaluation | consumer or ASP |
 | storage representation and physical change operations | adapter or storage engine |
+
+Nested binding-tree materialization would need an explicit future surface rather
+than silently extending conservative `create` or `replace`. Such a surface would
+make nested members executable binding creation or replacement intent, preserve
+per-child datatype or kind metadata, and require its own policy, target-surface,
+diagnostic, failure, and atomicity rules.
 
 An integrated human-authored Query-and-mutation syntax, correlated writes,
 conditional branches, compositional dynamic target construction, arithmetic
