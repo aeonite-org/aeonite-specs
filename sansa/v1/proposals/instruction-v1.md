@@ -187,7 +187,11 @@ Nested datatype intent should still be checked for compatibility with the nested
 literal representation before lowering. Compatible nested datatype intent should
 surface a non-fatal diagnostic when it is flattened during conservative
 lowering; incompatible nested datatype intent should be rejected rather than
-silently dropped.
+silently dropped. Nested non-plain literal representation families, such as
+temporal literals, references, SANSA address literals, tuples, nodes, separators,
+radix, encoding, null, NaN, Infinity, and toggle literals, should also surface a
+non-fatal diagnostic when their representation family is flattened without an
+explicit datatype annotation.
 Target-surface validation then evaluates the conservative flattened plan; it
 does not treat nested datatype annotations as executable per-child binding
 metadata unless a later structured value-intent model defines that behavior.
