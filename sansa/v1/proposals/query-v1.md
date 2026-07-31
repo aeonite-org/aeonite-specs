@@ -208,6 +208,11 @@ example, `09:`, `2025-01-01T09Z`, and
 Invalid ranges such as `2025-02-29`, `2025-13-40`, `24:00`, and `23:59:60`
 are parse errors rather than temporal values deferred to comparison semantics.
 
+Separator source literals use AEON Core separator payload recognition after the
+leading `^`. Unquoted separator payload text is intentionally narrow. Segments
+that require whitespace, comma, slash, brackets, or other broader text use
+quoted separator payload segments, such as `^"hello world"|"this, [is] fine"`.
+
 - deterministic function-call shape
 - projection expression shape
 
@@ -620,6 +625,18 @@ The semantic filter constrains the Binding Set to date values before comparison.
 Reduced-precision forms accepted by AEON Core remain temporal values in
 SANSA.Query. For example, `2025-01-01T09Z` is a `datetime` value, and
 `2025-01-01T09Z&Europe/Belgium/Brussels` is a `zrut` value.
+
+Separator query literals likewise preserve the AEON separator source family:
+
+```text
+from $.types.*#sep
+where . == ^"hello world"|"this, [is] fine"
+select .
+```
+
+The payload is compared as a separator-family value. Query comparison does not
+split separator payloads into fields unless a trusted profile supplies that
+meaning.
 
 The `in` operator tests scalar membership in a Binding Set:
 

@@ -478,9 +478,14 @@ still preserve the requested `datatype` and `kind` intent for inspection.
 Likewise, an AEON target surface may reject malformed reserved datatype
 metadata such as `radix[03]`, unsupported reserved-looking aliases such as
 `radix16`, or malformed source-family payloads such as radix `1__0` or
-encoding `abc+/==`. This is still representability validation. Base-specific
-radix digit meaning, decoded encoding meaning, color meaning, version meaning,
-and other domain semantics remain schema, profile, or consumer concerns.
+encoding `abc+/==`. Separator representability is checked in the same layer:
+`root/main` is not an AEON separator payload without quoting, `sep[","]` is not
+valid AEON Core separator metadata, and `kadot[...]` metadata is not an AEON
+Core `kadot` surface. Quoted separator payloads such as
+`"hello world"|"this, [is] fine"` remain representable. This is still
+representability validation. Base-specific radix digit meaning, decoded
+encoding meaning, separator-field meaning, color meaning, version meaning, and
+other domain semantics remain schema, profile, or consumer concerns.
 
 Target-surface validation is also distinct from mutation policy. Policy answers
 whether a trusted consumer allows the planned operation. Target-surface

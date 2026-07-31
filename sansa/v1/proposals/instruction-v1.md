@@ -161,6 +161,11 @@ Comment markers do not begin inside a contiguous temporal value literal. For
 example, `2025-01-01T09Z&Europe//Brussels` is an invalid ZRUT value literal,
 not a shorter ZRUT value followed by a comment.
 
+Separator value literals also use the same payload recognition as SANSA.Query
+and AEON Core. Unquoted payload text is intentionally narrow. Payload segments
+that require whitespace, comma, slash, brackets, or other broader text use
+quoted separator segments, such as `^"hello world"|"this, [is] fine"`.
+
 Both of these are equivalent:
 
 ```sansa
@@ -804,9 +809,14 @@ For AEON targets, representability also includes reserved lexical metadata and
 literal-family shape. `radix[03]` is not representable as AEON Core radix
 metadata, `radix16` is not a reserved Core v1 radix alias, and quoted
 encoding-looking text such as `:base64, "abc+/=="` remains a string literal
-family rather than an encoding literal. These checks do not decide whether a
-lexically valid radix payload is meaningful for a declared base; that remains a
-schema, profile, or consumer responsibility.
+family rather than an encoding literal. Separator payloads and metadata are
+checked here as well: `:sep, ^root/main` is not representable because the slash
+requires quoting, `:sep[","], ^"hello, world"` is not representable as AEON
+Core separator metadata, and `:kadot[.], ^1.2.3` is not representable because
+AEON Core `kadot` does not carry bracket metadata. These checks do not decide
+whether a lexically valid radix payload is meaningful for a declared base, or
+whether a separator payload should be split into fields; that remains a schema,
+profile, or consumer responsibility.
 
 Diagnostics should preserve enough context for authoring tools to identify:
 
@@ -899,6 +909,8 @@ Candidate-relative seeds:
 | `create $.inventory.badRadix with :radix[03], %101` against an AEON target | target surface rejects invalid reserved radix metadata |
 | `create $.inventory.badRadixAlias with :radix16, %10` against an AEON target | target surface rejects unsupported reserved-looking radix alias |
 | `create $.inventory.badEncoding with :base64, "abc+/=="` against an AEON target | target surface rejects quoted text as an encoding literal |
+| `create $.inventory.badSeparator with :sep[","], ^"hello, world"` against an AEON target | target surface rejects invalid reserved separator metadata |
+| `create $.inventory.badKadot with :kadot[.], ^1.2.3` against an AEON target | target surface rejects invalid reserved `kadot` metadata |
 | `create $.inventory.pair with :tuple, ("sku", 7)` against a JSON target | target surface rejects tuple datatype intent |
 | `create $.inventory.badge with :node, <badge("new", 3)>` against a JSON target | target surface rejects node datatype intent |
 | `create $.inventory.copy with :number, ~target` against a JSON target | target surface rejects reference-family payload |
