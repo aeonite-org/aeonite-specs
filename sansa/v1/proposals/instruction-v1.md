@@ -154,6 +154,9 @@ datatype intent.
 Object value literals preserve field names as authoring intent. Field names may
 be bare AEON identifiers or bracket-quoted names such as `["display name"]` or
 `["bad.key"]`; both forms still use `=` between the field name and value.
+When such fields are rendered into AEON source, decoded quoted field names use
+AEON quoted binding-key syntax such as `"display name":string = "Adapter"`,
+not SANSA selector syntax.
 Field names must be unique within one instruction object literal after quoted
 names are decoded; duplicate fields are rejected rather than silently applying
 last-value-wins behavior.
@@ -841,10 +844,7 @@ reserved scalar family: `:number, "42"`, `:boolean, "true"`, `:hex, "fff"`,
 `:nan, "NaN"`, `:infinity, "+Infinity"`, and `:base64, "abc+/=="` are not
 representable as AEON Core number, Boolean, hex, non-finite, or encoding
 literals. Explicit null-family payloads such as `:string, !notApplicable` are
-not representable as string literals. Object fields and node attributes must
-also be representable as AEON binding names; decoded quoted object keys such as
-`["bad.key"]` may be valid Instruction syntax while still being rejected by an
-AEON target surface. Separator payloads and metadata are
+not representable as string literals. Separator payloads and metadata are
 checked here as well: `:sep, ^root/main` is not representable because the slash
 requires quoting, `:sep[","], ^"hello, world"` is not representable as AEON
 Core separator metadata, and `:kadot[.], ^1.2.3` is not representable because
@@ -974,7 +974,6 @@ Candidate-relative seeds:
 | `create $.inventory.pair with :tuple, ("sku", 7)` against a JSON target | target surface rejects tuple datatype intent |
 | `create $.inventory.badge with :node, <badge("new", 3)>` against a JSON target | target surface rejects node datatype intent |
 | `create $.inventory.copy with :number, ~target` against a JSON target | target surface rejects reference-family payload |
-| `create $.inventory.badQuotedField with :object, { ["bad.key"] = "x" }` against an AEON target | target surface rejects decoded object field names that cannot be represented as AEON binding names |
 | `create $.inventory.nestedPair with :object, { pair = :tuple, ("sku", 7) }` against a JSON target | lowering warns that nested tuple intent was flattened; target surface sees a plain nested list |
 | `create $.inventory.payload with :object, { ["bad.key"] = :node, <badge("new")> }` against a JSON target | target surface reports quoted nested value path `value["bad.key"]` |
 | `create $.inventory.nestedRelationship with :object, { sibling = :relationship<sibling>[brother], "Bob" }` against an AEON target | lowering warns that nested custom datatype intent was flattened; target surface sees a plain nested string |

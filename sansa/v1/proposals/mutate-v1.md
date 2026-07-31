@@ -488,10 +488,7 @@ expression shape and Core-owned binding-side container restrictions, such as
 rejecting malformed datatype intent or `node<string>` over a node binding while
 accepting `node<node>` and custom profile/domain claims such as `node<html>`.
 That check does not enforce child content; child semantics remain schema or
-profile concerns. AEON target validation also rejects supplied object keys or
-node attribute keys that cannot be represented as AEON binding names, even when
-the structured Mutate value can carry them and another target format, such as
-JSON, could represent them. An AEON target surface may accept selector-shaped `:sansa`
+profile concerns. An AEON target surface may accept selector-shaped `:sansa`
 address values because they are address data, while rejecting reference-family
 values whose target text is not an exact AEON target path. Reference existence,
 forward-reference legality, and self-reference legality remain AEON Core
