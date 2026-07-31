@@ -183,6 +183,8 @@ conservative structured Mutate operation, however, carries the plain container
 payload plus top-level value intent only. Per-child datatype intent for newly
 created nested bindings is outside this conservative slice unless expressed as
 separate exact operations or by a later structured value-intent model.
+Implementations should surface a non-fatal diagnostic when nested datatype
+intent is flattened during conservative lowering.
 
 ### 4.1 Type-First Rationale
 
