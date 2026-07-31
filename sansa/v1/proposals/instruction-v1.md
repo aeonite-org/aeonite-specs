@@ -915,6 +915,10 @@ Candidate-relative seeds:
 | `create $.x with :list, ["a", , "b"]` | empty list item |
 | `create $.x with :tuple, ("a", )` | empty tuple item |
 | `create $.x with :node, <123("a")>` | invalid node tag |
+| `create $.x with :, 1` | empty datatype annotation |
+| `create $.x with :list<string, [1]` | unterminated datatype parameter list |
+| `create $.x with :csv[";", "a"` | unterminated datatype argument list |
+| `create $.x with :list<>, [1]` | empty datatype parameter list |
 | `create $.x with :list<string\|number>, [1]` | nested datatype union in datatype intent |
 | `replace $.x with lower("A")` | instruction value payload is not a literal |
 | `replace $.x with "a" in $.list.*` | instruction value payload is not a literal |
