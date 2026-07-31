@@ -483,9 +483,15 @@ encoding `abc+/==`. Separator representability is checked in the same layer:
 valid AEON Core separator metadata, and `kadot[...]` metadata is not an AEON
 Core `kadot` surface. Quoted separator payloads such as
 `"hello world"|"this, [is] fine"` remain representable. This is still
-representability validation. Base-specific radix digit meaning, decoded
-encoding meaning, separator-field meaning, color meaning, version meaning, and
-other domain semantics remain schema, profile, or consumer concerns.
+representability validation. An AEON target surface may accept selector-shaped
+`:sansa` address values because they are address data, while rejecting
+reference-family values whose target text is not an exact AEON target path.
+Reference existence, forward-reference legality, and self-reference legality
+remain AEON Core document-validation responsibilities, not Mutate
+target-surface checks. Base-specific radix digit meaning, decoded encoding
+meaning, separator-field meaning, color meaning, version meaning, reference
+following, and other domain semantics remain schema, profile, or consumer
+concerns.
 
 Target-surface validation is also distinct from mutation policy. Policy answers
 whether a trusted consumer allows the planned operation. Target-surface

@@ -813,10 +813,14 @@ family rather than an encoding literal. Separator payloads and metadata are
 checked here as well: `:sep, ^root/main` is not representable because the slash
 requires quoting, `:sep[","], ^"hello, world"` is not representable as AEON
 Core separator metadata, and `:kadot[.], ^1.2.3` is not representable because
-AEON Core `kadot` does not carry bracket metadata. These checks do not decide
-whether a lexically valid radix payload is meaningful for a declared base, or
-whether a separator payload should be split into fields; that remains a schema,
-profile, or consumer responsibility.
+AEON Core `kadot` does not carry bracket metadata. AEON target validation also
+distinguishes SANSA address data from AEON references: `:sansa,
+$.inventory.items.*.sku` is representable address data, but `~target.*` is not
+an AEON reference target because reference paths are exact. These checks do not
+decide whether a lexically valid radix payload is meaningful for a declared
+base, whether a separator payload should be split into fields, or whether a
+reference target exists and is legal in document order; those remain schema,
+profile, consumer, or AEON Core responsibilities.
 
 Diagnostics should preserve enough context for authoring tools to identify:
 
@@ -911,6 +915,7 @@ Candidate-relative seeds:
 | `create $.inventory.badEncoding with :base64, "abc+/=="` against an AEON target | target surface rejects quoted text as an encoding literal |
 | `create $.inventory.badSeparator with :sep[","], ^"hello, world"` against an AEON target | target surface rejects invalid reserved separator metadata |
 | `create $.inventory.badKadot with :kadot[.], ^1.2.3` against an AEON target | target surface rejects invalid reserved `kadot` metadata |
+| `create $.inventory.badReference with :number, ~target.*` against an AEON target | target surface rejects selector-shaped AEON reference target |
 | `create $.inventory.pair with :tuple, ("sku", 7)` against a JSON target | target surface rejects tuple datatype intent |
 | `create $.inventory.badge with :node, <badge("new", 3)>` against a JSON target | target surface rejects node datatype intent |
 | `create $.inventory.copy with :number, ~target` against a JSON target | target surface rejects reference-family payload |
