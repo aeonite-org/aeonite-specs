@@ -688,6 +688,10 @@ selector, local-space selector, pattern selector, kind filter, type filter, or
 other expanded selector is not a valid `create` destination in the conservative
 core. Attribute-space destinations use ordinary SANSA address syntax, for
 example `create $.inventory.@.selector with :sansa, $.inventory.items.*`.
+Quoted member selectors may appear on either side of the attribute-space
+selector, for example `create $.inventory.["display name"].@.["source role"]
+with "catalog"`; both quoted names are SANSA address selectors and lower to
+decoded mutation names.
 
 The initial grammar admits at most one `because` clause, at most one `by`
 clause, at most one `from` clause, and at most one `where` clause, followed by
@@ -885,6 +889,8 @@ lowering fixtures. They are not a complete CTS surface.
 | `create "display name" with "Adapter"` | one contextual `create` operation, name `display name`, kind `string` |
 | `create $.inventory.total with :int32, 344` | one `create` operation, parent `$.inventory`, name `total`, datatype `int32`, kind `number` |
 | `create $.inventory.@.selector with :sansa, $.inventory.items.*` | one `create` operation, parent `$.inventory.@`, name `selector`, datatype `sansa`, kind `sansa` |
+| `create $.inventory.@.["source role"] with "catalog"` | one `create` operation, parent `$.inventory.@`, name `source role`, kind `string` |
+| `create $.inventory.["display name"].@.["source role"] with "catalog"` | one `create` operation, parent `$.inventory.["display name"].@`, name `source role`, kind `string` |
 | `replace $.inventory.color with #fff` | one `replace` operation, target `$.inventory.color`, kind `hex` |
 | `replace $.inventory.selector with :sansa, $.inventory.items.*:number` | one `replace` operation, datatype `sansa`, kind `sansa` |
 | `create $.inventory.settings with :object, { enabled = true, status = false }` | one `create` operation, datatype `object`, kind `object`, value containing `enabled` and `status` fields |
@@ -959,6 +965,7 @@ Candidate-relative seeds:
 | --- | --- |
 | `create $.inventory.selectorProbe with :sansa, $.inventory.items.*` against a JSON target | target surface rejects SANSA datatype intent |
 | `create $.inventory.@.reviewed with true` against a JSON target | target surface rejects attribute-space mutation |
+| `create $.inventory.@.["source role"] with "catalog"` against a JSON target | target surface rejects attribute-space mutation even though the quoted attribute name is valid SANSA address syntax |
 | `create $.inventory.textProbe with :string<null>, ""` against an AEON target | target surface rejects unsupported generic datatype intent |
 | `create $.inventory.badNodeString with :node<string>, <title("Hello")>` against an AEON target | target surface rejects unsupported binding-side node datatype claim |
 | `create $.inventory.badToggle with :toggle, "maybe"` against an AEON target | target surface rejects reserved datatype and literal-family mismatch |
