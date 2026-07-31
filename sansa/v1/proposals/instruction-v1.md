@@ -920,6 +920,9 @@ Candidate-relative seeds:
 | `create $.x with :csv[";", "a"` | unterminated datatype argument list |
 | `create $.x with :list<>, [1]` | empty datatype parameter list |
 | `create $.x with :list<string\|number>, [1]` | nested datatype union in datatype intent |
+| `create $.x with :number, ~` | empty reference literal target |
+| `create $.x with :number, ~ target` | whitespace inside reference literal target |
+| `create $.x with :sansa, $.inventory..sku` | malformed SANSA address literal payload |
 | `replace $.x with lower("A")` | instruction value payload is not a literal |
 | `replace $.x with "a" in $.list.*` | instruction value payload is not a literal |
 | `create $.x with :date, 2025-02-29` | invalid temporal value literal |
@@ -948,6 +951,7 @@ Candidate-relative seeds:
 | `create $.inventory.badEncoding with :base64, "abc+/=="` against an AEON target | target surface rejects quoted text as an encoding literal |
 | `create $.inventory.badSeparator with :sep[","], ^"hello, world"` against an AEON target | target surface rejects invalid reserved separator metadata |
 | `create $.inventory.badKadot with :kadot[.], ^1.2.3` against an AEON target | target surface rejects invalid reserved `kadot` metadata |
+| `create $.inventory.badAddressDatatype with :string, $.inventory.items.*.sku` against an AEON target | target surface rejects SANSA address data claimed as a string literal |
 | `create $.inventory.badReference with :number, ~target.*` against an AEON target | target surface rejects selector-shaped AEON reference target |
 | `create $.inventory.pair with :tuple, ("sku", 7)` against a JSON target | target surface rejects tuple datatype intent |
 | `create $.inventory.badge with :node, <badge("new", 3)>` against a JSON target | target surface rejects node datatype intent |
