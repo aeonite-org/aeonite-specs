@@ -805,6 +805,13 @@ representation for those datatype annotations. The plan remains valid
 SANSA.Mutate intent; the selected target surface cannot carry all of its
 metadata.
 
+AEON target validation checks datatype-expression shape and Core-owned
+binding-side container restrictions without turning datatype claims into schema
+rules. For example, `:node<node>, <tag>` and `:node<html>, <html>` are
+representable, while `:node<string>, <title("Hello")>` is not a binding-side
+AEON Core node claim. Whether `node<node>` requires every child to be a node is
+still schema, profile, or consumer responsibility.
+
 For AEON targets, representability also includes reserved lexical metadata and
 literal-family shape. `radix[03]` is not representable as AEON Core radix
 metadata, `radix16` is not a reserved Core v1 radix alias, and quoted
@@ -814,13 +821,13 @@ checked here as well: `:sep, ^root/main` is not representable because the slash
 requires quoting, `:sep[","], ^"hello, world"` is not representable as AEON
 Core separator metadata, and `:kadot[.], ^1.2.3` is not representable because
 AEON Core `kadot` does not carry bracket metadata. AEON target validation also
-distinguishes SANSA address data from AEON references: `:sansa,
-$.inventory.items.*.sku` is representable address data, but `~target.*` is not
-an AEON reference target because reference paths are exact. These checks do not
-decide whether a lexically valid radix payload is meaningful for a declared
-base, whether a separator payload should be split into fields, or whether a
-reference target exists and is legal in document order; those remain schema,
-profile, consumer, or AEON Core responsibilities.
+distinguishes SANSA address data from AEON references: `:sansa, $.inventory.items.*.sku`
+is representable address data, but `~target.*` is not an AEON reference target
+because reference paths are exact. These checks do not decide whether a
+lexically valid radix payload is meaningful for a declared base, whether a
+separator payload should be split into fields, or whether a reference target
+exists and is legal in document order; those remain schema, profile, consumer,
+or AEON Core responsibilities.
 
 Diagnostics should preserve enough context for authoring tools to identify:
 
@@ -908,6 +915,7 @@ Candidate-relative seeds:
 | `create $.inventory.selectorProbe with :sansa, $.inventory.items.*` against a JSON target | target surface rejects SANSA datatype intent |
 | `create $.inventory.@.reviewed with true` against a JSON target | target surface rejects attribute-space mutation |
 | `create $.inventory.textProbe with :string<null>, ""` against an AEON target | target surface rejects unsupported generic datatype intent |
+| `create $.inventory.badNodeString with :node<string>, <title("Hello")>` against an AEON target | target surface rejects unsupported binding-side node datatype claim |
 | `create $.inventory.badToggle with :toggle, "maybe"` against an AEON target | target surface rejects reserved datatype and literal-family mismatch |
 | `create $.inventory.badDate with :date, "2026-10-10"` against an AEON target | target surface rejects quoted text as a date literal |
 | `create $.inventory.badRadix with :radix[03], %101` against an AEON target | target surface rejects invalid reserved radix metadata |
