@@ -152,8 +152,10 @@ structured mutation operation after lowering. For example,
 intent, while `:tuple, ("sku", 7)` is tuple-shaped payload with `tuple`
 datatype intent.
 Object value literals preserve field names as authoring intent. Field names may
-be bare AEON identifiers or bracket-quoted names such as `["display name"]` or
-`["bad.key"]`; both forms still use `=` between the field name and value.
+be bare AEON identifiers or AEON-style quoted names such as `"display name"` or
+`"bad.key"`; both forms still use `=` between the field name and value.
+Bracket-quoted selectors such as `["bad.key"]` remain SANSA address/member
+syntax and are not used for instruction object field names.
 When such fields are rendered into AEON source, decoded quoted field names use
 AEON quoted binding-key syntax such as `"display name":string = "Adapter"`,
 not SANSA selector syntax.
@@ -884,7 +886,7 @@ lowering fixtures. They are not a complete CTS surface.
 | `replace $.inventory.color with #fff` | one `replace` operation, target `$.inventory.color`, kind `hex` |
 | `replace $.inventory.selector with :sansa, $.inventory.items.*:number` | one `replace` operation, datatype `sansa`, kind `sansa` |
 | `create $.inventory.settings with :object, { enabled = true, status = false }` | one `create` operation, datatype `object`, kind `object`, value containing `enabled` and `status` fields |
-| `create $.inventory.settings with :object, { ["display name"] = "Adapter" }` | one `create` operation, datatype `object`, kind `object`, value containing decoded field name `display name` |
+| `create $.inventory.settings with :object, { "display name" = "Adapter" }` | one `create` operation, datatype `object`, kind `object`, value containing decoded field name `display name` |
 | `create $.inventory.aliases with :list<string>, ["adapter", "driver"]` | one `create` operation, datatype `list<string>`, kind `list` |
 | `create $.inventory.pair with :tuple<string>, ("sku", "A-100")` | one `create` operation, datatype `tuple<string>`, kind `tuple` |
 | `create $.inventory.badge with :node, <badge("new", 3)>` | one `create` operation, datatype `node`, kind `node` |
@@ -923,7 +925,8 @@ Candidate-relative seeds:
 | `create $.x with :string,` | missing literal payload after datatype annotation |
 | `create $.x with :object, { label = :string, }` | missing nested literal payload after datatype annotation |
 | `create $.x with :object, { enabled = true enabled = false }` | duplicate object field in an instruction value |
-| `create $.x with :object, { ["enabled"] = true enabled = false }` | duplicate object field after quoted field-name decoding |
+| `create $.x with :object, { "enabled" = true enabled = false }` | duplicate object field after quoted field-name decoding |
+| `create $.x with :object, { ["enabled"] = true }` | address-style bracket-quoted selector used where an instruction object field name is expected |
 | `create $.x with :list, ["a", , "b"]` | empty list item |
 | `create $.x with :tuple, ("a", )` | empty tuple item |
 | `create $.x with :node, <123("a")>` | invalid node tag |
@@ -975,7 +978,7 @@ Candidate-relative seeds:
 | `create $.inventory.badge with :node, <badge("new", 3)>` against a JSON target | target surface rejects node datatype intent |
 | `create $.inventory.copy with :number, ~target` against a JSON target | target surface rejects reference-family payload |
 | `create $.inventory.nestedPair with :object, { pair = :tuple, ("sku", 7) }` against a JSON target | lowering warns that nested tuple intent was flattened; target surface sees a plain nested list |
-| `create $.inventory.payload with :object, { ["bad.key"] = :node, <badge("new")> }` against a JSON target | target surface reports quoted nested value path `value["bad.key"]` |
+| `create $.inventory.payload with :object, { "bad.key" = :node, <badge("new")> }` against a JSON target | target surface reports quoted nested value path `value["bad.key"]` |
 | `create $.inventory.nestedRelationship with :object, { sibling = :relationship<sibling>[brother], "Bob" }` against an AEON target | lowering warns that nested custom datatype intent was flattened; target surface sees a plain nested string |
 
 ### 13.4 Negative Lowering Seeds
