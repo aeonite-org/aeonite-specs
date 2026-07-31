@@ -710,7 +710,11 @@ of accepted values. Operation lists may use `*` as an explicit wildcard.
 Address-role fields contain SANSA address expressions evaluated by the consumer
 against the same namespace view used for policy checking; the resolved canonical
 addresses are matched against the corresponding planned operation role. Invalid
-address matchers fail closed as policy errors.
+address matchers fail closed as policy errors. Because matchers are SANSA
+addresses rather than raw string prefixes, quoted member selectors and escaped
+quoted member selectors match by resolved binding identity and canonical
+planned address, for example `$.inventory.["display tags"]` or
+`$.inventory.["quote\"key"]`.
 
 Experimental policy diagnostics should preserve enough context for tools to
 identify the failed operation, rule, policy field, policy scope, and invalid
