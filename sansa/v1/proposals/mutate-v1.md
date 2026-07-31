@@ -760,7 +760,9 @@ SANSA.Mutate planning diagnostics should distinguish:
 
 Target-surface representability diagnostics should preserve target context when
 available, including `targetFormat`, rejected `datatype`, and rejected
-`valuePath` for value representability failures.
+`valuePath` for value representability failures. When the rejected value is
+inside a supplied container payload, `valuePath` should identify the nested
+location rather than only the root operation value.
 
 Consumer, ASP, or host-storage diagnostics should distinguish:
 
