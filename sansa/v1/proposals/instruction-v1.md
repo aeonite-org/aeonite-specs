@@ -907,7 +907,9 @@ lowering fixtures. They are not a complete CTS surface.
 | `insert last in $.tags with "sale"` | one `insert` operation, container `$.tags`, placement `last`, kind `string` |
 | `append in $.tags with :csv[","], "sale,new"` | one `insert` operation, container `$.tags`, placement `last`, datatype `csv[","]`, kind `string` |
 | `insert before $.tags[2] in $.tags with :string, "featured"` | one `insert` operation, container `$.tags`, placement `before`, anchor `$.tags[2]`, datatype `string` |
+| `insert before $.inventory.["display tags"][1] in $.inventory.["display tags"] with "new"` | one `insert` operation, quoted ordered container `$.inventory.["display tags"]`, placement `before`, anchor `$.inventory.["display tags"][1]` |
 | `move $.tags[0] after $.tags[2] in $.tags` | one `move` operation, source `$.tags[0]`, container `$.tags`, placement `after`, anchor `$.tags[2]` |
+| `move $.inventory.["display tags"][0] after $.inventory.["display tags"][1] in $.inventory.["display tags"]` | one `move` operation, quoted ordered container `$.inventory.["display tags"]`, placement `after`, anchor `$.inventory.["display tags"][1]` |
 | `because "manual correction"\nby "Bob"\nreplace $.inventory.qty with :int32, 10` | one `replace` operation with source provenance reason `manual correction` and claimed author `Bob` |
 
 Candidate-relative seeds:
