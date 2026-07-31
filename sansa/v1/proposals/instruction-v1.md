@@ -691,7 +691,8 @@ example `create $.inventory.@.selector with :sansa, $.inventory.items.*`.
 Quoted member selectors may appear on either side of the attribute-space
 selector, for example `create $.inventory.["display name"].@.["source role"]
 with "catalog"`; both quoted names are SANSA address selectors and lower to
-decoded mutation names.
+decoded mutation names. The same address form may be used by `replace` and
+`remove` when the quoted attribute already exists.
 
 The initial grammar admits at most one `because` clause, at most one `by`
 clause, at most one `from` clause, and at most one `where` clause, followed by
@@ -892,6 +893,7 @@ lowering fixtures. They are not a complete CTS surface.
 | `create $.inventory.@.["source role"] with "catalog"` | one `create` operation, parent `$.inventory.@`, name `source role`, kind `string` |
 | `create $.inventory.["display name"].@.["source role"] with "catalog"` | one `create` operation, parent `$.inventory.["display name"].@`, name `source role`, kind `string` |
 | `replace $.inventory.color with #fff` | one `replace` operation, target `$.inventory.color`, kind `hex` |
+| `replace $.inventory.@.["source role"] with "system"` | one `replace` operation, target `$.inventory.@.["source role"]`, kind `string` |
 | `replace $.inventory.selector with :sansa, $.inventory.items.*:number` | one `replace` operation, datatype `sansa`, kind `sansa` |
 | `create $.inventory.settings with :object, { enabled = true, status = false }` | one `create` operation, datatype `object`, kind `object`, value containing `enabled` and `status` fields |
 | `create $.inventory.settings with :object, { "display name" = "Adapter" }` | one `create` operation, datatype `object`, kind `object`, value containing decoded field name `display name` |
@@ -901,6 +903,7 @@ lowering fixtures. They are not a complete CTS surface.
 | `create $.inventory.availableAt with :datetime, 2026-10-10T09Z` | one `create` operation, datatype `datetime`, kind `datetime` |
 | `create $.inventory.["display name"] with "Adapter"` | one `create` operation, parent `$.inventory`, name `display name`, kind `string` |
 | `remove $.inventory.oldStatus` | one `remove` operation, target `$.inventory.oldStatus` |
+| `remove $.inventory.@.["source role"]` | one `remove` operation, target `$.inventory.@.["source role"]` |
 | `insert last in $.tags with "sale"` | one `insert` operation, container `$.tags`, placement `last`, kind `string` |
 | `append in $.tags with :csv[","], "sale,new"` | one `insert` operation, container `$.tags`, placement `last`, datatype `csv[","]`, kind `string` |
 | `insert before $.tags[2] in $.tags with :string, "featured"` | one `insert` operation, container `$.tags`, placement `before`, anchor `$.tags[2]`, datatype `string` |
@@ -965,7 +968,9 @@ Candidate-relative seeds:
 | --- | --- |
 | `create $.inventory.selectorProbe with :sansa, $.inventory.items.*` against a JSON target | target surface rejects SANSA datatype intent |
 | `create $.inventory.@.reviewed with true` against a JSON target | target surface rejects attribute-space mutation |
-| `create $.inventory.@.["source role"] with "catalog"` against a JSON target | target surface rejects attribute-space mutation even though the quoted attribute name is valid SANSA address syntax |
+| `create $.inventory.@.["source note"] with "catalog"` against a JSON target | target surface rejects attribute-space mutation even though the quoted attribute name is valid SANSA address syntax |
+| `replace $.inventory.@.["source role"] with "system"` against a JSON target | target surface rejects attribute-space mutation even though the quoted attribute path resolves |
+| `remove $.inventory.@.["source role"]` against a JSON target | target surface rejects attribute-space mutation even though the quoted attribute path resolves |
 | `create $.inventory.textProbe with :string<null>, ""` against an AEON target | target surface rejects unsupported generic datatype intent |
 | `create $.inventory.badNodeString with :node<string>, <title("Hello")>` against an AEON target | target surface rejects unsupported binding-side node datatype claim |
 | `create $.inventory.badToggle with :toggle, "maybe"` against an AEON target | target surface rejects reserved datatype and literal-family mismatch |
