@@ -154,6 +154,8 @@ datatype intent.
 Object value literals preserve field names as authoring intent. Field names may
 be bare AEON identifiers or AEON-style quoted names such as `"display name"` or
 `"bad.key"`; both forms still use `=` between the field name and value.
+Quoted field names use the same quoted-payload escape rules as quoted SANSA
+members, so `"quote\"key"` names the decoded field `quote"key`.
 Bracket-quoted selectors such as `["bad.key"]` remain SANSA address/member
 syntax and are not used for instruction object field names.
 When such fields are rendered into AEON source, decoded quoted field names use
