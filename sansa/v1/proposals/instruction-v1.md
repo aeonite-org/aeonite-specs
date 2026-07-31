@@ -832,9 +832,13 @@ still schema, profile, or consumer responsibility.
 
 For AEON targets, representability also includes reserved lexical metadata and
 literal-family shape. `radix[03]` is not representable as AEON Core radix
-metadata, `radix16` is not a reserved Core v1 radix alias, and quoted
-encoding-looking text such as `:base64, "abc+/=="` remains a string literal
-family rather than an encoding literal. Separator payloads and metadata are
+metadata, and `radix16` is not a reserved Core v1 radix alias. Quoted scalar
+text remains a string literal family even when the requested datatype names a
+reserved scalar family: `:number, "42"`, `:boolean, "true"`, `:hex, "fff"`,
+`:nan, "NaN"`, `:infinity, "+Infinity"`, and `:base64, "abc+/=="` are not
+representable as AEON Core number, Boolean, hex, non-finite, or encoding
+literals. Explicit null-family payloads such as `:string, !notApplicable` are
+not representable as string literals. Separator payloads and metadata are
 checked here as well: `:sep, ^root/main` is not representable because the slash
 requires quoting, `:sep[","], ^"hello, world"` is not representable as AEON
 Core separator metadata, and `:kadot[.], ^1.2.3` is not representable because
@@ -945,10 +949,16 @@ Candidate-relative seeds:
 | `create $.inventory.textProbe with :string<null>, ""` against an AEON target | target surface rejects unsupported generic datatype intent |
 | `create $.inventory.badNodeString with :node<string>, <title("Hello")>` against an AEON target | target surface rejects unsupported binding-side node datatype claim |
 | `create $.inventory.badToggle with :toggle, "maybe"` against an AEON target | target surface rejects reserved datatype and literal-family mismatch |
+| `create $.inventory.badNumber with :number, "42"` against an AEON target | target surface rejects quoted text as a number literal |
+| `create $.inventory.badBoolean with :boolean, "true"` against an AEON target | target surface rejects quoted text as a Boolean literal |
+| `create $.inventory.badStringNull with :string, !notApplicable` against an AEON target | target surface rejects explicit null-family payload as a string literal |
 | `create $.inventory.badDate with :date, "2026-10-10"` against an AEON target | target surface rejects quoted text as a date literal |
 | `create $.inventory.badRadix with :radix[03], %101` against an AEON target | target surface rejects invalid reserved radix metadata |
 | `create $.inventory.badRadixAlias with :radix16, %10` against an AEON target | target surface rejects unsupported reserved-looking radix alias |
 | `create $.inventory.badEncoding with :base64, "abc+/=="` against an AEON target | target surface rejects quoted text as an encoding literal |
+| `create $.inventory.badHex with :hex, "fff"` against an AEON target | target surface rejects quoted text as a hex literal |
+| `create $.inventory.badNaN with :nan, "NaN"` against an AEON target | target surface rejects quoted text as a NaN literal |
+| `create $.inventory.badInfinity with :infinity, "+Infinity"` against an AEON target | target surface rejects quoted text as an Infinity literal |
 | `create $.inventory.badSeparator with :sep[","], ^"hello, world"` against an AEON target | target surface rejects invalid reserved separator metadata |
 | `create $.inventory.badKadot with :kadot[.], ^1.2.3` against an AEON target | target surface rejects invalid reserved `kadot` metadata |
 | `create $.inventory.badAddressDatatype with :string, $.inventory.items.*.sku` against an AEON target | target surface rejects SANSA address data claimed as a string literal |
