@@ -908,6 +908,7 @@ Candidate-relative seeds:
 | `create $.inventory.status, "active"` | malformed `create` clause; expected `with` |
 | `create $.inventory.status with :int32,, 344` | malformed instruction value |
 | `create $.inventory.status with :int32 344,` | comma delimiter used outside `:datatype, value` |
+| `create $.x with :object, { count = :int32,, 344 }` | malformed nested typed instruction value |
 | `create $.x with :string,` | missing literal payload after datatype annotation |
 | `create $.x with :object, { label = :string, }` | missing nested literal payload after datatype annotation |
 | `create $.x with :object, { enabled = true enabled = false }` | duplicate object field in an instruction value |
