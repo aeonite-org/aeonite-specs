@@ -737,7 +737,10 @@ budgets for planning and apply. `maxValueNodes` counts all supplied value nodes
 for value-carrying operations, with arrays and objects counting as one node plus
 their entries. `maxValueDepth` limits the deepest supplied value tree, with
 scalar values at depth `1`. `maxStringLength` limits the longest supplied string
-payload. Later implementations may add target-count, resolved-binding,
+payload. When a supplied value budget fails because of a nested value, the
+diagnostic should include `valuePath` when available so tools can identify the
+offending payload location without confusing the failure with target-surface
+representability. Later implementations may add target-count, resolved-binding,
 predicate-work, or implementation-resource budgets without changing the
 all-or-nothing failure rule.
 
