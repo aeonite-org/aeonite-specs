@@ -892,7 +892,9 @@ lowering fixtures. They are not a complete CTS surface.
 | `create $.inventory.@.selector with :sansa, $.inventory.items.*` | one `create` operation, parent `$.inventory.@`, name `selector`, datatype `sansa`, kind `sansa` |
 | `create $.inventory.@.["source role"] with "catalog"` | one `create` operation, parent `$.inventory.@`, name `source role`, kind `string` |
 | `create $.inventory.["display name"].@.["source role"] with "catalog"` | one `create` operation, parent `$.inventory.["display name"].@`, name `source role`, kind `string` |
+| `create $.inventory.["quote\"key"] with "escaped"` | one `create` operation, parent `$.inventory`, decoded name `quote"key`, kind `string` |
 | `replace $.inventory.color with #fff` | one `replace` operation, target `$.inventory.color`, kind `hex` |
+| `replace $.inventory.["quote\"key"] with "escaped"` | one `replace` operation, escaped quoted target `$.inventory.["quote\"key"]`, kind `string` |
 | `replace $.inventory.@.["source role"] with "system"` | one `replace` operation, target `$.inventory.@.["source role"]`, kind `string` |
 | `replace $.inventory.selector with :sansa, $.inventory.items.*:number` | one `replace` operation, datatype `sansa`, kind `sansa` |
 | `create $.inventory.settings with :object, { enabled = true, status = false }` | one `create` operation, datatype `object`, kind `object`, value containing `enabled` and `status` fields |
@@ -920,6 +922,7 @@ Candidate-relative seeds:
 | `from $.inventory.items.*\nwhere .qty == 0\nreplace .qty with :int32, 10` | one `replace` operation per surviving candidate, target `.qty` resolved relative to candidate |
 | `from $.inventory.items.*\nreplace .["display name"] with "Renamed"` | one `replace` operation per candidate, quoted target `.["display name"]` resolved relative to candidate |
 | `from $.inventory.items.*\nwhere .["display name"] == "Adapter"\nrequire .["display name"] == "Adapter"\nreplace .qty with :int32, 11` | one `replace` operation for the candidate that matches the quoted `where` selector, with one quoted-selector precondition |
+| `from $.inventory\nwhere .["quote\"key"] == "quoted"\nreplace .["quote\"key"] with "escaped"` | one `replace` operation, escaped quoted member selector decoded consistently in the filter and mutation target |
 | `from $.inventory.items.*\nwhere .sku == "A-100"\nrequire .qty == 7\nreplace .qty with :int32, 10` | one `replace` operation with one candidate-scoped Mutate precondition |
 | `from $.inventory.items.*\nwhere .sku == "A-100"\nrequire .qty == 7\nrequire .status == "open"\nreplace .qty with :int32, 10` | one `replace` operation with two candidate-scoped Mutate preconditions |
 | `from $.inventory.items.*\nwhere .discontinued == true\nremove .status` | one `remove` operation per surviving candidate, target `.status` resolved relative to candidate |
