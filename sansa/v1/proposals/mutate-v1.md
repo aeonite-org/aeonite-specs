@@ -765,7 +765,10 @@ Target-surface representability diagnostics should preserve target context when
 available, including `targetFormat`, rejected `datatype`, and rejected
 `valuePath` for value representability failures. When the rejected value is
 inside a supplied container payload, `valuePath` should identify the nested
-location rather than only the root operation value.
+location rather than only the root operation value. Diagnostic value paths use
+dot segments for identifier-safe object keys, numeric bracket segments for list
+positions, and JSON-quoted bracket segments for empty or non-identifier object
+keys.
 
 Consumer, ASP, or host-storage diagnostics should distinguish:
 
