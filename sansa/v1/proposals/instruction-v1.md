@@ -919,6 +919,7 @@ Candidate-relative seeds:
 | `from $.inventory\ncreate status with "active"` | one `create` operation per candidate, parent from candidate, name `status` |
 | `from $.inventory.items.*\nwhere .qty == 0\nreplace .qty with :int32, 10` | one `replace` operation per surviving candidate, target `.qty` resolved relative to candidate |
 | `from $.inventory.items.*\nreplace .["display name"] with "Renamed"` | one `replace` operation per candidate, quoted target `.["display name"]` resolved relative to candidate |
+| `from $.inventory.items.*\nwhere .["display name"] == "Adapter"\nrequire .["display name"] == "Adapter"\nreplace .qty with :int32, 11` | one `replace` operation for the candidate that matches the quoted `where` selector, with one quoted-selector precondition |
 | `from $.inventory.items.*\nwhere .sku == "A-100"\nrequire .qty == 7\nreplace .qty with :int32, 10` | one `replace` operation with one candidate-scoped Mutate precondition |
 | `from $.inventory.items.*\nwhere .sku == "A-100"\nrequire .qty == 7\nrequire .status == "open"\nreplace .qty with :int32, 10` | one `replace` operation with two candidate-scoped Mutate preconditions |
 | `from $.inventory.items.*\nwhere .discontinued == true\nremove .status` | one `remove` operation per surviving candidate, target `.status` resolved relative to candidate |
