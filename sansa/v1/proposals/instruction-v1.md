@@ -918,12 +918,16 @@ Candidate-relative seeds:
 | --- | --- |
 | `from $.inventory\ncreate status with "active"` | one `create` operation per candidate, parent from candidate, name `status` |
 | `from $.inventory.items.*\nwhere .qty == 0\nreplace .qty with :int32, 10` | one `replace` operation per surviving candidate, target `.qty` resolved relative to candidate |
+| `from $.inventory.items.*\nreplace .["display name"] with "Renamed"` | one `replace` operation per candidate, quoted target `.["display name"]` resolved relative to candidate |
 | `from $.inventory.items.*\nwhere .sku == "A-100"\nrequire .qty == 7\nreplace .qty with :int32, 10` | one `replace` operation with one candidate-scoped Mutate precondition |
 | `from $.inventory.items.*\nwhere .sku == "A-100"\nrequire .qty == 7\nrequire .status == "open"\nreplace .qty with :int32, 10` | one `replace` operation with two candidate-scoped Mutate preconditions |
 | `from $.inventory.items.*\nwhere .discontinued == true\nremove .status` | one `remove` operation per surviving candidate, target `.status` resolved relative to candidate |
+| `from $.inventory.items.*\nremove .["display name"]` | one `remove` operation per candidate, quoted target `.["display name"]` resolved relative to candidate |
 | `from $.inventory.items.*\ninsert last in .tags with "sale"` | one `insert` operation per candidate, container `.tags` resolved relative to candidate |
 | `from $.inventory.items.*\nappend .tags with "sale"` | one `insert` operation per candidate with `placement: "last"`, container `.tags` resolved relative to candidate |
 | `from $.inventory.items.*\nmove .tags[0] first in .tags` | one `move` operation per candidate, source and container resolved relative to candidate |
+| `from $.inventory.items.*\ninsert after .["sale tags"][0] in .["sale tags"] with "sale"` | one `insert` operation per candidate, quoted container and anchor resolved relative to candidate |
+| `from $.inventory.items.*\nmove .["sale tags"][0] after .["sale tags"][1] in .["sale tags"]` | one `move` operation per candidate, quoted source, container, and anchor resolved relative to candidate |
 
 ### 13.2 Negative Parse Seeds
 
