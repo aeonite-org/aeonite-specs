@@ -183,8 +183,14 @@ conservative structured Mutate operation, however, carries the plain container
 payload plus top-level value intent only. Per-child datatype intent for newly
 created nested bindings is outside this conservative slice unless expressed as
 separate exact operations or by a later structured value-intent model.
-Implementations should surface a non-fatal diagnostic when nested datatype
-intent is flattened during conservative lowering.
+Nested datatype intent should still be checked for compatibility with the nested
+literal representation before lowering. Compatible nested datatype intent should
+surface a non-fatal diagnostic when it is flattened during conservative
+lowering; incompatible nested datatype intent should be rejected rather than
+silently dropped.
+Target-surface validation then evaluates the conservative flattened plan; it
+does not treat nested datatype annotations as executable per-child binding
+metadata unless a later structured value-intent model defines that behavior.
 
 ### 4.1 Type-First Rationale
 
