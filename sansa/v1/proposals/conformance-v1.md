@@ -180,7 +180,24 @@ Conceptual example:
       "id": "sansa.mutate.policy.planFilter",
       "capability": "SANSA.Mutate",
       "category": "policy",
-      "maturity": "experimental"
+      "maturity": "experimental",
+      "policyRuleFields": [
+        "operation",
+        "operations",
+        "target",
+        "parent",
+        "container",
+        "source",
+        "anchor",
+        "name",
+        "names",
+        "datatype",
+        "datatypes",
+        "kind",
+        "kinds",
+        "value",
+        "values"
+      ]
     }
   ]
 }
