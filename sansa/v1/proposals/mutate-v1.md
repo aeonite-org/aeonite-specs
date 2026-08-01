@@ -525,6 +525,16 @@ whether a trusted consumer allows the planned operation. Target-surface
 validation answers whether the intended format or adapter surface can represent
 the planned value and address role.
 
+Implementations and workbenches may expose target-profile metadata alongside
+target-surface validation results to help technical users understand the
+selected representability boundary. Such metadata may include the normalized
+target surface id, a statement that the boundary is representability, and a
+human-readable summary of the target surface. This metadata is descriptive. It
+does not replace `phase: "target"` diagnostics, does not make target-surface
+validation part of planning, and does not define schema approval or
+authorization semantics. Portable diagnostics continue to use `targetFormat`
+for the selected target identity.
+
 An exact target that carries a reference identifies the reference binding
 itself. Mutate does not implicitly follow the reference and modify its target.
 Any future followed-target operation must be explicit, authorized separately,
@@ -799,6 +809,12 @@ location rather than only the root operation value. Diagnostic value paths use
 dot segments for identifier-safe object keys, numeric bracket segments for list
 positions, and JSON-quoted bracket segments for empty or non-identifier object
 keys.
+
+Tools that expose richer target-profile metadata should keep it descriptive and
+separate from diagnostics. For example, a workbench may report that
+`json-compatible` normalized to the `json` target surface and that the target
+boundary is representability, while the diagnostic still carries
+`targetFormat: "json"` and the rejected datatype or value path.
 
 Consumer, ASP, or host-storage diagnostics should distinguish:
 
