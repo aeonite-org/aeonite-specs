@@ -715,6 +715,9 @@ addresses rather than raw string prefixes, quoted member selectors and escaped
 quoted member selectors match by resolved binding identity and canonical
 planned address, for example `$.inventory.["display tags"]` or
 `$.inventory.["quote\"key"]`.
+An `anchor` matcher applies only when the planned operation has a resolved
+`before` or `after` placement anchor; it does not match `first` or `last`
+placements.
 
 Experimental policy diagnostics should preserve enough context for tools to
 identify the failed operation, rule, policy field, policy scope, and invalid
