@@ -151,6 +151,13 @@ structured mutation operation after lowering. For example,
 `:csv[","], "sku,name"` is string-shaped payload with `csv[","]` datatype
 intent, while `:tuple, ("sku", 7)` is tuple-shaped payload with `tuple`
 datatype intent.
+When the datatype expression names a known literal or representation family, the
+literal family must be compatible before lowering. For example, `:date,
+2026-10-10` is date-shaped intent and value, while `:date, "2026-10-10"` is
+rejected because the payload is quoted string representation. Custom datatype
+expressions remain semantic intent over the chosen literal family, so
+`:brandColor, #ff00aa` and `:csv[","], "sku,name"` remain valid even though
+their datatype names are not core literal families.
 Object value literals preserve field names as authoring intent. Field names may
 be bare AEON identifiers or AEON-style quoted names such as `"display name"` or
 `"bad.key"`; both forms still use `=` between the field name and value.
@@ -672,9 +679,11 @@ InstructionValue
 
 `AddressExpression` is parsed by SANSA.Addressing. `QueryExpression` is parsed
 by the SANSA.Query expression grammar and evaluated as a read-only predicate.
-`DatatypeExpression` preserves datatype intent; it does not validate the value.
-`ValueLiteral` is the instruction value payload and supplies representation
-family when the literal form is unambiguous.
+`DatatypeExpression` preserves datatype intent. Known datatype families are
+checked for compatibility with the value literal family before lowering; custom
+datatype expressions do not otherwise validate the value. `ValueLiteral` is the
+instruction value payload and supplies representation family when the literal
+form is unambiguous.
 `QuotedText` uses the same quoted payload rules as SANSA string payloads and is
 preserved as source provenance without semantic authority.
 
@@ -847,20 +856,18 @@ still schema, profile, or consumer responsibility.
 
 For AEON targets, representability also includes reserved lexical metadata and
 literal-family shape. `radix[03]` is not representable as AEON Core radix
-metadata, and `radix16` is not a reserved Core v1 radix alias. Quoted scalar
-text remains a string literal family even when the requested datatype names a
-reserved scalar family: `:number, "42"`, `:boolean, "true"`, `:hex, "fff"`,
-`:nan, "NaN"`, `:infinity, "+Infinity"`, and `:base64, "abc+/=="` are not
-representable as AEON Core number, Boolean, hex, non-finite, or encoding
-literals. Explicit null-family payloads such as `:string, !notApplicable` are
-not representable as string literals. Separator payloads and metadata are
-checked here as well: `:sep, ^root/main` is not representable because the slash
-requires quoting, `:sep[","], ^"hello, world"` is not representable as AEON
-Core separator metadata, and `:kadot[.], ^1.2.3` is not representable because
-AEON Core `kadot` does not carry bracket metadata. AEON target validation also
-distinguishes SANSA address data from AEON references: `:sansa, $.inventory.items.*.sku`
-is representable address data, but `~target.*` is not an AEON reference target
-because reference paths are exact. These checks do not decide whether a
+metadata, and `radix16` is not a reserved Core v1 radix alias. Known
+datatype/literal-family mismatches, such as `:number, "42"`, `:boolean,
+"true"`, `:hex, "fff"`, `:nan, "NaN"`, `:infinity, "+Infinity"`, `:base64,
+"abc+/=="`, and `:string, !notApplicable`, are rejected by Instruction parsing
+before target-surface validation. Separator payloads and metadata are checked
+at target-surface validation: `:sep, ^root/main` is not representable because
+the slash requires quoting, `:sep[","], ^"hello, world"` is not representable
+as AEON Core separator metadata, and `:kadot[.], ^1.2.3` is not representable
+because AEON Core `kadot` does not carry bracket metadata. AEON target
+validation also distinguishes SANSA address data from AEON references:
+`:sansa, $.inventory.items.*.sku` is representable address data, but `~target.*`
+is not an AEON reference target because reference paths are exact. These checks do not decide whether a
 lexically valid radix payload is meaningful for a declared base, whether a
 separator payload should be split into fields, or whether a reference target
 exists and is legal in document order; those remain schema, profile, consumer,
@@ -956,6 +963,8 @@ Candidate-relative seeds:
 | `create $.x with :csv[";", "a"` | unterminated datatype argument list |
 | `create $.x with :list<>, [1]` | empty datatype parameter list |
 | `create $.x with :list<string\|number>, [1]` | nested datatype union in datatype intent |
+| `create $.x with :date, "2026-10-10"` | known datatype/literal-family mismatch |
+| `create $.x with :number, "42"` | known datatype/literal-family mismatch |
 | `create $.x with :number, ~` | empty reference literal target |
 | `create $.x with :number, ~ target` | whitespace inside reference literal target |
 | `create $.x with :sansa, $.inventory..sku` | malformed SANSA address literal payload |
@@ -983,20 +992,10 @@ Candidate-relative seeds:
 | `remove $.inventory.@.["source role"]` against a JSON target | target surface rejects attribute-space mutation even though the quoted attribute path resolves |
 | `create $.inventory.textProbe with :string<null>, ""` against an AEON target | target surface rejects unsupported generic datatype intent |
 | `create $.inventory.badNodeString with :node<string>, <title("Hello")>` against an AEON target | target surface rejects unsupported binding-side node datatype claim |
-| `create $.inventory.badToggle with :toggle, "maybe"` against an AEON target | target surface rejects reserved datatype and literal-family mismatch |
-| `create $.inventory.badNumber with :number, "42"` against an AEON target | target surface rejects quoted text as a number literal |
-| `create $.inventory.badBoolean with :boolean, "true"` against an AEON target | target surface rejects quoted text as a Boolean literal |
-| `create $.inventory.badStringNull with :string, !notApplicable` against an AEON target | target surface rejects explicit null-family payload as a string literal |
-| `create $.inventory.badDate with :date, "2026-10-10"` against an AEON target | target surface rejects quoted text as a date literal |
 | `create $.inventory.badRadix with :radix[03], %101` against an AEON target | target surface rejects invalid reserved radix metadata |
 | `create $.inventory.badRadixAlias with :radix16, %10` against an AEON target | target surface rejects unsupported reserved-looking radix alias |
-| `create $.inventory.badEncoding with :base64, "abc+/=="` against an AEON target | target surface rejects quoted text as an encoding literal |
-| `create $.inventory.badHex with :hex, "fff"` against an AEON target | target surface rejects quoted text as a hex literal |
-| `create $.inventory.badNaN with :nan, "NaN"` against an AEON target | target surface rejects quoted text as a NaN literal |
-| `create $.inventory.badInfinity with :infinity, "+Infinity"` against an AEON target | target surface rejects quoted text as an Infinity literal |
 | `create $.inventory.badSeparator with :sep[","], ^"hello, world"` against an AEON target | target surface rejects invalid reserved separator metadata |
 | `create $.inventory.badKadot with :kadot[.], ^1.2.3` against an AEON target | target surface rejects invalid reserved `kadot` metadata |
-| `create $.inventory.badAddressDatatype with :string, $.inventory.items.*.sku` against an AEON target | target surface rejects SANSA address data claimed as a string literal |
 | `create $.inventory.badReference with :number, ~target.*` against an AEON target | target surface rejects selector-shaped AEON reference target |
 | `create $.inventory.pair with :tuple, ("sku", 7)` against a JSON target | target surface rejects tuple datatype intent |
 | `create $.inventory.badge with :node, <badge("new", 3)>` against a JSON target | target surface rejects node datatype intent |
