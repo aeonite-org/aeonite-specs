@@ -238,6 +238,14 @@ planned operation. Provenance must not be interpreted as SANSA source text,
 authorization policy, validation policy, resolver configuration, or mutation
 profile.
 
+The conservative mutation request surface is closed. Request envelopes support
+only `operations`, `preconditions`, and `provenance`; known operation requests
+support only the fields defined for that operation plus optional inert
+`provenance`. Unsupported fields fail closed rather than being ignored. This
+keeps future-looking authority or rewrite fields, such as `policy`, `by`,
+`actor`, `principal`, or `rewrite`, outside the core planner until a trusted
+host envelope or later profile explicitly defines them.
+
 `portabilityWarnings` carries diagnostics for locally accepted SANSA inputs that
 exceed the portable v1 floor. For example, an implementation may accept a
 position index above the portable ceiling under an explicit local limit. If the
