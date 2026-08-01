@@ -860,11 +860,14 @@ metadata, and `radix16` is not a reserved Core v1 radix alias. Known
 datatype/literal-family mismatches, such as `:number, "42"`, `:boolean,
 "true"`, `:hex, "fff"`, `:nan, "NaN"`, `:infinity, "+Infinity"`, `:base64,
 "abc+/=="`, and `:string, !notApplicable`, are rejected by Instruction parsing
-before target-surface validation. Separator payloads and metadata are checked
-at target-surface validation: `:sep, ^root/main` is not representable because
-the slash requires quoting, `:sep[","], ^"hello, world"` is not representable
-as AEON Core separator metadata, and `:kadot[.], ^1.2.3` is not representable
-because AEON Core `kadot` does not carry bracket metadata. AEON target
+before target-surface validation. This is specific to Instruction source, where
+the author supplies one concrete literal form. Structured Mutate requests
+preserve separate `datatype` and `kind` fields and may report equivalent
+known-family contradictions at the target-surface phase instead. Separator
+payloads and metadata are checked at target-surface validation: `:sep, ^root/main`
+is not representable because the slash requires quoting, `:sep[","], ^"hello, world"`
+is not representable as AEON Core separator metadata, and `:kadot[.], ^1.2.3`
+is not representable because AEON Core `kadot` does not carry bracket metadata. AEON target
 validation also distinguishes SANSA address data from AEON references:
 `:sansa, $.inventory.items.*.sku` is representable address data, but `~target.*`
 is not an AEON reference target because reference paths are exact. These checks do not decide whether a

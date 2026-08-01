@@ -258,6 +258,16 @@ representation or literal-family intent. SANSA.Mutate preserves these fields but
 does not decide whether the supplied value is legal for the hinted datatype or
 kind.
 
+Structured Mutate requests keep `datatype` and `kind` as separate intent fields
+until a consumer, schema, profile, or target surface evaluates them. This is a
+deliberate difference from SANSA Instruction syntax: Instruction parses one
+human-authored value literal and may reject known datatype/literal-family
+mismatches before lowering. Structured Mutate instead preserves the requested
+intent. For example, a target surface may accept `datatype=brandColor` with
+`kind=hex`, because `brandColor` is custom semantic intent carried by a hex
+literal family, while rejecting `datatype=number` with `kind=string` because
+both families are known and incompatible for that target.
+
 Target surfaces define what planned operations can be represented by a host
 format, storage adapter, or interchange profile. For example, an AEON target
 surface may reject a datatype hint that is not legal for AEON values, while a
@@ -483,6 +493,11 @@ representable but not allowed at that address. An AEON target surface may also
 reject a planned `date` value such as `"2025-02-29"` because the value is not a
 valid AEON date literal payload, even though the structured Mutate plan can
 still preserve the requested `datatype` and `kind` intent for inspection.
+Structured datatype/kind contradictions between known families, such as
+`datatype=number` with `kind=string`, are also target-surface representability
+failures. Custom semantic datatypes remain open until a schema, profile, or
+target surface assigns meaning to them, so `datatype=brandColor` with
+`kind=hex` can remain representable as custom intent.
 Likewise, an AEON target surface may reject malformed reserved datatype
 metadata such as `radix[03]`, unsupported reserved-looking aliases such as
 `radix16`, or malformed source-family payloads such as radix `1__0` or
