@@ -24,6 +24,8 @@ SANSA.Query is a declarative, read-only semantic transformation interface.
 
 It builds on SANSA.Resolve. Resolve discovers bindings. Query evaluates, filters, orders, slices, and projects them.
 
+SANSA.Query queries Binding Sets, not AEON documents directly. A Binding Set may be produced by an AEON-backed resolver, RDF-like graph resolver, SQL resolver, filesystem resolver, service-resource resolver, runtime object resolver, or another namespace adapter. The resolver determines how a SANSA address becomes bindings; Query then operates over those bindings.
+
 Resolve answers:
 
 > Which bindings match?
@@ -40,6 +42,7 @@ SANSA.Query v1 is:
 - read-only
 - deterministic
 - based on Binding Sets
+- namespace- and domain-neutral
 - independent of host programming languages
 - explicit about missing and multi-binding behavior
 - side-effect free
@@ -188,19 +191,34 @@ The expression parser covers the syntax AST for `where`, `select`, and order-key
 The expression parser covers:
 
 - resolution expressions beginning with `.`, `$`, or `?`
-- string, number, and Boolean literals
+- string, number, Boolean, AEON toggle literals, and AEON scalar source
+  literal families such as hex, radix, encoding, separator, explicit-null, and
+  temporal source literals
 - comparison operators
 - membership operator shape
 - Boolean operators with the precedence defined in this proposal
 - parenthesized groups
 - existence operator shape
 - cardinality operator shape
+
+Temporal source literals use AEON Core lexical recognition, including
+reduced-precision temporal forms and calendar/clock range validation. For
+example, `09:`, `2025-01-01T09Z`, and
+`2025-01-01T09Z&Europe/Belgium/Brussels` are temporal source literals.
+Invalid ranges such as `2025-02-29`, `2025-13-40`, `24:00`, and `23:59:60`
+are parse errors rather than temporal values deferred to comparison semantics.
+
+Separator source literals use AEON Core separator payload recognition after the
+leading `^`. Unquoted separator payload text is intentionally narrow. Segments
+that require whitespace, comma, slash, brackets, or other broader text use
+quoted separator payload segments, such as `^"hello world"|"this, [is] fine"`.
+
 - deterministic function-call shape
 - projection expression shape
 
 The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals, resolution expressions, comparison expressions, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, ordinary value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
+The evaluator slice is intentionally narrower than the full grammar. It covers execution of `from`, Boolean `where`, `order by`, `offset`, `limit`, and `select` over scalar literals including AEON toggle literal spellings (`yes`, `no`, `on`, `off`) and selected AEON scalar source literal families (`#hex`, `%radix`, `&encoding`, `^separator`, `!null`, and temporal-looking literals), resolution expressions, comparison expressions including same-kind structural container equality, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with `path(...)`, missing-aware fallback with `fallback(...)`, dynamic direct-child resolution with `resolveChild(...)`, explicit reference following with `follow(...)`, concrete-value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
 
 Some implementations may also expose transform-library helpers such as `objectFrom(...)` and `fieldsFrom(...)`. These helpers operate across multiple Binding Sets and are not part of SANSA.Query v1 core conformance.
 
@@ -269,6 +287,12 @@ Ordering keys are evaluated from left to right. Later keys act as tie-breakers. 
 
 The pre-order Binding Set entering the `order by` stage is the tie-preservation basis.
 
+Ordering semantics are supplied by active Shared AEON Value Semantics profiles. SANSA.Query owns candidate ordering, stable tie preservation, diagnostics, and Binding Set flow. It does not define string collation, temporal comparison, null ordering, or datatype conversion locally.
+
+The default value-semantics profile uses portable codepoint string ordering. Implementations must not silently apply natural sorting, locale collation, process locale, database collation, or host-language string defaults. For example, under the default profile `part-10` sorts before `part-2` because the comparison is over codepoints. Under an explicitly selected Natural ASCII profile such as `aeon.value.string.natural.ascii.v1`, ASCII digit runs may compare numerically so `part-2` sorts before `part-10`.
+
+Profile selection is consumer authority. A document being queried may contain values that participate in ordering, but it must not select a more permissive comparison or ordering profile for itself.
+
 An order key that evaluates to Missing, explicit null, NaN, a non-scalar value, or multiple bindings produces an evaluation diagnostic unless a future explicit missing-order policy is present. SANSA.Query v1 does not define null-first, null-last, missing-omit, or host-default ordering.
 
 ### 6.4 Offset
@@ -332,7 +356,7 @@ Expressions are evaluated within a candidate context containing:
 - the namespace root
 - mounted local address spaces
 - the query environment
-- datatype and semantic contracts
+- active Shared AEON Value Semantics profiles
 - deterministic function definitions
 
 SANSA.Query v1 recognizes these conceptual expression categories:
@@ -462,7 +486,7 @@ isNaN(...)
 isInfinity(...)
 ```
 
-`isValue(expression)` returns true when the expression evaluates to one ordinary scalar value as defined by Shared AEON Value Semantics: string, Boolean, or finite number. It may inspect scalar expressions directly or consume a Binding Set produced by a resolution expression or `path(...)`. It returns false for missing operands, non-scalar bindings, explicit null, explicit absence values, NaN, and infinity. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
+`isValue(expression)` returns true when the expression evaluates to exactly one concrete value as defined by Shared AEON Value Semantics. It may inspect value expressions directly or consume a Binding Set produced by a resolution expression or `path(...)`. It returns false for missing operands, explicit null, explicit absence values, and NaN. Finite numbers, infinities, strings, Booleans, toggles, temporal values, lexical structured scalars, SANSA address literals, objects, lists, tuples, nodes, and legal reference forms are concrete values for this predicate. If the operand resolves more than one binding, evaluation produces `CardinalityError`.
 
 `isNull(expression)` returns true when the expression resolves exactly one explicit null binding.
 
@@ -473,6 +497,8 @@ isInfinity(...)
 `isInfinity(expression)` returns true when the expression resolves exactly one explicit positive or negative infinity binding.
 
 These predicates are value-semantic tests, not binding-presence tests. `isValue(...)` is explicitly missing-aware and returns false when its operand resolves zero bindings. The stricter null and special numeric predicates produce `Missing` when their operand resolves zero bindings; use `exists(...)` or `absent(...)` when binding presence itself is the question.
+
+`isValue(...)` is not a scalar-comparison guard. Use semantic filters such as `#number`, `#string`, or profile-defined predicates when a following expression needs a specific comparable domain.
 
 Example:
 
@@ -555,6 +581,25 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 | number and number | allowed | allowed | Finite numbers compare by numeric value. |
 | string and string | allowed | allowed | String ordering requires the active value-semantics string ordering profile. |
 | boolean and boolean | allowed | error | Booleans are not ordered. |
+| toggle and toggle | allowed | error | Toggle equality is exact token equality; `yes` does not equal `on`, and `no` does not equal `off`. |
+| toggle and boolean | error | error | Boolean compatibility requires explicit conversion or a profile-defined comparison domain. |
+| hex and hex | allowed | error | Uses canonical hex-payload identity; no numeric, byte, color, hash, or radix interpretation. |
+| radix and radix | allowed | error | Uses preserved radix payload and radix-family metadata identity; no numeric base conversion. |
+| hex and radix | error | error | Hex and radix are distinct value families even when payload characters overlap. |
+| encoding and encoding | allowed | allowed | Uses naïve payload order over preserved encoded payload characters; no decoding. |
+| separator and separator | allowed | allowed | Uses naïve separator order over whole canonical separator payloads; no splitting occurs unless a trusted profile supplies domain order. |
+| SANSA address and SANSA address | allowed | allowed | Uses canonical address-expression identity and naïve address-expression order; no resolution or selector equivalence. |
+| object and object | allowed | error | Structural member equality; object member order is not significant. |
+| list and list | allowed | error | Ordered structural equality by index; no portable default order. |
+| tuple and tuple | allowed | error | Ordered structural equality by position and arity; no portable default order. |
+| node and node | allowed | error | Structural equality by tag, attributes, and ordered child slots; no portable default order. |
+| list and tuple | error | error | Requires explicit coercion or a profile-defined compatibility domain. |
+| reference form and reference form | allowed | error | Reference-kind identity and canonical target-path identity; no implicit follow. |
+| followed reference value | as target value | as target value | Requires explicit `follow(...)` or consumer-declared followed-value mode. |
+| date and date | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical ISO-style date payloads. |
+| time and time | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical time payloads. |
+| datetime and datetime | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical datetime payloads. |
+| zrut and zrut | allowed | allowed | Uses the active temporal value-semantics profile; named-zone authority may be required by richer profiles. |
 | explicit null | error | error | Use `isNull(...)` or `isNullReason(...)`. |
 | NaN | error | error | Use `isNaN(...)`. |
 | infinity and finite number | allowed | allowed | Infinity is not equal to finite numeric values and compares as a numeric bound when numeric comparison is supported. |
@@ -564,6 +609,34 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 `NaN` is not comparable. Equality, inequality, ordering, and order-key evaluation over `NaN` must fail with a comparison diagnostic. Queries test explicit NaN values with `isNaN(...)`.
 
 Infinity values are explicit numeric special values. Where an applicable value-semantics numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with `isInfinity(...)`.
+
+Temporal values are not ordinary strings. A host may expose AEON `date`, `time`, `datetime`, or `zrut` values through a string-like transport representation, but SANSA.Query compares or orders them through Shared AEON Value Semantics, not string collation. The minimum profile supports same-family canonical temporal payload comparison. Cross-family temporal comparison fails closed unless a richer active profile explicitly defines compatibility.
+
+Temporal query literals may be parsed as source literals so query syntax can carry the same lexical family as AEON values:
+
+```text
+from $.types.*#date
+where . > 2025-01-01
+select .
+```
+
+The semantic filter constrains the Binding Set to date values before comparison. A `date` literal does not implicitly compare with `datetime`, `time`, `zrut`, or string values.
+
+Reduced-precision forms accepted by AEON Core remain temporal values in
+SANSA.Query. For example, `2025-01-01T09Z` is a `datetime` value, and
+`2025-01-01T09Z&Europe/Belgium/Brussels` is a `zrut` value.
+
+Separator query literals likewise preserve the AEON separator source family:
+
+```text
+from $.types.*#sep
+where . == ^"hello world"|"this, [is] fine"
+select .
+```
+
+The payload is compared as a separator-family value. Query comparison does not
+split separator payloads into fields unless a trusted profile supplies that
+meaning.
 
 The `in` operator tests scalar membership in a Binding Set:
 
@@ -714,13 +787,41 @@ Ordinary value-producing functions evaluate their arguments before invocation. R
 - NaN and infinity are passed only to functions that declare special numeric handling;
 - unsupported scalar types produce a function-argument diagnostic.
 
-The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, `upper`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, or Binding Set arguments.
+The initial built-in string functions are `contains`, `startsWith`, `endsWith`, `lower`, `upper`, and `concat`. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, reference form, or Binding Set arguments.
 
 String comparison, ordering, and case mapping are value-semantics concerns. Until the Shared AEON Value Semantics canonical string and case-mapping profiles are locked, the initial evaluator slice uses Unicode scalar-value ordering for string comparison and `order by`. Normative behavior must not depend on host locale, process locale, database collation, or host-language defaults. Case mapping for `lower(...)` and `upper(...)` remains tied to the shared value-semantics profile; implementations must document any provisional behavior.
+
+String profiles are not domain profiles for non-string lexical value families. Selecting a locale or Natural ASCII string profile must not cause `hex`, `radix`, `encoding`, `separator`, or `sansa` values to be interpreted as numbers, bytes, decoded text, segmented records, semantic versions, target identity, or selector equivalence. Those meanings require an explicit shared value-semantics contract, consumer profile, or resolver/profile authority for that value family.
+
+Consumers may configure accepted value-semantics profiles. Documents cannot select a more permissive comparison, ordering, conversion, or case-mapping profile without consumer authorization. Unsupported profile-dependent operations should be rejected rather than evaluated with host defaults.
 
 Value predicates such as `isValue(...)`, `isNull(...)`, `isNullReason(...)`, `isNaN(...)`, and `isInfinity(...)` define their own argument contracts.
 
 String concatenation must use an explicit function such as `concat`. The `+` operator is reserved for numeric addition.
+
+### Reference Following
+
+`follow(reference)` explicitly evaluates the target value of a legal AEON reference.
+
+Conceptual syntax:
+
+```text
+follow(<reference>)
+```
+
+Without `follow(...)`, a reference is evaluated as a reference form. Reference-form comparison uses the reference kind and canonical exact target path, and does not inspect the target value.
+
+With `follow(...)`, SANSA.Query walks the reference target path under the consumer's reference policy and then applies active Shared AEON Value Semantics to the target value.
+
+For example:
+
+```text
+where follow(.priceRef) > 10
+```
+
+Following a reference must be bounded, non-mutating, and diagnostic-preserving. It does not rewrite, inline, clone, alias, or erase the reference form. A query diagnostic should identify both the source reference binding and the referenced target path when following fails.
+
+Pointer references may carry aliasing or mutation-authority semantics outside Query. SANSA.Query only consumes followed target values for read-only evaluation unless a future mutation-capable consumer explicitly declares broader behavior.
 
 ### Dynamic Address Activation
 
@@ -749,6 +850,55 @@ select .sku
 ```
 
 The activated address supplies the source Binding Set for the query. A source expression that does not evaluate to a Binding Set is invalid.
+
+Activating an Address value is an exercise of address authority. The Address
+value does not carry or acquire authority merely because its syntax is valid.
+Before target resolution, the receiving evaluation context must either provide
+an explicit trusted activation mode or authorize the parsed address under a
+constrained activation policy. Unrestricted activation must not be inferred
+from the ability to read the binding that contains the Address value.
+
+The parameter read and the activated target are separate resolutions with
+separate authority:
+
+```text
+resolve parameter binding
+    |
+    v
+obtain SANSA Address Literal value
+    |
+    v
+authorize parsed address activation
+    |
+    v
+resolve activated target under bounds
+```
+
+A constrained activation policy may restrict:
+
+- permitted exact structural roots;
+- absolute or contextual-root activation;
+- member, position, range, wildcard, recursive, pattern, filter, attribute,
+  local-space, and parent selector capabilities;
+- activated-address depth;
+- produced Binding Set cardinality.
+
+Root containment is evaluated over parsed address structure, not string
+prefixes. Parent traversal must be normalized before the containment decision;
+activation fails when containment cannot be proven. Contextual addresses require
+an exact canonical address for the current binding when the policy relies on
+structural root containment.
+
+Scope and selector checks occur before target resolution. Bounds that can only
+be known during resolution, such as result cardinality, must abort resolution
+without exposing partial results when exceeded. A consumer may instead expose a
+pre-scoped namespace view and explicitly treat activation within that reduced
+view as trusted.
+
+Query source may further narrow consumer authority in a future syntax, but it
+must never grant or expand activation authority. A schema or validator may
+check that a path-valued slot satisfies externally supplied constraints; that
+legality decision does not authorize `path(...)` to read the target.
 
 ## 16. Fallback
 
@@ -894,6 +1044,9 @@ Multi-line:
 ```
 
 Comments are lexical trivia. They may appear wherever whitespace is permitted, do not affect query semantics, and are removed from canonical query representations.
+Comment markers do not begin inside a contiguous source literal payload. For
+example, `2025-01-01T09Z&Europe//Brussels` is an invalid ZRUT literal rather
+than `2025-01-01T09Z&Europe` followed by a comment.
 
 ## 22. Local Address-Space Binding
 
@@ -935,6 +1088,12 @@ Consumers receiving SANSA.Query expressions from outside their trust boundary ma
 - set maximum local address-space depth;
 - reject queries whose cost or traversal exceeds consumer-defined limits.
 
+Consumers that permit `path(...)` must separately authorize the activated
+Address value. A syntactically valid Address value is inert data until explicit
+activation, and permission to read its source binding does not grant permission
+to resolve its target. Dynamic activation should fail closed when no applicable
+activation policy or pre-scoped trusted namespace is present.
+
 A syntactically valid local address does not imply authorization to resolve it.
 
 Mounted local namespaces are read-only evaluation inputs in SANSA.Query.
@@ -961,7 +1120,7 @@ Local-space selector names use quoted syntax. In this example, `$.<"params">.nam
 
 ### 24.2 Dynamic Address Parameters
 
-Dynamic address literals can parameterize source, predicate, ordering, and projection. The comparison is guarded with `isValue(...)` so explicit null, NaN, infinity, non-scalar, and missing values do not enter scalar comparison.
+Dynamic address literals can parameterize source, predicate, ordering, and projection. The comparison is guarded with `isValue(...)` so explicit null, NaN, and missing values do not enter scalar comparison. The selected binding must still be string-compatible or the comparison fails with a deterministic diagnostic.
 
 ```text
 from path($.<"params">.source)
@@ -970,9 +1129,17 @@ order by path($.<"params">.sortField) asc
 select path($.<"params">.field)
 ```
 
+When the address is static, semantic filters can be used as an additional domain guard:
+
+```text
+from $.inventory.items.*
+where isValue(.status) and exists(.status#string) and .status == "active"
+select .sku
+```
+
 ### 24.3 Status Presence
 
-Ordinary values, explicit nulls, and missing bindings are distinct. A query can include ordinary status values and explicit null status values while excluding missing status bindings:
+Concrete values, explicit nulls, and missing bindings are distinct. A query can include concrete status values and explicit null status values while excluding missing status bindings:
 
 ```text
 from $.inventory.items.*

@@ -78,6 +78,14 @@ selector:sansa = $.contact.measurements.*
 
 The schema or validator decides that these SANSA literals are rule targets. The source document being validated does not gain authority to decide which rule, policy, or meaning-validation behavior applies to itself.
 
+An externally supplied AEOS schema may also constrain a path-valued slot, such
+as requiring an exact path under a declared root or forbidding recursive and
+local-space selectors. This establishes value or structural legality only. It
+does not grant authority to activate the stored Address value with `path(...)`,
+read the activated target, or mutate it. Address activation authority remains
+with the receiving consumer, and mutation authorization remains with the
+consumer or ASP boundary.
+
 ### 2.4 SANSA.Resolve
 
 SANSA.Resolve discovers bindings in a namespace. It answers which bindings match a SANSA address or selector expression.

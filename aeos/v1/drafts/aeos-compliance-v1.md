@@ -19,7 +19,15 @@ Scope: normative conformance requirements for AEOS-specific behavior layered on 
 
 This document is intentionally introduced as a separate compliance line so AEON core compliance and AEOS compliance are not treated as the same surface.
 
-## 1. Conformance Target
+## 1. Compliance Philosophy
+
+AEOS compliance measures validator behavior, not implementation strategy.
+
+Conforming implementations may differ internally, provided they preserve the externally observable behavior defined by this specification, `AEOS-spec-v1.md`, and the associated CTS manifests.
+
+AEOS compliance therefore attaches to the validator contract: accepted inputs, ResultEnvelope shape, diagnostic categories, authority boundaries, and observable pass/fail behavior. It does not require a particular storage model, rule engine, traversal algorithm, cache strategy, or programming-language architecture.
+
+## 2. Conformance Target
 
 An implementation claiming AEOS v1 conformance SHALL satisfy:
 - language and authority-boundary requirements in `AEOS-spec-v1.md`
@@ -30,7 +38,7 @@ An implementation claiming AEOS v1 conformance SHALL satisfy:
 
 AEOS conformance is validator-surface conformance. It does not replace or weaken AEON Core conformance requirements.
 
-## 2. AEOS Behavior Families
+## 3. AEOS Behavior Families
 
 AEOS compliance SHALL be evaluated against validator behavior families, not only by isolated suite success.
 
@@ -53,7 +61,7 @@ The current AEOS behavior families are:
 
 The current anti-drift coverage accounting for these families is tracked in `aeonite-cts/CONFORMANCE-COVERAGE.md`.
 
-## 3. Authority Boundary
+## 4. Authority Boundary
 
 An AEOS-conforming implementation MUST:
 - consume Core/AES output rather than redefining Core legality
@@ -68,7 +76,7 @@ An AEOS-conforming implementation MUST:
 
 AEOS conformance is not satisfied by passing only representative examples if validator behavior drifts across one of the AEOS behavior families listed above.
 
-## 4. Compliance Boundary
+## 5. Compliance Boundary
 
 This document defines the AEOS conformance surface at the behavior-family level. Detailed rule semantics remain owned by `AEOS-spec-v1.md`, while the public CTS manifests define the required executable conformance cases.
 

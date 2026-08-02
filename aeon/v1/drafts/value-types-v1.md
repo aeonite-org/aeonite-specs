@@ -116,6 +116,14 @@ Interpretation:
 | Alternative names | none       |
 | Reserved          | none       |
 
+### `nan`
+
+| Field             | Names |
+| ----------------- | ----- |
+| Type              | `nan` |
+| Alternative names | none  |
+| Reserved          | none  |
+
 ### `boolean`
 
 | Field             | Names     |
@@ -565,10 +573,12 @@ color:hex = #ff00aa
 ```
 
 Nuances:
-- parsed as hex literal payload without `#` in `value`.
+- parsed as hex literal payload without `#` in `value`;
 - surfaced machine-readable `value` is the payload-only form, while `raw` preserves the original sigiled source token;
 - `_` is visual spacing only and is valid only between hex digits;
-- leading, trailing, and consecutive `_` forms are invalid.
+- leading, trailing, and consecutive `_` forms are invalid;
+- `HexLiteral` is distinct from `RadixLiteral`. `#ff` is not the same literal family as `%ff`, even when a radix profile or datatype annotation uses base 16;
+- Core does not assign color, byte-array, identifier, numeric, or hash semantics to hex values; those meanings belong to profiles, schemas, or consumers.
 
 AES:
 - `HexLiteral`.
@@ -601,6 +611,8 @@ Nuances:
 - lexical acceptance is not base-specific radix validity;
 - base-specific digit checks still belong downstream for implementation/profile/schema enforcement;
 - generic forms such as `radix<2>` are invalid; radix base metadata uses brackets.
+- `radix16` is not a reserved Core v1 shorthand. Use `radix[16]` for radix-family base-16 values.
+- `radix[16]` remains distinct from `hex`; it produces `RadixLiteral`, while `hex` produces `HexLiteral`.
 
 Canonical notes:
 - canonicalization of `:radix[...]` values is representation-preserving rather
@@ -631,6 +643,10 @@ Nuances:
 - standard base64 alphabet characters `+` and `/` are invalid in AEON encoding/base64 payloads;
 - canonical encoding/base64 rendering preserves the accepted Base64URL payload spelling, including trailing `=` padding;
 - lexical acceptance is not encoding-family validity;
+- `encoding` does not always mean decoded Base64 data. Core preserves an encoded lexical payload; decoding, byte identity, media type, and text interpretation belong to profiles, schemas, or consumers;
+- `base64` is an encoding-family compatibility label, not a radix-family label. `base64` is not equivalent to `radix[64]`;
+- `embed` and `inline` are reserved compatibility labels over the same `EncodingLiteral` family; Core does not assign media, resource-loading, or inline-expansion behavior to them;
+- Shared Value Semantics may define naïve payload order over the preserved encoded payload characters, but decoded-byte ordering, decoded-text ordering, media ordering, or hash ordering belongs to profiles, schemas, or consumers;
 - `a = &aa=` is unambiguous in current lexer, because the second `=` remains part of the encoding token rather than being reinterpreted as assignment.
 
 AES:
@@ -659,6 +675,7 @@ Nuances:
 - `datetime` extends that same reduced-precision rule after the `T`, so forms such as `2025-01-01T09Z`, `2025-01-01T09+02:00`, and `2025-01-01T09:30Z` are valid;
 - ZRUT extends the same reduced-precision datetime bases with a named zone suffix, so forms such as `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, and `2025-01-01T09:30Z&Local` are valid `zrut` literals;
 - named-zone ZRUT suffixes may contain `/`, `_`, `-`, and `+` when used as part of a contiguous zone identifier, so forms such as `America/Port-au-Prince`, `GB-Eire`, `Etc/GMT-1`, and `Etc/GMT+1` are valid zone payloads;
+- comment markers do not begin inside a contiguous ZRUT zone payload; forms such as `Europe//Brussels` and `Europe/*Brussels*/` are invalid zone payloads, not shortened values followed by comments;
 - uppercase `Z` is the Core v1 UTC marker form; lowercase `z` is not a temporal literal marker;
 - invalid ranges such as `2025-13-40`, `2025-02-29`, `24:00`, `99:99`, and `23:59:60` are not temporal literals in Core v1;
 - strict datatype compatibility treats `:time`, `:datetime`, and `:zrut` as `DateTimeLiteral`-compatible;
@@ -674,8 +691,12 @@ Examples:
 
 ```aeon
 size:sep[x] = ^300x250
+dimensions:sep[w][h][d] = ^300w400h200d
 semver:kadot = ^3.14.15
+ip1:sep = ^127.0.0.1
+ip2:sep[.] = ^127.0.0.1
 parts:sep[|] = ^"hello world"|"this, [is] fine"
+psv:sep[|] = ^"id"|"name"|"phone"
 ```
 
 Datatype separator spec grammar:
@@ -707,6 +728,10 @@ Payload grammar:
 - comment syntax resumes normally once a separator payload ends outside quoted segments.
 - `:sep` may bind separator literals with or without explicit bracket specs.
 - `:kadot` may bind unparameterized separator literals. The intended kadot shape is dot-separated numeric segments, for example `ip:kadot = ^198.0.126.255` or `semver:kadot = ^3.14.15`, but Core only enforces the separator-literal family; stricter shape validation belongs to schema/profile layers.
+- Core does not assign IP, semantic-version, dimension, table, product-code, or other domain meaning to separator literals.
+- Shared Value Semantics may define naïve separator order over the canonical separator payload. Naïve order does not split payloads, even when separator specs such as `[.]` are present.
+- Domain ordering such as version order, numeric IP address order, or aspect-ratio order belongs to profiles, schemas, or consumers.
+- Separator specs are preserved claims. Profile-defined splitting or ordering should use them only when the consumer trusts the source, validates the claim against the payload, or supplies separator structure from trusted configuration.
 
 AES:
 - `SeparatorLiteral` with raw payload preserved.
@@ -725,6 +750,7 @@ deepSelector:sansa = $.inventory.**
 attribute:sansa = $.contact.name.@.unit
 pattern:sansa = $.items.("item?*").sku
 qualified:sansa = $.result:number|nan
+external:sansa = $.["john"].isLocatedAt.["Brussels"]
 ```
 
 Core role:
@@ -733,6 +759,10 @@ Core role:
 - the literal may express an exact path or selector;
 - AEON Core validates and preserves the address form it accepts;
 - AEON Core does not resolve the address, expand selectors, interpret qualifiers, or authorize access to any target.
+- SANSA member selectors describe semantic traversal rather than object traversal.
+- AEON-backed consumers may resolve SANSA literals against AEON bindings and canonical paths, but `:sansa` values are not limited to AEON path domains.
+- A SANSA literal may address another semantic namespace, such as an RDF-like graph, database, service resource tree, filesystem namespace, or runtime object graph, when a consumer exposes that namespace.
+- Exact address-expression identity, canonical target identity, selector equivalence, and resolved Binding Set equality are distinct semantic questions.
 
 Lexical boundary:
 - a SANSA literal begins where the value begins;
@@ -750,6 +780,17 @@ AES:
 - `SansaAddressLiteral` with parsed address structure and/or source literal preserved by the implementation.
 
 ## 4. Structured Values
+
+Core preserves structural representation for objects, lists, tuples, and nodes.
+
+Shared semantics are layered on top of that representation:
+
+- object member order is preserved but is not semantically significant in the GP profile;
+- list element order and index-addressability are preserved;
+- tuple position and arity are preserved;
+- node tags, attributes, child order, and indexed child slots are preserved;
+- structural equality and mutation compatibility are defined by Shared AEON Value Semantics and any active schema/profile authority;
+- structural ordering has no Core default.
 
 ## 4.1 Object
 
@@ -886,7 +927,11 @@ Nuances:
 - clone (`~`) and pointer (`~>`) are distinct and preserved;
 - ASCII inter-token whitespace may appear between the reference sigil and the following path, but canonical formatting removes it;
 - attribute selectors are valid in reference paths;
-- legality checks (missing/forward/self) are core-owned.
+- legality checks (missing/forward/self) are core-owned;
+- reference-form identity compares the reference kind and canonical exact target path;
+- evaluating the referenced target value without rewriting the source value is a read-only consumer operation, conceptually `follow(reference)`, not a Core parse operation;
+- resolving a reference is a separate materialization/substitution operation that may inline, clone, alias, or preserve an explicit runtime reference according to consumer policy;
+- consumers that follow or resolve references must preserve the original reference form in AES or other representation-preserving outputs.
 
 AES:
 - `CloneReference` or `PointerReference`.

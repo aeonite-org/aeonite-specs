@@ -48,6 +48,13 @@ A resolution miss occurs when a selector is valid and supported, but no matching
 
 A resolution failure occurs when an operation cannot safely or validly be performed. Examples include unsupported selector capability, missing contextual root, unauthorized local address-space traversal, forbidden parent traversal, boundary escape, configured implementation limit exhaustion, or an adapter exact-multiplicity violation. A failure produces diagnostics rather than an empty Binding Set.
 
+Consumers may impose a maximum intermediate or final Binding Set size. Resolve
+must stop when retaining another binding would exceed that bound and return a
+failure with no partial Binding Set. Recursive and direct expansion must honor
+the bound while materializing results rather than traversing the complete
+reachable namespace first. Implementations should report the configured limit
+and the first observed count beyond it.
+
 ## 3. Binding Model
 
 Resolve operates on semantic bindings rather than raw runtime values.

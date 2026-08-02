@@ -13,6 +13,7 @@ links:
   - sansa-v1-query
   - sansa-v1-extensions
   - sansa-v1-mutate
+  - sansa-v1-instruction
 ---
 
 # SANSA v1 Conformance and Capabilities
@@ -31,9 +32,10 @@ SANSA v1 defines independent capability families:
 - `SANSA.Query`
 - `SANSA.Transform`
 
-Future specifications may define:
+Proposal-stage or future specifications may define:
 
 - `SANSA.Mutate`
+- `SANSA.Instruction`
 - `SANSA.Subscribe`
 - `SANSA.History`
 
@@ -41,7 +43,24 @@ Capabilities are cumulative only where a specification requires it. For example,
 
 `SANSA.Transform` names optional transform-library behavior over resolved Binding Sets. It is not required by `SANSA.Query` core conformance.
 
-`SANSA.Mutate` is tracked as a future authority-bearing capability outline. It is not part of required SANSA v1 Addressing, Resolve, Query, or Transform conformance.
+Dynamic Address activation through Query `path(...)` is part of Query behavior,
+not a separate capability. Implementations must distinguish reading an Address
+value from exercising authority to resolve it, accept an explicit trusted or
+constrained activation context, and fail closed when activation authority is
+absent. A constrained policy compares parsed address structure rather than text
+prefixes and may restrict roots, selector capabilities, contextual activation,
+depth, and Binding Set cardinality.
+
+`SANSA.Mutate` is tracked as a proposal-stage authority-bearing capability with a conservative structured-plan boundary. `SANSA.Instruction` is tracked as a proposal-stage source-level composition capability that may lower Addressing, Query, and Mutate vocabulary into structured requests. Instruction source provenance such as claimed reason or claimed author is inert metadata, not authorization or authentication. Neither capability is part of required SANSA v1 Addressing, Resolve, Query, or Transform conformance.
+
+Implementations may advertise proposal-stage `SANSA.Mutate` or `SANSA.Instruction` support only as experimental capabilities until those specifications define a stable conformance profile. Such advertisements should identify the exact supported slice, such as structured mutation planning, target-surface validation, Instruction parsing, Instruction lowering, or Instruction-to-Mutate planning.
+
+Experimental mutation-policy support should be advertised separately from
+mutation planning and apply. A policy checker may conform to an implementation
+slice that filters inspectable mutation plans, fails closed on unsupported
+policy fields, and reports policy diagnostics, without claiming to provide
+authentication, delegation, principal management, schema validation, audit, or a
+complete authorization system.
 
 ## 2. Profiles
 
@@ -156,6 +175,29 @@ Conceptual example:
       "capability": "SANSA.Transform",
       "category": "library",
       "maturity": "experimental"
+    },
+    {
+      "id": "sansa.mutate.policy.planFilter",
+      "capability": "SANSA.Mutate",
+      "category": "policy",
+      "maturity": "experimental",
+      "policyRuleFields": [
+        "operation",
+        "operations",
+        "target",
+        "parent",
+        "container",
+        "source",
+        "anchor",
+        "name",
+        "names",
+        "datatype",
+        "datatypes",
+        "kind",
+        "kinds",
+        "value",
+        "values"
+      ]
     }
   ]
 }
@@ -203,4 +245,4 @@ For SANSA v1, validation remains a named Query policy restriction rather than a 
 
 Conformance does not imply authorization.
 
-A resolver can conform to `SANSA.Resolve` while rejecting a specific local address space for policy reasons. A query implementation can conform to `SANSA.Query` while refusing implementation-specific functions. A future mutation implementation will require stronger authority boundaries than read-only Query.
+A resolver can conform to `SANSA.Resolve` while rejecting a specific local address space for policy reasons. A query implementation can conform to `SANSA.Query` while refusing implementation-specific functions. A mutation or instruction implementation can preserve provenance while still requiring a trusted host envelope for actor identity, delegation, authorization, and audit evidence.

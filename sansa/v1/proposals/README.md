@@ -1,7 +1,7 @@
 ---
 id: sansa-v1-proposals
 title: SANSA v1 Proposals
-description: Proposal-stage specification set for SANSA query, conformance, integration, extension, and future mutation semantics.
+description: Proposal-stage specification set for SANSA query, conformance, integration, extension, instruction, and future mutation semantics.
 family: sansa
 group: SANSA
 status: Proposal
@@ -28,7 +28,8 @@ The foundation layer has moved to `../drafts/`:
 - `conformance-v1.md` defines capability names, conformance profiles, and extension advertisement.
 - `extensions-v1.md` records candidate selector and query-helper extensions before they enter the core v1 conformance surface.
 - `meaning-validation-integration-v1.md` defines the AEON, AEOS, SANSA, and meaning-validation responsibility boundaries.
-- `mutate-v1.md` outlines the future authority-bearing mutation capability and ASP boundary.
+- `mutate-v1.md` defines the conservative authority-bearing mutation-plan boundary and its growth path.
+- `instruction-v1.md` defines a proposed human-authored source surface that combines Addressing, Query, and Mutate vocabulary.
 
 ## Conceptual Stack
 
@@ -41,14 +42,28 @@ SANSA.Resolve
   v
 Binding Set
   |
-  v
-SANSA.Query
+  +--> SANSA.Query  --> Result Set
   |
-  v
-Result Set
+  +--> SANSA.Mutate --> Mutation Plan --> Target Surface --> Consumer Apply
 ```
 
-SANSA.Resolve discovers semantic structure. SANSA.Query evaluates and transforms semantic bindings while consuming Shared AEON Value Semantics for comparison, ordering, and related value behavior.
+SANSA.Resolve discovers semantic structure. SANSA.Query evaluates semantic bindings without changing namespace state. SANSA.Mutate freezes exact targets and expresses change intent without owning authorization, transactions, orchestration, or physical storage behavior.
+
+Target surfaces are host-format or adapter boundaries layered after mutation
+planning. They decide whether valid SANSA.Mutate intent can be represented by
+AEON, JSON-compatible output, ASP storage, or another consumer-selected target.
+
+SANSA.Instruction is a proposed source-level composition layer. It is intended
+to lower into structured Query and Mutate behavior rather than replace those
+capabilities. Claimed source provenance in Instruction, such as reason or
+author text, is preserved for explanation but does not authorize the change or
+prove actor identity.
+
+SANSA.Mutate reuses consumer-selected Shared AEON Value Semantics for preconditions. Value legality remains the responsibility of the consumer, AEOS schema, or domain validator; a document being mutated cannot select its own mutation, validation, or authorization policy.
+
+Mutation policy is a trusted consumer boundary layered after planning and before
+apply. It may authorize or deny planned intent, but it does not become SANSA
+Instruction source and does not rewrite the mutation plan.
 
 ## Capability Families
 
@@ -60,9 +75,10 @@ The SANSA v1 draft/proposal set covers these conformance capabilities:
 
 Implementations should advertise supported capabilities rather than claim unqualified support for "SANSA". For example, a parser may support `SANSA.Addressing` without supporting `SANSA.Resolve`, and a resolver may support `SANSA.Resolve` without supporting `SANSA.Query`.
 
-Future specifications may cover:
+Proposal-stage or future specifications may cover:
 
 - `SANSA.Mutate`
+- `SANSA.Instruction`
 - `SANSA.Subscribe`
 - `SANSA.History`
 - self-description and capability discovery
@@ -74,7 +90,7 @@ SANSA separates semantic interaction from representation, validation, persistenc
 - AEON defines how meaning is represented.
 - AEOS defines how meaning is constrained.
 - AES defines how meaning is persisted.
-- SANSA defines how meaning is accessed.
+- SANSA defines how meaning is accessed and, through proposal-stage Mutate capability, how change intent is expressed.
 - Meaning validators define how domain rules are interpreted and reported.
 - Future mutation consumers define how accepted change intent is authorized, orchestrated, and applied.
 

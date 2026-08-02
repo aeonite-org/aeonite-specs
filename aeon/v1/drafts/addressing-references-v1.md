@@ -23,6 +23,8 @@ SANSA means **Semantic Address NameSpace Abstraction**.
 
 SANSA defines the broader address language used to describe paths and selectors over a semantic address namespace. AEON Core adopts SANSA address literals through the reserved `sansa` datatype, and AEON tooling may use SANSA selectors for schema rules, playground extraction, and consumer-defined lookup.
 
+SANSA is namespace- and domain-neutral. SANSA member selectors describe semantic traversal rather than object traversal. In an AEON-backed namespace, that traversal maps to AEON bindings and canonical paths; in another namespace, the same syntax may map to graph terms, database entities, service resources, filesystem nodes, runtime objects, or another semantic model.
+
 AEON references are related, but narrower:
 
 - `value:sansa = $.contact.name` stores a SANSA address literal as data;
@@ -201,12 +203,30 @@ Nuances:
 - `~path` references the target value;
 - `~>path` preserves alias/pointer intent in the AST/AES model;
 - ASCII inter-token whitespace may appear between `~` or `~>` and the following reference path, but canonical formatting removes it;
-- both forms use the same path grammar after the introducer.
+- both forms use the same path grammar after the introducer;
 - reference paths use exact AEON target paths; SANSA selector expansion is not part of `~` or `~>` reference resolution.
 
 AES notes:
 - clone and alias remain distinct value kinds;
 - path text is preserved structurally rather than flattened to one raw string.
+
+Reference-form semantics:
+- reference-form identity compares reference kind plus canonical exact target path;
+- `~a` and `~$.a` identify the same clone-reference form after canonical path normalization;
+- `~a` and `~>a` do not identify the same reference form because clone intent and pointer intent are distinct;
+- comparing, validating, or rendering the reference form does not follow the reference.
+
+Followed-value semantics:
+- following a reference is a read-only consumer operation, conceptually `follow(reference)`;
+- following walks the target path and inspects the target value without rewriting, substituting, inlining, aliasing, or erasing the original reference form;
+- after following, value semantics apply to the target value;
+- consumers that follow references must preserve diagnostics for both the reference source and the target path;
+- following must not erase the original reference form from AES or other representation-preserving outputs.
+
+Reference resolution:
+- resolving a reference is a materialization/substitution operation, not the same operation as following;
+- resolution may produce an inlined clone, an alias, an explicit runtime reference, or another consumer-defined representation according to clone/pointer policy;
+- resolution belongs to Tonics, runtime materializers, storage adapters, or explicit consumer profiles, not AEON Core parsing.
 
 ## 5. Disambiguation Rules
 

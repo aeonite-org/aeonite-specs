@@ -23,6 +23,22 @@ SANSA addressing defines a deterministic notation for identifying semantic bindi
 
 An address describes structure. It does not, by itself, require traversal, execution, mutation, authorization, or value evaluation. Those responsibilities belong to a resolving consumer, SANSA.Resolve, SANSA.Query, or another capability layered above the address model.
 
+SANSA is namespace- and domain-neutral.
+
+SANSA defines only how semantic locations are expressed. It does not define what those locations represent. A SANSA address may identify AEON bindings, RDF-like graph terms, database entities, service resources, runtime objects, filesystem nodes, or any other semantic namespace exposed by a resolver.
+
+AEON documents may embed SANSA address literals, and AEON-backed consumers may resolve them against the AEON binding model and canonical paths. The address language itself is not limited to AEON.
+
+SANSA member selectors describe semantic traversal rather than object traversal.
+
+For example, a non-AEON semantic namespace could expose RDF-like bindings through ordinary SANSA member selectors:
+
+```text
+$.["john"].isLocatedAt.["Brussels"]
+```
+
+Whether `john`, `isLocatedAt`, and `Brussels` are AEON binding keys, RDF-like graph terms, database fields, service resources, filesystem nodes, runtime object properties, or another domain model is determined by the resolving namespace.
+
 ## 2. Terms
 
 A **namespace** is the addressable semantic structure exposed by a SANSA implementation.

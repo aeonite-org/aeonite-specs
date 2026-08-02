@@ -76,6 +76,11 @@ Release-facing change history is tracked in:
 
 - `CHANGELOG.md`
 
+Specification snapshots use explicit documentation identifiers such as
+`sansa-query-specs-v1-snapshot-0.1`. They are intended to align spec text with
+CTS compatibility snapshots without replacing proposal, draft, or published
+lifecycle status. See `docs/spec-snapshot-versioning.md`.
+
 Before committing, run:
 
 ```bash
