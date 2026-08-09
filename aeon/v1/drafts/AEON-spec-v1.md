@@ -67,7 +67,7 @@ Core value families include:
 - booleans
 - switches
 - hex, radix, and encoding literals
-- date, time, datetime, and ZRUT forms
+- date, time, datetime, and WTC forms
 - objects, lists, tuples, and nodes
 - clone and alias references
 - separator literals

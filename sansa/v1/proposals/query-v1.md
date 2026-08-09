@@ -599,7 +599,7 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 | date and date | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical ISO-style date payloads. |
 | time and time | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical time payloads. |
 | datetime and datetime | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical datetime payloads. |
-| zrut and zrut | allowed | allowed | Uses the active temporal value-semantics profile; named-zone authority may be required by richer profiles. |
+| wtc and wtc | allowed | allowed | Uses the active temporal value-semantics profile; temporal-reference authority may be required by richer profiles. |
 | explicit null | error | error | Use `isNull(...)` or `isNullReason(...)`. |
 | NaN | error | error | Use `isNaN(...)`. |
 | infinity and finite number | allowed | allowed | Infinity is not equal to finite numeric values and compares as a numeric bound when numeric comparison is supported. |
@@ -610,7 +610,7 @@ The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1
 
 Infinity values are explicit numeric special values. Where an applicable value-semantics numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with `isInfinity(...)`.
 
-Temporal values are not ordinary strings. A host may expose AEON `date`, `time`, `datetime`, or `zrut` values through a string-like transport representation, but SANSA.Query compares or orders them through Shared AEON Value Semantics, not string collation. The minimum profile supports same-family canonical temporal payload comparison. Cross-family temporal comparison fails closed unless a richer active profile explicitly defines compatibility.
+Temporal values are not ordinary strings. A host may expose AEON `date`, `time`, `datetime`, or `wtc` values through a string-like transport representation, but SANSA.Query compares or orders them through Shared AEON Value Semantics, not string collation. The minimum profile supports same-family canonical temporal payload comparison. Cross-family temporal comparison fails closed unless a richer active profile explicitly defines compatibility.
 
 Temporal query literals may be parsed as source literals so query syntax can carry the same lexical family as AEON values:
 
@@ -620,11 +620,11 @@ where . > 2025-01-01
 select .
 ```
 
-The semantic filter constrains the Binding Set to date values before comparison. A `date` literal does not implicitly compare with `datetime`, `time`, `zrut`, or string values.
+The semantic filter constrains the Binding Set to date values before comparison. A `date` literal does not implicitly compare with `datetime`, `time`, `wtc`, or string values.
 
 Reduced-precision forms accepted by AEON Core remain temporal values in
 SANSA.Query. For example, `2025-01-01T09Z` is a `datetime` value, and
-`2025-01-01T09Z&Europe/Belgium/Brussels` is a `zrut` value.
+`2025-01-01T09Z&Europe/Belgium/Brussels` is a `wtc` value.
 
 Separator query literals likewise preserve the AEON separator source family:
 
@@ -1045,7 +1045,7 @@ Multi-line:
 
 Comments are lexical trivia. They may appear wherever whitespace is permitted, do not affect query semantics, and are removed from canonical query representations.
 Comment markers do not begin inside a contiguous source literal payload. For
-example, `2025-01-01T09Z&Europe//Brussels` is an invalid ZRUT literal rather
+example, `2025-01-01T09Z&Europe//Brussels` is an invalid WTC literal rather
 than `2025-01-01T09Z&Europe` followed by a comment.
 
 ## 22. Local Address-Space Binding

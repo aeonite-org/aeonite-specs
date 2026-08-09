@@ -154,7 +154,7 @@ Interpretation:
 | ----------------- | --------------------------------------- |
 | Type              | `radix`                                 |
 | Alternative names | none                                    |
-| Reserved          | `radix2`, `radix6`, `radix8`, `radix12` |
+| Reserved          | `decimal`, `radix2`, `radix6`, `radix8`, `radix12` |
 
 ### `encoding`
 
@@ -186,7 +186,7 @@ Interpretation:
 | ----------------- | ---------- |
 | Type              | `datetime` |
 | Alternative names | none       |
-| Reserved          | `zrut`     |
+| Reserved          | `wtc`     |
 
 ### `sep`
 
@@ -228,7 +228,7 @@ Interpretation:
 | ----------------- | ------- |
 | Type              | `tuple` |
 | Alternative names | none    |
-| Reserved          | none    |
+| Reserved          | `triple` |
 
 ### `node`
 
@@ -259,17 +259,17 @@ Interpretation:
 | Boolean           | `true`, `false`                         | `flag = true`                               | `flag:boolean = true`                                           | `BooleanLiteral`   |
 | Toggle            | `yes`, `no`, `on`, `off`                | `state = on`                                | `state:toggle = on`                                             | `ToggleLiteral`    |
 | Hex               | `#ff00aa`                               | `color = #ff00aa`                           | `color:hex = #ff00aa`                                           | `HexLiteral`       |
-| Radix             | `%1011`                                 | `bits = %1011`                              | `bits:radix[2] = %1011`                                         | `RadixLiteral`     |
+| Radix             | `%1011`, `%19.9900`                    | `bits = %1011`                              | `bits:radix[2] = %1011` or `price:decimal = %19.9900`           | `RadixLiteral`     |
 | Encoding          | `&QmFzZTY0IQ==`                         | `payload = &QmFzZTY0IQ==`                   | `payload:base64 = &QmFzZTY0IQ==`                                | `EncodingLiteral`  |
 | Date              | `2025-01-01`, `2024-02-29`              | `d = 2025-01-01`                            | `d:date = 2025-01-01`                                           | `DateLiteral`      |
 | Time              | `09:`, `09:30`, `09:30Z`, `09:+02:00`, `09:30+02:00`, `09:30:00`, `09:30:00Z` | `t = 09:30:00`                              | `t:time = 09:30:00Z`                                            | `DateTimeLiteral`  |
 | DateTime          | `2025-01-01T09`, `2025-01-01T09Z`, `2025-01-01T09+02:00`, `2025-01-01T09:30:00Z` | `ts = 2025-01-01T09:30:00Z`                 | `ts:datetime = 2025-01-01T09:30:00Z`                            | `DateTimeLiteral`  |
-| ZRUT              | `2025-01-01T00:00:00Z&Australia/Sydney`, `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local` | `z = 2025-01-01T00:00:00Z&Australia/Sydney` | `z:zrut = 2025-01-01T00:00:00Z&Australia/Sydney`                | `DateTimeLiteral`  |
+| WTC              | `2025-01-01T00:00:00Z&Australia/Sydney`, `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, `2035-01-01T09:00&-36.7590183/144.2826718` | `z = 2025-01-01T00:00:00Z&Australia/Sydney` | `z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney`                | `WTCDateTimeLiteral`  |
 | Separator Literal | `^300x250`                              | `size = ^300x250`                           | `size:sep[x] = ^300x250`                                        | `SeparatorLiteral` |
 | SANSA Address     | `$.path`, `?.path`, `$.items.*.sku`     | `path:sansa = $.contact.name`               | `selector:sansa = $.inventory.items.*.sku`                      | `SansaAddressLiteral` |
 | Object            | `{ ... }`                               | `user = { name = "John" }`                  | `user:object = { name:string = "John" }`                        | `ObjectNode`       |
 | List              | `[ ... ]`                               | `arr = [1,2,3]`                             | `arr:list = [1,2,3]` or `arr:list<number> = [1,2,3]`            | `ListNode`         |
-| Tuple             | `( ... )`                               | `point = (10,20)`                           | `point:tuple = (10,20)` or `point:tuple<int32,int32> = (10,20)` | `TupleLiteral`     |
+| Tuple             | `( ... )`                               | `point = (10,20)`                           | `point:tuple = (10,20)`, `edge:triple<string,string,string> = ("a","b","c")` | `TupleLiteral`     |
 | Node              | `<tag(...)>` / `<tag>`                  | `view = <div("hello")>`                     | `view:node = <div("hello")>`                                    | `NodeLiteral`      |
 | Clone Ref         | `~path`                                 | `b = ~a`                                    | `b:number = ~a`                                                 | `CloneReference`   |
 | Pointer Ref       | `~>path`                                | `alias = ~>a`                               | `alias:object = ~>a`                                            | `PointerReference` |
@@ -599,6 +599,7 @@ Nuances:
 - optional radix base metadata accepts decimal integers from `2` to `64`;
 - spaces around the radix base inside brackets are allowed, but the integer itself must be contiguous;
 - radix base forms with leading zeroes, non-decimal payloads, empty brackets, or values outside `2..64` are invalid;
+- `decimal` is a reserved alias for `radix[10]`;
 - reserved aliases such as `radix2`, `radix6`, `radix8`, and `radix12` remain accepted as shorthand;
 - optional leading sign `+` or `-` is allowed only once at the start of the payload;
 - radix payload digits are `0-9`, `A-Z`, `a-z`, `&`, and `!` in that order;
@@ -652,7 +653,7 @@ Nuances:
 AES:
 - `EncodingLiteral`.
 
-## 3.9 Date / Time / DateTime / ZRUT
+## 3.9 Date / Time / DateTime / WTC
 
 Examples:
 
@@ -662,25 +663,27 @@ at:time = 09:30:00
 utc:time = 09:30:00Z
 local:time = 09:30:00+02:40
 ts:datetime = 2025-01-01T09:30:00Z
-z:zrut = 2025-01-01T00:00:00Z&Australia/Sydney
-localTime:zrut = 2025-01-01T00:00:00&Local         // ZRUT local time convention
+z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney
+localTime:wtc = 2025-01-01T00:00:00&Local         // WTC local time convention
+geoTime:wtc = 2035-01-01T09:00&-36.7590183/144.2826718
 ```
 
 Nuances:
 - parser emits `DateLiteral` for date-only token;
-- parser emits `DateTimeLiteral` for time and datetime-family tokens, including ZRUT (`&Zone/Name` suffix);
+- parser emits `DateTimeLiteral` for time and datetime-family tokens and `WTCDateTimeLiteral` for WTC tokens with an `&temporal-reference` suffix;
 - standalone `time` is part of Core v1 and follows ISO 8601 time forms;
 - date, time, and datetime literal recognition includes intrinsic calendar/clock range validation;
 - zone suffixes (`Z`, `+hh:mm`, `-hh:mm`) may attach to valid reduced-precision time forms already admitted by Core v1, such as `09:` and `09:30`;
 - `datetime` extends that same reduced-precision rule after the `T`, so forms such as `2025-01-01T09Z`, `2025-01-01T09+02:00`, and `2025-01-01T09:30Z` are valid;
-- ZRUT extends the same reduced-precision datetime bases with a named zone suffix, so forms such as `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, and `2025-01-01T09:30Z&Local` are valid `zrut` literals;
-- named-zone ZRUT suffixes may contain `/`, `_`, `-`, and `+` when used as part of a contiguous zone identifier, so forms such as `America/Port-au-Prince`, `GB-Eire`, `Etc/GMT-1`, and `Etc/GMT+1` are valid zone payloads;
-- comment markers do not begin inside a contiguous ZRUT zone payload; forms such as `Europe//Brussels` and `Europe/*Brussels*/` are invalid zone payloads, not shortened values followed by comments;
+- WTC extends the same reduced-precision datetime bases with a temporal reference suffix, so forms such as `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, and `2035-01-01T09:00&-36.7590183/144.2826718` are valid `wtc` literals;
+- WTC temporal references may contain `/`, `_`, `-`, `+`, and `.` when used as part of a contiguous reference, so named timezone references such as `America/Port-au-Prince`, `GB-Eire`, `Etc/GMT-1`, and `Etc/GMT+1`, plus geographic references such as `-36.7590183/144.2826718`, are valid reference payloads;
+- comment markers do not begin inside a contiguous WTC temporal-reference payload; forms such as `Europe//Brussels` and `Europe/*Brussels*/` are invalid reference payloads, not shortened values followed by comments;
 - uppercase `Z` is the Core v1 UTC marker form; lowercase `z` is not a temporal literal marker;
 - invalid ranges such as `2025-13-40`, `2025-02-29`, `24:00`, `99:99`, and `23:59:60` are not temporal literals in Core v1;
-- strict datatype compatibility treats `:time`, `:datetime`, and `:zrut` as `DateTimeLiteral`-compatible;
-- local-time ZRUT convention is `...&Local` (for example `2025-01-01T00:00:00&Local`);
-- ZRUT is represented as DateTime token family in AST/AES.
+- strict datatype compatibility treats `:time` and `:datetime` as `DateTimeLiteral`-compatible and `:wtc` as `WTCDateTimeLiteral`-compatible;
+- local-time WTC convention is `...&Local` (for example `2025-01-01T00:00:00&Local`);
+- WTC preserves whether the temporal value is instant-anchored (`...Z&reference`) or civil-time-anchored (`...&reference`); the temporal value and temporal reference together form the temporal context;
+- WTC is represented as DateTime token family in AST/AES.
 
 AES:
 - `DateLiteral` or `DateTimeLiteral`.
@@ -870,10 +873,12 @@ Examples:
 point = (10,20)
 point:tuple = (10,20)
 point:tuple<int32,int32> = (10,20)
+edge:triple<string,string,string> = ("subject","predicate","object")
 ```
 
 Nuances:
 - tuple/list distinction is preserved in AST/AES;
+- `triple<A,B,C>` is a semantic alias of `tuple<A,B,C>` and introduces no additional runtime behavior;
 - strict does not require tuple generic args.
 - tuple elements may carry local anonymous datatype annotations with `:type = value`.
 

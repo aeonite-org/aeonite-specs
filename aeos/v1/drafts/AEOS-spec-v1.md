@@ -708,7 +708,7 @@ accepted schema for one that will run unchanged everywhere.
 
 `max_string_length_default` is reserved as the default string-like payload
 budget. Explicit `min_length` and `max_length` constraints remain the
-normative way to validate string, trimtick/prose, separator, encoding, ZRUT,
+normative way to validate string, trimtick/prose, separator, encoding, WTC,
 and custom null payload lengths.
 
 Validation failures emit:

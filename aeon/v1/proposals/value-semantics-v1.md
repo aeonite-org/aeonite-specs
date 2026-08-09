@@ -366,12 +366,12 @@ Initial classification:
 | `toggle` | toggle | exact toggle-token equality when exposed as toggle | conversion or materialization to Boolean is profile-defined; no implicit Boolean comparison |
 | `null`, `!none`, `!notSet`, `!notApplicable`, `!tombstone`, `!"..."` | absence/null | explicit null identity and reason preservation | null equality, null ordering, and absence-domain meaning are profile/schema-defined |
 | `hex` | hexadecimal lexical structured scalar | canonical hex-payload identity; source spelling remains representation metadata | color, byte sequence, identifier, numeric, or other interpretation is profile-defined |
-| `radix`, `radix2`, `radix6`, `radix8`, `radix12` | radix numeric representation | exact representation preservation; base metadata preservation | base-specific numeric validity, conversion, equality, and ordering are profile-defined |
+| `radix`, `decimal`, `radix2`, `radix6`, `radix8`, `radix12` | radix numeric representation | exact representation preservation; base metadata preservation | base-specific numeric validity, conversion, equality, and ordering are profile-defined |
 | `encoding`, `base64`, `embed`, `inline` | encoded lexical payload | exact payload-string identity; naïve payload order; no implicit decoding | byte identity, media type, text decoding, hashing, or decoded-content ordering are profile-defined |
 | `date` | temporal | literal recognition, preservation, and same-family canonical temporal comparison | precision, calendar, conversion, and richer compatibility are profile-defined |
 | `time` | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset handling, date-context rules, and richer compatibility are profile-defined |
 | `datetime` | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset normalization, precision, instant semantics, and richer compatibility are profile-defined |
-| `zrut` | temporal with named-zone data | literal recognition, zone payload preservation, and same-family canonical temporal comparison | named-zone authority, timezone database behavior, and richer compatibility are profile-defined |
+| `wtc` | temporal with temporal-reference data | literal recognition, temporal-reference payload preservation, and same-family canonical temporal comparison | reference authority, timezone database behavior, geographic-reference behavior, and richer compatibility are profile-defined |
 | `sep`, `kadot` | separator-structured lexical scalar | canonical separator-payload identity; naïve separator order | IP address, semantic version, dimensions, product codes, delimited records, and similar meanings are profile-defined |
 | `sansa` | structured address expression | canonical address-expression identity; naïve address-expression order | resolution, selector expansion, canonical target identity, selector equivalence, namespace/domain meaning, authorization, and qualifier meaning belong to SANSA consumers |
 | `object`, `obj`, `o`, `envelope` | structural container | member identity, Core object shape, and structural equality | ordering, envelope meaning, and member-value constraints are profile/schema-defined |
@@ -949,9 +949,9 @@ AEON Core recognizes temporal datatype names such as:
 - `date`;
 - `time`;
 - `datetime`;
-- `zrut`.
+- `wtc`.
 
-Shared Value Semantics defines a conservative same-family temporal comparison surface for canonical AEON temporal payloads. Richer temporal ordering, validation, conversion, named-zone behavior, and mutation compatibility remain profile-defined.
+Shared Value Semantics defines a conservative same-family temporal comparison surface for canonical AEON temporal payloads. Richer temporal ordering, validation, conversion, temporal-reference behavior, and mutation compatibility remain profile-defined.
 
 Candidate identifier:
 
@@ -967,7 +967,7 @@ A temporal profile should define:
 - normalization before comparison;
 - relationship to applicable temporal conventions such as `aeon.gp.temporal.v1`;
 - timezone offset behavior;
-- named-zone authority and timezone database version, when applicable;
+- temporal-reference authority and timezone database version, when applicable;
 - precision and fractional-second behavior;
 - diagnostics for unsupported or ambiguous temporal values.
 
@@ -978,7 +978,7 @@ The minimum temporal comparison surface is:
 | date and date | allowed | allowed | Canonical date payload comparison. |
 | time and time | allowed | allowed | Canonical time payload comparison; richer profiles may define offset/date-context behavior. |
 | datetime and datetime | allowed | allowed | Canonical datetime payload comparison; richer profiles may define instant normalization. |
-| zrut and zrut | allowed | allowed | Canonical ZRUT payload comparison; richer profiles may require named-zone authority and timezone database metadata. |
+| wtc and wtc | allowed | allowed | Canonical WTC payload comparison; richer profiles may require temporal-reference authority, timezone database metadata, or geographic-reference metadata. |
 | temporal and string | error | error | No implicit string comparison. |
 | mixed temporal categories | error | error | Allowed only when a profile explicitly defines cross-category comparison. |
 

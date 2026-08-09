@@ -228,13 +228,13 @@ Implementations MUST:
 7. continue to accept the Core v1 partial forms already admitted by grammar shape, including hour-precision `time` (`09:`) and `datetime` (`2025-01-01T09`);
 8. allow UTC/offset suffixes on valid reduced-precision time forms, including `09:30Z`, `09:+02:00`, and `09:30+02:00`;
 9. allow UTC/offset suffixes on valid reduced-precision `datetime` forms, including `2025-01-01T09Z`, `2025-01-01T09+02:00`, and `2025-01-01T09:30Z`;
-10. allow named-zone ZRUT suffixes on valid reduced-precision datetime bases, including `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, `2025-01-01T09Z&America/Port-au-Prince`, and `2025-01-01T09Z&Etc/GMT+1`, and classify them as `zrut` literals;
+10. allow WTC temporal-reference suffixes on valid reduced-precision datetime bases, including `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09Z&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, `2025-01-01T09Z&America/Port-au-Prince`, `2025-01-01T09Z&Etc/GMT+1`, and `2035-01-01T09:00&-36.7590183/144.2826718`, and classify them as `wtc` literals;
 11. treat uppercase `Z` as the UTC marker form and reject lowercase `z` as a temporal literal marker.
 
 The datatype label `zdt` is reserved for a possible future zoned datetime type. AEON Core v1 implementations MUST NOT treat `zdt` as an operational Core v1 datatype or recognize bracketed zoned-datetime syntax as Core v1 temporal syntax.
 
 Examples:
-- valid: `2024-02-29`, `09:`, `09:30`, `09:30Z`, `09:+02:00`, `2025-01-01T09Z`, `2025-01-01T09+02:00`, `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, `23:59:59`, `2024-02-29T09:30:00`
+- valid: `2024-02-29`, `09:`, `09:30`, `09:30Z`, `09:+02:00`, `2025-01-01T09Z`, `2025-01-01T09+02:00`, `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, `2035-01-01T09:00&-36.7590183/144.2826718`, `23:59:59`, `2024-02-29T09:30:00`
 - invalid: `2025-02-29`, `2025-13-40`, `24:00`, `99:99`, `23:59:60`, `09:30z`, `2025-01-01T09:30Z&/`
 
 ## 11. Node Requirements

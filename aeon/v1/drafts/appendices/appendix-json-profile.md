@@ -225,7 +225,7 @@ created:datetime = 2025-01-01T10:00:00Z
 { "created": "2025-01-01T10:00:00Z" }
 ```
 
-ZRUT literals preserve the `&` syntax in the string.
+WTC literals preserve the `&` syntax in the string.
 
 Legal AEON infinity literals are not representable in the strict JSON profile.
 Processors claiming strict JSON-profile conformance MUST fail closed rather than silently rewriting them.

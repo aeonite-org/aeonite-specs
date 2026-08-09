@@ -175,8 +175,8 @@ Temporal value literals use the same lexical recognition as SANSA.Query and
 AEON Core, including reduced-precision forms such as `09:`,
 `2025-01-01T09Z`, and `2025-01-01T09Z&Europe/Belgium/Brussels`.
 Comment markers do not begin inside a contiguous temporal value literal. For
-example, `2025-01-01T09Z&Europe//Brussels` is an invalid ZRUT value literal,
-not a shorter ZRUT value followed by a comment.
+example, `2025-01-01T09Z&Europe//Brussels` is an invalid WTC value literal,
+not a shorter WTC value followed by a comment.
 
 Separator value literals also use the same payload recognition as SANSA.Query
 and AEON Core. Unquoted payload text is intentionally narrow. Payload segments
