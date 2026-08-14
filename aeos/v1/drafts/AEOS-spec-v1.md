@@ -617,9 +617,13 @@ Schema-validation failures:
 
 ### 5.16 `datatype`
 
-Datatype constraint is a label-presence check only.
+Datatype constraint is an exact label-equality check. When a rule requests a
+datatype, the AES event MUST carry the same declared datatype string. A missing
+or different label fails with `type_mismatch`.
 
-It does not perform semantic subtype reasoning. It validates the declared datatype string carried by AES when the rule requests one.
+An AES datatype annotation remains declarative when no `constraints.datatype`
+rule applies. Exact label enforcement does not perform semantic subtype or value
+reasoning; those deeper semantics belong in `datatype_rules`.
 
 ### 5.17 `datatype_allowlist`
 
