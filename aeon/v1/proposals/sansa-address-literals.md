@@ -79,10 +79,10 @@ AEON accepts qualified SANSA address literals when they are syntactically valid 
 result:sansa = $.result:number|nan
 items:sansa = $.inventory:list<string>
 point:sansa = $.path:tuple<x><y>
-field:sansa = $.field:sep[.]
+field:sansa = $.field:sep["."]
 bits:sansa = $.bits:radix[16]
 csv:sansa = $.inventory:csv[","]
-external:sansa = $.value:type<type>[arg]
+external:sansa = $.value:type<type>["arg"]
 ```
 
 Qualifier terms are parsed by SANSA. AEON Core preserves the parsed qualifier structure and assigns no meaning to the qualifier.
@@ -90,7 +90,7 @@ Qualifier terms are parsed by SANSA. AEON Core preserves the parsed qualifier st
 Some qualifier forms may not have AEON datatype-expression counterparts:
 
 ```aeon
-external:sansa = $.value:type<type>[arg]
+external:sansa = $.value:type<type>["arg"]
 ```
 
 That does not make them invalid AEON values. It only means AEON-internal consumers should not assume they can interpret the qualifier as an AEON datatype expression.
@@ -104,7 +104,7 @@ point:sansa = $.path:tuple<x><y>
 AEON can still define internal meanings for the qualifier terms it standardizes. For example, an AEON consumer may understand:
 
 ```aeon
-field:sansa = $.field:sep[.]
+field:sansa = $.field:sep["."]
 hex:sansa = $.bits:radix[16]
 ```
 

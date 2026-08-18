@@ -161,12 +161,12 @@ Canonical separator literals:
 
 ```aeon
 // Non-canonical → Canonical
-size:sep[x] =^300x250   → size:sep[x] = ^300x250
+size:sep["x"] =^300x250   → size:sep["x"] = ^300x250
 ```
 
 Quoted segments preserve their string content:
 ```aeon
-data:sep[|] = ^"one "|" two"   // preserved as-is
+data:sep["|"] = ^"one "|" two"   // preserved as-is
 ```
 
 ---

@@ -1,7 +1,7 @@
 ---
 id: aeon-core-v1-structure-syntax
 title: AEON v1 Structure Syntax Reference
-description: "Reference for binding shape, keys, attributes, separator specs, newline rules, and structural grammar decisions in AEON Core v1."
+description: "Reference for binding shape, keys, attributes, datatype clarifiers, newline rules, and structural grammar decisions in AEON Core v1."
 family: official-v1
 group: Core References
 status: official v1 companion reference
@@ -15,7 +15,7 @@ links:
 # AEON v1 Structure Syntax Reference
 
 Status: official v1 companion reference  
-Scope: key syntax, structural identities, attributes, separator specs, list/tuple separators, and newline behavior.
+Scope: key syntax, structural identities, attributes, datatype clarifiers, list/tuple separators, and newline behavior.
 
 ## 1. Binding Shape
 
@@ -49,8 +49,9 @@ AttributeEntryList = AttributeEntry (AttributeSep AttributeEntry)* AttributeSep?
 AttributeEntry = Key StructuralIdentity? Attribute? TypeAnnotation? "=" Value ;
 AttributeSep   = "," | Newline ;
 TypedValue     = StructuralIdentity? Attribute? TypeAnnotation? "=" Value ;
-TypeAnnotation = ":" TypeName GenericArgs? SeparatorSpec* ;
-SeparatorSpec  = "[" SeparatorChar "]" ;
+TypeAnnotation = ":" TypeName GenericArgs? Clarifier? ;
+Clarifier      = "[" ClarifierValue ("," ClarifierValue)* "]" ;
+ClarifierValue = StringLiteral | NumberLiteral ;
 ```
 
 Nuances:
@@ -235,22 +236,22 @@ Policy notes:
 - default lock is `1`;
 - capability floor is at least `8`.
 
-## 5. Separator Specs
+## 5. Datatype Clarifiers
 
-Separator specs decorate datatypes:
+Datatype clarifiers decorate type annotations:
 
 ```aeon
-size:sep[x] = ^300x250
-triple:sep[x][y][z] = ^100x200y300z
+size:sep["x"] = ^300x250
+triple:sep["x", "y", "z"] = ^100x200y300z
 semver:kadot = ^3.14.15
 ```
 
 Grammar:
 
 ```ebnf
-TypeAnnotation = ":" TypeName GenericArgs? SeparatorSpec* ;
-SeparatorSpec  = "[" SeparatorChar "]" ;
-SeparatorChar  = ASCIIPrintableNoReservedSeparator ;
+TypeAnnotation = ":" TypeName GenericArgs? Clarifier? ;
+Clarifier      = "[" ClarifierValue ("," ClarifierValue)* "]" ;
+ClarifierValue = StringLiteral | NumberLiteral ;
 ```
 
 Generic-depth notes:
@@ -266,19 +267,22 @@ Generic-depth notes:
 - capability floor is at least `8`.
 
 Current official v1 rules:
-- exactly one character from `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
-- horizontal whitespace and newlines may appear around the separator character inside brackets, but the payload itself must remain contiguous;
-- separator depth is the number of `[...]` segments.
+- a datatype may carry at most one clarifier list;
+- a clarifier list must contain one or more string or numeric values;
+- string clarifier values use ordinary AEON quoted string syntax;
+- numeric clarifier values use ordinary AEON number literal syntax;
+- clarifier value depth is the number of values in the list;
+- repeated bracket lists such as `sep["x"]["y"]` are invalid.
 - only ASCII space, tab, carriage return, and newline act as layout whitespace in Core v1 grammar positions unless another rule says otherwise;
 - non-structural Unicode separators and joiners such as U+2060 WORD JOINER, U+2028 LINE SEPARATOR, and U+2029 PARAGRAPH SEPARATOR are not document, object, list, tuple, or attribute separators.
 
 Nuances:
-- `size:sep[x]` has separator depth `1`;
-- `triple:sep[x][y][z]` has separator depth `3`;
+- `size:sep["x"]` has separator depth `1`;
+- `triple:sep["x", "y", "z"]` has separator depth `3`;
 - `semver:kadot` has separator depth `0`;
-- `sep[x]`, `sep[ x ]`, and `sep[\nx\n]` are legal;
-- `sep[xy]` and any form that splits the payload into more than one character are invalid;
-- repeated separator specs are legal and preserved structurally, including duplicate chars;
+- `sep["x"]`, `sep[ "x" ]`, and `sep[\n"x"\n]` are legal;
+- `sep[x]` is invalid because string clarifier values must be quoted;
+- multiple clarifier values are preserved in order, including duplicates;
 - unparameterized `sep` datatypes may still bind separator literals;
 - unparameterized `kadot` datatypes may bind separator literals; Core does not enforce the dot-separated numeric shape;
 - separator payloads are compact tokens introduced by `^`;
@@ -291,8 +295,8 @@ Nuances:
 - capability floor is at least `8`.
 
 Canonical notes:
-- separator specs remain attached to the datatype surface;
-- AEON Core parses separator specs but does not impose splitting semantics on payloads.
+- datatype clarifiers remain attached to the datatype surface;
+- AEON Core parses datatype clarifiers but does not assign type-specific meaning to their values. Profiles and AEOS decide whether a clarifier is supported, compatible, or semantically useful.
 
 ## 6. Assignment and Element Separators
 
@@ -422,7 +426,7 @@ Newline is not allowed inside:
 - bare identifiers;
 - single-quoted or double-quoted keys;
 - single-quoted or double-quoted strings;
-- separator specs (`[x]`);
+- datatype clarifiers (`["x"]`, `[16]`, or `["x", "y"]`);
 - numbers;
 - hex, radix, encoding, date, datetime, and separator literal tokens.
 

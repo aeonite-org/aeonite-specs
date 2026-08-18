@@ -215,7 +215,7 @@ metadata unless a later structured value-intent model defines that behavior.
 For example, nested `:tuple, (...)` intent inside an object is visible in the
 Instruction parse tree and should warn during lowering, but the conservative
 Mutate operation carries a list-shaped nested value. Likewise, nested custom
-qualifier intent such as `:relationship<sibling>[brother], "Bob"` warns and
+qualifier intent such as `:relationship<sibling>["brother"], "Bob"` warns and
 lowers to the plain scalar payload unless expressed as a separate exact
 operation or a future structured value-intent form.
 
@@ -1007,7 +1007,7 @@ Candidate-relative seeds:
 | `create $.inventory.payload with :object, { "bad.key" = :node, <badge("new")> }` against a JSON target | target surface reports quoted nested value path `value["bad.key"]` |
 | `create $.inventory.badEmptyField with :object, { "" = "x" }` against an AEON target | target surface rejects an empty decoded object field name even though the Instruction object literal is syntactically valid |
 | `create $.inventory.payload with :object, { "quote\"key" = :node, <badge("new")> }` against a JSON target | target surface escapes the decoded quoted field name in the nested value path `value["quote\"key"]` |
-| `create $.inventory.nestedRelationship with :object, { sibling = :relationship<sibling>[brother], "Bob" }` against an AEON target | lowering warns that nested custom datatype intent was flattened; target surface sees a plain nested string |
+| `create $.inventory.nestedRelationship with :object, { sibling = :relationship<sibling>["brother"], "Bob" }` against an AEON target | lowering warns that nested custom datatype intent was flattened; target surface sees a plain nested string |
 
 ### 13.4 Negative Lowering Seeds
 

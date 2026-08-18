@@ -242,9 +242,9 @@ This field describes the conceptual type of document.
 The `format` key may also be used as binding metadata when a document value carries a known representation pattern.
 
 ```aeon
-build@{format="semver"}:sep[.] = ^1.0.0
+build@{format="semver"}:sep["."] = ^1.0.0
 date@{format="ymd"}:sep[-] = ^2026-03-07
-location@{format="geo:lat,lon"}:sep[,] = ^37.8136,144.9631
+location@{format="geo:lat,lon"}:sep[","] = ^37.8136,144.9631
 ```
 
 In this form, `format` labels the representation pattern.

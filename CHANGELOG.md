@@ -72,7 +72,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Prevents encoding-family values from being treated as decoded bytes, decoded text, radix values, or generic string collation inputs by default.
 - Gives encoding-family values a deterministic portable fallback order without assigning decoded-byte, decoded-text, media, hash, or radix meaning.
 - Gives separator literals a deterministic portable fallback order without assigning domain meaning to separator characters.
-- Prevents document-local separator specs such as `sep[.]` from silently authorizing semantic splitting, IP parsing, version parsing, or domain ordering.
+- Prevents document-local separator clarifiers such as `sep["."]` from silently authorizing semantic splitting, IP parsing, version parsing, or domain ordering.
 - Prevents AEON-hosted `:sansa` values from being treated as AEON paths by default when they may target another SANSA-compatible semantic namespace.
 - Makes AEON's relationship to SANSA explicit as an AEON binding-model namespace adapter rather than the owner of SANSA traversal semantics.
 - Defines minimum structural equality for objects, lists, tuples, and nodes while keeping list/tuple coercion, structural ordering, and mutation behavior explicit.

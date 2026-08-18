@@ -83,7 +83,7 @@ Core structural syntax includes:
 - attribute blocks
 - nested attribute heads
 - datatype annotations
-- separator specs
+- datatype clarifiers
 - comma/newline element separation rules
 - comma/newline binding rules
 

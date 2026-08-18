@@ -37,7 +37,7 @@ Mode requirements:
 - `custom` requires a datatype annotation on non-header bindings and allows custom datatype labels;
 - typed modes require datatype annotations on attribute entries that carry values;
 - typed modes do not require generic args (`arr:list = [...]` is valid);
-- typed modes do not require separator specs unless the datatype itself uses them.
+- typed modes do not require datatype clarifiers unless the datatype itself uses them.
 - typed modes do not require datatype annotations on anonymous list elements, tuple elements, or node children.
 
 Implementations MAY still expose an explicit datatype-policy override, but the default semantic behavior is mode-driven.
@@ -265,7 +265,7 @@ Interpretation:
 | Time              | `09:`, `09:30`, `09:30Z`, `09:+02:00`, `09:30+02:00`, `09:30:00`, `09:30:00Z` | `t = 09:30:00`                              | `t:time = 09:30:00Z`                                            | `DateTimeLiteral`  |
 | DateTime          | `2025-01-01T09`, `2025-01-01T09Z`, `2025-01-01T09+02:00`, `2025-01-01T09:30:00Z` | `ts = 2025-01-01T09:30:00Z`                 | `ts:datetime = 2025-01-01T09:30:00Z`                            | `DateTimeLiteral`  |
 | WTC              | `2025-01-01T00:00:00Z&Australia/Sydney`, `2025-01-01T09&Europe/Belgium/Brussels`, `2025-01-01T09:30Z&Local`, `2035-01-01T09:00&-36.7590183/144.2826718` | `z = 2025-01-01T00:00:00Z&Australia/Sydney` | `z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney`                | `WTCDateTimeLiteral`  |
-| Separator Literal | `^300x250`                              | `size = ^300x250`                           | `size:sep[x] = ^300x250`                                        | `SeparatorLiteral` |
+| Separator Literal | `^300x250`                              | `size = ^300x250`                           | `size:sep["x"] = ^300x250`                                        | `SeparatorLiteral` |
 | SANSA Address     | `$.path`, `?.path`, `$.items.*.sku`     | `path:sansa = $.contact.name`               | `selector:sansa = $.inventory.items.*.sku`                      | `SansaAddressLiteral` |
 | Object            | `{ ... }`                               | `user = { name = "John" }`                  | `user:object = { name:string = "John" }`                        | `ObjectNode`       |
 | List              | `[ ... ]`                               | `arr = [1,2,3]`                             | `arr:list = [1,2,3]` or `arr:list<number> = [1,2,3]`            | `ListNode`         |
@@ -693,27 +693,30 @@ AES:
 Examples:
 
 ```aeon
-size:sep[x] = ^300x250
-dimensions:sep[w][h][d] = ^300w400h200d
+size:sep["x"] = ^300x250
+dimensions:sep["w", "h", "d"] = ^300w400h200d
 semver:kadot = ^3.14.15
 ip1:sep = ^127.0.0.1
-ip2:sep[.] = ^127.0.0.1
-parts:sep[|] = ^"hello world"|"this, [is] fine"
-psv:sep[|] = ^"id"|"name"|"phone"
+ip2:sep["."] = ^127.0.0.1
+parts:sep["|"] = ^"hello world"|"this, [is] fine"
+psv:sep["|"] = ^"id"|"name"|"phone"
 ```
 
-Datatype separator spec grammar:
+Datatype clarifier grammar:
 
 ```ebnf
-TypeAnnotation = ":" TypeName GenericArgs? SeparatorSpec* ;
-SeparatorSpec = "[" SeparatorChar "]" ;
+TypeAnnotation = ":" TypeName GenericArgs? Clarifier? ;
+Clarifier = "[" ClarifierValue ("," ClarifierValue)* "]" ;
+ClarifierValue = StringLiteral | NumberLiteral ;
 ```
 
-Separator character rules (implementation-aligned):
-- exactly 1 character;
-- separator specs accept only `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
-- horizontal whitespace and newlines may appear around the separator character inside brackets, but the separator payload itself must remain contiguous;
-- multi-char specs are invalid.
+Clarifier rules (implementation-aligned):
+- a datatype may carry at most one clarifier list;
+- a clarifier list contains one or more string or numeric values;
+- separator characters are string clarifiers, for example `sep["x"]`;
+- radix bases are numeric clarifiers, for example `radix[16]`;
+- repeated bracket lists such as `sep["x"]["y"]` are invalid;
+- type-specific meaning and compatibility belong to profiles and AEOS.
 
 Depth/policy:
 - parser option `maxSeparatorDepth` (core option `maxSeparatorDepth`);
@@ -729,12 +732,12 @@ Payload grammar:
 - no raw separator escapes are defined;
 - outside quoted segments, whitespace, `\\`, `/`, `,`, and closing container boundaries are not payload characters;
 - comment syntax resumes normally once a separator payload ends outside quoted segments.
-- `:sep` may bind separator literals with or without explicit bracket specs.
+- `:sep` may bind separator literals with or without explicit clarifiers.
 - `:kadot` may bind unparameterized separator literals. The intended kadot shape is dot-separated numeric segments, for example `ip:kadot = ^198.0.126.255` or `semver:kadot = ^3.14.15`, but Core only enforces the separator-literal family; stricter shape validation belongs to schema/profile layers.
 - Core does not assign IP, semantic-version, dimension, table, product-code, or other domain meaning to separator literals.
-- Shared Value Semantics may define naïve separator order over the canonical separator payload. Naïve order does not split payloads, even when separator specs such as `[.]` are present.
+- Shared Value Semantics may define naïve separator order over the canonical separator payload. Naïve order does not split payloads, even when datatype clarifiers such as `["."]` are present.
 - Domain ordering such as version order, numeric IP address order, or aspect-ratio order belongs to profiles, schemas, or consumers.
-- Separator specs are preserved claims. Profile-defined splitting or ordering should use them only when the consumer trusts the source, validates the claim against the payload, or supplies separator structure from trusted configuration.
+- Datatype clarifiers are preserved claims. Profile-defined splitting or ordering should use them only when the consumer trusts the source, validates the claim against the payload, or supplies separator structure from trusted configuration.
 
 AES:
 - `SeparatorLiteral` with raw payload preserved.

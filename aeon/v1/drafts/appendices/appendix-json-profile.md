@@ -245,7 +245,7 @@ Hex and radix literals finalize as JSON strings of their payload form rather tha
 Baseline JSON finalization preserves separator payload as string:
 
 ```aeon
-size:sep[x] = ^300x250
+size:sep["x"] = ^300x250
 ```
 ```json
 { "size": "300x250" }

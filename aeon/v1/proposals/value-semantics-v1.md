@@ -546,9 +546,9 @@ They are powerful because the same literal family can carry many domain shapes:
 ```aeon
 version:kadot = ^0.11.0
 ip1:sep = ^127.0.0.1
-ip2:sep[.] = ^127.0.0.1
-dim:sep[w][h][d] = ^300w400h200d
-psv:sep[|] = ^"id"|"name"|"phone"
+ip2:sep["."] = ^127.0.0.1
+dim:sep["w","h","d"] = ^300w400h200d
+psv:sep["|"] = ^"id"|"name"|"phone"
 ```
 
 Core preserves the literal family, payload, and datatype separator specs. Core does not assign domain meaning to the separator characters. A separator spec such as `[.]` is preserved metadata and may be a useful claim, but it is not trusted parsing authority by itself.
@@ -568,10 +568,10 @@ For example:
 
 ```aeon
 ip1:sep = ^192.0.0.255
-ip2:sep[.] = ^192.0.0.255
+ip2:sep["."] = ^192.0.0.255
 ```
 
-Both values are ordered by their whole canonical payload. The `[.]` spec on `ip2` does not cause naïve order to split the payload into `["192", "0", "0", "255"]`, compare numeric octets, or infer an IP address.
+Both values are ordered by their whole canonical payload. The `["."]` clarifier on `ip2` does not cause naïve order to split the payload into `["192", "0", "0", "255"]`, compare numeric octets, or infer an IP address.
 
 For example, naïve separator order may produce a different result from semantic-version ordering:
 

@@ -203,10 +203,10 @@ Implementations MUST:
 ## 9. Separator-Literal Requirements
 
 Implementations MUST:
-1. support repeatable separator specs (`[...]`)+;
-2. enforce separator character constraints using only `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
-3. allow horizontal whitespace and newlines around the separator character inside brackets, while still rejecting any form that makes the payload non-contiguous or longer than one character;
-4. preserve repeated separator specs structurally, including duplicate chars;
+1. support a single optional datatype clarifier list (`[...]`);
+2. accept only string and numeric clarifier values;
+3. preserve multiple clarifier values structurally and in order, including duplicates;
+4. reject repeated clarifier lists such as `sep["x"]["y"]`;
 5. tokenize separator payloads as one or more contiguous raw or quoted segments immediately after `^`;
 6. accept raw separator payload characters only from `A-Za-z0-9!#$%&*+-.:;=?@^_|~<>`;
 7. accept ordinary single-quoted and double-quoted string segments inside separator payloads, using normal AEON quoted-string lexical rules;

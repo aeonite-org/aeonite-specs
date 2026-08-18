@@ -70,7 +70,7 @@ ListSeparator = "," | Newline ;
 ### 3.3 Generic Type Annotation
 
 ```ebnf
-TypeAnnotation = ":" TypeRef SeparatorSpec? ;
+TypeAnnotation = ":" TypeRef Clarifier? ;
 
 TypeRef = TypeIdent GenericArgs? ( "." TypeIdent GenericArgs? )* ;
 

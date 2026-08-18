@@ -131,7 +131,7 @@ $.result:number|nan
 $.inventory:list<string>
 $.inventory:csv[","]
 $.path:tuple<x><y>
-$.value:type<type>[arg]
+$.value:type<type>["arg"]
 ```
 
 The `|` operator is only valid at the top level of a qualifier expression. Nested qualifier unions are not valid in SANSA v1:
@@ -154,13 +154,22 @@ $.path:tuple<x,y>
 
 Host implementations may prefer or require the repeated-group form if that better fits their parser.
 
-Qualifier argument groups are repeatable:
+Qualifier clarifiers use a single optional bracketed list. Values in the list are quoted strings or numbers. String clarifiers must be quoted:
+
+```text
+$.key:string[","]
+$.key:string[",","."]
+$.bits:radix[16]
+```
+
+Repeated clarifier lists and unquoted string clarifiers are not valid SANSA v1 address literals:
 
 ```text
 $.key:string[","]["."]
+$.version:sep[.]
 ```
 
-Unquoted arguments intentionally form a simple lexical token. Raw comma is excluded from unquoted arguments. More complex payloads use quoted-string syntax:
+More complex payloads use quoted-string syntax:
 
 ```text
 $.inventory:csv[","]

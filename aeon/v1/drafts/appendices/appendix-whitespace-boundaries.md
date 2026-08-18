@@ -115,7 +115,7 @@ hel
 lo = 1
 ```
 
-The same compact-token rule applies to numbers, bare identifiers, quoted keys, quoted strings, separator specs, and literal families whose lexical body is defined as contiguous in Core v1.
+The same compact-token rule applies to numbers, bare identifiers, quoted keys, quoted strings, datatype clarifiers, and literal families whose lexical body is defined as contiguous in Core v1.
 
 ## 5. Reading Rule
 
