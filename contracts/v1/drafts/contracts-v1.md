@@ -89,6 +89,7 @@ Canonical top-level keys for a profile contract:
 | `datatype_policy_default` | no       | string                            | published default datatype policy            |
 | `collections`             | yes      | object<string, collection>        | normative GP semantics for collection shapes |
 | `containers`              | yes      | object<string, container>         | normative GP semantics for object/node shapes |
+| `datatype_semantics`      | yes      | object<string, datatype semantics> | normative GP semantics for datatype-family interpretations |
 | `capabilities`            | yes      | object<string, boolean>           | required processor support for GP profile claims |
 
 `collection` records use these canonical keys:
@@ -126,6 +127,20 @@ For `node`:
 | `references` | yes      | boolean | whether reference syntax support is required          |
 | `clones`     | yes      | boolean | whether clone-reference support is required           |
 
+`datatype_semantics` records use these canonical keys:
+
+| Key              | Required | Type   | Meaning                                                                    |
+| ---------------- | -------- | ------ | -------------------------------------------------------------------------- |
+| `literal_family` | yes      | string | AES literal family to which the datatype semantics apply                   |
+| `clarifiers`     | yes      | string | profile-owned clarifier interpretation: `none`, `radix_base`, or `separator_chars` |
+| `alias_of`       | no       | string | canonical datatype family when this entry is an alias                      |
+| `equivalent_to`  | no       | string | canonical datatype expression for fixed-shape aliases                      |
+
+Datatype clarifier syntax itself remains a Core transport property. The
+interpretation of `radix[16]` as a radix base or `sep["."]` as separator
+characters is a profile, schema, or processor concern and is made explicit by
+this table.
+
 Current baseline profile artifact:
 
 ```aeon
@@ -162,6 +177,30 @@ containers = {
     mixed_content = true
   }
 }
+datatype_semantics = {
+  radix = {
+    literal_family = "RadixLiteral"
+    clarifiers = "radix_base"
+  }
+  decimal = {
+    literal_family = "RadixLiteral"
+    clarifiers = "none"
+    equivalent_to = "radix[10]"
+  }
+  sep = {
+    literal_family = "SeparatorLiteral"
+    clarifiers = "separator_chars"
+  }
+  separator = {
+    literal_family = "SeparatorLiteral"
+    clarifiers = "separator_chars"
+    alias_of = "sep"
+  }
+  kadot = {
+    literal_family = "SeparatorLiteral"
+    clarifiers = "none"
+  }
+}
 capabilities = {
   references = true
   clones = true
@@ -172,10 +211,13 @@ Interpretation:
 - this artifact defines the published GP baseline defaults once `aeon.gp.profile.v1` is explicitly selected by trusted policy;
 - it fixes the GP collection meanings for `list` and `tuple`;
 - it fixes the GP container meanings for `object` and `node`;
+- it fixes GP datatype semantics for radix-family and separator-family reserved labels;
 - it fixes the required processor capabilities for implementations claiming `aeon.gp.profile.v1` support;
 - `collections` is closed for `aeon.gp.profile.v1`: only `list` and `tuple` have GP v1 collection semantics. Future profiles may define additional collection names without changing this artifact;
 - `containers` is closed for `aeon.gp.profile.v1`: only `object` and `node` have GP v1 container semantics. Future profiles may define additional container names without changing this artifact;
 - profile collection and container semantics are keyed by canonical family name. Alternative or reserved datatype names inherit the semantics of their canonical family, for example `obj`, `o`, and `envelope` inherit `object`;
+- profile datatype semantics are keyed by canonical datatype family name. `radix` interprets a numeric clarifier as a radix base when a trusted GP processor chooses that semantic layer. `decimal` is a fixed GP alias for `radix[10]`. `sep` and `separator` interpret string clarifiers as separator characters. `kadot` carries unparameterized separator-family intent, with stricter payload shape checks supplied by schema rules when required;
+- Core-only processing preserves datatype clarifiers but does not activate radix-base validation, separator splitting, separator ordering, or domain-specific separator meaning merely because the clarifier text is present;
 - `capabilities` is closed for `aeon.gp.profile.v1`: only `references` and `clones` are defined as GP v1 capability requirements by this artifact;
 - `capabilities.references = true` and `capabilities.clones = true` mean implementations claiming GP profile support must support those features. They do not require every GP document to use references or clones;
 - profile collection and container semantics do not override schema constraints. For example, `list.heterogeneous = true` permits mixed element shapes by default, while a schema can still constrain a particular binding with `list<int32>` or other element rules;

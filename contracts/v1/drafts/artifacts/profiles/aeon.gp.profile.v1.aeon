@@ -31,6 +31,30 @@ containers = {
     mixed_content = true
   }
 }
+datatype_semantics = {
+  radix = {
+    literal_family = "RadixLiteral"
+    clarifiers = "radix_base"
+  }
+  decimal = {
+    literal_family = "RadixLiteral"
+    clarifiers = "none"
+    equivalent_to = "radix[10]"
+  }
+  sep = {
+    literal_family = "SeparatorLiteral"
+    clarifiers = "separator_chars"
+  }
+  separator = {
+    literal_family = "SeparatorLiteral"
+    clarifiers = "separator_chars"
+    alias_of = "sep"
+  }
+  kadot = {
+    literal_family = "SeparatorLiteral"
+    clarifiers = "none"
+  }
+}
 capabilities = {
   references = true
   clones = true
