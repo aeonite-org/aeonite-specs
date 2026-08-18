@@ -154,7 +154,7 @@ In typed modes (`strict` and `custom`) implementations MUST:
 1. enforce `toggle` datatype lock for toggle literals;
 2. in `strict`, reject custom datatype aliases for toggle literals even when general custom datatypes are otherwise enabled;
 3. in `custom`, allow custom datatype aliases for toggle literals under the ordinary custom-datatype policy;
-4. enforce canonical attribute+datatype ordering: `key@{...}:type = value`;
+4. enforce canonical structural-identity+attribute+datatype ordering: `key\id\@{...}:type = value`;
 5. reject reversed ordering (`key:type@{...}`).
 
 ### 7.1 Explicit Datatype Compatibility
@@ -177,8 +177,8 @@ Implementations MAY expose an explicit datatype-policy override as a tooling or 
 ### 7.3 Canonical Rendering Requirements
 
 Canonical emitters MUST:
-1. preserve canonical binding ordering `key@{...}:type = value`;
-2. preserve canonical node-head ordering `tag@{...}:datatype`;
+1. preserve canonical binding ordering `key\id\@{...}:type = value`;
+2. preserve canonical node-head ordering `tag\id\@{...}:datatype`;
 3. elide redundant explicit root prefixes in rendered references (`~$.a` -> `~a`, `~>$.a` -> `~>a`);
 4. collapse quoted reference selectors to bare identifier form when the decoded segment is already a canonical bare identifier;
 5. preserve multiline trimticks only in multiline canonical layouts and render inline trimtick-normalized values as ordinary escaped strings when required by inline layout.

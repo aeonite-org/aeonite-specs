@@ -27,7 +27,7 @@ AEON is a human-readable, typed, semantics-first data notation.
 At its core, an AEON document is a sequence of bindings:
 
 ```aeon
-key@{attributes}:type = value
+key\identity\@{attributes}:type = value
 ```
 
 Implementations may accept looser transport forms, but this overview defines the Core v1 model and points to the detailed companion references.
@@ -50,13 +50,14 @@ This demonstrates:
 AEON Core v1 is built from a small set of structural ideas:
 - bindings
 - keys
+- structural identities
 - values
 - attributes
 - references
 - canonical paths
 - comments/annotations
 
-Bindings are separated by newline or comma at document/object level and may contain structured values such as objects, lists, tuples, nodes, and references.
+Bindings are separated by newline or comma at document/object level and may contain structured values such as objects, lists, tuples, nodes, and references. Structural identities, when present, are head metadata preserved by Core processors without changing canonical path identity.
 
 ## 4. Core Value Families
 

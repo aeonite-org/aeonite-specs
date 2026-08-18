@@ -47,12 +47,15 @@ Rules:
 Canonical binding head order is:
 
 ```aeon
-key@{attributes}:type = value
+key\identity\@{attributes}:type = value
 ```
 
 ```mermaid
 flowchart LR
-  K["Key"] --> A{"@{...}?"}
+  K["Key"] --> SID{"\\id\\?"}
+  SID -->|yes| ID["structural identity"]
+  SID -->|no| A{"@{...}?"}
+  ID --> A
   A -->|yes| ATTR["one attribute block"]
   A -->|no| T{"type?"}
   ATTR --> DA{"another @{...}?"}
@@ -68,14 +71,16 @@ Legal:
 
 ```aeon
 a = 1
+a\id\ = 1
 a@{meta=1} = 1
 a:int = 1
-a@{meta=1}:int = 1
+a\id\@{meta=1}:int = 1
 ```
 
 Illegal:
 
 ```aeon
+a@{meta=1}\id\:int = 1
 a:int@{meta=1} = 1
 a@{x=1}@{y=2} = 1
 ```
@@ -90,7 +95,10 @@ a@{entry@{nested=1}:type = value} = payload
 
 ```mermaid
 flowchart LR
-  AK["attribute key"] --> NA{"nested @{...}?"}
+  AK["attribute key"] --> ASID{"\\id\\?"}
+  ASID -->|yes| AID["structural identity"]
+  ASID -->|no| NA{"nested @{...}?"}
+  AID --> NA
   NA -->|one, policy-limited| NATTR["nested attribute block"]
   NA -->|none| AT{"type?"}
   NATTR --> RA{"another @{...}?"}
@@ -107,7 +115,7 @@ Rules:
 - duplicate keys inside one attribute map fail closed with `DUPLICATE_KEY`;
 - one nested attribute head is legal when `max_attribute_depth` allows it;
 - repeated heads on one attribute entry are illegal, even when depth is raised;
-- `key@{...}:type = value` is legal; `key:type@{...} = value` is not.
+- `key\id\@{...}:type = value` is legal; `key:type@{...} = value` and `key@{...}\id\:type = value` are not.
 
 Examples:
 

@@ -15,14 +15,14 @@ links:
 # AEON v1 Structure Syntax Reference
 
 Status: official v1 companion reference  
-Scope: key syntax, attributes, separator specs, list/tuple separators, and newline behavior.
+Scope: key syntax, structural identities, attributes, separator specs, list/tuple separators, and newline behavior.
 
 ## 1. Binding Shape
 
 Canonical binding surface:
 
 ```aeon
-key@{attributes}:type = value
+key\identity\@{attributes}:type = value
 ```
 
 Transport form may omit attributes and datatype:
@@ -42,19 +42,21 @@ point:tuple = (1, 2)
 Core grammar summary:
 
 ```ebnf
-Binding        = Key Attribute? TypeAnnotation? "=" Value ;
+Binding        = Key StructuralIdentity? Attribute? TypeAnnotation? "=" Value ;
+StructuralIdentity = "\\" StructuralIdentityName "\\" ;
 Attribute      = "@{" AttributeEntryList? "}" ;
 AttributeEntryList = AttributeEntry (AttributeSep AttributeEntry)* AttributeSep? ;
-AttributeEntry = Key Attribute? TypeAnnotation? "=" Value ;
+AttributeEntry = Key StructuralIdentity? Attribute? TypeAnnotation? "=" Value ;
 AttributeSep   = "," | Newline ;
-TypedValue     = TypeAnnotation "=" Value ;
+TypedValue     = StructuralIdentity? Attribute? TypeAnnotation? "=" Value ;
 TypeAnnotation = ":" TypeName GenericArgs? SeparatorSpec* ;
 SeparatorSpec  = "[" SeparatorChar "]" ;
 ```
 
 Nuances:
-- canonical order is `key@{...}:type = value`;
+- canonical order is `key\id\@{...}:type = value`;
 - reversed order such as `key:type@{...} = value` is not Core v1 canonical syntax;
+- structural identity, when present, appears before attributes and datatype;
 - attributes may appear without datatype;
 - datatype may appear without attributes.
 - `TypedValue` is valid only in anonymous value-element contexts: list elements, tuple elements, and node children.
@@ -110,7 +112,48 @@ AES notes:
 - key form is structural and does not create a distinct value kind;
 - canonical path identity uses member and index segments only.
 
-## 3. Attributes
+## 3. Structural Identities
+
+Structural identity is an optional occurrence identity attached to a binding head
+or anonymous value head. It lets tools preserve an author-visible identity for a
+specific structural occurrence even when position, surrounding comments, or
+formatting change.
+
+```aeon
+person\person-1\:object = {
+  name\name-1\:string = "Ada"
+}
+
+items:list = [
+  \item-1\:string = "red",
+  \item-2\@{source:string = "user"}:string = "green"
+]
+```
+
+Grammar:
+
+```ebnf
+StructuralIdentity     = "\\" StructuralIdentityName "\\" ;
+StructuralIdentityName = StructuralIdentityChar+ ;
+StructuralIdentityChar = "A".."Z" | "a".."z" | "0".."9" | "_" | "-" ;
+```
+
+Nuances:
+- structural identities are source metadata, not values;
+- structural identities are optional in both transport and strict form;
+- structural identities are valid on ordinary bindings, attribute entries, node heads, and anonymous child heads;
+- structural identities are invalid as standalone scalar values;
+- document-level structural identity values must be unique;
+- structural identity appears before attributes and datatype: `key\id\@{...}:type = value`;
+- structural identity after attributes, for example `key@{...}\id\:type = value`, is invalid;
+- structural identity syntax inside quoted strings is ordinary string content.
+
+Canonical notes:
+- canonical rendering preserves structural identities in head position;
+- structural identity does not change canonical path identity;
+- structural identity is preserved in AST/AES metadata for tools that need stable occurrence identity across rewrites.
+
+## 4. Attributes
 
 Attributes attach opaque metadata to a binding or node head:
 
@@ -192,7 +235,7 @@ Policy notes:
 - default lock is `1`;
 - capability floor is at least `8`.
 
-## 4. Separator Specs
+## 5. Separator Specs
 
 Separator specs decorate datatypes:
 
@@ -251,9 +294,9 @@ Canonical notes:
 - separator specs remain attached to the datatype surface;
 - AEON Core parses separator specs but does not impose splitting semantics on payloads.
 
-## 5. Assignment and Element Separators
+## 6. Assignment and Element Separators
 
-### 5.1 Top-Level and Object Bindings
+### 6.1 Top-Level and Object Bindings
 
 At document and object level, bindings may be separated by newline or comma:
 
@@ -272,7 +315,7 @@ Core v1 rules:
 - plain spaces alone are never structural separators;
 - `;` is not a structural separator.
 
-### 5.2 Lists
+### 6.2 Lists
 
 List examples:
 
@@ -297,9 +340,9 @@ Nuances:
 - list elements may be separated by commas or newlines;
 - mixed comma/newline list formatting is accepted by parser behavior;
 - indexed elements are addressable as `[0]`, `[1]`, and so on.
-- anonymous typed elements use `:type = value` and do not introduce keys or reorder elements.
+- anonymous typed/headed elements use `\id\@{...}:type = value` and do not introduce keys or reorder elements.
 
-### 5.3 Tuples
+### 6.3 Tuples
 
 Tuple examples:
 
@@ -322,9 +365,9 @@ TupleSep = "," | Newline ;
 Nuances:
 - tuple elements follow the same separator surface as lists;
 - tuple semantics differ from list semantics, but the element separator grammar is the same.
-- anonymous typed tuple elements use `:type = value`; the annotation is local to that element.
+- anonymous typed/headed tuple elements use `\id\@{...}:type = value`; the head metadata is local to that element.
 
-### 5.4 Node Children
+### 6.4 Node Children
 
 Node child separators follow the same broad rule:
 
@@ -341,14 +384,14 @@ icon = <glyph>
 Grammar summary:
 
 ```ebnf
-Node = "<" Identifier Attribute? TypeAnnotation? ( ">" | "(" (NodeChild NodeSep?)* ")" ">" ) ;
+Node = "<" Identifier StructuralIdentity? Attribute? TypeAnnotation? ( ">" | "(" (NodeChild NodeSep?)* ")" ">" ) ;
 NodeChild = Value | TypedValue ;
 NodeSep = "," | Newline ;
 ```
 
 Nuances:
 - node children accept comma and newline separators;
-- anonymous typed node children use `:type = value`; the annotation is local to the immediate child value;
+- anonymous typed/headed node children use `\id\@{...}:type = value`; the head metadata is local to the immediate child value;
 - empty-node shorthand uses `>` immediately after the tag metadata and is equivalent to an empty child list;
 - child-bearing nodes require a closing `>` after the closing `)`;
 - canonical printed form uses the closing `>` and prefers `<tag>` over `<tag()>` for empty nodes;
