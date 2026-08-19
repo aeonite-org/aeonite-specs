@@ -40,6 +40,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Defined image-source resolution as a consumer boundary: Core preserves authored sources, while the
   reference HTML renderer offers explicit credential-free HTTP(S) `imageBaseUrl` resolution,
   source-provenance metadata, and fail-closed URL handling.
+- Audited `&ND` v2 first-draft readiness, separating the healthy executable grammar and tooling
+  surfaces from remaining publication blockers: embedding/API contract text, exact projection
+  snapshots, broader spans and combinations, migration guidance, and consumer conventions.
 - Replaced the provisional equals-free `&ND` typed-value spelling with exact AEON
   `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
   reserved type/literal compatibility checks, and AEON-canonical scalar output.

@@ -281,10 +281,12 @@ Move from proposal notes to active v2 fixtures only when:
 
 ## 8. Open Questions
 
-1. Which embedding profiles should be permitted to supply an external v2 declaration?
-2. Which image source-resolution and failure conventions need a companion projection profile?
-3. How much v1-to-v2 migration guidance is needed before publication?
-4. Which consumer conventions need companion, non-Core documents before publication?
+The readiness audit leaves one Core-facing design question: which host authority may select v2 for
+headerless input. The recommended first-draft rule is a host-controlled typed channel that explicitly
+supplies both v2 capability and `version: "v2"`; named embedding-profile registries remain deferred.
+
+Image resolution and AEON scalar drift are now pinned. Migration and consumer-convention work are
+publication deliverables rather than unresolved Core syntax questions.
 
 ## 9. Acceptance Criteria for a First v2 Draft
 
@@ -296,3 +298,18 @@ A first v2 draft can be written when:
 4. Canonical output behavior is documented for every promoted construct.
 5. CTS fixtures exist for accepted and rejected cases.
 6. Implementation adapters can run those fixtures without reducing v1 coverage.
+7. Exact standalone/embedded canonical and inert HTML snapshots cover every promoted family.
+8. Source-span and cross-form interaction matrices cover the new v2 node families.
+9. The public API contract types v2 capability, effective version, AST additions, and projection options.
+10. Migration and consumer-convention companion guidance is available.
+
+## 10. Current Readiness Result
+
+The executable grammar, AST, strict rejection boundary, v1 compatibility, AEON inline-scalar
+contract, image-resolution policy, CLI, and playground are ready for a first-draft candidate. The
+track is not yet ready for promotion because the embedding-authority rule, v2 public API type
+contract, exact canonical and HTML snapshots, broader source-span and cross-form coverage, migration
+guide, and consumer-convention companion note remain open.
+
+Footnotes, recovery modes, v2-specific editor tooling, automatic numbering, image fetching, and
+consumer vocabularies remain explicitly deferred and do not block the first draft.
