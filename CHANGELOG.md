@@ -19,12 +19,16 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Added
 
+- Added the proposal-stage `&ND Core v2` AST contract, including effective-version metadata,
+  promoted node shapes, and canonical emission boundaries.
 - Added initial SANSA v1 draft specification tree under `sansa/v1/drafts/`.
 - Promoted SANSA Addressing and Resolve documents to draft status.
 - Added SANSA lifecycle placeholders for `sansa/v1/proposals/` and `sansa/v1/published/`.
 
 ### Changed
 
+- Updated the `&ND Core v2` proposal to record the executable parser, canonical, HTML, budget,
+  extension, and strict forward-compatibility boundaries.
 - Changed AEON draft encoding-family literal syntax from `$payload` to `&payload`.
 - Changed NEON draft AEON integration examples and text-preservation guidance to use `&...` encoding literals.
 - Expanded Shared AEON Value Semantics proposal with explicit profile-selection, string collation, temporal comparison, and mutation-compatibility guidance.
@@ -58,6 +62,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Spec Impact
 
+- Makes the current v2 implementation shape reviewable without promoting v2 beyond proposal stage.
 - Introduces draft SANSA specification text for semantic addressing and deterministic structural resolution.
 - Keeps read-only SANSA Query semantics in proposal status while the query surface continues to evolve.
 - Starts the encoding-family literal migration by reserving `&` for `encoding`, `base64`, `embed`, and `inline` payload literals in draft spec text.
@@ -81,6 +86,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### CTS Impact
 
+- The local v2 proposal runner now checks declared and embedded parsing, v1 compatibility,
+  canonical fixed points, HTML projection, nested contexts, paired-block budgets, opaque
+  extensions, and unpromoted syntax.
 - Updated proposal-stage Value Semantics CTS expectations so `isValue(...)` follows the concrete-value basis, including accepting infinity and container values while excluding Missing, explicit null, explicit absence values, and NaN.
 - Added proposal-stage Value Semantics CTS coverage for portable `aeon.value.default.v1` and `aeon.value.string.codepoint.v1` profile selection.
 - Updated SANSA.Query CTS expectations to align query `isValue(...)` behavior with the Shared AEON Value Semantics concrete-value basis.

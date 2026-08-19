@@ -60,19 +60,40 @@ Until a publication policy says otherwise, v2 work should follow these rules:
 4. v2 should avoid reinterpreting existing valid v1 constructs.
 5. v1 strict implementations should fail closed when presented with v2-only declarations or syntax.
 
+The version declaration controls the grammar; parser capability does not override it:
+
+| Declared document | v1-only parser | v2-capable parser |
+| :---------------- | :------------- | :---------------- |
+| v1 syntax under `&ND v1` | accept | accept as v1 |
+| v2 syntax under `&ND v1` | reject | reject as v1 |
+| v1 syntax under `&ND v2` | reject unsupported version | accept as v2 |
+| v2 syntax under `&ND v2` | reject unsupported version | accept as v2 |
+
+Standalone v2 input MUST declare `&ND v2`. Headerless input MUST receive its effective version from
+its embedding profile or typed channel.
+Implementations MUST NOT infer v2 from the presence of v2-looking syntax.
+
+The reference API separates parser capability from the effective grammar:
+
+```js
+parseAnd(standaloneSource, { allowV2: true });
+parseAnd(embeddedSource, { allowV2: true, version: "v2" });
+parseInline(inlineSource, { allowV2: true, version: "v2" });
+```
+
+`allowV2` declares capability. `version` selects the grammar only for headerless input. A source
+declaration takes precedence, and successful document parses report the effective version beside
+the AST.
+
 ## 5. Candidate Work Areas
 
 The current proposal surface is grouped into five work areas.
 
 ### 5.1 Header and Versioning
 
-Define an explicit v2 document declaration shape.
-
-Open questions:
-
-- Is a version declaration required in every v2 document?
-- Is the declaration part of content, metadata, or a pre-content header?
-- How should v1 strict parsers reject v2 declarations?
+The explicit standalone declaration is `&ND v2`. Embedded content may omit it only when an enclosing
+profile or typed channel supplies v2 as the effective version. The declaration is metadata and does
+not become a content block.
 
 Candidate seeds:
 
@@ -87,18 +108,18 @@ Candidate forms:
 
 | Form | Possible v2 meaning | Status |
 | :--- | :------------------ | :----- |
-| `[# ...]` | anchor or local id | Candidate |
-| `[~ ...]` | reference or mention | Candidate |
-| `[! ...]` | warning or admonition | Candidate |
-| `[? ...]` | question or hint | Candidate |
-| `[+ ...]` | consumer-defined tag | Candidate |
-| `[- ...]` | struck text | Candidate |
-| `[" ...]` | quoted inline text | Candidate |
-| `[' ...]` | inline comment | Candidate |
-| `[:type value]` | typed inline value | Candidate |
-| `[= ...]` | highlighted text | Candidate |
-| `[_ ...]` | underlined text | Candidate |
-| `[.]` | inline line break | Candidate |
+| `[# ...]` | anchor or local id | Executable proposal |
+| `[~ ...]` | reference or mention | Executable proposal |
+| `[! ...]` | warning or admonition | Executable proposal |
+| `[? ...]` | question or hint | Executable proposal |
+| `[+ ...]` | consumer-defined tag | Executable proposal |
+| `[- ...]` | struck text | Executable proposal |
+| `[" ...]` | quoted inline text | Executable proposal |
+| `[' ...]` | inline comment | Executable proposal |
+| `[:type value]` | typed inline value | Executable proposal |
+| `[= ...]` | highlighted text | Executable proposal |
+| `[_ ...]` | underlined text | Executable proposal |
+| `[.]` | inline line break | Executable proposal |
 
 Candidate seeds:
 
@@ -123,14 +144,14 @@ Candidate forms:
 
 | Form | Possible v2 meaning | Status |
 | :--- | :------------------ | :----- |
-| `[ ]` | todo, unchecked | Candidate |
-| `[x]` | todo, checked | Candidate |
-| `[,]` | todo, in progress | Candidate |
-| `[;]` | todo, cancelled | Candidate |
-| `[>]` | forward marker | Candidate |
-| `[<]` | backward marker | Candidate |
-| `[%]` | inline auto-number marker | Candidate |
-| `[n]` | heading auto-number marker | Candidate |
+| `[ ]` | todo, unchecked | Executable proposal |
+| `[x]` | todo, checked | Executable proposal |
+| `[,]` | todo, in progress | Executable proposal |
+| `[;]` | todo, cancelled | Executable proposal |
+| `[>]` | forward marker | Executable proposal |
+| `[<]` | backward marker | Executable proposal |
+| `[%]` | inline auto-number marker | Executable proposal |
+| `[n]` | heading auto-number marker | Executable proposal |
 
 Candidate seeds:
 
@@ -168,16 +189,26 @@ Candidate seeds:
 - `seed-v2-block-header-text-enabled`
 - `seed-v2-block-disclaimer-enabled`
 
+The executable proposal requires non-empty inline payloads, validates optional tags with
+`[A-Za-z][A-Za-z0-9_-]*`, preserves v2 through nested block contexts, and applies the same
+`maxBlockSize` resource budget used by inherited raw blocks.
+
 ### 5.5 Compatibility and Canonicalization
 
 v2 should define compatibility and canonicalization before the syntax surface grows too large.
 
-Candidate seeds:
+Executable boundaries:
 
 - `seed-v2-accepts-v1-strict-core`
 - `seed-v2-canonical-roundtrip-core-subset`
 - `seed-v2-forward-compat-boundary`
-- `seed-v2-unknown-extension-default-reject`
+- inherited opaque extension blocks remain syntactically accepted; unsupported consumers use
+  fallback content or an explicit unsupported-extension diagnostic
+- unpromoted reserved syntax remains a strict `unknown_inline_type` failure
+- no recovery or forward-compatibility mode is currently defined
+
+The companion [`and-core-v2-ast-contract.md`](./and-core-v2-ast-contract.md) defines the promoted
+node shapes, effective-version metadata, and canonical emission boundary.
 
 ## 6. Deferred Ideas
 
@@ -193,23 +224,26 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-Before an active v2 CTS lane exists, proposal fixtures may be named in this document and explored
-in implementation branches. They should not be treated as conformance requirements.
+The implementation repository contains an executable 78-fixture v2 proposal lane. It is design
+pressure, not a published conformance requirement. The normative v1 lane remains independently
+reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
+equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
+contexts, resource budgets, opaque extensions, and the strict forward boundary.
 
 Move from proposal notes to active v2 fixtures only when:
 
 1. The candidate syntax has a written parse shape.
 2. The candidate syntax has at least one accepted fixture and one rejected fixture.
 3. v1 strict rejection behavior is defined where relevant.
-4. Canonical output expectations are documented.
+4. Canonical output expectations are documented and reach a parse–emit fixed point.
 5. A v2 adapter strategy is written for the CTS runner.
 
 ## 8. Open Questions
 
 1. Which reserved forms belong in Core v2, and which should remain convention or profile features?
-2. Should v2 require explicit document version declarations?
+2. Which embedding profiles should be permitted to supply an external v2 declaration?
 3. Should any v2 syntax be feature-gated, or should Core strict mode remain a single fixed surface?
-4. What is the smallest useful first v2 activation slice?
+4. Which scalar tags should become rich inline containers before draft?
 5. How much v1-to-v2 migration guidance is needed before publication?
 
 ## 9. Acceptance Criteria for a First v2 Draft
