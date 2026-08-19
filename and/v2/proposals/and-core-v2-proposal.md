@@ -118,7 +118,7 @@ Candidate forms:
 | `[- ...]` | rich struck content | Core |
 | `[" ...]` | rich quoted inline content | Core |
 | `[' ...]` | rich inline comment content | Core |
-| `[:type value]` | scalar typed inline value | Core syntax + convention |
+| `[:type = scalar]` | exact AEON typed syntax over the closed inline-scalar subset | Core syntax + convention |
 | `[= ...]` | rich highlighted content | Core |
 | `[_ ...]` | rich underlined content | Core |
 | `[.]` | inline line break | Core |
@@ -138,6 +138,14 @@ are required scalars, the omitted mode defaults to `inline`, and explicit modes 
 `inline`, `half`, and `full`. Canonical output always spells the resolved mode. These modes record
 display intent; Core does not resolve the source or inspect image dimensions.
 
+The promoted typed-value form adopts exact AEON anonymous typed-scalar syntax, including the
+mandatory `=`, structured generic arguments and clarifiers, reserved datatype aliases, literal-family
+compatibility, string escapes, and scalar canonicalization. Supported families are string, finite
+number, infinity, NaN, null, Boolean, toggle, hex, radix, encoding, date/time/datetime/WTC,
+separator literals, SANSA addresses, and custom datatype labels over those scalars. Structured
+values, references, nested typed values, trimticks, `prose`, and multiline strings remain outside the
+inline subset.
+
 Candidate seeds:
 
 - `seed-v2-inline-anchor-tag-enabled`
@@ -150,6 +158,7 @@ Candidate seeds:
 - `seed-v2-inline-quoted-tag-enabled`
 - `seed-v2-inline-comment-tag-enabled`
 - `seed-v2-inline-typed-value-enabled`
+- `seed-v2-inline-typed-value-aeon-scalars`
 - `seed-v2-inline-highlight-tag-enabled`
 - `seed-v2-inline-underline-tag-enabled`
 - `seed-v2-inline-line-break-marker-enabled`
@@ -244,7 +253,7 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 87-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 94-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2

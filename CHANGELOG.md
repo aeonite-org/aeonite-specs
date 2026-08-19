@@ -37,6 +37,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   external resources continue to use ordinary `[@ target | label]` links.
 - Promoted `[~ source | alt | mode]` as the v2 inline-image form with mandatory alt text, an
   `inline` default, closed `inline`/`half`/`full` display intents, and deterministic canonical output.
+- Replaced the provisional equals-free `&ND` typed-value spelling with exact AEON
+  `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
+  reserved type/literal compatibility checks, and AEON-canonical scalar output.
 - Changed AEON draft encoding-family literal syntax from `$payload` to `&payload`.
 - Changed NEON draft AEON integration examples and text-preservation guidance to use `&...` encoding literals.
 - Expanded Shared AEON Value Semantics proposal with explicit profile-selection, string collation, temporal comparison, and mutation-compatibility guidance.
