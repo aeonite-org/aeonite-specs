@@ -54,6 +54,18 @@ datatype_semantics = {
     literal_family = "SeparatorLiteral"
     clarifiers = "none"
   }
+  encoding = {
+    literal_family = "EncodingLiteral"
+    clarifiers = "encoding_name"
+  }
+  inline = {
+    literal_family = "EncodingLiteral"
+    clarifiers = "encoding_name"
+  }
+  embed = {
+    literal_family = "EncodingLiteral"
+    clarifiers = "encoding_name"
+  }
 }
 capabilities = {
   references = true

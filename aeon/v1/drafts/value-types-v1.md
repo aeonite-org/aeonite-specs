@@ -634,6 +634,7 @@ Examples:
 ```aeon
 payload = &QmFzZTY0IQ==
 payload:base64 = &QmFzZTY0IQ==
+code:encoding["base58"] = &FFF
 payload:embed = &QmFzZTY0IQ==
 payload:inline = &QmFzZTY0IQ==
 ```
@@ -647,6 +648,7 @@ Nuances:
 - canonical encoding/base64 rendering preserves the accepted Base64URL payload spelling, including trailing `=` padding;
 - lexical acceptance is not encoding-family validity;
 - `encoding` does not always mean decoded Base64 data. Core preserves an encoded lexical payload; decoding, byte identity, media type, and text interpretation belong to profiles, schemas, or consumers;
+- `aeon.gp.profile.v1` allows `encoding`, `inline`, and `embed` to carry exactly one string clarifier as an encoding-name claim, for example `encoding["base58"]`;
 - `base64` is an encoding-family compatibility label, not a radix-family label. `base64` is not equivalent to `radix[64]`;
 - `embed` and `inline` are reserved compatibility labels over the same `EncodingLiteral` family; Core does not assign media, resource-loading, or inline-expansion behavior to them;
 - Shared Value Semantics may define naïve payload order over the preserved encoded payload characters, but decoded-byte ordering, decoded-text ordering, media ordering, or hash ordering belongs to profiles, schemas, or consumers;
