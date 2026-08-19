@@ -41,7 +41,27 @@ the same fields and containment relationships for inherited syntax.
 `NdInlineNode` gains the nodes below. `NdBlockNode` gains the three paired-block nodes below, and
 `NdHeading` gains the optional `autoNumber` field.
 
-## 3. Scalar Inline Tags
+## 3. Capability Disposition
+
+The first-draft candidate surface is divided by ownership, not by parser gates:
+
+| Forms | Disposition | Contract boundary |
+| :---- | :---------- | :---------------- |
+| `[# ...]`, `[~ ...]` | Core | Case-sensitive document-local anchors and resolved references. |
+| `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Core | Rich inline content with stable structural meaning. |
+| `[! ...]`, `[? ...]` | Core syntax + convention | Rich inline content; presentation and product workflow are consumer-defined. |
+| `[+ ...]` | Core syntax + convention | Provisional scalar resource claim; external target/label grammar remains unsettled. |
+| `[:type value]` | Core syntax + convention | Core preserves datatype and value; interpretation and validation are consumer-defined. |
+| `[ ]`, `[x]`, `[,]`, `[;]`, `[>]`, `[<]`, `[%]`, `[.]` | Core | Stable author-intent markers; display and numbering are projections. |
+| heading `[n]` | Core | Stable heading field; number calculation is outside Core. |
+| `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
+| `[^ ...]` and all other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
+
+“Core syntax + convention” remains part of the single v2 strict grammar. It means Core guarantees
+the parse shape and canonical spelling while deliberately declining to standardize a consumer
+vocabulary, workflow, or visual treatment.
+
+## 4. Inline Content Models
 
 ```ts
 interface NdAnchorTag {
@@ -49,17 +69,13 @@ interface NdAnchorTag {
   readonly id: string;
 }
 
-interface NdScalarTag {
-  readonly type:
-    | "reference_tag"
-    | "admonition_tag"
-    | "question_tag"
-    | "plus_tag"
-    | "strike_tag"
-    | "quoted_tag"
-    | "comment_tag"
-    | "highlight_tag"
-    | "underline_tag";
+interface NdReferenceTag {
+  readonly type: "reference_tag";
+  readonly target: string;
+}
+
+interface NdPlusTag {
+  readonly type: "plus_tag";
   readonly value: string;
 }
 
@@ -68,13 +84,49 @@ interface NdTypedValue {
   readonly datatype: string;
   readonly value: string;
 }
+
+interface NdRichV2Tag {
+  readonly type:
+    | "admonition_tag"
+    | "question_tag"
+    | "strike_tag"
+    | "quoted_tag"
+    | "comment_tag"
+    | "highlight_tag"
+    | "underline_tag";
+  readonly children: NdInlineNode[];
+}
 ```
 
-These proposal nodes contain normalized scalar values, not nested inline children. Datatype names
-identify a consumer-level interpretation; Core parsing does not validate a value against its
-datatype.
+Identifiers, reference targets, provisional resource claims, datatype names, and typed values are normalized
+scalars. Content-bearing tags preserve nested inline structure through `children`. Whitespace at a
+rich tag's outer content boundary is insignificant; whitespace inside its child sequence remains
+content. Rich tags participate in the inherited inline-depth budget.
 
-## 4. Compact Inline Markers
+Datatype names identify a consumer-level interpretation; Core parsing does not validate a value
+against its datatype.
+
+## 5. Local Anchors and References
+
+Anchor identifiers and reference targets use one portable grammar:
+
+```text
+local-id ::= [A-Za-z][A-Za-z0-9._:-]*
+```
+
+Matching is exact and case-sensitive. `[# id]` defines `id` in one document-wide namespace, including
+inside nested blocks and extension fallbacks. A document MUST NOT define the same ID twice. `[~ id]`
+MUST resolve to an anchor in the same document; forward references are allowed. Canonical emission
+preserves the identifier exactly and HTML projection uses a fragment link such as `href="#id"`.
+
+A standalone `parseInline` operation validates only the local-id grammar because it has no document
+namespace. Full duplicate and resolution checks occur during document parsing. External URLs and
+resource identifiers are invalid `[~ ...]` targets. A future resource-link design is expected to use
+the `[+ ...]` family; its target and label grammar is not fixed by this contract. The inherited v1
+`[@ target | label]` form remains accepted for v1 compatibility, so the eventual `[+ ...]` contract
+must distinguish a semantic resource claim from that generic link form.
+
+## 6. Compact Inline Markers
 
 ```ts
 interface NdTodoMarker {
@@ -99,7 +151,7 @@ interface NdLineBreak {
 Markers record author intent. Core parsing does not calculate display numbers or mutate surrounding
 list structure.
 
-## 5. Heading Addition
+## 7. Heading Addition
 
 ```ts
 interface NdV2Heading extends NdHeading {
@@ -109,7 +161,7 @@ interface NdV2Heading extends NdHeading {
 
 The field is present only when a heading begins with the v2 `[n]` marker.
 
-## 6. Paired Blocks
+## 8. Paired Blocks
 
 ```ts
 interface NdHighlightParagraphBlock {
@@ -133,7 +185,7 @@ interface NdDisclaimerBlock {
 Paired-block payloads are inline content, not nested block documents. Optional tags preserve the
 validated suffix from a tagged opener.
 
-## 7. Canonical Contract
+## 9. Canonical Contract
 
 Canonical emission requires both a profile and an effective version:
 
@@ -147,12 +199,13 @@ node has a deterministic spelling, and emitting a v2-only node under version v1 
 executable proposal runner checks standalone and embedded parse–emit–parse structural equivalence
 and canonical fixed-point stability for every accepted v2 fixture.
 
-## 8. Source Spans
+## 10. Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
 
-## 9. Stability
+## 11. Stability
 
-This contract is executable but remains proposal-stage. Node names and scalar-versus-rich-content
-decisions may change before v2 advances to draft.
+This contract is executable but remains proposal-stage. The scalar-versus-rich-content split and
+the capability disposition above are now decisions for the first-draft candidate; lexical
+constraints and projection snapshots may still tighten before v2 advances to draft.

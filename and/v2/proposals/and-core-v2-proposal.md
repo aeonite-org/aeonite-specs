@@ -106,20 +106,31 @@ Core v1 reserves several inline forms. v2 may promote some of them into first-cl
 
 Candidate forms:
 
-| Form | Possible v2 meaning | Status |
-| :--- | :------------------ | :----- |
-| `[# ...]` | anchor or local id | Executable proposal |
-| `[~ ...]` | reference or mention | Executable proposal |
-| `[! ...]` | warning or admonition | Executable proposal |
-| `[? ...]` | question or hint | Executable proposal |
-| `[+ ...]` | consumer-defined tag | Executable proposal |
-| `[- ...]` | struck text | Executable proposal |
-| `[" ...]` | quoted inline text | Executable proposal |
-| `[' ...]` | inline comment | Executable proposal |
-| `[:type value]` | typed inline value | Executable proposal |
-| `[= ...]` | highlighted text | Executable proposal |
-| `[_ ...]` | underlined text | Executable proposal |
-| `[.]` | inline line break | Executable proposal |
+| Form | First-draft meaning | Disposition |
+| :--- | :------------------ | :---------- |
+| `[# ...]` | scalar document-local anchor | Core |
+| `[~ ...]` | scalar resolved local-anchor target | Core |
+| `[! ...]` | rich warning or admonition content | Core syntax + convention |
+| `[? ...]` | rich question or hint content | Core syntax + convention |
+| `[+ ...]` | provisional external/resource claim | Core syntax + convention |
+| `[- ...]` | rich struck content | Core |
+| `[" ...]` | rich quoted inline content | Core |
+| `[' ...]` | rich inline comment content | Core |
+| `[:type value]` | scalar typed inline value | Core syntax + convention |
+| `[= ...]` | rich highlighted content | Core |
+| `[_ ...]` | rich underlined content | Core |
+| `[.]` | inline line break | Core |
+
+“Core syntax + convention” is part of the single v2 strict grammar, not an optional parser gate.
+Core guarantees the AST and canonical spelling while leaving consumer vocabularies, workflow, and
+presentation outside Core. Rich forms use nested inline `children`; identifiers and metadata remain
+scalar.
+
+Anchor IDs and local-reference targets use `[A-Za-z][A-Za-z0-9._:-]*`. Matching is exact and
+case-sensitive in one document-wide namespace. Forward references are allowed; duplicate anchors
+and unresolved references fail strict parsing. Web and external resource targets do not use
+`[~ ...]`; the `[+ ...]` family is the provisional direction, with its target/label grammar still
+unsettled.
 
 Candidate seeds:
 
@@ -144,14 +155,14 @@ Candidate forms:
 
 | Form | Possible v2 meaning | Status |
 | :--- | :------------------ | :----- |
-| `[ ]` | todo, unchecked | Executable proposal |
-| `[x]` | todo, checked | Executable proposal |
-| `[,]` | todo, in progress | Executable proposal |
-| `[;]` | todo, cancelled | Executable proposal |
-| `[>]` | forward marker | Executable proposal |
-| `[<]` | backward marker | Executable proposal |
-| `[%]` | inline auto-number marker | Executable proposal |
-| `[n]` | heading auto-number marker | Executable proposal |
+| `[ ]` | todo, unchecked | Core |
+| `[x]` | todo, checked | Core |
+| `[,]` | todo, in progress | Core |
+| `[;]` | todo, cancelled | Core |
+| `[>]` | forward marker | Core |
+| `[<]` | backward marker | Core |
+| `[%]` | inline auto-number marker | Core |
+| `[n]` | heading auto-number marker | Core |
 
 Candidate seeds:
 
@@ -192,6 +203,8 @@ Candidate seeds:
 The executable proposal requires non-empty inline payloads, validates optional tags with
 `[A-Za-z][A-Za-z0-9_-]*`, preserves v2 through nested block contexts, and applies the same
 `maxBlockSize` resource budget used by inherited raw blocks.
+The three block structures are Core candidates; the vocabulary and interpretation of optional tags
+remain consumer conventions.
 
 ### 5.5 Compatibility and Canonicalization
 
@@ -224,11 +237,12 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 78-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 82-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
-contexts, resource budgets, opaque extensions, and the strict forward boundary.
+contexts and rich inline content, local-reference integrity, resource budgets, opaque extensions,
+and the strict forward boundary.
 
 Move from proposal notes to active v2 fixtures only when:
 
@@ -240,11 +254,11 @@ Move from proposal notes to active v2 fixtures only when:
 
 ## 8. Open Questions
 
-1. Which reserved forms belong in Core v2, and which should remain convention or profile features?
-2. Which embedding profiles should be permitted to supply an external v2 declaration?
-3. Should any v2 syntax be feature-gated, or should Core strict mode remain a single fixed surface?
-4. Which scalar tags should become rich inline containers before draft?
-5. How much v1-to-v2 migration guidance is needed before publication?
+1. Which embedding profiles should be permitted to supply an external v2 declaration?
+2. What target-and-label grammar should `[+ ...]` use, and how should its resource semantics differ
+   from the inherited `[@ target | label]` generic link?
+3. How much v1-to-v2 migration guidance is needed before publication?
+4. Which consumer conventions need companion, non-Core documents before publication?
 
 ## 9. Acceptance Criteria for a First v2 Draft
 
