@@ -43,6 +43,13 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Audited `&ND` v2 first-draft readiness, separating the healthy executable grammar and tooling
   surfaces from remaining publication blockers: embedding/API contract text, exact projection
   snapshots, broader spans and combinations, migration guidance, and consumer conventions.
+- Froze headerless v2 selection as a host-controlled typed-channel operation requiring both reader
+  capability and explicit effective version, with source declarations taking precedence, and added
+  the corresponding v2 public API contract and boundary checks.
+- Added machine-readable projection contract `and-v2-projection-v1`, pinning complete promoted-surface
+  coverage through exact standalone/embedded canonical and inert HTML snapshots, including nested,
+  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 28 exact
+  source-span assertions and a 15-entry cross-form interaction matrix.
 - Replaced the provisional equals-free `&ND` typed-value spelling with exact AEON
   `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
   reserved type/literal compatibility checks, and AEON-canonical scalar output.

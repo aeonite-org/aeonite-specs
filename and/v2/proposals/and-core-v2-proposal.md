@@ -269,7 +269,8 @@ pressure, not a published conformance requirement. The normative v1 lane remains
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
-and the strict forward boundary.
+and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
+28 exact source-span assertions and a 15-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 
@@ -279,11 +280,12 @@ Move from proposal notes to active v2 fixtures only when:
 4. Canonical output expectations are documented and reach a parse–emit fixed point.
 5. A v2 adapter strategy is written for the CTS runner.
 
-## 8. Open Questions
+## 8. Embedding Decision
 
-The readiness audit leaves one Core-facing design question: which host authority may select v2 for
-headerless input. The recommended first-draft rule is a host-controlled typed channel that explicitly
-supplies both v2 capability and `version: "v2"`; named embedding-profile registries remain deferred.
+The Core-facing embedding question is resolved: only a host-controlled typed channel may select v2
+for headerless input, and it must explicitly supply both v2 capability and `version: "v2"`.
+Declarations take precedence over external version options. Named embedding-profile registries remain
+deferred.
 
 Image resolution and AEON scalar drift are now pinned. Migration and consumer-convention work are
 publication deliverables rather than unresolved Core syntax questions.
@@ -307,9 +309,9 @@ A first v2 draft can be written when:
 
 The executable grammar, AST, strict rejection boundary, v1 compatibility, AEON inline-scalar
 contract, image-resolution policy, CLI, and playground are ready for a first-draft candidate. The
-track is not yet ready for promotion because the embedding-authority rule, v2 public API type
-contract, exact canonical and HTML snapshots, broader source-span and cross-form coverage, migration
-guide, and consumer-convention companion note remain open.
+track is not yet ready for promotion because a migration guide and consumer-convention companion note
+remain open. Exact standalone/embedded canonical, inert HTML, source-span, and cross-form interaction
+snapshots are pinned by machine-readable contract `and-v2-projection-v1`.
 
 Footnotes, recovery modes, v2-specific editor tooling, automatic numbering, image fetching, and
 consumer vocabularies remain explicitly deferred and do not block the first draft.
