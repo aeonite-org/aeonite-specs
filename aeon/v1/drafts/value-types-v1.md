@@ -598,7 +598,7 @@ Nuances:
 - `radix[base]` is informative metadata rather than a generic type parameter;
 - optional radix base metadata uses datatype clarifier syntax, for example `radix[2]`, `radix[10]`, or `radix[16]`;
 - Core syntax accepts numeric clarifier values and preserves them; profile/schema layers decide whether a numeric clarifier is a meaningful radix base;
-- `aeon.gp.profile.v1` interprets an integral `radix` clarifier from `2` to `64` as the radix base;
+- `aeon.gp.profile.v1` requires exactly one integral numeric clarifier from `2` through `64` when `radix` carries an explicit base, and rejects string, empty, multiple, fractional, or out-of-range radix clarifiers;
 - spaces around the radix base inside brackets are allowed in AEON source, but the integer itself must be contiguous;
 - radix base forms with leading zeroes, non-decimal payloads, empty brackets, repeated bracket lists, or values outside `2..64` are invalid when a GP/AEOS layer activates radix-base semantics;
 - `decimal` is a reserved alias for `radix[10]`;
@@ -739,7 +739,7 @@ Payload grammar:
 - Core does not assign IP, semantic-version, dimension, table, product-code, or other domain meaning to separator literals.
 - Shared Value Semantics may define naïve separator order over the canonical separator payload. Naïve order does not split payloads, even when datatype clarifiers such as `["."]` are present.
 - Domain ordering such as version order, numeric IP address order, or aspect-ratio order belongs to profiles, schemas, or consumers.
-- Datatype clarifiers are preserved claims. `aeon.gp.profile.v1` declares the GP interpretation of `sep`/`separator` string clarifiers as separator characters, while Core-only processing does not activate splitting or ordering from those clarifiers. Profile-defined splitting or ordering should use them only when the consumer trusts the source, validates the claim against the payload, or supplies separator structure from trusted configuration.
+- Datatype clarifiers are preserved claims. `aeon.gp.profile.v1` declares the GP interpretation of `sep`/`separator` string clarifiers as separator characters and rejects non-string separator clarifiers. Datatypes without an active GP clarifier rule, or GP entries with `clarifiers = "none"`, do not accept explicit clarifier lists under the GP profile. Core-only processing preserves clarifier text but does not activate splitting or ordering from those clarifiers. Profile-defined splitting or ordering should use them only when the consumer trusts the source, validates the claim against the payload, or supplies separator structure from trusted configuration.
 
 AES:
 - `SeparatorLiteral` with raw payload preserved.

@@ -296,7 +296,7 @@ Nuances:
 
 Canonical notes:
 - datatype clarifiers remain attached to the datatype surface;
-- AEON Core parses datatype clarifiers but does not assign type-specific meaning to their values. Profiles and AEOS decide whether a clarifier is supported, compatible, or semantically useful.
+- AEON Core parses datatype clarifiers but does not assign type-specific meaning to their values. Profiles and AEOS decide whether a clarifier is supported, compatible, or semantically useful. `aeon.gp.profile.v1` treats its datatype-semantic clarifier rules as closed: undeclared datatype clarifiers fail, `none` entries reject explicit clarifiers, `radix_base` requires exactly one integral numeric value from `2` through `64`, and `separator_chars` requires string values.
 
 ## 6. Assignment and Element Separators
 
