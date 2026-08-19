@@ -32,9 +32,11 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Consolidated the `&ND Core v2` first-draft candidate surface into Core, Core-syntax-plus-convention,
   and deferred dispositions; content-bearing inline tags now use rich `children` while identifiers
   and metadata remain scalar.
-- Defined `[~ ...]` as a case-sensitive document-local reference to `[# ...]`, with a portable ID
-  grammar, forward references, document-wide uniqueness, and strict unresolved-reference errors;
-  external resource linking is reserved for a future `[+ ...]` design.
+- Defined local navigation through inherited `[@ #id | label]` links to `[# id]` anchors, with a
+  portable ID grammar, forward links, document-wide uniqueness, and strict unresolved-target errors;
+  external resources continue to use ordinary `[@ target | label]` links.
+- Promoted `[~ source | alt | mode]` as the v2 inline-image form with mandatory alt text, an
+  `inline` default, closed `inline`/`half`/`full` display intents, and deterministic canonical output.
 - Changed AEON draft encoding-family literal syntax from `$payload` to `&payload`.
 - Changed NEON draft AEON integration examples and text-preservation guidance to use `&...` encoding literals.
 - Expanded Shared AEON Value Semantics proposal with explicit profile-selection, string collation, temporal comparison, and mutation-compatibility guidance.
@@ -94,7 +96,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 - The local v2 proposal runner now checks declared and embedded parsing, v1 compatibility,
   canonical fixed points, HTML projection, nested contexts and rich inline content, inline and
-  paired-block budgets, document-local reference integrity, opaque extensions, and unpromoted syntax.
+  paired-block budgets, document-local fragment integrity, opaque extensions, and unpromoted syntax.
 - Updated proposal-stage Value Semantics CTS expectations so `isValue(...)` follows the concrete-value basis, including accepting infinity and container values while excluding Missing, explicit null, explicit absence values, and NaN.
 - Added proposal-stage Value Semantics CTS coverage for portable `aeon.value.default.v1` and `aeon.value.string.codepoint.v1` profile selection.
 - Updated SANSA.Query CTS expectations to align query `isValue(...)` behavior with the Shared AEON Value Semantics concrete-value basis.

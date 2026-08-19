@@ -100,19 +100,21 @@ Candidate seeds:
 - `seed-v2-header-recognized`
 - `seed-v2-header-rejected-by-v1-strict`
 
-### 5.2 Reserved Inline Forms
+### 5.2 Inline Forms and Local Links
 
-Core v1 reserves several inline forms. v2 may promote some of them into first-class syntax.
+Core v1 reserves several inline forms. v2 may promote some of them while reusing the inherited link
+form for local navigation.
 
 Candidate forms:
 
 | Form | First-draft meaning | Disposition |
 | :--- | :------------------ | :---------- |
 | `[# ...]` | scalar document-local anchor | Core |
-| `[~ ...]` | scalar resolved local-anchor target | Core |
+| `[@ #id | label]` | inherited rich-label link with resolved local target | Core |
+| `[~ source | alt | mode]` | inline image with required alt text and a closed display-mode enum | Core |
 | `[! ...]` | rich warning or admonition content | Core syntax + convention |
 | `[? ...]` | rich question or hint content | Core syntax + convention |
-| `[+ ...]` | provisional external/resource claim | Core syntax + convention |
+| `[+ ...]` | scalar consumer-defined tag | Core syntax + convention |
 | `[- ...]` | rich struck content | Core |
 | `[" ...]` | rich quoted inline content | Core |
 | `[' ...]` | rich inline comment content | Core |
@@ -126,19 +128,24 @@ Core guarantees the AST and canonical spelling while leaving consumer vocabulari
 presentation outside Core. Rich forms use nested inline `children`; identifiers and metadata remain
 scalar.
 
-Anchor IDs and local-reference targets use `[A-Za-z][A-Za-z0-9._:-]*`. Matching is exact and
-case-sensitive in one document-wide namespace. Forward references are allowed; duplicate anchors
-and unresolved references fail strict parsing. Web and external resource targets do not use
-`[~ ...]`; the `[+ ...]` family is the provisional direction, with its target/label grammar still
-unsettled.
+Anchor IDs and the identifier portion of `#id` link targets use `[A-Za-z][A-Za-z0-9._:-]*`.
+Matching is exact and case-sensitive in one document-wide namespace. Forward links are allowed;
+duplicate anchors and unresolved local targets fail declared-v2 strict parsing. Web and external
+resources continue to use inherited `[@ target | label]` links.
+
+The promoted image form accepts `[~ source | alt]` or `[~ source | alt | mode]`. Source and alt text
+are required scalars, the omitted mode defaults to `inline`, and explicit modes are limited to
+`inline`, `half`, and `full`. Canonical output always spells the resolved mode. These modes record
+display intent; Core does not resolve the source or inspect image dimensions.
 
 Candidate seeds:
 
 - `seed-v2-inline-anchor-tag-enabled`
-- `seed-v2-inline-reference-tag-enabled`
+- `seed-v2-inline-local-fragment-link-enabled`
 - `seed-v2-inline-admonition-tag-enabled`
 - `seed-v2-inline-question-tag-enabled`
 - `seed-v2-inline-plus-tag-enabled`
+- `seed-v2-inline-image-tag-modes`
 - `seed-v2-inline-strike-tag-enabled`
 - `seed-v2-inline-quoted-tag-enabled`
 - `seed-v2-inline-comment-tag-enabled`
@@ -237,11 +244,11 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 82-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 87-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
-contexts and rich inline content, local-reference integrity, resource budgets, opaque extensions,
+contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary.
 
 Move from proposal notes to active v2 fixtures only when:
@@ -255,8 +262,7 @@ Move from proposal notes to active v2 fixtures only when:
 ## 8. Open Questions
 
 1. Which embedding profiles should be permitted to supply an external v2 declaration?
-2. What target-and-label grammar should `[+ ...]` use, and how should its resource semantics differ
-   from the inherited `[@ target | label]` generic link?
+2. Which image source-resolution and failure conventions need a companion projection profile?
 3. How much v1-to-v2 migration guidance is needed before publication?
 4. Which consumer conventions need companion, non-Core documents before publication?
 

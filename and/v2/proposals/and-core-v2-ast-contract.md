@@ -47,10 +47,11 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 
 | Forms | Disposition | Contract boundary |
 | :---- | :---------- | :---------------- |
-| `[# ...]`, `[~ ...]` | Core | Case-sensitive document-local anchors and resolved references. |
+| `[# ...]` and inherited `[@ #id | label]` | Core | Case-sensitive document-local anchors and resolved fragment links. |
 | `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Core | Rich inline content with stable structural meaning. |
 | `[! ...]`, `[? ...]` | Core syntax + convention | Rich inline content; presentation and product workflow are consumer-defined. |
-| `[+ ...]` | Core syntax + convention | Provisional scalar resource claim; external target/label grammar remains unsettled. |
+| `[+ ...]` | Core syntax + convention | Scalar consumer tag; vocabulary and behavior remain consumer-defined. |
+| `[~ source | alt | mode]` | Core | Inline image with required source and alt text; mode is `inline`, `half`, or `full`. |
 | `[:type value]` | Core syntax + convention | Core preserves datatype and value; interpretation and validation are consumer-defined. |
 | `[ ]`, `[x]`, `[,]`, `[;]`, `[>]`, `[<]`, `[%]`, `[.]` | Core | Stable author-intent markers; display and numbering are projections. |
 | heading `[n]` | Core | Stable heading field; number calculation is outside Core. |
@@ -69,14 +70,16 @@ interface NdAnchorTag {
   readonly id: string;
 }
 
-interface NdReferenceTag {
-  readonly type: "reference_tag";
-  readonly target: string;
-}
-
 interface NdPlusTag {
   readonly type: "plus_tag";
   readonly value: string;
+}
+
+interface NdImageTag {
+  readonly type: "image_tag";
+  readonly src: string;
+  readonly alt: string;
+  readonly mode: "inline" | "half" | "full";
 }
 
 interface NdTypedValue {
@@ -98,35 +101,57 @@ interface NdRichV2Tag {
 }
 ```
 
-Identifiers, reference targets, provisional resource claims, datatype names, and typed values are normalized
-scalars. Content-bearing tags preserve nested inline structure through `children`. Whitespace at a
-rich tag's outer content boundary is insignificant; whitespace inside its child sequence remains
+Identifiers, consumer tags, image fields, datatype names, and typed values are normalized scalars. Content-bearing
+tags preserve nested inline structure through `children`. Whitespace at a rich tag's outer content
+boundary is insignificant; whitespace inside its child sequence remains
 content. Rich tags participate in the inherited inline-depth budget.
 
 Datatype names identify a consumer-level interpretation; Core parsing does not validate a value
 against its datatype.
 
-## 5. Local Anchors and References
+## 5. Local Anchors and Fragment Links
 
-Anchor identifiers and reference targets use one portable grammar:
+Anchor identifiers and the identifier portion of local fragment-link targets use one portable grammar:
 
 ```text
 local-id ::= [A-Za-z][A-Za-z0-9._:-]*
 ```
 
 Matching is exact and case-sensitive. `[# id]` defines `id` in one document-wide namespace, including
-inside nested blocks and extension fallbacks. A document MUST NOT define the same ID twice. `[~ id]`
-MUST resolve to an anchor in the same document; forward references are allowed. Canonical emission
-preserves the identifier exactly and HTML projection uses a fragment link such as `href="#id"`.
+inside nested blocks and extension fallbacks. A document MUST NOT define the same ID twice. An inherited
+link whose target is `#id`, written `[@ #id | label]`, MUST resolve to an anchor in the same declared-v2
+document; forward links are allowed. The link retains the inherited `NdLink` AST shape with
+`href: "#id"` and rich label `children`. Canonical emission preserves the target and label exactly,
+and HTML projection already emits the browser-native fragment link.
 
-A standalone `parseInline` operation validates only the local-id grammar because it has no document
-namespace. Full duplicate and resolution checks occur during document parsing. External URLs and
-resource identifiers are invalid `[~ ...]` targets. A future resource-link design is expected to use
-the `[+ ...]` family; its target and label grammar is not fixed by this contract. The inherited v1
-`[@ target | label]` form remains accepted for v1 compatibility, so the eventual `[+ ...]` contract
-must distinguish a semantic resource claim from that generic link form.
+A standalone `parseInline` operation validates the `#id` target grammar but cannot resolve it without
+a document namespace. Full duplicate and resolution checks occur during declared-v2 document parsing
+and canonical emission. Declared-v1 documents retain their existing generic link behavior. Webpages
+and external resources continue to use inherited targets such as
+`[@ https://example.com | Example]`.
 
-## 6. Compact Inline Markers
+## 6. Inline Images
+
+The image form is:
+
+```text
+[~ source | alt]
+[~ source | alt | mode]
+```
+
+`source` and `alt` are required, non-empty scalar fields. An escaped `\\|` is data rather than a
+field separator. The optional mode defaults to `inline`; when present it MUST be exactly `inline`,
+`half`, or `full`. Canonical output always includes the resolved mode.
+
+`inline` requests a height matched to the surrounding font size. `half` requests one half of the
+image's intrinsic height and proportional width. `full` requests the intrinsic dimensions. These
+are display intents: Core does not fetch, decode, inspect, or validate the referenced image and
+therefore does not record pixel dimensions in the AST. Consumers remain responsible for source
+resolution, loading policy, layout constraints, and failure presentation. Alt text is mandatory so
+every conforming AST carries an accessible text alternative.
+Image sources participate in the inherited `maxLinkTargetLength` resource budget.
+
+## 7. Compact Inline Markers
 
 ```ts
 interface NdTodoMarker {
@@ -151,7 +176,7 @@ interface NdLineBreak {
 Markers record author intent. Core parsing does not calculate display numbers or mutate surrounding
 list structure.
 
-## 7. Heading Addition
+## 8. Heading Addition
 
 ```ts
 interface NdV2Heading extends NdHeading {
@@ -161,7 +186,7 @@ interface NdV2Heading extends NdHeading {
 
 The field is present only when a heading begins with the v2 `[n]` marker.
 
-## 8. Paired Blocks
+## 9. Paired Blocks
 
 ```ts
 interface NdHighlightParagraphBlock {
@@ -185,7 +210,7 @@ interface NdDisclaimerBlock {
 Paired-block payloads are inline content, not nested block documents. Optional tags preserve the
 validated suffix from a tagged opener.
 
-## 9. Canonical Contract
+## 10. Canonical Contract
 
 Canonical emission requires both a profile and an effective version:
 
@@ -199,12 +224,12 @@ node has a deterministic spelling, and emitting a v2-only node under version v1 
 executable proposal runner checks standalone and embedded parse–emit–parse structural equivalence
 and canonical fixed-point stability for every accepted v2 fixture.
 
-## 10. Source Spans
+## 11. Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
 
-## 11. Stability
+## 12. Stability
 
 This contract is executable but remains proposal-stage. The scalar-versus-rich-content split and
 the capability disposition above are now decisions for the first-draft candidate; lexical
