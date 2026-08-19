@@ -139,11 +139,11 @@ flowchart LR
   COLON[":"] --> NAME["type name"]
   NAME --> GEN{"generic args?"}
   GEN -->|yes| G["<type, ...>"]
-  GEN -->|no| SPEC{"separator/radix specs?"}
+  GEN -->|no| SPEC{"datatype clarifier list?"}
   G --> SPEC
-  SPEC -->|zero or more| S["[spec]"]
+  SPEC -->|one| S["[value, ...]"]
   SPEC -->|none| DONE["type complete"]
-  S --> SPEC
+  S --> DONE
 ```
 
 Rules:

@@ -37,7 +37,7 @@ Mode requirements:
 - `custom` requires a datatype annotation on non-header bindings and allows custom datatype labels;
 - typed modes require datatype annotations on attribute entries that carry values;
 - typed modes do not require generic args (`arr:list = [...]` is valid);
-- typed modes do not require datatype clarifiers unless the datatype itself uses them.
+- typed modes do not require datatype clarifiers. Clarifiers are preserved datatype claims whose interpretation belongs to profiles, schemas, or consumers.
 - typed modes do not require datatype annotations on anonymous list elements, tuple elements, or node children.
 
 Implementations MAY still expose an explicit datatype-policy override, but the default semantic behavior is mode-driven.
