@@ -37,9 +37,15 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   external resources continue to use ordinary `[@ target | label]` links.
 - Promoted `[~ source | alt | mode]` as the v2 inline-image form with mandatory alt text, an
   `inline` default, closed `inline`/`half`/`full` display intents, and deterministic canonical output.
+- Defined image-source resolution as a consumer boundary: Core preserves authored sources, while the
+  reference HTML renderer offers explicit credential-free HTTP(S) `imageBaseUrl` resolution,
+  source-provenance metadata, and fail-closed URL handling.
 - Replaced the provisional equals-free `&ND` typed-value spelling with exact AEON
   `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
   reserved type/literal compatibility checks, and AEON-canonical scalar output.
+- Pinned the `&ND` v2 inline-scalar boundary as machine-readable contract
+  `and-v2-aeon-inline-scalar-v1`, aligned with AEON TypeScript `0.12.0`, with mandatory AST,
+  canonical, HTML, alias, and exclusion checks plus an optional live AEON drift check.
 - Changed AEON draft encoding-family literal syntax from `$payload` to `&payload`.
 - Changed NEON draft AEON integration examples and text-preservation guidance to use `&...` encoding literals.
 - Expanded Shared AEON Value Semantics proposal with explicit profile-selection, string collation, temporal comparison, and mutation-compatibility guidance.

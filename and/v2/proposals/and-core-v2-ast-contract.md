@@ -164,6 +164,14 @@ pointer references, bindings, attributes, structural identities, nested typed va
 the enclosed annotation and scalar to these AEON canonical rules.
 Generic datatype nesting uses AEON's default depth lock of one in the v2 reference parser.
 
+The executable compatibility boundary is contract `and-v2-aeon-inline-scalar-v1` in the reference
+implementation's `cts/contracts/aeon-inline-scalar-v1.json`. It pins the accepted datatype names and
+aliases, literal-family AST shapes, canonical &ND spelling, HTML projection, and exclusions against
+AEON TypeScript package version `0.12.0`. The contract check is mandatory and dependency-free. A
+separate drift check compares the same cases with the sibling AEON lexer, parser, and canonicalizer
+when those built packages are available; an unavailable sibling checkout does not weaken or fail the
+standalone &ND conformance check.
+
 ## 6. Local Anchors and Fragment Links
 
 Anchor identifiers and the identifier portion of local fragment-link targets use one portable grammar:
@@ -205,6 +213,19 @@ therefore does not record pixel dimensions in the AST. Consumers remain responsi
 resolution, loading policy, layout constraints, and failure presentation. Alt text is mandatory so
 every conforming AST carries an accessible text alternative.
 Image sources participate in the inherited `maxLinkTargetLength` resource budget.
+
+The AST and canonical form retain the authored, escape-decoded `src`; Core never resolves it against
+a filesystem path, process working directory, page URL, or document URL. The reference HTML renderer
+accepts an optional explicit `imageBaseUrl`. Without it, safe relative references are emitted unchanged
+and resolution belongs to the embedding HTML document. With it, relative and root-relative references
+are resolved using the WHATWG URL algorithm. The base MUST be an absolute credential-free HTTP(S) URL;
+an invalid base fails with `invalid_image_base_url`. Absolute HTTP(S) sources remain unchanged.
+
+The reference HTML safety policy rejects non-HTTP(S) absolute schemes, credentialed URLs, and
+protocol-relative sources. It preserves alt text while omitting unsafe source attributes. When an
+authored relative source is resolved, the emitted `src` or `srcset` is absolute and the original value
+is retained in `data-and-source`. The renderer does not emit a `<base>` element, fetch the resource, or
+mutate the AST.
 
 ## 8. Compact Inline Markers
 

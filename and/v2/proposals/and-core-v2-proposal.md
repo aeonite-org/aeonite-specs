@@ -138,6 +138,12 @@ are required scalars, the omitted mode defaults to `inline`, and explicit modes 
 `inline`, `half`, and `full`. Canonical output always spells the resolved mode. These modes record
 display intent; Core does not resolve the source or inspect image dimensions.
 
+The reference HTML renderer preserves safe relative sources by default and accepts an explicit
+credential-free HTTP(S) `imageBaseUrl` for deterministic WHATWG resolution. Resolved output retains
+the authored source in `data-and-source`. Non-HTTP(S), credentialed, and protocol-relative sources are
+omitted while mandatory alt text remains available; invalid bases fail with
+`invalid_image_base_url`.
+
 The promoted typed-value form adopts exact AEON anonymous typed-scalar syntax, including the
 mandatory `=`, structured generic arguments and clarifiers, reserved datatype aliases, literal-family
 compatibility, string escapes, and scalar canonicalization. Supported families are string, finite
@@ -145,6 +151,11 @@ number, infinity, NaN, null, Boolean, toggle, hex, radix, encoding, date/time/da
 separator literals, SANSA addresses, and custom datatype labels over those scalars. Structured
 values, references, nested typed values, trimticks, `prose`, and multiline strings remain outside the
 inline subset.
+
+The reference implementation pins this boundary as machine-readable contract
+`and-v2-aeon-inline-scalar-v1`, aligned with AEON TypeScript package version `0.12.0`. Mandatory
+dependency-free snapshots cover the &ND AST, canonical text, and HTML projection; an optional sibling
+repository check detects lexer, parser, or canonicalizer drift in the corresponding AEON forms.
 
 Candidate seeds:
 
