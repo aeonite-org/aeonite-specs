@@ -19,6 +19,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Added
 
+- Added proposal-stage `&ND` v1-to-v2 migration and v2 consumer-conventions documents, covering the
+  asymmetric parser boundary, mechanical syntax migration, supported v2 surface, and the explicit
+  split between Core fields and consumer-owned behavior.
 - Added the proposal-stage `&ND Core v2` AST contract, including effective-version metadata,
   promoted node shapes, and canonical emission boundaries.
 - Added initial SANSA v1 draft specification tree under `sansa/v1/drafts/`.
@@ -43,6 +46,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Audited `&ND` v2 first-draft readiness, separating the healthy executable grammar and tooling
   surfaces from remaining publication blockers: embedding/API contract text, exact projection
   snapshots, broader spans and combinations, migration guidance, and consumer conventions.
+- Closed all documented `&ND` v2 first-draft candidate gates while retaining proposal lifecycle
+  status pending an explicit reviewed promotion of formal documents and CTS metadata.
 - Froze headerless v2 selection as a host-controlled typed-channel operation requiring both reader
   capability and explicit effective version, with source declarations taking precedence, and added
   the corresponding v2 public API contract and boundary checks.

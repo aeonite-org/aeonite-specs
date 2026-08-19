@@ -288,7 +288,7 @@ Declarations take precedence over external version options. Named embedding-prof
 deferred.
 
 Image resolution and AEON scalar drift are now pinned. Migration and consumer-convention work are
-publication deliverables rather than unresolved Core syntax questions.
+published as proposal-stage companion guidance rather than unresolved Core syntax questions.
 
 ## 9. Acceptance Criteria for a First v2 Draft
 
@@ -309,9 +309,14 @@ A first v2 draft can be written when:
 
 The executable grammar, AST, strict rejection boundary, v1 compatibility, AEON inline-scalar
 contract, image-resolution policy, CLI, and playground are ready for a first-draft candidate. The
-track is not yet ready for promotion because a migration guide and consumer-convention companion note
-remain open. Exact standalone/embedded canonical, inert HTML, source-span, and cross-form interaction
-snapshots are pinned by machine-readable contract `and-v2-projection-v1`.
+documented candidate gates are now satisfied. Exact standalone/embedded canonical, inert HTML,
+source-span, and cross-form interaction snapshots are pinned by machine-readable contract
+`and-v2-projection-v1`. Migration and non-Core ownership are defined by
+[`and-v1-to-v2-migration.md`](./and-v1-to-v2-migration.md) and
+[`and-consumer-conventions.md`](./and-consumer-conventions.md).
+
+The track remains proposal-stage until an explicit reviewed lifecycle change promotes the formal
+documents and CTS metadata together; passing readiness checks does not publish a draft.
 
 Footnotes, recovery modes, v2-specific editor tooling, automatic numbering, image fetching, and
 consumer vocabularies remain explicitly deferred and do not block the first draft.
