@@ -307,13 +307,13 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 121-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 131-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
-34 exact source-span assertions and a 24-entry cross-form interaction matrix.
+37 exact source-span assertions and a 27-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 

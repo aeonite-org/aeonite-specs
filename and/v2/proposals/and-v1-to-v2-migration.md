@@ -113,10 +113,11 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | `[:type = scalar]` | AEON typed scalar |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | First-class todo list and item states |
 | `[>]`, `[<]`, `[.]` | Direction and line-break markers; leading unordered-item arrows replace bullets |
+| `- [?] content`, `- [!] content` | Hint/attention markers replacing unordered-item bullets while content stays visible |
 | heading `[n]` | Heading numbering intent |
 | `- [n] content` | First-class auto-number list |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
-| `~~~=`, `~~~*`, `~~~/`, `~~~_` | Highlight, strong, emphasis, and underline paragraph blocks |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!` | Highlight, strong, emphasis, underline, hint, and attention paragraph blocks |
 | `===`, `***` | Header-text and disclaimer blocks |
 
 Consumer-owned behavior layered on these stable Core nodes is defined by
@@ -124,7 +125,8 @@ Consumer-owned behavior layered on these stable Core nodes is defined by
 
 ## 8. Formatted Paragraphs
 
-V2 adds matching `~~~=` highlight, `~~~*` strong, `~~~/` emphasis, and `~~~_` underline paragraph
+V2 adds matching `~~~=` highlight, `~~~*` strong, `~~~/` emphasis, `~~~_` underline, `~~~?` hint,
+and `~~~!` attention paragraph
 fences. Each requires non-empty rich inline content and must close with its exact opener. Plain
 `~~~` remains ordinary paragraph text in both v1 and v2 and follows inherited soft-wrap
 canonicalization.
@@ -186,6 +188,9 @@ replaces that item's ordinary bullet in projection. The list remains an inherite
 the marker remains in the paragraph AST, so ordinary and directional items may coexist. Later
 markers and markers in paragraphs or ordered lists remain inline.
 
+The exact leading forms `- [?] content` and `- [!] content` follow the same contextual rule while
+keeping their item content visible. Rich `[? ...]` and `[! ...]` remain inline callout content.
+
 ## 13. Migration Checklist
 
 1. Enable v2 reader capability explicitly.
@@ -199,7 +204,7 @@ markers and markers in paragraphs or ordered lists remain inline.
 9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
    reference; remove forward references and nesting.
 10. Place a direction marker first after `- ` only when it should replace that item's bullet.
-11. Convert paragraph-wide formatting to exact matching `~~~=`, `~~~*`, `~~~/`, or `~~~_` fences;
+11. Convert paragraph-wide formatting or advisory content to exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, or `~~~!` fences;
     leave plain `~~~` as ordinary text.
 12. Keep consumer conventions separate from grammar acceptance and canonicalization.
 13. Canonicalize once to expose normalized image modes and AEON scalar spellings.

@@ -17,6 +17,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Added contextual `- [?]` / `- [!]` advisory list markers, visible `~~~?` / `~~~!` advisory
+  paragraphs, and clarified that inline `[? ...]` / `[! ...]` presentation remains consumer-owned.
+
 ### Added
 
 - Added proposal-stage `&ND` v1-to-v2 migration and v2 consumer-conventions documents, covering the

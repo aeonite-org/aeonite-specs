@@ -68,9 +68,10 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | Core | First-class todo list and item states; workflow and presentation are projections. |
 | `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
+| `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
-| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, header, and disclaimer block structure. |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, header, and disclaimer block structure. |
 | `[^ ...]` and all other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” remains part of the single v2 strict grammar. It means Core guarantees
@@ -284,6 +285,11 @@ interface NdDirectionalMarker {
   readonly direction: "forward" | "backward";
 }
 
+interface NdAdvisoryMarker {
+  readonly type: "advisory_marker";
+  readonly kind: "question" | "admonition";
+}
+
 interface NdLineBreak {
   readonly type: "line_break";
 }
@@ -294,6 +300,10 @@ unordered list item's paragraph head replaces that item's ordinary bullet in pro
 remains in the inline AST and the container remains an inherited unordered `list`, so directional
 and ordinary items may coexist and nesting is unchanged. Later markers remain inline. Ordered lists
 do not receive bullet-replacement behavior. Canonical output preserves `- [direction] content`.
+
+The exact leading forms `- [?] content` and `- [!] content` produce an `advisory_marker` followed by
+visible item content. They remain inherited unordered lists and may coexist with ordinary items.
+Compact `[?]` and `[!]` are not general inline forms; rich `[? ...]` and `[! ...]` remain inline.
 
 ## 10. Footnotes
 
@@ -372,8 +382,8 @@ interface NdDisclaimerBlock {
 }
 ```
 
-`~~~=`, `~~~*`, `~~~/`, and `~~~_` create highlight, strong, emphasis, and underline paragraph
-blocks respectively. Each uses the same exact opener as its closer and requires non-empty rich
+`~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, and `~~~!` create highlight, strong, emphasis, underline,
+hint/question, and attention/admonition paragraph blocks respectively. Each uses the same exact opener as its closer and requires non-empty rich
 inline content. Empty and unclosed forms reject with family-specific diagnostics. Plain `~~~` has no
 block meaning and remains inherited ordinary paragraph text in both v1 and v2. Optional tags on
 header and disclaimer blocks preserve the validated suffix from a tagged opener.
