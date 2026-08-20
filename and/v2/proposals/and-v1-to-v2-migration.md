@@ -118,7 +118,11 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | `- [n] content` | First-class auto-number list |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
-| `===`, `***` | Header-text and disclaimer blocks |
+| `~~~#` … `~~~#` | Header-text block |
+| `~~~^` … `~~~` | Disclaimer block |
+| `[^ ...]` | Inline disclaimer |
+| `[(id) content]` | Inline semantic wrapper with a consumer-owned, hidden-by-default ID |
+| `~~~(id)` … `~~~` | Semantic block that projects as an ordinary paragraph by default |
 
 Consumer-owned behavior layered on these stable Core nodes is defined by
 [`and-consumer-conventions.md`](./and-consumer-conventions.md).

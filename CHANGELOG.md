@@ -17,6 +17,10 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Added proposal-stage semantic wrappers: `~~~(id)` / `~~~` blocks and `[(id) content]` inline text.
+  Their IDs are retained for consumers but omitted from the reference HTML projection.
+- Replaced the proposal-stage `===` and `***` v2 paired blocks with untagged `~~~#` header text and
+  `~~~^` / `~~~` disclaimer blocks, and added rich inline `[^ ...]` disclaimers.
 - Added `~~~'` as a proposal-stage rich block comment in &ND v2; consumers control visibility and
   the reference HTML projection preserves it as hidden content.
 - Added language-qualified `~~~language` and `~~~~language` code-fence alternatives to &ND v1 and

@@ -38,9 +38,11 @@ error, rewrite Core canonical text, or infer the grammar version.
 | `- [?] ...`, `- [!] ...` | Stable advisory kind and unordered-item bullet-replacement intent; visible item content | Marker glyphs, labels, colors, list styling |
 | `~~~?`, `~~~!` | Visible rich hint/question or attention/admonition paragraph structure | Iconography, severity vocabulary, layout, accessibility phrasing |
 | `~~~'` | Preserved rich block-comment children | Visibility, reviewer identity, export/redaction policy, collaboration workflow |
+| `[^ ...]`, `~~~^` | Rich inline or block disclaimer content | Exact size, placement, color, accessibility presentation |
+| `~~~#` | Rich header-text content | Exact weight, size, placement, relationship to a heading |
+| `[(id) content]`, `~~~(id)` | Portable `id` and rich children; reference HTML exposes only content | ID vocabulary, interpretation, alternate styling, product behavior |
 | `[+ value]` | Preserved scalar `plus_tag.value` | Value registry, action mapping, analytics, workflow, UI |
 | Custom `[:type = scalar]` | Datatype label/adornments and validated scalar | Datatype registry, domain validation, units, formatting, business meaning |
-| `===tag`, `***tag` | Validated optional paired-block `tag` | Tag vocabulary, templates, placement, styling, behavior |
 | heading `[n]`, `auto_number_list` | Contextual auto-number intent | Sequence, scope, format, restart rules, localization, labels |
 | Footnote definitions and references | Rich definition content, optional authored ID, declaration order, reference resolution | Superscript numbers or symbols, hover/callout/endnote presentation, placement, backlinks, accessibility phrasing |
 | `[~ source | alt | mode]` | Source, alt text, and closed display-intent mode | Resolution, fetching, caching, MIME checks, intrinsic sizing, exact layout, failure UI |
@@ -64,8 +66,7 @@ Core assigns no registered product meaning to values such as:
 ```and
 [+ priority:high]
 [! security]
-===hero
-***legal
+[^ legal text]
 [:temperature = 21.5]
 ```
 
@@ -119,8 +120,11 @@ Core documents are non-executable. Opaque extension blocks preserve data; they d
 evaluation. Interpretation or execution requires an explicit registry and trust policy, validated
 payloads, isolated effects, and environment permissions.
 
-Unknown extensions, `[+]` values, custom datatypes, and paired-block tags remain preservable data and
-must not trigger behavior merely by appearing in a valid document.
+Unknown extensions, `[+]` values, and custom datatypes remain preservable data and must not trigger
+behavior merely by appearing in a valid document.
+
+Semantic wrapper IDs likewise remain inert until a consumer explicitly interprets them. The
+reference HTML emits no visible label, DOM `id`, class, or `data-*` attribute for either form.
 
 ## 9. Conformance Boundary
 

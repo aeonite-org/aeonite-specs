@@ -71,8 +71,10 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
-| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header, and disclaimer block structure. |
-| `[^ ...]` and all other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
+| `[^ ...]` | Core | Rich inline disclaimer content. |
+| `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers with a portable consumer-owned ID; default projection exposes only content. |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `~~~#`, `~~~^` paired blocks | Core | Highlight, strong, emphasis, underline, hint, attention, comment, header-text, and disclaimer block structure. |
+| All other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” remains part of the single v2 strict grammar. It means Core guarantees
 the parse shape and canonical spelling while deliberately declining to standardize a consumer
@@ -132,6 +134,7 @@ interface NdRichV2Tag {
     | "quoted_tag"
     | "comment_tag"
     | "highlight_tag"
+    | "disclaimer_tag"
     | "underline_tag";
   readonly children: NdInlineNode[];
 }
@@ -145,6 +148,12 @@ interface NdFootnoteDefinition {
 interface NdFootnoteReference {
   readonly type: "footnote_reference";
   readonly id: string;
+}
+
+interface NdSemanticTag {
+  readonly type: "semantic_tag";
+  readonly id: string;
+  readonly children: NdInlineNode[];
 }
 ```
 
@@ -386,22 +395,30 @@ interface NdCommentBlock {
 
 interface NdHeaderTextBlock {
   readonly type: "header_text_block";
-  readonly tag?: string;
   readonly children: NdInlineNode[];
 }
 
 interface NdDisclaimerBlock {
   readonly type: "disclaimer_block";
-  readonly tag?: string;
+  readonly children: NdInlineNode[];
+}
+
+interface NdSemanticBlock {
+  readonly type: "semantic_block";
+  readonly id: string;
   readonly children: NdInlineNode[];
 }
 ```
 
-`~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, and `~~~'` create highlight, strong, emphasis,
-underline, hint/question, attention/admonition, and comment blocks respectively. Each uses the same exact opener as its closer and requires non-empty rich
-inline content. Empty and unclosed forms reject with family-specific diagnostics. Plain `~~~` has no
-block meaning and remains inherited ordinary paragraph text in both v1 and v2. Optional tags on
-header and disclaimer blocks preserve the validated suffix from a tagged opener.
+`~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'`, `~~~#`, `~~~^`, and `~~~(id)` create
+highlight, strong, emphasis, underline, hint/question, attention/admonition, comment, header-text,
+disclaimer, and semantic blocks respectively. Each requires non-empty rich inline content. Every
+form closes with the same exact opener except `~~~^` and `~~~(id)`, whose closer is plain `~~~`.
+Empty and unclosed forms reject with family-specific diagnostics. Plain `~~~` has no opening-block
+meaning and remains inherited ordinary paragraph text in both v1 and v2. Header-text and disclaimer
+blocks are untagged. Semantic IDs match `[A-Za-z][A-Za-z0-9_-]*`, remain available in the AST, and
+are not emitted into the reference HTML. Inline `[(id) content]` uses the same rule and projects only
+its rich content by default.
 
 ## 14. Canonical Contract
 
@@ -431,7 +448,7 @@ formatted paragraph family.
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 34 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 41 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
 clarifiers, footnotes, nested rich resources, lists, and blockquotes.
 

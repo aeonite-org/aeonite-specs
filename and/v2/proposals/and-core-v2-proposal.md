@@ -262,14 +262,21 @@ comment block
   closer: ~~~'
 
 header text block
-  opener: === or ===<tag>
-  closer: ===
+  opener: ~~~#
+  closer: ~~~#
 
 disclaimer block
-  opener: *** or ***<tag>
-  closer: ***
+  opener: ~~~^
+  closer: ~~~
 
-<tag> ::= [A-Za-z][A-Za-z0-9_-]*
+semantic block
+  opener: ~~~(<id>)
+  closer: ~~~
+
+inline semantic wrapper
+  [(<id>) rich inline content]
+
+<id> ::= [A-Za-z][A-Za-z0-9_-]*
 ```
 
 Candidate seeds:
@@ -284,12 +291,13 @@ Candidate seeds:
 - `seed-v2-block-header-text-enabled`
 - `seed-v2-block-disclaimer-enabled`
 
-The executable proposal requires non-empty rich inline payloads, requires each formatted paragraph
-fence to close with the same exact delimiter, validates optional tags with
-`[A-Za-z][A-Za-z0-9_-]*`, preserves v2 through nested block contexts, and applies the same
-`maxBlockSize` resource budget used by inherited raw blocks.
-Plain `~~~` remains inherited ordinary paragraph text rather than a delimiter. The block structures
-are Core candidates; the vocabulary and interpretation of optional tags remain consumer conventions.
+The executable proposal requires non-empty rich inline payloads, uses exact deterministic closers,
+preserves v2 through nested block contexts, and applies the same `maxBlockSize` resource budget used
+by inherited raw blocks. Plain `~~~` remains inherited ordinary paragraph text when it is not the
+closer of a `~~~^` disclaimer or `~~~(id)` semantic block. Header-text and disclaimer blocks are
+untagged Core candidates. Semantic wrapper IDs remain available to consumers in the AST but are not
+exposed by the reference HTML projection; their content otherwise projects as ordinary block or
+inline content.
 
 ### 5.5 Compatibility and Canonicalization
 
@@ -312,7 +320,7 @@ node shapes, effective-version metadata, and canonical emission boundary.
 
 These ideas are not rejected, but they should not be part of the first v2 activation slice:
 
-- unpromoted reserved syntax such as `[^ ...]`
+- other unpromoted reserved syntax
 - profile-gated syntax inside Core strict mode
 - HTML passthrough
 - executable or evaluatable constructs
@@ -322,13 +330,13 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 134-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 148-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
-38 exact source-span assertions and a 28-entry cross-form interaction matrix.
+41 exact source-span assertions and a 31-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 
