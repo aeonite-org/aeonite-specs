@@ -112,16 +112,24 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Rich inline presentation nodes |
 | `[:type = scalar]` | AEON typed scalar |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | First-class todo list and item states |
-| `[>]`, `[<]`, `[.]` | Direction and line-break markers |
+| `[>]`, `[<]`, `[.]` | Direction and line-break markers; leading unordered-item arrows replace bullets |
 | heading `[n]` | Heading numbering intent |
 | `- [n] content` | First-class auto-number list |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
-| `~~~=`, `===`, `***` | Highlight-paragraph, header-text, and disclaimer blocks |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_` | Highlight, strong, emphasis, and underline paragraph blocks |
+| `===`, `***` | Header-text and disclaimer blocks |
 
 Consumer-owned behavior layered on these stable Core nodes is defined by
 [`and-consumer-conventions.md`](./and-consumer-conventions.md).
 
-## 8. Todo Lists
+## 8. Formatted Paragraphs
+
+V2 adds matching `~~~=` highlight, `~~~*` strong, `~~~/` emphasis, and `~~~_` underline paragraph
+fences. Each requires non-empty rich inline content and must close with its exact opener. Plain
+`~~~` remains ordinary paragraph text in both v1 and v2 and follows inherited soft-wrap
+canonicalization.
+
+## 9. Todo Lists
 
 Todo state is structural in v2:
 
@@ -137,7 +145,7 @@ markers. The `- ` prefix and non-empty content are mandatory, and one list block
 and todo items. Bare `[x] parser`, ordered `1. [x] parser`, malformed prefixes, and mixed blocks are
 rejected. `[.]` remains an inline line break, not a todo-item terminator.
 
-## 9. Auto-Numbering
+## 10. Auto-Numbering
 
 `[n]` is contextual structural metadata:
 
@@ -152,7 +160,11 @@ The heading receives `autoNumber: true`; the list parses as `auto_number_list` c
 `list_item` nodes. Separator space and non-empty content are mandatory. Bare `[n]`, no-space forms,
 explicit `1. [n] item`, and mixed ordinary/todo/auto-number blocks are rejected.
 
-## 10. Footnotes
+Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-space margin without a
+blank separator. This applies to ordinary, todo, and auto-number lists. Canonical output may insert
+the inherited blank separator while preserving the same AST.
+
+## 11. Footnotes
 
 V2 promotes `[% ...]` as footnote syntax:
 
@@ -167,11 +179,14 @@ follow its single declaration. Empty definitions, malformed IDs, duplicates, unr
 references, and nested footnotes are rejected. The authored ID is not a forced display number;
 processors choose numbers, symbols, hover cards, callouts, or endnotes.
 
-Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-space margin without a
-blank separator. This applies to ordinary, todo, and auto-number lists. Canonical output may insert
-the inherited blank separator while preserving the same AST.
+## 12. Directional List Markers
 
-## 11. Migration Checklist
+`[>]` and `[<]` remain inline direction markers. In the first inline position after `- `, the arrow
+replaces that item's ordinary bullet in projection. The list remains an inherited unordered list and
+the marker remains in the paragraph AST, so ordinary and directional items may coexist. Later
+markers and markers in paragraphs or ordered lists remain inline.
+
+## 13. Migration Checklist
 
 1. Enable v2 reader capability explicitly.
 2. Change declarations only when dropping v1-reader compatibility is acceptable.
@@ -183,5 +198,8 @@ the inherited blank separator while preserving the same AST.
 8. Convert contextual numbering to exact heading or `- [n] content` prefixes.
 9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
    reference; remove forward references and nesting.
-10. Keep consumer conventions separate from grammar acceptance and canonicalization.
-11. Canonicalize once to expose normalized image modes and AEON scalar spellings.
+10. Place a direction marker first after `- ` only when it should replace that item's bullet.
+11. Convert paragraph-wide formatting to exact matching `~~~=`, `~~~*`, `~~~/`, or `~~~_` fences;
+    leave plain `~~~` as ordinary text.
+12. Keep consumer conventions separate from grammar acceptance and canonicalization.
+13. Canonicalize once to expose normalized image modes and AEON scalar spellings.

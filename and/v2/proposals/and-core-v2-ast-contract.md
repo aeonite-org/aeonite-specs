@@ -52,7 +52,7 @@ The complete v1 block and inline node unions remain valid in v2. A v2-capable re
 the same fields and containment relationships for inherited syntax.
 
 `NdInlineNode` gains the nodes below. `NdBlockNode` gains `NdTodoList`, `NdAutoNumberList`, and the
-three paired-block nodes below, and `NdHeading` gains the optional `autoNumber` field.
+paired-block nodes below, and `NdHeading` gains the optional `autoNumber` field.
 
 ## 3. Capability Disposition
 
@@ -67,10 +67,10 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[~ source | alt | mode]` | Core | Inline image with required source and alt text; mode is `inline`, `half`, or `full`. |
 | `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | Core | First-class todo list and item states; workflow and presentation are projections. |
-| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; display is a projection. |
+| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
-| `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `===`, `***` paired blocks | Core | Highlight, strong, emphasis, underline, header, and disclaimer block structure. |
 | `[^ ...]` and all other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
 “Core syntax + convention” remains part of the single v2 strict grammar. It means Core guarantees
@@ -289,7 +289,11 @@ interface NdLineBreak {
 }
 ```
 
-Inline markers record author intent.
+Inline markers record author intent. A directional marker in the first inline position of an
+unordered list item's paragraph head replaces that item's ordinary bullet in projection. The marker
+remains in the inline AST and the container remains an inherited unordered `list`, so directional
+and ordinary items may coexist and nesting is unchanged. Later markers remain inline. Ordered lists
+do not receive bullet-replacement behavior. Canonical output preserves `- [direction] content`.
 
 ## 10. Footnotes
 
@@ -340,6 +344,21 @@ interface NdHighlightParagraphBlock {
   readonly children: NdInlineNode[];
 }
 
+interface NdStrongParagraphBlock {
+  readonly type: "strong_paragraph_block";
+  readonly children: NdInlineNode[];
+}
+
+interface NdEmphasisParagraphBlock {
+  readonly type: "emphasis_paragraph_block";
+  readonly children: NdInlineNode[];
+}
+
+interface NdUnderlineParagraphBlock {
+  readonly type: "underline_paragraph_block";
+  readonly children: NdInlineNode[];
+}
+
 interface NdHeaderTextBlock {
   readonly type: "header_text_block";
   readonly tag?: string;
@@ -353,8 +372,11 @@ interface NdDisclaimerBlock {
 }
 ```
 
-Paired-block payloads are inline content, not nested block documents. Optional tags preserve the
-validated suffix from a tagged opener.
+`~~~=`, `~~~*`, `~~~/`, and `~~~_` create highlight, strong, emphasis, and underline paragraph
+blocks respectively. Each uses the same exact opener as its closer and requires non-empty rich
+inline content. Empty and unclosed forms reject with family-specific diagnostics. Plain `~~~` has no
+block meaning and remains inherited ordinary paragraph text in both v1 and v2. Optional tags on
+header and disclaimer blocks preserve the validated suffix from a tagged opener.
 
 ## 14. Canonical Contract
 
@@ -376,14 +398,15 @@ HTML for every promoted node family, marker state, image mode, nested compositio
 unsafe-resource case. Its mandatory checker rejects missing coverage identifiers and any byte-level
 snapshot drift. The same contract indexes the required cross-form combinations: each paired block in
 lists and blockquotes, representative rich children in each paired block, local links crossing
-container boundaries, rich resource nesting, contextual list-item content, heading-number hierarchy,
-and rich/reused footnotes.
+container boundaries, rich resource nesting, contextual list-item content, leading directional
+bullet replacement, heading-number hierarchy, rich/reused footnotes, and rich children in every
+formatted paragraph family.
 
 ## 15. Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 31 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 34 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
 clarifiers, footnotes, nested rich resources, lists, and blockquotes.
 

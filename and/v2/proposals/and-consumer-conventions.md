@@ -44,7 +44,7 @@ error, rewrite Core canonical text, or infer the grammar version.
 | External `[@ target | label]` | Target and rich label | Scheme policy, navigation, previews, tracking, trust prompts |
 | `+++name` extension block | Opaque inherited name and payload | Registry, interpretation, sandbox, permissions, execution |
 | `todo_list` / `todo_item` | First-class list structure and stable item-state enum | Controls, mutation workflow, progress, icons, labels, persistence |
-| Directional markers | Stable direction enum | Navigation or workflow meaning, icons, labels, interaction |
+| Directional markers | Stable direction enum and leading-unordered-item bullet-replacement intent | Navigation or workflow meaning, arrow styling, labels, interaction |
 | Inline comments | Preserved rich comment children | Visibility, identity, export, redaction, collaboration workflow |
 
 Core itself owns local-anchor identifier validation, uniqueness, case-sensitive matching, and

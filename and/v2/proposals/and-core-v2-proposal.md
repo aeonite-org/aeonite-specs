@@ -200,6 +200,7 @@ Candidate seeds:
 - `seed-v2-todo-list-states`
 - `seed-v2-auto-number-list-enabled`
 - `seed-v2-inline-directional-markers-enabled`
+- `seed-v2-directional-list-markers`
 - `seed-v2-heading-auto-number-marker-enabled`
 - `seed-v2-footnote-anonymous`
 - `seed-v2-footnote-named-reuse`
@@ -214,6 +215,10 @@ separator space and non-empty content; bare paragraph use is rejected. Core reco
 but leaves sequence scope, restart behavior, and display formatting to consumers. V2 permits
 ordinary, todo, and auto-number lists to begin an exact two-space-indented nested list immediately;
 the reference HTML projection visibly numbers opted-in headings hierarchically by heading level.
+
+A `[>]` or `[<]` marker in the first inline position of an unordered item's paragraph remains an
+inline AST node but replaces that item's ordinary bullet in projection. Later markers remain inline,
+ordinary and directional items may coexist, and ordered lists keep their normal numbering.
 
 Footnote IDs match `[A-Za-z0-9]+`, are case-sensitive, and may be declared once. Named references
 must follow their definition. Definitions carry non-empty rich inline content and cannot contain
@@ -232,6 +237,18 @@ highlight paragraph block
   opener: ~~~=
   closer: ~~~=
 
+strong paragraph block
+  opener: ~~~*
+  closer: ~~~*
+
+emphasis paragraph block
+  opener: ~~~/
+  closer: ~~~/
+
+underline paragraph block
+  opener: ~~~_
+  closer: ~~~_
+
 header text block
   opener: === or ===<tag>
   closer: ===
@@ -246,14 +263,18 @@ disclaimer block
 Candidate seeds:
 
 - `seed-v2-block-highlight-paragraph-enabled`
+- `seed-v2-block-strong-paragraph-enabled`
+- `seed-v2-block-emphasis-paragraph-enabled`
+- `seed-v2-block-underline-paragraph-enabled`
 - `seed-v2-block-header-text-enabled`
 - `seed-v2-block-disclaimer-enabled`
 
-The executable proposal requires non-empty inline payloads, validates optional tags with
+The executable proposal requires non-empty rich inline payloads, requires each formatted paragraph
+fence to close with the same exact delimiter, validates optional tags with
 `[A-Za-z][A-Za-z0-9_-]*`, preserves v2 through nested block contexts, and applies the same
 `maxBlockSize` resource budget used by inherited raw blocks.
-The three block structures are Core candidates; the vocabulary and interpretation of optional tags
-remain consumer conventions.
+Plain `~~~` remains inherited ordinary paragraph text rather than a delimiter. The block structures
+are Core candidates; the vocabulary and interpretation of optional tags remain consumer conventions.
 
 ### 5.5 Compatibility and Canonicalization
 
@@ -286,13 +307,13 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 111-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 121-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
-31 exact source-span assertions and a 20-entry cross-form interaction matrix.
+34 exact source-span assertions and a 24-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 
