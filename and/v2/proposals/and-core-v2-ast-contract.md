@@ -71,6 +71,7 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[.]` | Core | Explicit inline line break; never a directional marker. |
 | `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
+| `~~~$`, `~~~$ language`, `~~~$ [n]`, `~~~$ [n] language` | Core | V2 code-block spelling with optional language and numbered-line intent; inherited backtick fences remain accepted. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers with a portable consumer-owned ID; default projection exposes only content. |
@@ -213,13 +214,16 @@ standalone &ND conformance check.
 
 ## 6. Local Anchors and Fragment Links
 
-Anchor identifiers and the identifier portion of local fragment-link targets use one portable grammar:
+V2 uses one shared, case-sensitive identifier grammar for local anchors and fragment targets, named
+footnotes, and inline/block semantic wrappers:
 
 ```text
-local-id ::= [A-Za-z][A-Za-z0-9._:-]*
+v2-id ::= [A-Za-z0-9][A-Za-z0-9._:-]*
 ```
 
-Matching is exact and case-sensitive. `[# id]` defines `id` in one document-wide namespace, including
+The first character is alphanumeric; later characters may also be `.`, `_`, `-`, or `:`. Each
+construct retains its own diagnostic and namespace rules, but none defines a narrower lexical class.
+`[# id]` defines `id` in one document-wide namespace, including
 inside nested blocks and extension fallbacks. A document MUST NOT define the same ID twice. An inherited
 link whose target is `#id`, written `[@ #id | label]`, MUST resolve to an anchor in the same declared-v2
 document; forward links are allowed. The link retains the inherited `NdLink` AST shape with
@@ -336,7 +340,7 @@ Compact `[?]` and `[!]` are not general inline forms; rich `[? ...]` and `[! ...
 
 `[% content]` creates an anonymous definition and reference at that position. `[% (id) content]`
 creates a named definition and first reference; `[% (id)]` reuses an already-declared named
-definition. IDs match `[A-Za-z0-9]+`, are case-sensitive, and may be declared only once. References
+definition. Named IDs use the shared `v2-id` grammar and may be declared only once. References
 must follow their definition. Empty definitions, malformed IDs, duplicates, unresolved or forward
 references, and nested footnotes are rejected.
 
@@ -377,7 +381,28 @@ empty items are rejected. Auto-number lists use the same v2 immediate two-space 
 ordinary and todo lists; other child blocks retain inherited boundaries. They canonicalize as
 `- [n] content`. Core records sequence participation but does not calculate displayed numbers.
 
-## 13. Paired Blocks
+## 13. Code Blocks
+
+V2 retains the inherited `NdCodeBlock` AST and every v1 backtick-fence form. It additionally defines
+this exact tilde-dollar family:
+
+```text
+code-open ::= "~~~$" [ " " ( code-language | "[n]" [ " " code-language ] ) ]
+code-close ::= "~~~$"
+code-language ::= [A-Za-z][A-Za-z0-9_-]*
+```
+
+The optional language is canonicalized to lowercase. `[n]` maps to the inherited
+`NdCodeBlock.ordered: true` field as numbered-line intent. The closer is always bare `~~~$`, and the
+payload retains inherited raw-code semantics and resource budgets.
+
+A v2 parser accepts inherited triple- and quadruple-backtick code blocks without changing their AST
+meaning. V2 canonical emission uses the `~~~$` family for every code-block AST, including one parsed
+from backticks. V1 canonical emission continues to use backticks. The briefly proposed
+`~~~language` and `~~~~language` forms are unsupported and reject with `deprecated_code_fence`.
+Plain `~~~` remains ordinary paragraph text.
+
+## 14. Paired Blocks
 
 ```ts
 interface NdHighlightParagraphBlock {
@@ -438,17 +463,17 @@ disclaimer, and semantic blocks respectively. Each requires non-empty rich inlin
 form closes with the same exact opener except `~~~^` and `~~~(id)`, whose closer is plain `~~~`.
 Empty and unclosed forms reject with family-specific diagnostics. Plain `~~~` has no opening-block
 meaning and remains inherited ordinary paragraph text in both v1 and v2. Header-text and disclaimer
-blocks are untagged. Semantic IDs match `[A-Za-z][A-Za-z0-9_-]*`, remain available in the AST, and
+blocks are untagged. Semantic IDs use the shared `v2-id` grammar, remain available in the AST, and
 are not emitted into the reference HTML. Inline `[(id) content]` uses the same rule and projects only
 its rich content by default.
 
-## 14. Structural Escapes
+## 15. Structural Escapes
 
 At a block-open position in v2, one leading backslash suppresses recognition of the block command
 that immediately follows it. The backslash is lexical and absent from the AST; the decoded command
 text becomes an ordinary paragraph. Covered commands include headings, unordered and ordered lists,
-blockquotes, horizontal rules, extension blocks, backtick and language-qualified tilde code fences,
-v2 tilde paired/semantic blocks, and reserved legacy block openers. A table header continues to use
+blockquotes, horizontal rules, extension blocks, inherited backtick code fences, v2 `~~~$` code
+fences, v2 tilde paired/semantic blocks, and removed tilde-language openers. A table header continues to use
 the inherited `\|` escape on its first pipe.
 
 ````and
@@ -459,6 +484,7 @@ the inherited `\|` escape on its first pipe.
 \---
 \+++chart/pie
 \```aeon
+\~~~$ aeon
 \~~~aeon
 \~~~#
 \~~~(note)
@@ -470,7 +496,7 @@ Core v1 retains its existing escape set and rejects these new structural escapes
 output reinserts the leading backslash whenever decoded paragraph text would otherwise reparse as a
 block; table-shaped escaped paragraphs retain the line breaks required for the same fixed point.
 
-## 15. Canonical Contract
+## 16. Canonical Contract
 
 Canonical emission requires both a profile and an effective version:
 
@@ -491,18 +517,18 @@ unsafe-resource case. Its mandatory checker rejects missing coverage identifiers
 snapshot drift. The same contract indexes the required cross-form combinations: each paired block in
 lists and blockquotes, representative rich children in each paired block, local links crossing
 container boundaries, rich resource nesting, contextual list-item content, leading directional
-bullet replacement, heading-number hierarchy, rich/reused footnotes, and rich children in every
-formatted paragraph family.
+bullet replacement, heading-number hierarchy, rich/reused footnotes, code-block language and
+numbered-line intent, and rich children in every formatted paragraph family.
 
-## 16. Source Spans
+## 17. Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 42 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 44 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
-clarifiers, footnotes, nested rich resources, lists, and blockquotes.
+clarifiers, footnotes, code blocks, nested rich resources, lists, and blockquotes.
 
-## 17. Stability
+## 18. Stability
 
 This contract is executable but remains proposal-stage. The scalar-versus-rich-content split and
 the capability disposition above are now decisions for the first-draft candidate; lexical

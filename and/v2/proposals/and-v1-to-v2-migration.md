@@ -119,6 +119,7 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | `- [?] content`, `- [!] content` | Hint/attention markers replacing unordered-item bullets while content stays visible |
 | heading `[n]` | Heading numbering intent |
 | `- [n] content` | First-class auto-number list |
+| `~~~$`, `~~~$ language`, `~~~$ [n]`, `~~~$ [n] language` | Code block with optional language and numbered-line intent |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
 | `~~~#` … `~~~#` | Header-text block |
@@ -142,12 +143,22 @@ ordinary characters into global inline escapes:
 \~~~(note)
 ```
 
-The same rule covers list, blockquote, rule, extension, backtick-fence, tilde-code-fence, and other
-v2 fence openers. The escape is not valid mid-line and is not permitted when the following text is
+The same rule covers list, blockquote, rule, extension, inherited backtick fences, v2 dollar-code
+fences, removed tilde-language openers, and other v2 fence openers. The escape is not valid mid-line and is not permitted when the following text is
 already non-structural. Plain `~~~`, for example, remains ordinary text and must not be escaped.
 Core v1 does not gain this rule.
 
-## 9. Formatted Paragraphs
+## 9. Code Blocks
+
+Backtick code fences are v1 syntax and remain supported by v2 readers. V2 additionally accepts
+`~~~$`, `~~~$ language`, `~~~$ [n]`, and `~~~$ [n] language`, all closed by bare `~~~$`. `[n]`
+requests numbered lines. Canonical v2 output uses the dollar form even for inherited backtick input;
+canonical v1 output continues to use backticks.
+
+The briefly introduced `~~~language` and `~~~~language` forms are unsupported. Replace them with
+backticks or `~~~$ language`; parsers reject them with `deprecated_code_fence`.
+
+## 10. Formatted Paragraphs
 
 V2 adds matching `~~~=` highlight, `~~~*` strong, `~~~/` emphasis, `~~~_` underline, `~~~?` hint,
 and `~~~!` attention paragraph
@@ -155,7 +166,7 @@ fences. Each requires non-empty rich inline content and must close with its exac
 `~~~` remains ordinary paragraph text in both v1 and v2 and follows inherited soft-wrap
 canonicalization.
 
-## 10. Todo Lists
+## 11. Todo Lists
 
 Todo state is structural in v2:
 
@@ -171,7 +182,7 @@ markers. The `- ` prefix and non-empty content are mandatory, and one list block
 and todo items. Bare `[x] parser`, ordered `1. [x] parser`, malformed prefixes, and mixed blocks are
 rejected. `[.]` remains an inline line break, not a todo-item terminator.
 
-## 11. Auto-Numbering
+## 12. Auto-Numbering
 
 `[n]` is contextual structural metadata:
 
@@ -190,7 +201,7 @@ Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-sp
 blank separator. This applies to ordinary, todo, and auto-number lists. Canonical output may insert
 the inherited blank separator while preserving the same AST.
 
-## 12. Footnotes
+## 13. Footnotes
 
 V2 promotes `[% ...]` as footnote syntax:
 
@@ -200,12 +211,13 @@ hello [% (A1) reusable context], again [% (A1)]
 ```
 
 The first form is an anonymous definition at its reference position. The second declares the
-case-sensitive alphanumeric ID `A1`; later `[% (A1)]` forms reference it. A named reference must
+case-sensitive v2 ID `A1`; later `[% (A1)]` forms reference it. Named footnotes, anchors, and
+semantic wrappers all use `[A-Za-z0-9][A-Za-z0-9._:-]*`. A named reference must
 follow its single declaration. Empty definitions, malformed IDs, duplicates, unresolved or forward
 references, and nested footnotes are rejected. The authored ID is not a forced display number;
 processors choose numbers, symbols, hover cards, callouts, or endnotes.
 
-## 13. Directional List Markers
+## 14. Directional List Markers
 
 `[>]` and `[<]` remain inline direction markers. In the first inline position after `- `, the arrow
 replaces that item's ordinary bullet in projection. The list remains an inherited unordered list and
@@ -215,7 +227,7 @@ markers and markers in paragraphs or ordered lists remain inline.
 The exact leading forms `- [?] content` and `- [!] content` follow the same contextual rule while
 keeping their item content visible. Rich `[? ...]` and `[! ...]` remain inline callout content.
 
-## 14. Migration Checklist
+## 15. Migration Checklist
 
 1. Enable v2 reader capability explicitly.
 2. Change declarations only when dropping v1-reader compatibility is acceptable.
@@ -225,10 +237,12 @@ keeping their item content visible. Rich `[? ...]` and `[! ...]` remain inline c
 6. Validate anchors and fragment links at whole-document scope.
 7. Convert inline experimental todo markers into homogeneous `- [state] content` blocks.
 8. Convert contextual numbering to exact heading or `- [n] content` prefixes.
-9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
+9. Convert footnotes to anonymous definitions or declare a valid shared v2 ID before every shorthand
    reference; remove forward references and nesting.
 10. Place a direction marker first after `- ` only when it should replace that item's bullet.
-11. Convert paragraph-wide formatting, advisory content, or block comments to exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fences;
+11. Keep inherited backtick code fences or migrate code to `~~~$`, adding optional `[n]` and language
+    metadata after the opener; replace removed `~~~language` / `~~~~language` forms.
+12. Convert paragraph-wide formatting, advisory content, or block comments to exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fences;
     leave plain `~~~` as ordinary text.
-12. Keep consumer conventions separate from grammar acceptance and canonicalization.
-13. Canonicalize once to expose normalized image modes and AEON scalar spellings.
+13. Keep consumer conventions separate from grammar acceptance and canonicalization.
+14. Canonicalize once to expose normalized image modes and AEON scalar spellings.

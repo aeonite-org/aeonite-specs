@@ -87,7 +87,7 @@ the AST.
 
 ## 5. Candidate Work Areas
 
-The current proposal surface is grouped into five work areas.
+The current proposal surface is grouped into six work areas.
 
 ### 5.1 Header and Versioning
 
@@ -128,8 +128,9 @@ Core guarantees the AST and canonical spelling while leaving consumer vocabulari
 presentation outside Core. Rich forms use nested inline `children`; identifiers and metadata remain
 scalar.
 
-Anchor IDs and the identifier portion of `#id` link targets use `[A-Za-z][A-Za-z0-9._:-]*`.
-Matching is exact and case-sensitive in one document-wide namespace. Forward links are allowed;
+Anchor IDs, the identifier portion of `#id` link targets, named footnotes, and semantic wrappers use
+one shared `v2-id` grammar: `[A-Za-z0-9][A-Za-z0-9._:-]*`. Matching is exact and case-sensitive.
+Anchors occupy one document-wide namespace. Forward links are allowed;
 duplicate anchors and unresolved local targets fail declared-v2 strict parsing. Web and external
 resources continue to use inherited `[@ target | label]` links.
 
@@ -177,7 +178,7 @@ Candidate seeds:
 ### 5.3 Contextual List, Marker, and Footnote Forms
 
 Todo states and `[n]` are promoted through contextual prefixes. `[% ...]` defines footnotes and may
-carry an alphanumeric identity for later shorthand references.
+carry a shared v2 identity for later shorthand references.
 
 Candidate forms:
 
@@ -220,12 +221,47 @@ A `[>]` or `[<]` marker in the first inline position of an unordered item's para
 inline AST node but replaces that item's ordinary bullet in projection. Later markers remain inline,
 ordinary and directional items may coexist, and ordered lists keep their normal numbering.
 
-Footnote IDs match `[A-Za-z0-9]+`, are case-sensitive, and may be declared once. Named references
+Footnote IDs use the shared `v2-id` grammar and may be declared once. Named references
 must follow their definition. Definitions carry non-empty rich inline content and cannot contain
 other footnotes. Core preserves the definition/reference graph and authored IDs; processors own
 display numbers or symbols, hover/callout/endnote placement, and backlinks.
 
-### 5.4 Paired Block Forms
+### 5.4 Code Block Forms
+
+V2 inherits every v1 triple- and quadruple-backtick code block and adds a tilde-dollar family:
+
+```text
+~~~$
+code
+~~~$
+
+~~~$ language
+code
+~~~$
+
+~~~$ [n]
+code
+~~~$
+
+~~~$ [n] language
+code
+~~~$
+```
+
+The optional language matches `[A-Za-z][A-Za-z0-9_-]*` and canonicalizes to lowercase. `[n]`
+records numbered-line intent in the inherited `code_block.ordered` field. Every new form closes with
+bare `~~~$`, and payload text retains inherited raw-code behavior and resource budgets.
+
+Backtick fences remain accepted by v2 readers. Canonical v2 output uses `~~~$` for every code-block
+AST, including code parsed from backticks; canonical v1 output continues to use backticks. The
+briefly introduced `~~~language` and `~~~~language` forms have been removed and reject with
+`deprecated_code_fence`. Plain `~~~` remains ordinary paragraph text.
+
+Candidate seed:
+
+- `seed-v2-code-block-dollar-fences`
+
+### 5.5 Paired Block Forms
 
 Core v1 reserves several block-ish text forms. v2 may promote some of them into paired block
 constructs, but only if the delimiters remain deterministic and easy to reject when malformed.
@@ -276,8 +312,10 @@ semantic block
 inline semantic wrapper
   [(<id>) rich inline content]
 
-<id> ::= [A-Za-z][A-Za-z0-9_-]*
+<id> ::= [A-Za-z0-9][A-Za-z0-9._:-]*
 ```
+
+This is the same case-sensitive `v2-id` grammar used by anchors and named footnotes.
 
 Candidate seeds:
 
@@ -299,12 +337,13 @@ untagged Core candidates. Semantic wrapper IDs remain available to consumers in 
 exposed by the reference HTML projection; their content otherwise projects as ordinary block or
 inline content.
 
-### 5.5 Structural Block Escapes
+### 5.6 Structural Block Escapes
 
 At a v2 block-open position, one leading `\` may suppress a block command and make its decoded text
 an ordinary paragraph. This is a structural escape, not a global extension of the inline escape set.
-It covers headings, lists, blockquotes, horizontal rules, extension blocks, raw code fences, v2
-paired and semantic fences, and reserved legacy block openers. Table recognition continues to use
+It covers headings, lists, blockquotes, horizontal rules, extension blocks, inherited backtick code
+fences, v2 dollar-code fences, removed tilde-language openers, v2 paired and semantic fences, and
+reserved legacy block openers. Table recognition continues to use
 the inherited `\|` escape at the first pipe.
 
 The escaped form is accepted only when removing the backslash would expose a real block opener.
@@ -312,7 +351,7 @@ Mid-line escapes and unnecessary forms such as `\#hashtag` or `\~~~` reject with
 Core v1 keeps its existing escape rules. Canonical v2 output restores the escape whenever omitting
 it would change the decoded paragraph's block type.
 
-### 5.6 Compatibility and Canonicalization
+### 5.7 Compatibility and Canonicalization
 
 v2 should define compatibility and canonicalization before the syntax surface grows too large.
 
@@ -343,13 +382,13 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 152-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 158-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
-42 exact source-span assertions and a 31-entry cross-form interaction matrix.
+44 exact source-span assertions and a 33-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 

@@ -17,6 +17,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Aligned local anchors, fragment targets, named footnotes, and semantic wrappers on the shared
+  case-sensitive v2 identifier grammar `[A-Za-z0-9][A-Za-z0-9._:-]*`.
 - Added proposal-stage v2 structural block escapes: a leading `\` at a block-open position quotes a
   real heading, list, quote, rule, extension, raw-fence, paired-fence, or semantic-fence opener as
   ordinary paragraph text while leaving the global inline escape set closed.
@@ -26,8 +28,10 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   `~~~^` / `~~~` disclaimer blocks, and added rich inline `[^ ...]` disclaimers.
 - Added `~~~'` as a proposal-stage rich block comment in &ND v2; consumers control visibility and
   the reference HTML projection preserves it as hidden content.
-- Added language-qualified `~~~language` and `~~~~language` code-fence alternatives to &ND v1 and
-  inherited v2 parsing while preserving bare `~~~` as paragraph text.
+- Removed the briefly introduced `~~~language` and `~~~~language` code-fence alternatives before
+  publication; triple/quadruple backticks remain supported in v1 and inherited v2 parsing.
+- Added the proposal-stage v2 `~~~$` code-block family with optional language and `[n]` numbered-line
+  intent; v2 canonical output normalizes inherited backtick code blocks to this spelling.
 - Added contextual `- [?]` / `- [!]` advisory list markers, visible `~~~?` / `~~~!` advisory
   paragraphs, and clarified that inline `[? ...]` / `[! ...]` presentation remains consumer-owned.
 
@@ -81,8 +85,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   the corresponding v2 public API contract and boundary checks.
 - Added machine-readable projection contract `and-v2-projection-v1`, pinning complete promoted-surface
   coverage through exact standalone/embedded canonical and inert HTML snapshots, including nested,
-  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 34 exact
-  source-span assertions and a 24-entry cross-form interaction matrix.
+  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 44 exact
+  source-span assertions and a 33-entry cross-form interaction matrix.
 - Replaced the provisional equals-free `&ND` typed-value spelling with exact AEON
   `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
   reserved type/literal compatibility checks, and AEON-canonical scalar output.
