@@ -123,11 +123,28 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | `[^ ...]` | Inline disclaimer |
 | `[(id) content]` | Inline semantic wrapper with a consumer-owned, hidden-by-default ID |
 | `~~~(id)` … `~~~` | Semantic block that projects as an ordinary paragraph by default |
+| `\` before a block opener | Literal block-command text, decoded into an ordinary paragraph |
 
 Consumer-owned behavior layered on these stable Core nodes is defined by
 [`and-consumer-conventions.md`](./and-consumer-conventions.md).
 
-## 8. Formatted Paragraphs
+## 8. Structural Escaping
+
+V2 can quote a block command at a block-open position without turning `#`, `~`, digits, or other
+ordinary characters into global inline escapes:
+
+```and
+\# this is paragraph text, not a heading
+
+\~~~(note)
+```
+
+The same rule covers list, blockquote, rule, extension, backtick-fence, tilde-code-fence, and other
+v2 fence openers. The escape is not valid mid-line and is not permitted when the following text is
+already non-structural. Plain `~~~`, for example, remains ordinary text and must not be escaped.
+Core v1 does not gain this rule.
+
+## 9. Formatted Paragraphs
 
 V2 adds matching `~~~=` highlight, `~~~*` strong, `~~~/` emphasis, `~~~_` underline, `~~~?` hint,
 and `~~~!` attention paragraph
@@ -135,7 +152,7 @@ fences. Each requires non-empty rich inline content and must close with its exac
 `~~~` remains ordinary paragraph text in both v1 and v2 and follows inherited soft-wrap
 canonicalization.
 
-## 9. Todo Lists
+## 10. Todo Lists
 
 Todo state is structural in v2:
 
@@ -151,7 +168,7 @@ markers. The `- ` prefix and non-empty content are mandatory, and one list block
 and todo items. Bare `[x] parser`, ordered `1. [x] parser`, malformed prefixes, and mixed blocks are
 rejected. `[.]` remains an inline line break, not a todo-item terminator.
 
-## 10. Auto-Numbering
+## 11. Auto-Numbering
 
 `[n]` is contextual structural metadata:
 
@@ -170,7 +187,7 @@ Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-sp
 blank separator. This applies to ordinary, todo, and auto-number lists. Canonical output may insert
 the inherited blank separator while preserving the same AST.
 
-## 11. Footnotes
+## 12. Footnotes
 
 V2 promotes `[% ...]` as footnote syntax:
 
@@ -185,7 +202,7 @@ follow its single declaration. Empty definitions, malformed IDs, duplicates, unr
 references, and nested footnotes are rejected. The authored ID is not a forced display number;
 processors choose numbers, symbols, hover cards, callouts, or endnotes.
 
-## 12. Directional List Markers
+## 13. Directional List Markers
 
 `[>]` and `[<]` remain inline direction markers. In the first inline position after `- `, the arrow
 replaces that item's ordinary bullet in projection. The list remains an inherited unordered list and
@@ -195,7 +212,7 @@ markers and markers in paragraphs or ordered lists remain inline.
 The exact leading forms `- [?] content` and `- [!] content` follow the same contextual rule while
 keeping their item content visible. Rich `[? ...]` and `[! ...]` remain inline callout content.
 
-## 13. Migration Checklist
+## 14. Migration Checklist
 
 1. Enable v2 reader capability explicitly.
 2. Change declarations only when dropping v1-reader compatibility is acceptable.

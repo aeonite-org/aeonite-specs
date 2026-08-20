@@ -17,6 +17,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Added proposal-stage v2 structural block escapes: a leading `\` at a block-open position quotes a
+  real heading, list, quote, rule, extension, raw-fence, paired-fence, or semantic-fence opener as
+  ordinary paragraph text while leaving the global inline escape set closed.
 - Added proposal-stage semantic wrappers: `~~~(id)` / `~~~` blocks and `[(id) content]` inline text.
   Their IDs are retained for consumers but omitted from the reference HTML projection.
 - Replaced the proposal-stage `===` and `***` v2 paired blocks with untagged `~~~#` header text and

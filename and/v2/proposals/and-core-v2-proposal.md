@@ -299,7 +299,20 @@ untagged Core candidates. Semantic wrapper IDs remain available to consumers in 
 exposed by the reference HTML projection; their content otherwise projects as ordinary block or
 inline content.
 
-### 5.5 Compatibility and Canonicalization
+### 5.5 Structural Block Escapes
+
+At a v2 block-open position, one leading `\` may suppress a block command and make its decoded text
+an ordinary paragraph. This is a structural escape, not a global extension of the inline escape set.
+It covers headings, lists, blockquotes, horizontal rules, extension blocks, raw code fences, v2
+paired and semantic fences, and reserved legacy block openers. Table recognition continues to use
+the inherited `\|` escape at the first pipe.
+
+The escaped form is accepted only when removing the backslash would expose a real block opener.
+Mid-line escapes and unnecessary forms such as `\#hashtag` or `\~~~` reject with `invalid_escape`.
+Core v1 keeps its existing escape rules. Canonical v2 output restores the escape whenever omitting
+it would change the decoded paragraph's block type.
+
+### 5.6 Compatibility and Canonicalization
 
 v2 should define compatibility and canonicalization before the syntax surface grows too large.
 
@@ -330,13 +343,13 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 148-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 152-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
-41 exact source-span assertions and a 31-entry cross-form interaction matrix.
+42 exact source-span assertions and a 31-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 
