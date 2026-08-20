@@ -3626,6 +3626,10 @@ may still begin with `>` when separated from the delimiter by padding, as in `| 
 
 * v1 rejects the adjacent `|>` v2 horizontal-span marker
 
+### `seed-card-block-v2-rejected`
+
+* v1 rejects the v2 `~~~|` card-block fence rather than treating it as paragraph text
+
 ## Inline content
 
 ```ebnf

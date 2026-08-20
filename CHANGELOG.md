@@ -90,8 +90,10 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   the corresponding v2 public API contract and boundary checks.
 - Added machine-readable projection contract `and-v2-projection-v1`, pinning complete promoted-surface
   coverage through exact standalone/embedded canonical and inert HTML snapshots, including nested,
-  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 45 exact
-  source-span assertions and a 34-entry cross-form interaction matrix.
+  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 46 exact
+  source-span assertions and a 36-entry cross-form interaction matrix.
+- Added proposal-stage v2 `~~~|` card containers: unnamed cards are visible boxes, while a rich
+  opener title carries collapsible intent; card bodies contain ordinary block children.
 - Replaced the provisional equals-free `&ND` typed-value spelling with exact AEON
   `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
   reserved type/literal compatibility checks, and AEON-canonical scalar output.

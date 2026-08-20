@@ -41,6 +41,7 @@ error, rewrite Core canonical text, or infer the grammar version.
 | `[^ ...]`, `~~~^` | Rich inline or block disclaimer content | Exact size, placement, color, accessibility presentation |
 | `~~~#` | Rich header-text content | Exact weight, size, placement, relationship to a heading |
 | `[(id) content]`, `~~~(id)` | Portable `id` and rich children; reference HTML exposes only content | ID vocabulary, interpretation, alternate styling, product behavior |
+| `card_block` from `~~~|`, `~~~| title` | Stable block container; title presence carries collapsible intent | Border, background, spacing, initial expansion state, control styling, interaction details |
 | `[+ value]` | Preserved scalar `plus_tag.value` | Value registry, action mapping, analytics, workflow, UI |
 | Custom `[:type = scalar]` | Datatype label/adornments and validated scalar | Datatype registry, domain validation, units, formatting, business meaning |
 | heading `[n]`, `auto_number_list` | Contextual auto-number intent | Sequence, scope, format, restart rules, localization, labels |

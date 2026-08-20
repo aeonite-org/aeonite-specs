@@ -122,6 +122,7 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | `~~~$ [n]`, `~~~$ [n] language` | V2 extension of the v1 dollar code block with numbered-line intent |
 | `<--`, `-=-`, `-->` separator cells | Left, center, and right table-column alignment |
 | adjacent `|>`, `|>>`, … cells | Horizontal table-cell spans |
+| `~~~|` / `~~~| title` … `~~~|` | Visible card; adding a rich title makes it collapsible |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
 | `~~~#` … `~~~#` | Header-text block |
@@ -172,7 +173,28 @@ Markers require one space and non-empty content. `|> merged |` spans while padde
 `| > literal |` does not. Header and body cells may span; separators and rows may not. A spanning
 cell uses its first covered column's alignment. V1 rejects the new positions.
 
-## 11. Formatted Paragraphs
+## 11. Cards
+
+V2 adds card containers whose bodies contain ordinary blocks:
+
+```and
+~~~|
+This is a standard card.
+~~~|
+
+~~~| [* Collapsible] card
+# Card heading
+
+- Card list item
+~~~|
+```
+
+The unnamed form is always visible. The named form requires one ASCII space followed by a non-empty
+rich inline title and carries collapsible intent. The title is visible content rather than an ID.
+Empty cards, malformed title spacing, and missing exact closers reject. Direct same-level nesting is
+unavailable because the unnamed opener is also the closer. V1 reserves and rejects `~~~|` openers.
+
+## 12. Formatted Paragraphs
 
 V2 adds matching `~~~=` highlight, `~~~*` strong, `~~~/` emphasis, `~~~_` underline, `~~~?` hint,
 and `~~~!` attention paragraph
@@ -180,7 +202,7 @@ fences. Each requires non-empty rich inline content and must close with its exac
 `~~~` remains ordinary paragraph text in both v1 and v2 and follows inherited soft-wrap
 canonicalization.
 
-## 12. Todo Lists
+## 13. Todo Lists
 
 Todo state is structural in v2:
 
@@ -196,7 +218,7 @@ markers. The `- ` prefix and non-empty content are mandatory, and one list block
 and todo items. Bare `[x] parser`, ordered `1. [x] parser`, malformed prefixes, and mixed blocks are
 rejected. `[.]` remains an inline line break, not a todo-item terminator.
 
-## 13. Auto-Numbering
+## 14. Auto-Numbering
 
 `[n]` is contextual structural metadata:
 
@@ -215,7 +237,7 @@ Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-sp
 blank separator. This applies to ordinary, todo, and auto-number lists. Canonical output may insert
 the inherited blank separator while preserving the same AST.
 
-## 14. Footnotes
+## 15. Footnotes
 
 V2 promotes `[% ...]` as footnote syntax:
 
@@ -231,7 +253,7 @@ follow its single declaration. Empty definitions, malformed IDs, duplicates, unr
 references, and nested footnotes are rejected. The authored ID is not a forced display number;
 processors choose numbers, symbols, hover cards, callouts, or endnotes.
 
-## 15. Directional List Markers
+## 16. Directional List Markers
 
 `[>]` and `[<]` remain inline direction markers. In the first inline position after `- `, the arrow
 replaces that item's ordinary bullet in projection. The list remains an inherited unordered list and
@@ -241,7 +263,7 @@ markers and markers in paragraphs or ordered lists remain inline.
 The exact leading forms `- [?] content` and `- [!] content` follow the same contextual rule while
 keeping their item content visible. Rich `[? ...]` and `[! ...]` remain inline callout content.
 
-## 16. Migration Checklist
+## 17. Migration Checklist
 
 1. Enable v2 reader capability explicitly.
 2. Change declarations only when dropping v1-reader compatibility is acceptable.
@@ -258,7 +280,9 @@ keeping their item content visible. Rich `[? ...]` and `[! ...]` remain inline c
     metadata after the opener; replace removed `~~~language` / `~~~~language` forms.
 12. Convert table alignment to exact `<--`, `-=-`, or `-->` separator cells and verify logical row
     widths after adjacent `>` span markers.
-13. Convert paragraph-wide formatting, advisory content, or block comments to exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fences;
+13. Convert card-like extensions to `~~~|` containers; add a rich opener title only when collapsible
+    behavior is intended.
+14. Convert paragraph-wide formatting, advisory content, or block comments to exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fences;
     leave plain `~~~` as ordinary text.
-14. Keep consumer conventions separate from grammar acceptance and canonicalization.
-15. Canonicalize once to expose normalized image modes and AEON scalar spellings.
+15. Keep consumer conventions separate from grammar acceptance and canonicalization.
+16. Canonicalize once to expose normalized image modes and AEON scalar spellings.

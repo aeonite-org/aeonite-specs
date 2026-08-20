@@ -87,7 +87,7 @@ the AST.
 
 ## 5. Candidate Work Areas
 
-The current proposal surface is grouped into seven work areas.
+The current proposal surface is grouped into eight work areas.
 
 ### 5.1 Header and Versioning
 
@@ -284,7 +284,20 @@ Candidate seed:
 
 - `seed-v2-table-alignment-and-spans`
 
-### 5.6 Paired Block Forms
+### 5.6 Card Blocks
+
+V2 adds `~~~|` / `~~~|` as a visible card containing ordinary block children. The opener may add
+one ASCII space and a non-empty rich inline title: `~~~| title`. Title presence makes the card
+collapsible; the title is visible content rather than an ID. Unnamed cards are always-visible
+containers. Empty bodies, malformed title spacing, and missing exact closers reject with stable
+card-family diagnostics. Direct same-level card nesting is unavailable because the unnamed opener
+and closer are identical. V1 reserves and rejects the opener.
+
+Candidate seed:
+
+- `seed-v2-card-blocks`
+
+### 5.7 Paired Block Forms
 
 Core v1 reserves several block-ish text forms. v2 may promote some of them into paired block
 constructs, but only if the delimiters remain deterministic and easy to reject when malformed.
@@ -360,12 +373,12 @@ untagged Core candidates. Semantic wrapper IDs remain available to consumers in 
 exposed by the reference HTML projection; their content otherwise projects as ordinary block or
 inline content.
 
-### 5.7 Structural Block Escapes
+### 5.8 Structural Block Escapes
 
 At a v2 block-open position, one leading `\` may suppress a block command and make its decoded text
 an ordinary paragraph. This is a structural escape, not a global extension of the inline escape set.
 It covers headings, lists, blockquotes, horizontal rules, extension blocks, inherited backtick code
-fences, v2 dollar-code fences, removed tilde-language openers, v2 paired and semantic fences, and
+fences, v2 dollar-code fences, removed tilde-language openers, v2 paired, semantic, and card fences, and
 reserved legacy block openers. Table recognition continues to use
 the inherited `\|` escape at the first pipe.
 
@@ -374,7 +387,7 @@ Mid-line escapes and unnecessary forms such as `\#hashtag` or `\~~~` reject with
 Core v1 keeps its existing escape rules. Canonical v2 output restores the escape whenever omitting
 it would change the decoded paragraph's block type.
 
-### 5.8 Compatibility and Canonicalization
+### 5.9 Compatibility and Canonicalization
 
 v2 should define compatibility and canonicalization before the syntax surface grows too large.
 
@@ -405,13 +418,13 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 163-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 167-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
-45 exact source-span assertions and a 34-entry cross-form interaction matrix.
+46 exact source-span assertions and a 36-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 
