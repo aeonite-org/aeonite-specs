@@ -32,6 +32,11 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   publication; triple/quadruple backticks remain supported in v1 and inherited v2 parsing.
 - Added the proposal-stage v2 `~~~$` code-block family with optional language and `[n]` numbered-line
   intent; v2 canonical output normalizes inherited backtick code blocks to this spelling.
+- Added unnumbered `~~~$` and `~~~$ language` code fences to v1 while retaining backticks as v1's
+  preferred canonical output; `[n]` dollar fences remain v2-only, and canonical emitters select the
+  alternate supported fence on an exact payload-closer collision.
+- Added proposal-stage v2 table alignment through `<--`, `-=-`, and `-->` separator cells plus
+  adjacent `>` horizontal `colSpan` markers for header and body cells; v1 rejects both extensions.
 - Added contextual `- [?]` / `- [!]` advisory list markers, visible `~~~?` / `~~~!` advisory
   paragraphs, and clarified that inline `[? ...]` / `[! ...]` presentation remains consumer-owned.
 
@@ -85,8 +90,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   the corresponding v2 public API contract and boundary checks.
 - Added machine-readable projection contract `and-v2-projection-v1`, pinning complete promoted-surface
   coverage through exact standalone/embedded canonical and inert HTML snapshots, including nested,
-  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 44 exact
-  source-span assertions and a 33-entry cross-form interaction matrix.
+  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 45 exact
+  source-span assertions and a 34-entry cross-form interaction matrix.
 - Replaced the provisional equals-free `&ND` typed-value spelling with exact AEON
   `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
   reserved type/literal compatibility checks, and AEON-canonical scalar output.

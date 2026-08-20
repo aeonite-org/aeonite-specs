@@ -119,7 +119,9 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | `- [?] content`, `- [!] content` | Hint/attention markers replacing unordered-item bullets while content stays visible |
 | heading `[n]` | Heading numbering intent |
 | `- [n] content` | First-class auto-number list |
-| `~~~$`, `~~~$ language`, `~~~$ [n]`, `~~~$ [n] language` | Code block with optional language and numbered-line intent |
+| `~~~$ [n]`, `~~~$ [n] language` | V2 extension of the v1 dollar code block with numbered-line intent |
+| `<--`, `-=-`, `-->` separator cells | Left, center, and right table-column alignment |
+| adjacent `|>`, `|>>`, … cells | Horizontal table-cell spans |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
 | `~~~#` … `~~~#` | Header-text block |
@@ -150,15 +152,27 @@ Core v1 does not gain this rule.
 
 ## 9. Code Blocks
 
-Backtick code fences are v1 syntax and remain supported by v2 readers. V2 additionally accepts
-`~~~$`, `~~~$ language`, `~~~$ [n]`, and `~~~$ [n] language`, all closed by bare `~~~$`. `[n]`
-requests numbered lines. Canonical v2 output uses the dollar form even for inherited backtick input;
-canonical v1 output continues to use backticks.
+Backtick code fences plus `~~~$` and `~~~$ language` are v1 syntax and remain supported by v2
+readers. V2 additionally accepts `~~~$ [n]` and `~~~$ [n] language`, both closed by bare `~~~$`.
+`[n]` requests numbered lines and remains invalid in v1. Canonical v2 output prefers the dollar form
+even for inherited backtick input; canonical v1 output prefers backticks. Each uses the alternate
+supported fence when its preferred closer occurs as an exact payload line.
 
 The briefly introduced `~~~language` and `~~~~language` forms are unsupported. Replace them with
 backticks or `~~~$ language`; parsers reject them with `deprecated_code_fence`.
 
-## 10. Formatted Paragraphs
+## 10. Tables
+
+Inherited v1 tables retain their AST. V2 adds `<--`, `-=-`, and `-->` separator cells for left,
+center, and right alignment. It also permits adjacent `|>`, `|>>`, and longer cell markers; each `>`
+adds one logical column to that cell. The separator defines logical width, and every header/body row
+must sum to it.
+
+Markers require one space and non-empty content. `|> merged |` spans while padded
+`| > literal |` does not. Header and body cells may span; separators and rows may not. A spanning
+cell uses its first covered column's alignment. V1 rejects the new positions.
+
+## 11. Formatted Paragraphs
 
 V2 adds matching `~~~=` highlight, `~~~*` strong, `~~~/` emphasis, `~~~_` underline, `~~~?` hint,
 and `~~~!` attention paragraph
@@ -166,7 +180,7 @@ fences. Each requires non-empty rich inline content and must close with its exac
 `~~~` remains ordinary paragraph text in both v1 and v2 and follows inherited soft-wrap
 canonicalization.
 
-## 11. Todo Lists
+## 12. Todo Lists
 
 Todo state is structural in v2:
 
@@ -182,7 +196,7 @@ markers. The `- ` prefix and non-empty content are mandatory, and one list block
 and todo items. Bare `[x] parser`, ordered `1. [x] parser`, malformed prefixes, and mixed blocks are
 rejected. `[.]` remains an inline line break, not a todo-item terminator.
 
-## 12. Auto-Numbering
+## 13. Auto-Numbering
 
 `[n]` is contextual structural metadata:
 
@@ -201,7 +215,7 @@ Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-sp
 blank separator. This applies to ordinary, todo, and auto-number lists. Canonical output may insert
 the inherited blank separator while preserving the same AST.
 
-## 13. Footnotes
+## 14. Footnotes
 
 V2 promotes `[% ...]` as footnote syntax:
 
@@ -217,7 +231,7 @@ follow its single declaration. Empty definitions, malformed IDs, duplicates, unr
 references, and nested footnotes are rejected. The authored ID is not a forced display number;
 processors choose numbers, symbols, hover cards, callouts, or endnotes.
 
-## 14. Directional List Markers
+## 15. Directional List Markers
 
 `[>]` and `[<]` remain inline direction markers. In the first inline position after `- `, the arrow
 replaces that item's ordinary bullet in projection. The list remains an inherited unordered list and
@@ -227,7 +241,7 @@ markers and markers in paragraphs or ordered lists remain inline.
 The exact leading forms `- [?] content` and `- [!] content` follow the same contextual rule while
 keeping their item content visible. Rich `[? ...]` and `[! ...]` remain inline callout content.
 
-## 15. Migration Checklist
+## 16. Migration Checklist
 
 1. Enable v2 reader capability explicitly.
 2. Change declarations only when dropping v1-reader compatibility is acceptable.
@@ -242,7 +256,9 @@ keeping their item content visible. Rich `[? ...]` and `[! ...]` remain inline c
 10. Place a direction marker first after `- ` only when it should replace that item's bullet.
 11. Keep inherited backtick code fences or migrate code to `~~~$`, adding optional `[n]` and language
     metadata after the opener; replace removed `~~~language` / `~~~~language` forms.
-12. Convert paragraph-wide formatting, advisory content, or block comments to exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fences;
+12. Convert table alignment to exact `<--`, `-=-`, or `-->` separator cells and verify logical row
+    widths after adjacent `>` span markers.
+13. Convert paragraph-wide formatting, advisory content, or block comments to exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fences;
     leave plain `~~~` as ordinary text.
-13. Keep consumer conventions separate from grammar acceptance and canonicalization.
-14. Canonicalize once to expose normalized image modes and AEON scalar spellings.
+14. Keep consumer conventions separate from grammar acceptance and canonicalization.
+15. Canonicalize once to expose normalized image modes and AEON scalar spellings.

@@ -52,7 +52,8 @@ The complete v1 block and inline node unions remain valid in v2. A v2-capable re
 the same fields and containment relationships for inherited syntax.
 
 `NdInlineNode` gains the nodes below. `NdBlockNode` gains `NdTodoList`, `NdAutoNumberList`, and the
-paired-block nodes below, and `NdHeading` gains the optional `autoNumber` field.
+paired-block nodes below; `NdHeading` gains the optional `autoNumber` field; inherited table and
+table-cell nodes gain the optional v2 fields defined below.
 
 ## 3. Capability Disposition
 
@@ -71,7 +72,8 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[.]` | Core | Explicit inline line break; never a directional marker. |
 | `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
-| `~~~$`, `~~~$ language`, `~~~$ [n]`, `~~~$ [n] language` | Core | V2 code-block spelling with optional language and numbered-line intent; inherited backtick fences remain accepted. |
+| inherited `~~~$` / `~~~$ language`; v2 `~~~$ [n]` / `~~~$ [n] language` | Core | Shared dollar code blocks plus v2 numbered-line intent; inherited backtick fences remain accepted. |
+| table separators `<--`, `-=-`, `-->` and adjacent `|>` span markers | Core | Column alignment and horizontal `colSpan`; row spanning remains unsupported. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
 | `[^ ...]` | Core | Rich inline disclaimer content. |
 | `[(id) content]`, `~~~(id)` … `~~~` | Core syntax + convention | Rich semantic wrappers with a portable consumer-owned ID; default projection exposes only content. |
@@ -283,7 +285,36 @@ authored relative source is resolved, the emitted `src` or `srcset` is absolute 
 is retained in `data-and-source`. The renderer does not emit a `<base>` element, fetch the resource, or
 mutate the AST.
 
-## 8. Todo Lists
+## 8. Table Alignment and Horizontal Spans
+
+V2 extends inherited table nodes additively:
+
+```ts
+interface NdV2Table extends NdTable {
+  readonly alignments?: readonly ("left" | "center" | "right" | null)[];
+}
+
+interface NdV2TableCell extends NdTableCell {
+  readonly colSpan?: number;
+}
+```
+
+Ordinary v1-shaped tables retain their exact inherited AST. `alignments` is present only when at
+least one logical column uses `<--` (left), `-=-` (center), or `-->` (right); `---` contributes
+`null`. `colSpan` is present only when greater than one.
+
+The separator row defines logical width. A cell beginning immediately after its pipe with one or
+more `>` characters, one ASCII space, and non-empty content spans one plus the marker count:
+`|> content` spans two columns and `|>> content` spans three. Padded `| > literal |` is ordinary
+content. Header and body cells may span; separator cells may not. Every row's span sum MUST equal the
+separator width. Malformed or under/overflowing spans fail with `invalid_table_span`; alignment
+failures use `invalid_table_alignment`. The inherited `maxTableColumns` budget counts logical
+columns. Row spanning is unsupported. A spanning cell uses its first covered column's alignment.
+Canonical output emits exact alignment tokens and adjacent span markers; reference HTML uses
+`text-align` and native `colspan`. V1 rejects these extensions. Inline spans inside a spanning cell
+begin at trimmed content and exclude the adjacent marker.
+
+## 9. Todo Lists
 
 ```ts
 interface NdTodoList {
@@ -305,7 +336,7 @@ with `mixed_list_item_kinds`; ordered and bare todo markers are rejected. In v2,
 lists may begin an exact two-space-indented nested list immediately without a blank separator. Other
 child blocks retain inherited boundaries. Todo lists canonicalize as `- [state] content`.
 
-## 9. Compact Inline Markers
+## 10. Compact Inline Markers
 
 ```ts
 interface NdDirectionalMarker {
@@ -336,7 +367,7 @@ The exact leading forms `- [?] content` and `- [!] content` produce an `advisory
 visible item content. They remain inherited unordered lists and may coexist with ordinary items.
 Compact `[?]` and `[!]` are not general inline forms; rich `[? ...]` and `[! ...]` remain inline.
 
-## 10. Footnotes
+## 11. Footnotes
 
 `[% content]` creates an anonymous definition and reference at that position. `[% (id) content]`
 creates a named definition and first reference; `[% (id)]` reuses an already-declared named
@@ -348,7 +379,7 @@ Definitions preserve rich inline `children`; anonymous definitions cannot be ref
 Core retains the graph and authored IDs but does not choose displayed numbers or symbols, hover or
 callout behavior, endnote placement, or backlinks. Canonical output preserves the applicable form.
 
-## 11. Heading Addition
+## 12. Heading Addition
 
 ```ts
 interface NdV2Heading extends NdHeading {
@@ -364,7 +395,7 @@ means the inherited ordinary-heading shape, while presence records explicit numb
 avoids inserting a new false-valued property into every unnumbered heading; consumers that require a
 dense serialization may derive `false` outside the Core AST.
 
-## 12. Auto-Number Lists
+## 13. Auto-Number Lists
 
 ```ts
 interface NdAutoNumberList {
@@ -381,10 +412,10 @@ empty items are rejected. Auto-number lists use the same v2 immediate two-space 
 ordinary and todo lists; other child blocks retain inherited boundaries. They canonicalize as
 `- [n] content`. Core records sequence participation but does not calculate displayed numbers.
 
-## 13. Code Blocks
+## 14. Code Blocks
 
-V2 retains the inherited `NdCodeBlock` AST and every v1 backtick-fence form. It additionally defines
-this exact tilde-dollar family:
+V2 retains the inherited `NdCodeBlock` AST, every v1 backtick-fence form, and v1's unnumbered
+tilde-dollar forms. It extends the dollar opener with optional `[n]` numbered-line intent:
 
 ```text
 code-open ::= "~~~$" [ " " ( code-language | "[n]" [ " " code-language ] ) ]
@@ -396,13 +427,17 @@ The optional language is canonicalized to lowercase. `[n]` maps to the inherited
 `NdCodeBlock.ordered: true` field as numbered-line intent. The closer is always bare `~~~$`, and the
 payload retains inherited raw-code semantics and resource budgets.
 
-A v2 parser accepts inherited triple- and quadruple-backtick code blocks without changing their AST
-meaning. V2 canonical emission uses the `~~~$` family for every code-block AST, including one parsed
-from backticks. V1 canonical emission continues to use backticks. The briefly proposed
+A v1 parser accepts `~~~$` and `~~~$ language`, but rejects either `[n]` opener with
+`invalid_code_fence`; v1 ordered code remains spelled with quadruple backticks. A v2 parser accepts
+all inherited backtick and unnumbered dollar forms without changing their AST meaning. V2 canonical
+emission prefers the `~~~$` family, including for code parsed from backticks, and falls back to the
+matching inherited backtick fence when the payload contains an exact `~~~$` line. V1 canonical
+emission prefers backticks and uses an unnumbered dollar fence only to avoid an exact triple-backtick
+payload line. The briefly proposed
 `~~~language` and `~~~~language` forms are unsupported and reject with `deprecated_code_fence`.
 Plain `~~~` remains ordinary paragraph text.
 
-## 14. Paired Blocks
+## 15. Paired Blocks
 
 ```ts
 interface NdHighlightParagraphBlock {
@@ -467,7 +502,7 @@ blocks are untagged. Semantic IDs use the shared `v2-id` grammar, remain availab
 are not emitted into the reference HTML. Inline `[(id) content]` uses the same rule and projects only
 its rich content by default.
 
-## 15. Structural Escapes
+## 16. Structural Escapes
 
 At a block-open position in v2, one leading backslash suppresses recognition of the block command
 that immediately follows it. The backslash is lexical and absent from the AST; the decoded command
@@ -496,7 +531,7 @@ Core v1 retains its existing escape set and rejects these new structural escapes
 output reinserts the leading backslash whenever decoded paragraph text would otherwise reparse as a
 block; table-shaped escaped paragraphs retain the line breaks required for the same fixed point.
 
-## 16. Canonical Contract
+## 17. Canonical Contract
 
 Canonical emission requires both a profile and an effective version:
 
@@ -520,15 +555,15 @@ container boundaries, rich resource nesting, contextual list-item content, leadi
 bullet replacement, heading-number hierarchy, rich/reused footnotes, code-block language and
 numbered-line intent, and rich children in every formatted paragraph family.
 
-## 17. Source Spans
+## 18. Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 44 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 45 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
-clarifiers, footnotes, code blocks, nested rich resources, lists, and blockquotes.
+clarifiers, footnotes, code blocks, aligned/spanning tables, nested rich resources, lists, and blockquotes.
 
-## 18. Stability
+## 19. Stability
 
 This contract is executable but remains proposal-stage. The scalar-versus-rich-content split and
 the capability disposition above are now decisions for the first-draft candidate; lexical

@@ -87,7 +87,7 @@ the AST.
 
 ## 5. Candidate Work Areas
 
-The current proposal surface is grouped into six work areas.
+The current proposal surface is grouped into seven work areas.
 
 ### 5.1 Header and Versioning
 
@@ -228,7 +228,8 @@ display numbers or symbols, hover/callout/endnote placement, and backlinks.
 
 ### 5.4 Code Block Forms
 
-V2 inherits every v1 triple- and quadruple-backtick code block and adds a tilde-dollar family:
+V2 inherits every v1 triple- and quadruple-backtick code block and both unnumbered tilde-dollar
+forms, then adds `[n]` numbered-line intent:
 
 ```text
 ~~~$
@@ -252,8 +253,11 @@ The optional language matches `[A-Za-z][A-Za-z0-9_-]*` and canonicalizes to lowe
 records numbered-line intent in the inherited `code_block.ordered` field. Every new form closes with
 bare `~~~$`, and payload text retains inherited raw-code behavior and resource budgets.
 
-Backtick fences remain accepted by v2 readers. Canonical v2 output uses `~~~$` for every code-block
-AST, including code parsed from backticks; canonical v1 output continues to use backticks. The
+V1 accepts `~~~$` and `~~~$ language` but rejects the v2-only `[n]` variants. Backtick and dollar
+fences remain accepted by v2 readers. Canonical v2 output prefers `~~~$`, including for code parsed
+from backticks, and falls back to the matching inherited backtick fence when an exact `~~~$` line
+occurs in the payload. Canonical v1 output prefers backticks and falls back to unnumbered `~~~$` for
+an exact triple-backtick payload line. The
 briefly introduced `~~~language` and `~~~~language` forms have been removed and reject with
 `deprecated_code_fence`. Plain `~~~` remains ordinary paragraph text.
 
@@ -261,7 +265,26 @@ Candidate seed:
 
 - `seed-v2-code-block-dollar-fences`
 
-### 5.5 Paired Block Forms
+### 5.5 Table Alignment and Horizontal Spans
+
+V2 extends inherited tables with `<--`, `-=-`, and `-->` separator cells for left, center, and right
+logical-column alignment. `---` remains the default. The separator row defines logical width.
+
+A content cell may start adjacent to its preceding pipe with one or more `>` characters, one ASCII
+space, and non-empty content. Each marker adds one column: `|> A+B | C |` spans two columns and
+`|>> A+B+C |` spans three. Padded `| > literal |` is ordinary content. Header and body cells may
+span; separator cells may not. Every row's span sum must equal the separator width. Spanning cells
+use their first covered column's alignment; row spanning is unsupported.
+
+The AST adds optional table `alignments` and cell `colSpan` fields only when used, preserving exact
+v1 table shapes. Canonical output emits exact alignment tokens and adjacent markers. V1 rejects the
+new positions. Malformed markers or width under/overflow fail with `invalid_table_span`.
+
+Candidate seed:
+
+- `seed-v2-table-alignment-and-spans`
+
+### 5.6 Paired Block Forms
 
 Core v1 reserves several block-ish text forms. v2 may promote some of them into paired block
 constructs, but only if the delimiters remain deterministic and easy to reject when malformed.
@@ -337,7 +360,7 @@ untagged Core candidates. Semantic wrapper IDs remain available to consumers in 
 exposed by the reference HTML projection; their content otherwise projects as ordinary block or
 inline content.
 
-### 5.6 Structural Block Escapes
+### 5.7 Structural Block Escapes
 
 At a v2 block-open position, one leading `\` may suppress a block command and make its decoded text
 an ordinary paragraph. This is a structural escape, not a global extension of the inline escape set.
@@ -351,7 +374,7 @@ Mid-line escapes and unnecessary forms such as `\#hashtag` or `\~~~` reject with
 Core v1 keeps its existing escape rules. Canonical v2 output restores the escape whenever omitting
 it would change the decoded paragraph's block type.
 
-### 5.7 Compatibility and Canonicalization
+### 5.8 Compatibility and Canonicalization
 
 v2 should define compatibility and canonicalization before the syntax surface grows too large.
 
@@ -382,13 +405,13 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 158-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 163-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
-44 exact source-span assertions and a 33-entry cross-form interaction matrix.
+45 exact source-span assertions and a 34-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 
