@@ -80,8 +80,10 @@ inline-image form.
 ```
 
 Source and alt text are mandatory. Mode is `inline`, `half`, or `full`; omission resolves to `inline`
-and canonical output spells the mode. Core preserves the authored source but does not fetch it or
-inspect the resource.
+and canonical output spells the mode. Consequently, the first canonicalization expands an omitted
+mode to `| inline`; this is intentional formatter churn and subsequent canonicalization is
+byte-stable. An explicit empty mode is invalid. Core preserves the authored source but does not fetch
+it or inspect the resource.
 
 ## 6. AEON Typed Scalars
 
@@ -112,7 +114,8 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Rich inline presentation nodes |
 | `[:type = scalar]` | AEON typed scalar |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | First-class todo list and item states |
-| `[>]`, `[<]`, `[.]` | Direction and line-break markers; leading unordered-item arrows replace bullets |
+| `[>]`, `[<]` | Direction markers; leading unordered-item arrows replace bullets |
+| `[.]` | Explicit inline line break, never a direction marker |
 | `- [?] content`, `- [!] content` | Hint/attention markers replacing unordered-item bullets while content stays visible |
 | heading `[n]` | Heading numbering intent |
 | `- [n] content` | First-class auto-number list |

@@ -67,7 +67,8 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[~ source | alt | mode]` | Core | Inline image with required source and alt text; mode is `inline`, `half`, or `full`. |
 | `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
 | `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | Core | First-class todo list and item states; workflow and presentation are projections. |
-| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; a leading direction marker replaces an unordered-list bullet in projection. |
+| `[>]`, `[<]` | Core | Directional author-intent markers; a leading marker replaces an unordered-list bullet in projection. |
+| `[.]` | Core | Explicit inline line break; never a directional marker. |
 | `- [?] content`, `- [!] content` | Core structure + consumer projection | Hint/attention markers replace unordered-list bullets while content remains visible. |
 | heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
@@ -225,10 +226,19 @@ document; forward links are allowed. The link retains the inherited `NdLink` AST
 `href: "#id"` and rich label `children`. Canonical emission preserves the target and label exactly,
 and HTML projection already emits the browser-native fragment link.
 
+A declared-v2 document parse has two logical conformance phases. The first constructs the complete
+structural tree while collecting anchor definitions and local-link targets. Only after structural
+construction succeeds does document-wide validation check identifier uniqueness and target
+resolution. An implementation may fuse the work internally, but observable success follows this
+ordering. This permits forward links without requiring `parseInline` or an individual chunk to know
+the completed document namespace.
+
 A standalone `parseInline` operation validates the `#id` target grammar but cannot resolve it without
-a document namespace. Full duplicate and resolution checks occur during declared-v2 document parsing
-and canonical emission. Declared-v1 documents retain their existing generic link behavior. Webpages
-and external resources continue to use inherited targets such as
+a document namespace. A streaming or chunked parser MAY expose provisional structural results, but
+it MUST defer successful document conformance until end-of-document validation has completed. V2
+canonical emission performs the same full-document integrity checks on a supplied AST. Declared-v1
+documents retain their existing generic link behavior. Webpages and external resources continue to
+use inherited targets such as
 `[@ https://example.com | Example]`.
 
 ## 7. Inline Images
@@ -240,9 +250,13 @@ The image form is:
 [~ source | alt | mode]
 ```
 
-`source` and `alt` are required, non-empty scalar fields. An escaped `\\|` is data rather than a
+`source` and `alt` are required, non-empty scalar fields. An escaped `\|` is data rather than a
 field separator. The optional mode defaults to `inline`; when present it MUST be exactly `inline`,
-`half`, or `full`. Canonical output always includes the resolved mode.
+`half`, or `full`. An explicit empty third field is invalid rather than an omitted mode. Canonical
+output always includes the resolved mode, so `[~ source | alt]` becomes
+`[~ source | alt | inline]`. This expansion is intentional one-time normalization: formatters and
+linters SHOULD treat that first canonical diff as expected, and subsequent canonicalization is a
+byte-stable fixed point.
 
 `inline` requests a height matched to the surrounding font size. `half` requests one half of the
 image's intrinsic height and proportional width. `full` requests the intrinsic dimensions. These
@@ -305,6 +319,9 @@ interface NdLineBreak {
 }
 ```
 
+`[>]` and `[<]` are the only forms that produce `NdDirectionalMarker`. `[.]` always produces the
+separate `NdLineBreak` node and never carries a direction or bullet-replacement intent.
+
 Inline markers record author intent. A directional marker in the first inline position of an
 unordered list item's paragraph head replaces that item's ordinary bullet in projection. The marker
 remains in the inline AST and the container remains an inherited unordered `list`, so directional
@@ -337,7 +354,11 @@ interface NdV2Heading extends NdHeading {
 
 The field is present only when a heading begins with the exact `[n] ` prefix followed by non-empty
 content. `[n]` is contextual metadata rather than an inline node; missing separator space, empty
-headings, and paragraph use are rejected.
+headings, and paragraph use are rejected. The optional literal-`true` field is intentional: absence
+means the inherited ordinary-heading shape, while presence records explicit numbering intent.
+`autoNumber: false` is not part of the conforming AST. This keeps v2 additive over v1 headings and
+avoids inserting a new false-valued property into every unnumbered heading; consumers that require a
+dense serialization may derive `false` outside the Core AST.
 
 ## 12. Auto-Number Lists
 

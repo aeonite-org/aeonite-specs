@@ -44,6 +44,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Changed
 
+- Clarified that v2 local-fragment integrity is a second-pass document validation rule, omitted image
+  modes intentionally normalize to explicit `inline`, `autoNumber?: true` is an additive opt-in AST
+  field, and `[.]` is solely a line-break node rather than a directional marker.
 - Replaced generic inline todo markers in the `&ND Core v2` proposal with homogeneous first-class
   `todo_list` and `todo_item` structures introduced by exact `- [state] content` prefixes.
 - Made `[n]` contextual to headings and first-class `auto_number_list` blocks.
