@@ -249,6 +249,18 @@ underline paragraph block
   opener: ~~~_
   closer: ~~~_
 
+hint paragraph block
+  opener: ~~~?
+  closer: ~~~?
+
+attention paragraph block
+  opener: ~~~!
+  closer: ~~~!
+
+comment block
+  opener: ~~~'
+  closer: ~~~'
+
 header text block
   opener: === or ===<tag>
   closer: ===
@@ -266,6 +278,9 @@ Candidate seeds:
 - `seed-v2-block-strong-paragraph-enabled`
 - `seed-v2-block-emphasis-paragraph-enabled`
 - `seed-v2-block-underline-paragraph-enabled`
+- `seed-v2-block-question-paragraph-enabled`
+- `seed-v2-block-admonition-paragraph-enabled`
+- `seed-v2-block-comment-enabled`
 - `seed-v2-block-header-text-enabled`
 - `seed-v2-block-disclaimer-enabled`
 
@@ -307,13 +322,13 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 131-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 134-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
-37 exact source-span assertions and a 27-entry cross-form interaction matrix.
+38 exact source-span assertions and a 28-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 

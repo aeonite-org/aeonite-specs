@@ -17,6 +17,10 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Added `~~~'` as a proposal-stage rich block comment in &ND v2; consumers control visibility and
+  the reference HTML projection preserves it as hidden content.
+- Added language-qualified `~~~language` and `~~~~language` code-fence alternatives to &ND v1 and
+  inherited v2 parsing while preserving bare `~~~` as paragraph text.
 - Added contextual `- [?]` / `- [!]` advisory list markers, visible `~~~?` / `~~~!` advisory
   paragraphs, and clarified that inline `[? ...]` / `[! ...]` presentation remains consumer-owned.
 

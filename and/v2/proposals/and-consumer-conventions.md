@@ -37,6 +37,7 @@ error, rewrite Core canonical text, or infer the grammar version.
 | `[? ...]` | Rich `question_tag` children | Question, hint, review, help, or task behavior |
 | `- [?] ...`, `- [!] ...` | Stable advisory kind and unordered-item bullet-replacement intent; visible item content | Marker glyphs, labels, colors, list styling |
 | `~~~?`, `~~~!` | Visible rich hint/question or attention/admonition paragraph structure | Iconography, severity vocabulary, layout, accessibility phrasing |
+| `~~~'` | Preserved rich block-comment children | Visibility, reviewer identity, export/redaction policy, collaboration workflow |
 | `[+ value]` | Preserved scalar `plus_tag.value` | Value registry, action mapping, analytics, workflow, UI |
 | Custom `[:type = scalar]` | Datatype label/adornments and validated scalar | Datatype registry, domain validation, units, formatting, business meaning |
 | `===tag`, `***tag` | Validated optional paired-block `tag` | Tag vocabulary, templates, placement, styling, behavior |

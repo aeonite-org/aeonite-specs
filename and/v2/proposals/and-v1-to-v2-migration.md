@@ -117,7 +117,7 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | heading `[n]` | Heading numbering intent |
 | `- [n] content` | First-class auto-number list |
 | `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
-| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!` | Highlight, strong, emphasis, underline, hint, and attention paragraph blocks |
+| `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, `~~~'` | Highlight, strong, emphasis, underline, hint, attention, and comment blocks |
 | `===`, `***` | Header-text and disclaimer blocks |
 
 Consumer-owned behavior layered on these stable Core nodes is defined by
@@ -204,7 +204,7 @@ keeping their item content visible. Rich `[? ...]` and `[! ...]` remain inline c
 9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
    reference; remove forward references and nesting.
 10. Place a direction marker first after `- ` only when it should replace that item's bullet.
-11. Convert paragraph-wide formatting or advisory content to exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, or `~~~!` fences;
+11. Convert paragraph-wide formatting, advisory content, or block comments to exact matching `~~~=`, `~~~*`, `~~~/`, `~~~_`, `~~~?`, `~~~!`, or `~~~'` fences;
     leave plain `~~~` as ordinary text.
 12. Keep consumer conventions separate from grammar acceptance and canonicalization.
 13. Canonicalize once to expose normalized image modes and AEON scalar spellings.
