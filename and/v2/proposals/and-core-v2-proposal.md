@@ -174,29 +174,51 @@ Candidate seeds:
 - `seed-v2-inline-underline-tag-enabled`
 - `seed-v2-inline-line-break-marker-enabled`
 
-### 5.3 Reserved Marker Forms
+### 5.3 Contextual List, Marker, and Footnote Forms
 
-Some v1-reserved bracket markers may become compact structural markers in v2.
+Todo states and `[n]` are promoted through contextual prefixes. `[% ...]` defines footnotes and may
+carry an alphanumeric identity for later shorthand references.
 
 Candidate forms:
 
 | Form | Possible v2 meaning | Status |
 | :--- | :------------------ | :----- |
-| `[ ]` | todo, unchecked | Core |
-| `[x]` | todo, checked | Core |
-| `[,]` | todo, in progress | Core |
-| `[;]` | todo, cancelled | Core |
+| `- [ ] content` | todo item, unchecked | Core |
+| `- [x] content` | todo item, checked | Core |
+| `- [,] content` | todo item, in progress | Core |
+| `- [;] content` | todo item, cancelled | Core |
+| `- [n] content` | auto-number list item | Core |
 | `[>]` | forward marker | Core |
 | `[<]` | backward marker | Core |
-| `[%]` | inline auto-number marker | Core |
 | `[n]` | heading auto-number marker | Core |
+| `[% content]` | anonymous footnote definition and reference | Core |
+| `[% (id) content]` | named footnote definition and first reference | Core |
+| `[% (id)]` | backward reference to an already-declared named footnote | Core |
 
 Candidate seeds:
 
-- `seed-v2-inline-todo-markers-enabled`
+- `seed-v2-todo-list-states`
+- `seed-v2-auto-number-list-enabled`
 - `seed-v2-inline-directional-markers-enabled`
-- `seed-v2-inline-auto-number-marker-enabled`
 - `seed-v2-heading-auto-number-marker-enabled`
+- `seed-v2-footnote-anonymous`
+- `seed-v2-footnote-named-reuse`
+
+A matching item prefix creates `todo_list` and `todo_item` nodes rather than a generic list carrying
+inline markers. Every item in one list block must be the same kind. Bare todo markers, empty todo
+items, ordered todo markers, malformed spacing, unknown states, and mixed ordinary/todo blocks fail
+closed. Todo lists inherit ordinary nested-list structure and canonicalize as `- [state] content`.
+Homogeneous `- [n] content` blocks similarly become `auto_number_list` nodes containing inherited
+`list_item` nodes and canonicalize without authored numeric labels. Heading and list `[n]` require a
+separator space and non-empty content; bare paragraph use is rejected. Core records numbering intent
+but leaves sequence scope, restart behavior, and display formatting to consumers. V2 permits
+ordinary, todo, and auto-number lists to begin an exact two-space-indented nested list immediately;
+the reference HTML projection visibly numbers opted-in headings hierarchically by heading level.
+
+Footnote IDs match `[A-Za-z0-9]+`, are case-sensitive, and may be declared once. Named references
+must follow their definition. Definitions carry non-empty rich inline content and cannot contain
+other footnotes. Core preserves the definition/reference graph and authored IDs; processors own
+display numbers or symbols, hover/callout/endnote placement, and backlinks.
 
 ### 5.4 Paired Block Forms
 
@@ -254,7 +276,7 @@ node shapes, effective-version metadata, and canonical emission boundary.
 
 These ideas are not rejected, but they should not be part of the first v2 activation slice:
 
-- footnote syntax such as `[^ ...]`
+- unpromoted reserved syntax such as `[^ ...]`
 - profile-gated syntax inside Core strict mode
 - HTML passthrough
 - executable or evaluatable constructs
@@ -264,13 +286,13 @@ These ideas are not rejected, but they should not be part of the first v2 activa
 
 The v2 proposal should stay test-first.
 
-The implementation repository contains an executable 94-fixture v2 proposal lane. It is design
+The implementation repository contains an executable 111-fixture v2 proposal lane. It is design
 pressure, not a published conformance requirement. The normative v1 lane remains independently
 reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
 equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
 contexts and rich inline content, local-fragment integrity, resource budgets, opaque extensions,
 and the strict forward boundary. Machine-readable contract `and-v2-projection-v1` additionally pins
-28 exact source-span assertions and a 15-entry cross-form interaction matrix.
+31 exact source-span assertions and a 20-entry cross-form interaction matrix.
 
 Move from proposal notes to active v2 fixtures only when:
 

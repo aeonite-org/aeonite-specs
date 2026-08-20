@@ -111,14 +111,67 @@ strings, nested typed values, and `prose` remain outside the v2 Core subset.
 | `[~ source | alt | mode]` | Inline image |
 | `[- ...]`, `[" ...]`, `[' ...]`, `[= ...]`, `[_ ...]` | Rich inline presentation nodes |
 | `[:type = scalar]` | AEON typed scalar |
-| `[ ]`, `[x]`, `[,]`, `[;]`, `[>]`, `[<]`, `[%]`, `[.]` | Todo, direction, numbering-intent, and line-break markers |
+| `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | First-class todo list and item states |
+| `[>]`, `[<]`, `[.]` | Direction and line-break markers |
 | heading `[n]` | Heading numbering intent |
+| `- [n] content` | First-class auto-number list |
+| `[% content]`, `[% (id) content]`, `[% (id)]` | Anonymous/named footnote definitions and named references |
 | `~~~=`, `===`, `***` | Highlight-paragraph, header-text, and disclaimer blocks |
 
 Consumer-owned behavior layered on these stable Core nodes is defined by
 [`and-consumer-conventions.md`](./and-consumer-conventions.md).
 
-## 8. Migration Checklist
+## 8. Todo Lists
+
+Todo state is structural in v2:
+
+```and
+- [ ] draft
+- [x] parser
+- [,] documentation
+- [;] discarded
+```
+
+This parses as `todo_list` containing `todo_item` nodes, not as an unordered list containing inline
+markers. The `- ` prefix and non-empty content are mandatory, and one list block cannot mix ordinary
+and todo items. Bare `[x] parser`, ordered `1. [x] parser`, malformed prefixes, and mixed blocks are
+rejected. `[.]` remains an inline line break, not a todo-item terminator.
+
+## 9. Auto-Numbering
+
+`[n]` is contextual structural metadata:
+
+```and
+# [n] Numbered title
+
+- [n] first item
+- [n] second item
+```
+
+The heading receives `autoNumber: true`; the list parses as `auto_number_list` containing inherited
+`list_item` nodes. Separator space and non-empty content are mandatory. Bare `[n]`, no-space forms,
+explicit `1. [n] item`, and mixed ordinary/todo/auto-number blocks are rejected.
+
+## 10. Footnotes
+
+V2 promotes `[% ...]` as footnote syntax:
+
+```and
+hello [% supporting context]
+hello [% (A1) reusable context], again [% (A1)]
+```
+
+The first form is an anonymous definition at its reference position. The second declares the
+case-sensitive alphanumeric ID `A1`; later `[% (A1)]` forms reference it. A named reference must
+follow its single declaration. Empty definitions, malformed IDs, duplicates, unresolved or forward
+references, and nested footnotes are rejected. The authored ID is not a forced display number;
+processors choose numbers, symbols, hover cards, callouts, or endnotes.
+
+Unlike v1 strict mode, v2 permits an immediately nested list at the exact two-space margin without a
+blank separator. This applies to ordinary, todo, and auto-number lists. Canonical output may insert
+the inherited blank separator while preserving the same AST.
+
+## 11. Migration Checklist
 
 1. Enable v2 reader capability explicitly.
 2. Change declarations only when dropping v1-reader compatibility is acceptable.
@@ -126,5 +179,9 @@ Consumer-owned behavior layered on these stable Core nodes is defined by
 4. Forward the effective version into canonical emission.
 5. Replace experimental anchor, link, and typed-value spellings.
 6. Validate anchors and fragment links at whole-document scope.
-7. Keep consumer conventions separate from grammar acceptance and canonicalization.
-8. Canonicalize once to expose normalized image modes and AEON scalar spellings.
+7. Convert inline experimental todo markers into homogeneous `- [state] content` blocks.
+8. Convert contextual numbering to exact heading or `- [n] content` prefixes.
+9. Convert footnotes to anonymous definitions or declare an alphanumeric ID before every shorthand
+   reference; remove forward references and nesting.
+10. Keep consumer conventions separate from grammar acceptance and canonicalization.
+11. Canonicalize once to expose normalized image modes and AEON scalar spellings.

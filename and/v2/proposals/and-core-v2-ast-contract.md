@@ -51,8 +51,8 @@ are outside this first-draft Core boundary.
 The complete v1 block and inline node unions remain valid in v2. A v2-capable reader MUST preserve
 the same fields and containment relationships for inherited syntax.
 
-`NdInlineNode` gains the nodes below. `NdBlockNode` gains the three paired-block nodes below, and
-`NdHeading` gains the optional `autoNumber` field.
+`NdInlineNode` gains the nodes below. `NdBlockNode` gains `NdTodoList`, `NdAutoNumberList`, and the
+three paired-block nodes below, and `NdHeading` gains the optional `autoNumber` field.
 
 ## 3. Capability Disposition
 
@@ -66,8 +66,10 @@ The first-draft candidate surface is divided by ownership, not by parser gates:
 | `[+ ...]` | Core syntax + convention | Scalar consumer tag; vocabulary and behavior remain consumer-defined. |
 | `[~ source | alt | mode]` | Core | Inline image with required source and alt text; mode is `inline`, `half`, or `full`. |
 | `[:type = scalar]` | Core syntax + convention | Exact AEON type-assignment syntax over a closed inline-scalar subset. |
-| `[ ]`, `[x]`, `[,]`, `[;]`, `[>]`, `[<]`, `[%]`, `[.]` | Core | Stable author-intent markers; display and numbering are projections. |
-| heading `[n]` | Core | Stable heading field; number calculation is outside Core. |
+| `- [ ] content`, `- [x] content`, `- [,] content`, `- [;] content` | Core | First-class todo list and item states; workflow and presentation are projections. |
+| `[>]`, `[<]`, `[.]` | Core | Stable inline author-intent markers; display is a projection. |
+| heading `[n]` and `- [n] content` | Core | Contextual heading field and first-class auto-number list; number calculation is outside Core. |
+| `[% content]`, `[% (id) content]`, `[% (id)]` | Core structure + consumer projection | Footnote definitions and backward references; displayed labels and placement are consumer-defined. |
 | `~~~=`, `===`, `***` paired blocks | Core | Stable block structure; optional tag vocabularies are consumer-defined. |
 | `[^ ...]` and all other unpromoted reserved forms | Deferred | Rejected by v2 strict mode. |
 
@@ -131,6 +133,17 @@ interface NdRichV2Tag {
     | "highlight_tag"
     | "underline_tag";
   readonly children: NdInlineNode[];
+}
+
+interface NdFootnoteDefinition {
+  readonly type: "footnote_definition";
+  readonly id?: string;
+  readonly children: NdInlineNode[];
+}
+
+interface NdFootnoteReference {
+  readonly type: "footnote_reference";
+  readonly id: string;
 }
 ```
 
@@ -241,21 +254,34 @@ authored relative source is resolved, the emitted `src` or `srcset` is absolute 
 is retained in `data-and-source`. The renderer does not emit a `<base>` element, fetch the resource, or
 mutate the AST.
 
-## 8. Compact Inline Markers
+## 8. Todo Lists
 
 ```ts
-interface NdTodoMarker {
-  readonly type: "todo_marker";
-  readonly state: "unchecked" | "checked" | "in_progress" | "cancelled";
+interface NdTodoList {
+  readonly type: "todo_list";
+  readonly items: NdTodoItem[];
 }
 
+interface NdTodoItem {
+  readonly type: "todo_item";
+  readonly state: "unchecked" | "checked" | "in_progress" | "cancelled";
+  readonly children: NdBlockNode[];
+}
+```
+
+The exact prefixes are `- [ ] `, `- [x] `, `- [,] `, and `- [;] ` followed by non-empty inline
+content. A matching unordered list block becomes `todo_list`; its marker becomes item state rather
+than an inline child. Every item in one block must be the same kind. Mixed ordinary/todo items fail
+with `mixed_list_item_kinds`; ordered and bare todo markers are rejected. In v2, ordinary and todo
+lists may begin an exact two-space-indented nested list immediately without a blank separator. Other
+child blocks retain inherited boundaries. Todo lists canonicalize as `- [state] content`.
+
+## 9. Compact Inline Markers
+
+```ts
 interface NdDirectionalMarker {
   readonly type: "directional_marker";
   readonly direction: "forward" | "backward";
-}
-
-interface NdAutoNumberMarker {
-  readonly type: "auto_number_marker";
 }
 
 interface NdLineBreak {
@@ -263,10 +289,21 @@ interface NdLineBreak {
 }
 ```
 
-Markers record author intent. Core parsing does not calculate display numbers or mutate surrounding
-list structure.
+Inline markers record author intent.
 
-## 9. Heading Addition
+## 10. Footnotes
+
+`[% content]` creates an anonymous definition and reference at that position. `[% (id) content]`
+creates a named definition and first reference; `[% (id)]` reuses an already-declared named
+definition. IDs match `[A-Za-z0-9]+`, are case-sensitive, and may be declared only once. References
+must follow their definition. Empty definitions, malformed IDs, duplicates, unresolved or forward
+references, and nested footnotes are rejected.
+
+Definitions preserve rich inline `children`; anonymous definitions cannot be referenced again.
+Core retains the graph and authored IDs but does not choose displayed numbers or symbols, hover or
+callout behavior, endnote placement, or backlinks. Canonical output preserves the applicable form.
+
+## 11. Heading Addition
 
 ```ts
 interface NdV2Heading extends NdHeading {
@@ -274,9 +311,28 @@ interface NdV2Heading extends NdHeading {
 }
 ```
 
-The field is present only when a heading begins with the v2 `[n]` marker.
+The field is present only when a heading begins with the exact `[n] ` prefix followed by non-empty
+content. `[n]` is contextual metadata rather than an inline node; missing separator space, empty
+headings, and paragraph use are rejected.
 
-## 10. Paired Blocks
+## 12. Auto-Number Lists
+
+```ts
+interface NdAutoNumberList {
+  readonly type: "auto_number_list";
+  readonly items: NdListItem[];
+}
+```
+
+The exact prefix is `- [n] ` followed by non-empty content. A matching block becomes
+`auto_number_list`; `[n]` is consumed as structural intent rather than retained inline. Every item in
+one block must use the same kind. Mixed ordinary, todo, and auto-number items fail with
+`mixed_list_item_kinds`; explicit ordered markers, bare paragraph markers, malformed spacing, and
+empty items are rejected. Auto-number lists use the same v2 immediate two-space nesting rule as
+ordinary and todo lists; other child blocks retain inherited boundaries. They canonicalize as
+`- [n] content`. Core records sequence participation but does not calculate displayed numbers.
+
+## 13. Paired Blocks
 
 ```ts
 interface NdHighlightParagraphBlock {
@@ -300,7 +356,7 @@ interface NdDisclaimerBlock {
 Paired-block payloads are inline content, not nested block documents. Optional tags preserve the
 validated suffix from a tagged opener.
 
-## 11. Canonical Contract
+## 14. Canonical Contract
 
 Canonical emission requires both a profile and an effective version:
 
@@ -320,17 +376,18 @@ HTML for every promoted node family, marker state, image mode, nested compositio
 unsafe-resource case. Its mandatory checker rejects missing coverage identifiers and any byte-level
 snapshot drift. The same contract indexes the required cross-form combinations: each paired block in
 lists and blockquotes, representative rich children in each paired block, local links crossing
-container boundaries, rich resource nesting, and compact-marker adjacency.
+container boundaries, rich resource nesting, contextual list-item content, heading-number hierarchy,
+and rich/reused footnotes.
 
-## 12. Source Spans
+## 15. Source Spans
 
 When spans are requested, v2 nodes use the same optional `span` field and normalized source-offset
 rules as v1 nodes. Spans are metadata and are excluded from structural round-trip comparison.
-Contract `and-v2-projection-v1` pins 28 exact span assertions covering every promoted scalar and rich
+Contract `and-v2-projection-v1` pins 31 exact span assertions covering every promoted scalar and rich
 inline family, heading auto-numbering, all paired blocks, escaped fields, datatype generics and
-clarifiers, nested rich resources, lists, and blockquotes.
+clarifiers, footnotes, nested rich resources, lists, and blockquotes.
 
-## 13. Stability
+## 16. Stability
 
 This contract is executable but remains proposal-stage. The scalar-versus-rich-content split and
 the capability disposition above are now decisions for the first-draft candidate; lexical

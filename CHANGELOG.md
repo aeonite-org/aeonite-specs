@@ -30,6 +30,13 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Changed
 
+- Replaced generic inline todo markers in the `&ND Core v2` proposal with homogeneous first-class
+  `todo_list` and `todo_item` structures introduced by exact `- [state] content` prefixes.
+- Made `[n]` contextual to headings and first-class `auto_number_list` blocks.
+- Promoted `[% content]`, `[% (id) content]`, and `[% (id)]` as anonymous/named footnote definitions
+  and backward named references, while leaving labels and presentation to processors.
+- Allowed immediate two-space nested lists in v2 and made the reference HTML projection visibly
+  calculate hierarchical numbers for opted-in headings.
 - Updated the `&ND Core v2` proposal to record the executable parser, canonical, HTML, budget,
   extension, and strict forward-compatibility boundaries.
 - Consolidated the `&ND Core v2` first-draft candidate surface into Core, Core-syntax-plus-convention,
@@ -53,8 +60,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   the corresponding v2 public API contract and boundary checks.
 - Added machine-readable projection contract `and-v2-projection-v1`, pinning complete promoted-surface
   coverage through exact standalone/embedded canonical and inert HTML snapshots, including nested,
-  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 28 exact
-  source-span assertions and a 15-entry cross-form interaction matrix.
+  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 31 exact
+  source-span assertions and a 20-entry cross-form interaction matrix.
 - Replaced the provisional equals-free `&ND` typed-value spelling with exact AEON
   `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
   reserved type/literal compatibility checks, and AEON-canonical scalar output.
