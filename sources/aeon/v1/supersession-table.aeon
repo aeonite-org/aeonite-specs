@@ -1,0 +1,88 @@
+schemaVersion:string = "1"
+id:string = "aeon-v1-supersession-table"
+title:string = "v1 Supersession Table"
+description:string = "Shows which v1 documents are canonical for each topic and how appendices relate to the main specification set."
+created:date = 2026-08-21
+modified:date = 2026-08-24
+family:string = "aeon"
+group:string = "Publication"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aeon-v1-documentation/supersession-table"
+order:number = 100
+publish:boolean = true
+keywords:list<string> = ["AEON", "supersession", "precedence", "appendices", "canonical documents"]
+related:list<string> = ["aeon-v1-official-index", "aeon-v1-consolidation-source-map", "aeon-core-v1-compliance"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # v1 Supersession Table [# v1-supersession-table]
+
+  This table defines which documents are canonical when multiple official v1 documents discuss the same topic.
+
+  ## Rule [# rule]
+
+  When a canonical core spec or companion reference conflicts with an appendix or older focused doc, the canonical document wins.
+
+  Canonical precedence order:
+
+  1. [@ document:aeon-core-v1-compliance | [$ AEON-v1-compliance]]
+  2. [@ document:aeon-core-v1 | [$ AEON-spec-v1]]
+  3. [@ document:aeos-v1 | [$ AEOS-spec-v1]]
+  4. Canonical companion references:
+    - [@ document:aeon-core-v1-value-types | [$ value-types-v1]]
+    - [@ document:aeon-core-v1-structure-syntax | [$ structure-syntax-v1]]
+    - [@ document:aeon-core-v1-addressing-references | [$ addressing-references-v1]]
+    - [@ document:aeon-core-v1-comments-annotations | [$ comments-annotations-v1]]
+
+  5. [$ contracts/] baseline contract documents
+  6. [$ appendices/] (informative unless explicitly referenced by a canonical document)
+
+  ## Superseded Top-Level Docs [# superseded-top-level-docs]
+
+  | Previous document | Canonical replacement | Notes |
+  | <-- | <-- | <-- |
+  | [$ annotation-binding.md] | [$ comments-annotations-v1.md] | Removed from canonical v1 surface |
+  |~ Superseded top-level document replacements
+
+  ## Appendix Status [# appendix-status]
+
+  | Appendix | Status | Canonical topic owner |
+  | <-- | <-- | <-- |
+  | [$ appendix-addressing.md] | informative summary | [$ addressing-references-v1.md] |
+  | [$ appendix-annotation-stream.md] | informative summary | [$ comments-annotations-v1.md] |
+  | [$ appendix-bindings.md] | informative summary | [$ AEON-spec-v1.md], [$ structure-syntax-v1.md] |
+  |  |  | [$ addressing-references-v1.md] |
+  | [$ appendix-canonical-form.md] | informative appendix | canonical-form rules remain appendix-scoped |
+  | [$ appendix-error-model.md] | informative summary | [$ AEON-v1-compliance.md], [$ AEOS-spec-v1.md] |
+  | [$ appendix-glossary.md] | informative glossary | canonical terms anchored by the canonical v1 spec set |
+  | [$ appendix-spans.md] | informative summary | [$ AEOS-spec-v1.md], companion refs as applicable |
+  | [$ appendix-tuples.md] | informative summary | [$ value-types-v1.md], [$ structure-syntax-v1.md] |
+  |  |  | [$ addressing-references-v1.md] |
+  | [$ appendix-aes.md] | normative appendix | AES contract remains appendix-owned unless superseded by [$ AEON-spec-v1.md] |
+  | [$ appendix-aeos-charter.md] | decision-needed | expected to align with [$ AEOS-spec-v1.md] |
+  | [$ appendix-altopelago-core-profile.md] | informative profile appendix | extension profile, not baseline core spec |
+  | [$ appendix-insane-profiles.md] | informative appendix | non-normative |
+  | [$ appendix-integrity-envelope.md] | decision-needed | no canonical replacement yet |
+  | [$ appendix-json-profile.md] | informative profile appendix | JSON materialization profile |
+  | [$ appendix-node-model.md] | informative appendix pending final freeze | node model remains separate |
+  | [$ appendix-pattern-profile.md] | implementation-ahead appendix | no stable canonical replacement yet |
+  | [$ appendix-processing-model.md] | decision-needed | phase-boundary wording still under cleanup |
+  | [$ appendix-profiles-framework.md] | informative summary | profile governance also covered by [$ AEON-spec-v1.md] and contracts docs |
+  | [$ appendix-reference-philosophy.md] | informative appendix | conceptual only |
+  | [$ appendix-schema-profile.md] | implementation-ahead appendix | no stable canonical replacement yet |
+  | [$ appendix-tonic.md] | informative appendix | downstream processor guidance |
+  | [$ appendix-transport.md] | informative appendix | transport/framing guidance |
+  | [$ appendix-validator-conformance.md] | decision-needed | validator boundary wording still under cleanup |
+  |~ Appendix publication status and canonical topic ownership
+
+  ## Use Guidance [# use-guidance]
+
+  - Implementers targeting AEON Core v1 should start with the canonical core spec set, not the appendices.
+  - Appendices are supporting material, profile notes, or partially consolidated release carryovers.
+  - If an appendix still says "normative" but is listed here as informative or decision-needed, this table controls its authority for the consolidated v1 set.
+`

@@ -1,0 +1,336 @@
+schemaVersion:string = "1"
+id:string = "and-v2-consumer-conventions"
+title:string = "&ND Core v2 Consumer-Conventions Boundary"
+description:string = "Non-Core ownership boundary for vocabularies, presentation, workflow, resources, navigation, and extension behavior layered on &ND Core v2."
+created:date = 2026-08-20
+modified:date = 2026-08-24
+family:string = "and"
+group:string = "&ND"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/and/core-v2-consumer-conventions"
+order:number = 40
+publish:boolean = true
+keywords:list<string> = ["&ND", "consumer conventions", "projection", "rendering", "footnotes", "images", "extensions"]
+related:list<string> = ["and-core-v2-proposal", "and-core-v2-ast-contract", "and-v1-to-v2-migration"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # &ND Core v2 Consumer-Conventions Boundary [# and-v2-consumer-conventions]
+
+  This companion note separates fixed [$ &ND Core v2] parsing and canonicalization from meanings owned by
+  applications, rendering profiles, workflow systems, and trust policies.
+
+  “Consumer-owned” does not mean optional grammar. Core always supplies the stable AST field and
+  canonical spelling. Core does not supply the vocabulary, presentation, workflow effect, network
+  behavior, or execution policy layered on that field.
+
+  ## 1. Processing Order [# processing-order]
+
+  A conforming consumer:
+
+  1. parses and validates under the declared or host-selected Core version;
+  2. retains the Core AST without reinterpreting its fields;
+  3. applies an explicitly selected consumer convention or product policy.
+
+  A convention registry MUST NOT make invalid Core syntax valid, turn valid syntax into a Core parse
+  error, rewrite Core canonical text, or infer the grammar version.
+
+  ## 2. Supported Convention Surfaces [# supported-convention-surfaces]
+
+  | Surface | Core guarantees | Consumer owns |
+  | <-- | <-- | <-- |
+  | [$ \\[! ...\\]] | Rich [$ admonition_tag] children | Severity vocabulary, styling, labels, accessibility phrasing, workflow |
+  | [$ \\[? ...\\]] | Rich [$ question_tag] children | Question, hint, review, help, or task behavior |
+  | [$ - \\[?\\] ...], [$ - \\[!\\] ...] | Stable advisory kind and unordered-item bullet-replacement intent; visible item content | Marker glyphs, labels, colors, list styling |
+  | [$ ~~~?], [$ ~~~!] | Visible rich hint/question or attention/admonition paragraph structure | Iconography, severity vocabulary, layout, accessibility phrasing |
+  | [$ ~~~'] | Preserved rich block-comment children | Visibility, reviewer identity, export/redaction policy, collaboration workflow |
+  | [$ \\[^ ...\\]], [$ ~~~^] | Rich inline or block disclaimer content | Exact size, placement, color, accessibility presentation |
+  | [$ ~~~#] | Rich header-text content | Exact weight, size, placement, relationship to a heading |
+  | [$ \\[(id) content\\]], [$ ~~~(id)] | Portable [$ id] and rich children; reference HTML exposes only content | ID vocabulary, interpretation, alternate styling, product behavior |
+  | [$ card_block] from [$ ~~~\\|], [$ ~~~\\| title] | Stable block container; title presence carries collapsible intent | Border, background, spacing, initial expansion state, control styling, interaction details |
+  | Block or table [$ caption] | Separate non-empty rich inline description; labels have no automatic numbering meaning | Placement, typography, figure/example conventions, generated indexes, accessibility association |
+  | [$ \\[+ value\\]] | Preserved scalar [$ plus_tag.value] | Value registry, action mapping, analytics, workflow, UI |
+  | Custom [$ \\[:type = scalar\\]] | Datatype label/adornments and validated scalar | Datatype registry, domain validation, units, formatting, business meaning |
+  | heading [$ \\[n\\]], [$ auto_number_list] | Contextual auto-number intent | Sequence, scope, format, restart rules, localization, labels |
+  | Footnote definitions and references | Rich definition content, optional authored ID, declaration order, reference resolution | Superscript numbers or symbols, hover/callout/endnote presentation, placement, backlinks, accessibility phrasing |
+  | [$ \\[~ source \\| alt \\| mode\\]] | Source, alt text, and closed display-intent mode | Resolution, fetching, caching, MIME checks, intrinsic sizing, exact layout, failure UI |
+  | External [$ \\[@ target \\| label\\]] | Target and rich label | Scheme policy, navigation, previews, tracking, trust prompts |
+  | [$ +++name] extension block | Opaque inherited name and payload | Registry, interpretation, sandbox, permissions, execution |
+  | [$ +++graph] plus fallback | Opaque graph payload and ordinary parsed fallback blocks | Graph validation, layout, accessible visualization, projection policy |
+  | Captioned [$ ~~~$ ebnf] code block | Preserved EBNF source, language hint, and caption | Optional grammar validation, railroad layout, accessible visualization, source-view behavior |
+  | Leading [$ +++document/meta] block | Opaque metadata payload | Publication-envelope validation, catalog behavior, projection visibility |
+  | Final [$ +++document/modules] block | Opaque declaration payload | Informational convention matching against an explicitly configured trusted registry |
+  | [$ todo_list] / [$ todo_item] | First-class list structure and stable item-state enum | Controls, mutation workflow, progress, icons, labels, persistence |
+  | Directional markers | Stable direction enum and leading-unordered-item bullet-replacement intent | Navigation or workflow meaning, arrow styling, labels, interaction |
+  | Inline comments | Preserved rich comment children | Visibility, identity, export, redaction, collaboration workflow |
+  |~ Supported consumer convention surfaces
+
+  Core itself owns local-anchor identifier validation, uniqueness, case-sensitive matching, and
+  whole-document fragment resolution. Consumers own scrolling, focus, history, and navigation UI after
+  resolution succeeds.
+
+  Inline advisory content may become a hover/focus callout, an always-visible annotation, or another
+  accessible UI. Core does not require the labels “hint” or “warning”; those remain projection policy.
+
+  ## 3. No Implicit Vocabulary [# no-implicit-vocabulary]
+
+  Core assigns no registered product meaning to values such as:
+
+  ~~~$ and
+  [+ priority:high]
+  [! security]
+  [^ legal text]
+  [:temperature = 21.5]
+  ~~~$
+
+  A product may define these conventions separately. Another product may preserve the same AST while
+  presenting it differently or taking no action. Convention identifiers and registries remain outside
+  Core. The optional [$ document/modules] convention lets an author identify an independently versioned
+  convention without changing Core grammar or selecting software for the reader.
+
+  ## 4. Numbering [# numbering]
+
+  Heading [$ \\[n\\]] and [$ auto_number_list] record author intent; Core does not calculate a number. A
+  numbering profile should define participating nodes, sequence scope, restart and nesting rules,
+  formatting and localization, and whether hidden nodes consume a number. Derived numbers belong to a
+  projection, not to the parsed Core AST.
+
+  Block and table captions do not participate in Core numbering. Labels such as [$ Figure 1.1],
+  [$ Table 2], or [$ Example A]
+  are authored text. A consumer may build an index or validate a house numbering style, but it must
+  not rewrite the caption AST as though a generated label appeared in source. Visible captions
+  supplement rather than replace block-specific accessible names or alternate descriptions.
+
+  ## 5. Footnotes [# footnotes]
+
+  Core distinguishes anonymous definitions, named definitions, and references to already-declared
+  named definitions. Authored IDs are identity keys, not requested display labels. Consumers own
+  sequence scope, displayed numbers or symbols, hover/callout/endnote presentation, placement,
+  backlinks, accessibility phrasing, and repeated-reference behavior. Projection choices must not
+  alter Core reference resolution or imply calculated labels were present in source.
+
+  ## 6. Images [# images]
+
+  Image modes are portable intent rather than exact geometry:
+
+  - [$ inline] requests alignment at surrounding text height;
+  - [$ half] requests half the source's original height;
+  - [$ full] requests the source's original height.
+
+  Consumers define fallbacks when intrinsic height is unavailable. Core performs no file or network
+  access, authentication, byte inspection, or MIME validation. Alt text remains mandatory and should
+  remain available when a source is rejected or fails to load.
+
+  The reference HTML renderer's URL filtering and base-resolution option are non-normative projection
+  policy, not additional Core semantics.
+
+  ## 7. Links and External Resources [# links-and-external-resources]
+
+  Core distinguishes resolved local [$ #id] targets from other link targets. A consumer must apply an
+  allowlist or equivalent navigation policy before activating an external target. Successful parsing
+  does not establish safety, reachability, or trust.
+
+  A multi-document publication may use [$ document:id] or [$ document:id#anchor] as a consumer-owned
+  target convention. Core preserves the target as ordinary link data. A publication processor resolves
+  the document ID against its own catalog, verifies an optional target anchor, and emits a projection-
+  appropriate destination such as a sibling [$ .html] or [$ .md] artifact. The declaration does not
+  imply network access or introduce a new Core link kind.
+
+  [$ \\[+\\]] may describe a resource in a consumer vocabulary, but it does not acquire implicit navigation
+  behavior and is not a substitute for Core link syntax.
+
+  ## 8. Extensions and Execution [# extensions-and-execution]
+
+  Core documents are non-executable. Opaque extension blocks preserve data; they do not authorize
+  evaluation. Interpretation or execution requires an explicit registry and trust policy, validated
+  payloads, isolated effects, and environment permissions.
+
+  Unknown extensions, [$ \\[+\\]] values, and custom datatypes remain preservable data and must not trigger
+  behavior merely by appearing in a valid document.
+
+  Semantic wrapper IDs likewise remain inert until a consumer explicitly interprets them. The
+  reference HTML emits no visible label, DOM [$ id], class, or [$ data-*] attribute for either form.
+
+  ## 9. Graph Extension Convention [# graph-extension-convention]
+
+  The [$ graph] extension is a consumer-owned, non-executable graph-description profile. Its payload
+  has one declaration per nonblank line:
+
+  ~~~$ and
+  +++graph
+  ["resolve", "Resolve", 50, 10]
+  ["bindings", "Binding Set", 50, 20]
+  {"resolve", "CB", "bindings", "CT", "to", "solid"}
+  +++ (Figure 1: Resolution graph)
+  +++fallback
+  Resolve [>] Binding Set
+  +++
+  ~~~$
+
+  A square-bracket declaration defines a node as [$ \\[id, text, x, y\\]]. A brace declaration defines
+  an edge as [$ {fromId, fromPort, toId, toPort, direction, stroke}]. String fields use JSON string
+  quoting and escaping. Node IDs use the shared v2 identifier grammar, are case-sensitive, and must be
+  unique within the graph. Edge references may be forward references but must all resolve after the
+  complete payload has been read.
+
+  Coordinates are finite numbers from [$ 0] through [$ 100] and identify the node centre on a normalized
+  layout plane. A renderer calculates node dimensions from plain-text labels, fits its visible viewport
+  to the occupied graph bounds, and adds outer padding so boundary nodes, strokes, and arrowheads are not
+  clipped. The normalized layout plane does not require a permanently fixed-size canvas. [$ \\\\n] in a
+  label requests a line break.
+
+  Ports form a closed nine-value set:
+
+  ~~~$ text
+  LT CT RT
+  LC CC RC
+  LB CB RB
+  ~~~$
+
+  The first character is horizontal position and the second is vertical position. Edge direction is
+  one of [$ none], [$ to], [$ from], or [$ both]; stroke is [$ solid] or [$ dashed]. [$ to] places an
+  arrowhead at the [$ toId] end and [$ from] places one at the [$ fromId] end. Edges are painted behind
+  nodes in source order.
+
+  Malformed payload is a graph-profile diagnostic, not a Core parse failure. A consumer without an
+  explicitly configured compatible renderer uses the adjacent fallback. Published documents should
+  provide a fallback so Markdown, accessibility tools, and unaware consumers retain the graph's meaning.
+  A v2 closer caption supplies the visible figure description independently of the SVG accessibility
+  title and remains available when the fallback is projected.
+
+  +++graph
+  ["resolve", "Resolve", 50, 10]
+  ["bindings-1", "Binding Set", 50, 20]
+  ["filter", "Filter", 50, 30]
+  ["bindings-2", "Binding Set", 50, 40]
+  ["order", "Order", 50, 50]
+  ["bindings-3", "Binding Set", 50, 60]
+  ["slice", "Slice", 50, 70]
+  ["project", "Project", 50, 80]
+  ["result", "Result Set", 50, 90]
+  {"resolve", "CB", "bindings-1", "CT", "to", "solid"}
+  {"bindings-1", "CB", "filter", "CT", "to", "solid"}
+  {"filter", "CB", "bindings-2", "CT", "to", "solid"}
+  {"bindings-2", "CB", "order", "CT", "to", "solid"}
+  {"order", "CB", "bindings-3", "CT", "to", "solid"}
+  {"bindings-3", "CB", "slice", "CT", "to", "solid"}
+  {"slice", "CB", "project", "CT", "to", "solid"}
+  {"project", "CB", "result", "CT", "to", "solid"}
+  +++ (Figure 1: Query processing pipeline)
+  +++fallback
+  Resolve [>] Binding Set [>] Filter [>] Binding Set [>] Order [>] Binding Set [>] Slice [>]
+  Project [>] Result Set
+  +++
+
+  ## 10. EBNF Railroad Enhancement [# grammar-railroad-profile]
+
+  A consumer may progressively enhance an ordinary captioned [$ ebnf] code block into a railroad
+  diagram. The code remains the portable representation and fallback; this convention introduces no
+  extension block or module dependency. Canonical specification sources begin each production with
+  [$ Name ::= expression], omit a trailing semicolon, and indent any continued expression lines.
+  Quoted strings are terminals; identifiers are non-terminals. Whitespace or a comma sequences terms,
+  [$ |] selects alternatives, square brackets make a term optional, and braces repeat a term zero or
+  more times. Postfix [$ ?], [$ *], and [$ +] express optional, zero-or-more, and one-or-more
+  repetition. Parentheses group an expression, [$ ε] represents an empty path, quoted single-character
+  ranges use [$ "A".."Z"], and [$ ? descriptive terminal ?] represents a lexical condition that is
+  clearer in prose than as structural productions.
+
+  ~~~$ ebnf
+  Binding ::= Key [Identity] [Attributes] [TypeAnnotation] "=" Value
+  Separator ::= "," | Newline
+  ~~~$ (Figure 2: Binding grammar railroad diagram)
+
+  The renderer distinguishes terminals from non-terminals and gives alternatives, optional paths, and
+  repetitions dedicated tracks. If the EBNF cannot be interpreted by the enhancement profile, the
+  consumer leaves the original code block visible. Unaware consumers and Markdown projections likewise
+  retain the source as an ordinary [$ ebnf] code block. A compatibility reader may additionally accept
+  legacy [$ =] production operators, trailing semicolons, and production names split from their
+  operators, but canonical specification sources do not emit those forms.
+
+  ## 11. Document Module Declaration [# document-module-declaration]
+
+  A document may formally identify the consumer conventions expected by its extension blocks with one
+  informational declaration:
+
+  ~~~$ and
+  +++document/modules
+  dependencies = {
+    graph = "org.aeonite.gp.graph.v1"
+  }
+  +++
+  ~~~$
+
+  Under this consumer convention, [$ document/modules]:
+
+  - is optional and may occur at most once;
+  - must be the final top-level block in the Core document;
+  - must not have a fallback;
+  - contains an AEON document whose only top-level binding is the [$ dependencies] object;
+  - maps exact extension names to independently versioned module-convention identifiers;
+  - is metadata and does not produce visible document content.
+
+  An extension name containing characters that cannot form a bare AEON key, such as [$ chart/pie], is
+  written as a quoted AEON key. A module-convention identifier uses reverse-domain-style lowercase
+  segments and ends in [$ .v] followed by digits. It is an identity string, not a package coordinate,
+  URL, import path, or executable name.
+
+  The declaration is purely informational. Its presence MUST NOT initiate installation, dependency
+  resolution, network access, code loading, execution, or a permission prompt. A consumer may compare
+  it only with convention implementations already selected through that consumer's trusted
+  configuration. An unknown, unavailable, or disallowed convention leaves the extension opaque and
+  causes its fallback to be used. Absence of a declaration does not make an otherwise valid Core
+  extension block invalid.
+
+  Core continues to parse [$ document/modules] as an ordinary opaque [$ extension_block]. Final-block
+  placement and AEON payload validation are consumer-convention rules applied only after Core parsing.
+
+  ## 12. Standalone Publication Projection [# standalone-publication-projection]
+
+  A publication consumer may combine an external publication envelope and its embedded document into
+  a standalone [$ .and] projection. The projection begins with [$ &ND v2], followed by one leading
+  [$ +++document/meta] block. The metadata block has no fallback, contains an AEON document, does not
+  produce visible document content, and is followed by the ordinary document blocks. A final
+  [$ +++document/modules] declaration retains its final-block position.
+
+  The closed metadata record contains [$ schemaVersion], [$ id], [$ title], [$ description], [$ family],
+  [$ group], [$ standing], [$ lifecycle], [$ normativity], [$ license], [$ path], [$ order], [$ publish],
+  [$ keywords], and [$ related]. Envelope-only [$ body] and [$ bodyFormat] fields are omitted because
+  the surrounding file is the body and the leading declaration identifies its format and version.
+
+  A human-readable projection may use a preferred line width, conventionally [$ 120], without making
+  that width a validity limit. Ordinary prose wraps only at safe whitespace. A list-item paragraph uses
+  two-space continuation indentation:
+
+  ~~~$ and
+  - A long list item may wrap onto a continuation line while remaining one
+    list-item paragraph.
+  ~~~$
+
+  Tables align to their natural column widths and may exceed the preferred width; they are never
+  cropped or truncated. Code, extension payloads, headings, long resource targets, and other
+  indivisible syntax may likewise exceed it. Top-level headings have two empty source lines before
+  them to make section boundaries visually distinct. [$ \\[.\\]] remains the only explicit content
+  line break.
+
+  A conforming publication formatter reparses its output, validates [$ document/meta] against the
+  source envelope, removes that metadata block, and requires the remaining document's canonical form
+  to equal the source document's canonical form. A failed equality check rejects the artifact.
+
+  ## 13. Conformance Boundary [# conformance-boundary]
+
+  Core conformance covers grammar-version acceptance, AST fields, local-anchor integrity, canonical
+  spelling, and requested spans or budgets. A consumer profile covers behavior only after a valid Core
+  parse and must be tested and versioned separately. The inert reference HTML projection demonstrates
+  one safe approach, but its classes, styling, and interactions are not normative Core requirements.
+
+  +++document/modules
+  dependencies = {
+    graph = "org.aeonite.gp.graph.v1"
+  }
+  +++
+`

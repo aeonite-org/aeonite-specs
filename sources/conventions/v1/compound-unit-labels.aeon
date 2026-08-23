@@ -1,0 +1,104 @@
+schemaVersion:string = "1"
+id:string = "compound-unit-labels"
+title:string = "Appendix — Compound Unit Labels (Informative)"
+description:string = "Informative note on using compound unit labels such as m/s and kg/m^3 as opaque identifiers in conventions."
+created:date = 2026-05-27
+modified:date = 2026-08-24
+family:string = "conventions"
+group:string = "Informative Convention Appendices"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC0-1.0"
+path:string = "specification/conventions/compound-unit-labels"
+order:number = 90
+publish:boolean = true
+keywords:list<string> = ["AEON", "measurement", "compound units", "unit labels", "reference"]
+related:list<string> = ["aeon-gp-measurement-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Compound Unit Labels (Informative) [# appendix-compound-unit-labels-informative]
+
+  AEON GP Measurement v1 permits compound unit labels in the [$ unit] attribute.
+
+  Compound unit labels are treated as [* opaque identifiers] and are not parsed or interpreted by AEON.
+
+  Example:
+
+  ~~~$ aeon
+  speed@{unit="m/s"} = 12
+  acceleration@{unit="m/s^2"} = 9.81
+  density@{unit="kg/m^3"} = 1000
+  bandwidth@{unit="Mb/s"} = 100
+  ~~~$
+
+  ---
+
+  ## Interpretation [# interpretation]
+
+  Compound unit labels may describe derived measurements such as:
+
+  | Unit | Meaning |
+  | <-- | <-- |
+  | [$ m/s] | meters per second |
+  | [$ m/s^2] | meters per second squared |
+  | [$ kg/m^3] | kilograms per cubic meter |
+  | [$ Mb/s] | megabits per second |
+  |~ Compound measurement unit examples
+
+  AEON does [* not] interpret or validate these expressions.
+
+  They are treated as [* plain unit identifiers].
+
+  ---
+
+  ## No Grammar Requirement [# no-grammar-requirement]
+
+  AEON GP Measurement v1 does not define a formal grammar for compound units.
+
+  Characters such as the following may appear within unit labels:
+
+  ~~~$
+  /
+  *
+  ^
+  -
+  ~~~$
+
+  Example:
+
+  ~~~$ aeon
+  power@{unit="kg*m^2/s^3"} = 120
+  ~~~$
+
+  Processors, schemas, or profiles may optionally define stricter rules if needed.
+
+  ---
+
+  ## Recommended Practice [# recommended-practice]
+
+  When compound units are used, they should follow widely recognized conventions (such as SI notation) to improve interoperability.
+
+  Example:
+
+  ~~~$ aeon
+  flow_rate@{unit="m^3/s"} = 4
+  ~~~$
+
+  ---
+
+  ## Summary [# summary]
+
+  Compound units are allowed because:
+
+  - they are common in scientific and engineering data
+  - they require no additional language features
+  - they remain consistent with AEON’s rule of [* opaque value labeling]
+
+  AEON therefore preserves compound unit labels exactly as written.
+
+  ---
+`

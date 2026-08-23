@@ -1,0 +1,40 @@
+schemaVersion:string = "1"
+id:string = "aeon-v1-conformance-matrix"
+title:string = "AEON v1 Conformance Matrix"
+description:string = "Pointer to the CTS-owned conformance mapping document for AEON v1."
+created:date = 2026-03-25
+modified:date = 2026-08-23
+family:string = "aeon"
+group:string = "Core Specifications"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aeon-v1-documentation/aeon-v1-conformance-matrix"
+order:number = 30
+publish:boolean = true
+keywords:list<string> = ["AEON", "conformance matrix", "CTS", "coverage", "test lanes"]
+related:list<string> = ["aeon-core-v1", "aeon-core-v1-compliance", "aeos-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # AEON v1 Conformance Matrix [# aeon-v1-conformance-matrix]
+
+  The authoritative conformance mapping for AEON v1 now lives with
+  [@ https://github.com/aeonite-org/aeonite-cts | [$ aeonite-org/aeonite-cts]].
+
+  Use the CTS-owned copy for:
+
+  - requirement-to-suite mapping
+  - lane and manifest anchoring
+  - public conformance coverage review
+
+  Relevant public entry points:
+
+  - [@ https://github.com/aeonite-org/aeonite-cts | CTS repository]
+  - [@ https://github.com/aeonite-org/aeonite-cts/blob/main/CONFORMANCE-COVERAGE.md | Conformance coverage]
+
+  This spec-side document remains only as a forward pointer so the specification surface can reference the CTS mapping without duplicating ownership.
+`

@@ -1,0 +1,69 @@
+schemaVersion:string = "1"
+id:string = "appendix-annotation-stream-v1"
+title:string = "Appendix — Annotation Stream"
+description:string = "Structured annotation channel model and source-order emission behavior."
+created:date = 2026-03-25
+modified:date = 2026-08-23
+family:string = "appendices"
+group:string = "Core Semantics"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-annotation-stream-v1"
+order:number = 110
+publish:boolean = true
+keywords:list<string> = ["AEON", "annotation stream", "structured comments", "source order", "bindings", "side channel"]
+related:list<string> = ["aeon-core-v1-comments-annotations", "appendix-aes-v1", "appendix-processing-model-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Annotation Stream [# appendix-annotation-stream]
+
+  Canonical topic owner: AEON v1 Comments and Annotations Reference.
+
+  If this appendix conflicts with the canonical comments/annotations reference, the canonical comments/annotations reference wins.
+
+  ## 1. Channel Forms [# channel-forms]
+
+  Structured channels:
+
+  - line: [$ //#], [$ //@], [$ //?], [$ //{], [$ //\\[], [$ //(]
+  - block: [$ /# ... #/], [$ /@ ... @/], [$ /? ... ?/], [$ /{ ... }/], [$ /\\[ ... \\]/], [$ /( ... )/]
+
+  Plain comments:
+
+  - line: [$ // ...]
+  - block: [$ /* ... */]
+
+  ## 2. Deterministic Binding Continuity [# deterministic-binding-continuity]
+
+  Binding target preference remains:
+
+  - [$ path] [>] [$ span] [>] [$ unbound]
+
+  Indexed element preference behavior for container comments remains deterministic and CTS-enforced.
+
+  ## 3. Non-influence Rule [# non-influence-rule]
+
+  Comments/annotations/hints MUST NOT alter:
+
+  - AES semantics
+  - canonical path assignment
+  - reference legality
+  - assignment ordering
+
+  ## 4. Optional Annotation Emission in Compile Surface [# optional-annotation-emission-in-compile-surface]
+
+  For non-tooling pipelines, compile implementations may allow annotation emission to be disabled.
+
+  Normative expectations:
+
+  - When disabled, annotation stream output is omitted.
+  - Parse/resolve/mode/reference behavior remains identical.
+  - Event ordering and canonical paths remain unchanged.
+
+  Tooling/lint/editor flows should keep annotation emission enabled.
+`

@@ -1,0 +1,39 @@
+schemaVersion:string = "1"
+id:string = "appendix-validator-conformance-v1"
+title:string = "Appendix — Third-Party Validator Conformance"
+description:string = "Pointer to the CTS-owned validator conformance guidance for AEON-family validators."
+created:date = 2026-03-25
+modified:date = 2026-08-23
+family:string = "appendices"
+group:string = "AEOS and Profiles"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-validator-conformance-v1"
+order:number = 220
+publish:boolean = true
+keywords:list<string> = ["AEON", "AEOS", "validator conformance", "CTS", "third party validators"]
+related:list<string> = ["aeos-v1", "aeos-v1-compliance", "aeon-v1-conformance-matrix"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Third-Party Validator Conformance [# appendix-third-party-validator-conformance]
+
+  The operational conformance guidance for third-party validators now lives with
+  [@ https://github.com/aeonite-org/aeonite-cts | [$ aeonite-org/aeonite-cts]].
+
+  This appendix remains in the spec tree only to record the boundary:
+
+  - AEOS and AEON specs define the normative semantic requirements
+  - [$ aeonite-cts] owns the public validator conformance guidance and verification-facing contract surface
+
+  Relevant public entry points:
+
+  - [@ https://github.com/aeonite-org/aeonite-cts | CTS repository]
+  - [@ https://github.com/aeonite-org/aeonite-cts/blob/main/CONFORMANCE-COVERAGE.md | Conformance coverage]
+
+  If validator guidance conflicts with the AEOS spec line, the AEOS spec line wins.
+`

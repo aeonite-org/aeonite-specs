@@ -1,0 +1,140 @@
+schemaVersion:string = "1"
+id:string = "appendix-altopelago-core-profile-v1"
+title:string = "Appendix — Core Profile v1"
+description:string = "Informative profile appendix describing the `core` profile and its minimal form-oriented behavior."
+created:date = 2026-03-25
+modified:date = 2026-08-23
+family:string = "appendices"
+group:string = "Profiles and Extensions"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-altopelago-core-profile-v1"
+order:number = 160
+publish:boolean = true
+keywords:list<string> = ["AEON", "core profile", "AES", "form-only", "determinism", "validate-only"]
+related:list<string> = ["appendix-profiles-framework-v1", "aeon-core-v1", "aeon-v1-contracts", "appendix-aes-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Core Profile v1 [# appendix-core-profile-v1]
+
+  [* Profile Name:] [$ core]
+  [* Determinism:] Deterministic[.][* Scope:] Minimal, form-only interpretation aligned with AEON v1 core
+
+  Canonical topic owners: AEON Specification v1 and the published AEON v1 contract artifacts.
+
+  This appendix describes the permissive AEON Core v1 baseline profile label.
+  If this appendix conflicts with the canonical v1 spec set or baseline contracts, the canonical v1 documents win.
+
+
+  ## 1. Purpose [# purpose]
+
+  The Core Profile v1 defines a minimal, stable interpretation layer
+  for AEON documents. It preserves AEON's form-only semantics and exposes the
+  Assignment Event Stream (AES) as the primary output. This profile is intended
+  as the baseline for TypeScript projects that want to parse AEON without
+  introducing application-specific meaning.
+
+
+  ## 2. Profile Declaration [# profile-declaration]
+
+  ~~~$ aeon
+  aeon:header = {
+    profile = "core"
+  }
+  ~~~$
+
+  Or shorthand:
+
+  ~~~$ aeon
+  aeon:profile = "core"
+  ~~~$
+
+
+  ## 3. Enabled Features [# enabled-features]
+
+  This profile enables only AEON core grammar and behavior:
+
+  - All AEON core literals
+  - Objects, lists, and tuples
+  - Attributes
+  - Clone and pointer references
+  - Headers and envelope structures
+
+  No external contracts are attached by default.
+
+
+  ## 4. Interpretation Rules [# interpretation-rules]
+
+  The profile is intentionally conservative:
+
+  1. [* No value coercion.] Literal forms are preserved as parsed.
+  2. [* No reference resolution.] Clone ([$ ~]) and pointer ([$ ~>]) references remain
+     symbolic in AES output. The logical reference graph must be preserved.
+
+  3. [* No attribute semantics.] Attributes are preserved as annotations but are
+     not interpreted.
+
+  4. [* No datatype semantics.] Type hints are preserved but not interpreted.
+
+
+  ## 5. Schema Interaction [# schema-interaction]
+
+  Schema validation is optional:
+
+  - If a schema is provided, it must be applied in [* validate-only] mode.
+  - Schema engines must not coerce or transform values.
+  - In strict mode, schema coercion is forbidden by the AEON spec.
+
+
+  ## 6. Output Transformation [# output-transformation]
+
+  There is no output transform. The primary output is AES (Assignment Event
+  Stream) emitted by the AEON core compiler.
+
+  This profile does not synthesize additional events. Indexed path events are emitted only from core path resolution behavior over list/tuple structure.
+
+
+  ## 7. Error Model [# error-model]
+
+  No profile-specific error codes are introduced. Implementations should emit
+  core AEON and AEOS diagnostics.
+
+
+  ## 8. Canonicalization Rules [# canonicalization-rules]
+
+  No additional canonicalization rules are defined beyond AEON core canonical
+  form requirements.
+
+
+  ## 9. Conformance Requirements [# conformance-requirements]
+
+  An implementation conforming to [$ core] MUST:
+
+  - Accept all valid AEON v1 core constructs.
+  - Reject invalid AEON documents with diagnostics that reference canonical paths.
+  - Emit exactly one Assignment Event per binding (fail-closed on errors).
+  - Preserve reference structure ([$ ~] and [$ ~>]), without resolution or flattening.
+  - Preserve attributes and datatype hints as annotations without interpretation.
+  - If a schema is provided, apply it in validate-only mode (no coercion).
+  - In strict mode, prohibit untyped values and schema coercion.
+
+
+  ## 10. Reference Behavior [# reference-behavior]
+
+  The profile preserves AEON reference semantics:
+
+  - Clone references express value intent.
+  - Pointer references express identity intent.
+  - Pointer chains must not be flattened.
+
+
+  ## 11. Compatibility Notes [# compatibility-notes]
+
+  This profile is the default AEON v1 baseline when no profile is declared.
+  It aligns with AEON v1 core behavior and AEOS v1 form validation.
+`

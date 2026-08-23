@@ -1,0 +1,270 @@
+schemaVersion:string = "1"
+id:string = "appendix-node-model-v1"
+title:string = "Appendix — Node Model"
+description:string = "Node literal model and representation boundaries relative to canonical pathing."
+created:date = 2026-03-25
+modified:date = 2026-08-23
+family:string = "appendices"
+group:string = "Core Semantics"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-node-model-v1"
+order:number = 70
+publish:boolean = true
+keywords:list<string> = ["AEON", "node model", "profile-gated", "mixed content", "indexed paths", "structural containers"]
+related:list<string> = ["aeon-core-v1", "appendix-bindings-v1", "appendix-aes-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Node Model [# appendix-node-model]
+
+  The Node Model is not enabled in AEON Core v1 by default.
+
+  Canonical topic owner: profile or processor specifications that explicitly enable node syntax.
+
+
+  ## 1. Purpose [# purpose]
+
+  The Node Model introduces a [* non-binding structural container] intended for:
+
+  - mixed content
+  - ordered child slots
+  - structural grouping without introducing named binding identity
+
+  Nodes exist to represent [* structure without named binding identity].
+
+  They are explicitly [/ not] objects, lists, or bindings.
+
+
+  ## 2. Design Principles [# design-principles]
+
+  The Node Model is governed by the following invariants:
+
+  1. [* Nodes do not introduce bindings]
+  2. [* Node children use indexed canonical path segments]
+  3. [* Nodes are opaque to AEON Core]
+  4. [* Nodes do not create named Assignment Events]
+  5. [* Nodes preserve ordering]
+
+  Nodes are structural only.
+  They preserve ordered child structure while exposing child slots through the same bracket-index path model used by lists and tuples.
+
+
+  ## 3. Syntax [# syntax]
+
+  ### 3.1 Node Declaration [# node-declaration]
+
+  A node is declared using the following syntax:
+
+  ~~~$ aeon
+  <tag(child1, child2, child3)>
+  <tag>
+  ~~~$
+
+  Where:
+
+  - [$ tag] is an identifier naming the node type
+  - [$ <tag(...)>] encloses an [* ordered list of node children]
+  - [$ <tag>] is the empty-node shorthand and is exactly equivalent to [$ <tag()>]
+
+  Whitespace and separators between children are significant only for ordering.
+
+
+  ### 3.2 Node as Binding Value [# node-as-binding-value]
+
+  A node may appear [* only as the value of a binding]:
+
+  ~~~$ aeon
+  content = <paragraph("Hello ", <strong("world")>)>
+  ~~~$
+
+  In this example:
+
+  - [$ $.content] is a canonical binding
+  - [$ paragraph] and [$ strong] are node tags
+  - the first node child is addressable as [$ $.content\\[0\\]]
+
+
+  ## 4. Node Children [# node-children]
+
+  ### 4.1 Child Types [# child-types]
+
+  A node child MAY be any of the following:
+
+  - literal value
+  - object literal
+  - list literal
+  - node
+  - reference ([$ ~], [$ ~>])
+  - anonymous typed value ([$ :type = value])
+
+  Anonymous typed children annotate only the immediate child value. They do not
+  create named bindings or ordering side effects:
+
+  ~~~$ aeon
+  page:node = <page(
+    :string = "hello"
+    <tag>
+    :int32 = 3
+  )>
+  ~~~$
+
+  Nested anonymous typed values such as [$ :n = :n = 3] are invalid.
+
+  ### 4.2 Ordering [# ordering]
+
+  Node children are:
+
+  - strictly ordered
+  - preserved exactly as written
+  - not sorted, normalized, or deduplicated
+
+  Ordering is observable only by consumers that interpret node values.
+
+
+  ## 5. Canonical Path Semantics [# canonical-path-semantics]
+
+  ### 5.1 Nodes [# nodes]
+
+  A node literal is reached through the canonical path of its owning value slot.
+  When a node is the value of a binding, the binding path identifies the node value.
+  Node children then use bracket-index segments beneath that path.
+
+  ~~~$ aeon
+  p = <paragraph("text")>
+  ~~~$
+
+  Canonical paths:
+
+  - [$ $.p] ✔
+  - [$ $.p\\[0\\]] ✔
+  - [$ $.p.text] ✘
+
+
+  ### 5.2 Bindings Inside Node Children [# bindings-inside-node-children]
+
+  If a node child contains an object literal with bindings:
+
+  ~~~$ aeon
+  p = <paragraph({ emphasis = "strong" })>
+  ~~~$
+
+  Then:
+
+  - [$ $.p] is a binding
+  - [$ $.p\\[0\\]] is the anonymous object child
+  - [$ $.p\\[0\\].emphasis] [* is a binding]
+  - The object literal behaves normally
+  - The node child slot uses the same bracket-index path form as list and tuple elements
+
+
+  ## 6. Assignment Events [# assignment-events]
+
+  Nodes do [* not] emit named Assignment Events.
+
+  Bindings emit ordinary named Assignment Events. Ordered child slots, including node children, may emit synthetic indexed AES events so downstream tooling can validate, project, and materialize them consistently.
+
+  If a binding’s value is a node, the node appears as the value of the binding event and its children may be surfaced through indexed child paths.
+
+  ~~~$ aeon
+  title = <heading("Hello")>
+  ~~~$
+
+  Emitted event:
+
+  - path: [$ $.title]
+  - value: Node([$ heading], children…)
+
+  Synthetic indexed child events may be emitted for:
+
+  - child positions
+  - anonymous typed child values
+  - bindings contained inside object children
+
+
+  ## 7. References [# references]
+
+  References ([$ ~], [$ ~>]) inside node children are:
+
+  - syntactically valid
+  - symbolically preserved
+  - validated normally (missing, forward, self)
+
+  However:
+
+  - node child targets use numeric index segments, for example [$ $.page\\[0\\]]
+  - node tags are not independent reference targets
+  - references target canonical paths, not raw source positions
+
+
+  ## 8. Profiles and Enablement [# profiles-and-enablement]
+
+  Node syntax is [* not enabled by default].
+
+  A processor/profile must explicitly enable node syntax.
+
+  Example:
+
+  ~~~$ aeon
+  aeon:profile = "node"
+  ~~~$
+
+  Document profile declaration is advisory under zero-trust processing.
+  Processors MUST select from an explicit whitelist/registry and verify profile compatibility before enabling node syntax.
+
+  Without processor/profile enablement:
+
+  - node syntax MUST produce a ProfileError
+  - parsing MUST fail-closed
+
+
+  ## 9. Mode Interaction [# mode-interaction]
+
+  Node semantics are [* mode-agnostic].
+
+  - [$ transport] vs [$ strict] does not change node behavior
+  - typing rules apply only to bindings, not node structure
+
+
+  ## 10. Non-Goals (Explicitly Excluded) [# non-goals-explicitly-excluded]
+
+  The Node Model does [* not] provide:
+
+  - automatic traversal semantics
+  - implicit binding creation
+  - execution or evaluation
+  - rendering rules
+
+  Any such behavior must be implemented [* outside AEON Core].
+
+
+  ## 11. Rationale [# rationale]
+
+  The Node Model exists to support [* structure without identity].
+
+  It allows AEON to express:
+
+  - mixed content
+  - hierarchical grouping
+  - ordered child elements
+
+  …without violating AEON’s core invariants:
+
+  - immutability
+  - explicit identity
+  - canonical path determinism
+  - auditability
+
+
+  ## 12. Summary [# summary]
+
+  - Nodes are [* structural containers]
+  - Bindings are the [* only named identity-bearing construct]
+  - Node children are [* ordered and bracket-index addressable]
+  - Nodes are [* profile-gated and optional]
+  - AEON Core remains a [* binding-centric system]
+`

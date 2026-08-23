@@ -1,0 +1,73 @@
+profile_id = "aeon.gp.profile.v1"
+profile_version = "1.0.0"
+core_id = "aeon.core.v1"
+description = "General-purpose AEON profile baseline for v1."
+mode_default = "strict"
+datatype_policy_default = "reserved_only"
+collections = {
+  list = {
+    ordered = false
+    heterogeneous = true
+    unique = false
+    fixed_length = false
+  }
+  tuple = {
+    ordered = true
+    heterogeneous = true
+    unique = false
+    fixed_length = true
+  }
+}
+containers = {
+  object = {
+    ordered = false
+    heterogeneous = true
+    unique_keys = true
+  }
+  node = {
+    ordered = true
+    heterogeneous = true
+    unique_attributes = true
+    mixed_content = true
+  }
+}
+datatype_semantics = {
+  radix = {
+    literal_family = "RadixLiteral"
+    clarifiers = "radix_base"
+  }
+  decimal = {
+    literal_family = "RadixLiteral"
+    clarifiers = "none"
+    equivalent_to = "radix[10]"
+  }
+  sep = {
+    literal_family = "SeparatorLiteral"
+    clarifiers = "separator_chars"
+  }
+  separator = {
+    literal_family = "SeparatorLiteral"
+    clarifiers = "separator_chars"
+    alias_of = "sep"
+  }
+  kadot = {
+    literal_family = "SeparatorLiteral"
+    clarifiers = "none"
+  }
+  encoding = {
+    literal_family = "EncodingLiteral"
+    clarifiers = "encoding_name"
+  }
+  inline = {
+    literal_family = "EncodingLiteral"
+    clarifiers = "encoding_name"
+  }
+  embed = {
+    literal_family = "EncodingLiteral"
+    clarifiers = "encoding_name"
+  }
+}
+capabilities = {
+  references = true
+  clones = true
+}

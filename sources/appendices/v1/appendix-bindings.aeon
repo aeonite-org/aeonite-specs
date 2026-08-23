@@ -1,0 +1,79 @@
+schemaVersion:string = "1"
+id:string = "appendix-bindings-v1"
+title:string = "Appendix — Bindings and Identity"
+description:string = "Binding identity model, uniqueness constraints, and canonical identity behavior."
+created:date = 2026-03-25
+modified:date = 2026-08-23
+family:string = "appendices"
+group:string = "Core Semantics"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-bindings-v1"
+order:number = 60
+publish:boolean = true
+keywords:list<string> = ["AEON", "bindings", "identity", "canonical paths", "immutability", "references"]
+related:list<string> = ["aeon-core-v1", "aeon-core-v1-structure-syntax", "aeon-core-v1-addressing-references"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Bindings and Identity [# appendix-bindings-and-identity]
+
+  Canonical topic owners: AEON Specification v1, AEON Core v1 Structure and Syntax Reference, and AEON v1 Addressing, SANSA Literals, and References Reference.
+
+  If this appendix conflicts with the canonical v1 spec set, the canonical v1 spec set wins.
+
+  ## 1. Binding as Identity Unit [# binding-as-identity-unit]
+
+  A binding has the form:
+
+  ~~~$ aeon
+  path = value
+  ~~~$
+
+  Bindings are the identity unit in AEON. Identity-backed behaviors attach to bindings, not to arbitrary value fragments.
+
+  ## 2. Why Bindings Matter [# why-bindings-matter]
+
+  Bindings provide:
+
+  - canonical path identity
+  - source ordering
+  - source span anchoring
+  - uniqueness/immutability checks
+
+  These properties are required for deterministic references, diagnostics, schema matching, and canonicalization.
+
+  ## 3. References Depend on Bindings [# references-depend-on-bindings]
+
+  References ([$ ~], [$ ~>]) target bindings via address expressions. A value without binding identity is not a legal reference target.
+
+  ## 4. Containers and Identity [# containers-and-identity]
+
+  - Object members are bindings and therefore identity-bearing.
+  - List/tuple elements are positional values; they are addressable via index segments but are not independent named bindings.
+  - Attribute metadata is binding-attached and follows the binding target model.
+
+  ## 5. Node Literals [# node-literals]
+
+  Node literals are values. Node children do not implicitly create top-level named binding identity, but ordered child slots use bracket-index canonical paths such as [$ $.content\\[0\\]]. If a node child contains bindings, those bindings continue below the indexed child path.
+
+  Valid introducer example:
+
+  ~~~$ aeon
+  content = <p("Hello", <strong("world")>, { key = 1 })>
+  ~~~$
+
+  Identity-bearing bindings in this example include [$ $.content] and [$ $.content\\[2\\].key].
+
+  ## 6. Validation and Diagnostics [# validation-and-diagnostics]
+
+  Schema/validator rules operate on addressable targets derived from bindings and indexed container structure. Diagnostics should report canonical path plus span where available.
+
+  ## 7. Summary [# summary]
+
+  Bindings are the semantic spine of AEON: they anchor identity, determinism, and conformance behavior.
+`

@@ -1,4 +1,4 @@
-name: Repo Hygiene
+name: Source Validation
 
 on:
   push:
@@ -12,12 +12,12 @@ permissions:
   contents: read
 
 jobs:
-  local-path-hygiene:
+  source-validation:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - name: Check for local filesystem paths
+      - name: Check canonical sources and repository hygiene
         run: bash ./scripts/pre-commit-check.sh

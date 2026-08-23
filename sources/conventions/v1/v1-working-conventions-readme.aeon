@@ -1,0 +1,28 @@
+schemaVersion:string = "1"
+id:string = "v1-working-conventions-readme"
+title:string = "v1 Working Conventions Source"
+description:string = "Authority note for convention documents authored in the v1 working tree."
+created:date = 2026-03-25
+modified:date = 2026-05-27
+family:string = "conventions"
+group:string = "Convention Overview"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC0-1.0"
+path:string = "specification/conventions/v1-working-source"
+order:number = 0
+publish:boolean = true
+keywords:list<string> = ["AEON", "conventions", "authority", "working source"]
+related:list<string> = []
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # v1 Working Conventions Source [# v1-working-conventions-source]
+
+  This folder holds convention documents authored in the v1 working source tree.
+
+  When a convention document exists here, this copy is the editing source for publication copies used by downstream repos such as [$ aeonite-website].
+`

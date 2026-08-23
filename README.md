@@ -4,97 +4,73 @@ license: CC-BY-4.0
 
 # aeonite-specs
 
-`aeonite-specs` is the canonical public repository for formal AEON-family specification text.
+`aeonite-specs` is the canonical public repository for formal AEON-family specification sources.
 
-It is the source of truth for:
-
-- AEON specifications
-- AEOS specifications
-- SANSA specifications
-- NEON specifications
-- versioned spec lifecycle state across proposals, drafts, and published releases
+The formal corpus is authored as AEON envelopes containing embedded `&ND` documents. Repository
+documentation such as this README, authority statements, licensing policy, and contribution guidance
+remains Markdown because it describes the repository rather than forming part of the specification
+corpus.
 
 ## Authority
 
-This repo is specification-authoritative.
+This repository is authoritative for:
 
-It is intended to own the formal text that was previously spread across organizational documents and temporary working areas.
+- AEON, AEOS, SANSA, NEON, and &ND specifications;
+- appendices, conventions, proposals, drafts, and publication metadata;
+- versioned contract registries, profiles, schemas, and other normative resources.
 
-It is not intended to own:
-
-- implementation code
-- official CTS ownership
-- project planning trackers
-
-## Public repositories
-
-- [`aeonite-org/aeonite-specs`](https://github.com/aeonite-org/aeonite-specs) is the canonical specification source.
-- [`aeonite-org/aeonite-cts`](https://github.com/aeonite-org/aeonite-cts) owns the public conformance suites, runners, and CTS protocol material.
+It does not own implementation code, official CTS ownership, website presentation, generated
+projections, or deployment configuration.
 
 ## Layout
 
 ```text
-aeon/
-  v1/
-    proposals/
-    drafts/
-    published/
-aeos/
-  v1/
-    proposals/
-    drafts/
-    published/
-sansa/
-  v1/
-    proposals/
-    drafts/
-    published/
-neon/
-  v1/
-    proposals/
-    drafts/
-    published/
-and/
-  v1/
-    drafts/
-  v2/
-    proposals/
-contracts/
-  v1/
-    drafts/
-      artifacts/
-conventions/
-  v1/
-    drafts/
+sources/
+  aeon/v1/
+  aeos/v1/
+  sansa/v1/
+  neon/v1/
+  and/v1/
+  and/v2/
+  appendices/v1/
+  conventions/v1/
+  contracts/v1/
+resources/
+  contracts/v1/
+publication/
+  spec-document-profile.md
+  aeon-example-expectations.json
+metadata/
+  document-date-provenance.json
 ```
 
-Repository-level spec-maintenance utilities may also live under:
+Lifecycle, standing, normativity, relationships, ordering, and publication paths are declared in each
+AEON source envelope. Directory names organize the corpus but do not override envelope metadata.
 
-- `scripts/`
+Generated HTML, Markdown, standalone &ND, search indexes, and catalogs are not checked into this
+repository. The private `aeonite-website` publisher consumes a reviewed revision of this public
+source tree and produces those artifacts for [`aeonite.org`](https://aeonite.org/). Published
+document pages provide downloadable Markdown, &ND, and original AEON-source projections.
 
-Release-facing change history is tracked in:
-
-- `CHANGELOG.md`
-
-Specification snapshots use explicit documentation identifiers such as
-`sansa-query-specs-v1-snapshot-0.1`. They are intended to align spec text with
-CTS compatibility snapshots without replacing proposal, draft, or published
-lifecycle status. See `docs/spec-snapshot-versioning.md`.
+## Validation
 
 Before committing, run:
 
-```bash
+```sh
 bash ./scripts/pre-commit-check.sh
 ```
 
-This keeps portable spec text from accidentally picking up local filesystem
-paths.
+This checks portable paths, the 79-document source inventory, required envelope declarations,
+identifier uniqueness, date ordering, and the contract-resource bundle. Full AEON and &ND parsing,
+projection tests, and website checks run in the consuming publication build.
+
+## Public repositories
+
+- [`aeonite-org/aeonite-specs`](https://github.com/aeonite-org/aeonite-specs) is the canonical specification source.
+- [`aeonite-org/aeonite-cts`](https://github.com/aeonite-org/aeonite-cts) owns public conformance suites, runners, and CTS protocol material.
 
 ## Licensing
 
-This repository uses artifact-specific licenses. Normative specifications and
-appendices use `CC-BY-4.0`, conventions and reusable examples use `CC0-1.0`,
-and repository maintenance scripts use `MIT`, unless a file declares otherwise.
-
-See `LICENSE` and `LICENSE.md` for the licensing policy, and `LICENSES/` for
-the full license texts.
+This repository uses artifact-specific licenses. Normative specifications and appendices use
+`CC-BY-4.0`, conventions and reusable examples use `CC0-1.0`, and repository maintenance scripts use
+`MIT`, unless an AEON envelope or file declares otherwise. See `LICENSE.md` and `LICENSES/`.

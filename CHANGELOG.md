@@ -17,14 +17,92 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Replaced the legacy formal Markdown corpus with 79 canonical AEON envelopes containing embedded
+  &ND documents, moved authoritative contract resources under `resources/`, and made generated
+  website and compatibility projections downstream artifacts rather than checked-in sources.
+- Aligned local anchors, fragment targets, named footnotes, and semantic wrappers on the shared
+  case-sensitive v2 identifier grammar `[A-Za-z0-9][A-Za-z0-9._:-]*`.
+- Added proposal-stage v2 structural block escapes: a leading `\` at a block-open position quotes a
+  real heading, list, quote, rule, extension, raw-fence, paired-fence, or semantic-fence opener as
+  ordinary paragraph text while leaving the global inline escape set closed.
+- Added proposal-stage semantic wrappers: `~~~(id)` / `~~~` blocks and `[(id) content]` inline text.
+  Their IDs are retained for consumers but omitted from the reference HTML projection.
+- Replaced the proposal-stage `===` and `***` v2 paired blocks with untagged `~~~#` header text and
+  `~~~^` / `~~~` disclaimer blocks, and added rich inline `[^ ...]` disclaimers.
+- Added `~~~'` as a proposal-stage rich block comment in &ND v2; consumers control visibility and
+  the reference HTML projection preserves it as hidden content.
+- Removed the briefly introduced `~~~language` and `~~~~language` code-fence alternatives before
+  publication; triple/quadruple backticks remain supported in v1 and inherited v2 parsing.
+- Added the proposal-stage v2 `~~~$` code-block family with optional language and `[n]` numbered-line
+  intent; v2 canonical output normalizes inherited backtick code blocks to this spelling.
+- Added unnumbered `~~~$` and `~~~$ language` code fences to v1 while retaining backticks as v1's
+  preferred canonical output; `[n]` dollar fences remain v2-only, and canonical emitters select the
+  alternate supported fence on an exact payload-closer collision.
+- Added proposal-stage v2 table alignment through `<--`, `-=-`, and `-->` separator cells plus
+  adjacent `>` horizontal `colSpan` markers for header and body cells; v1 rejects both extensions.
+- Added contextual `- [?]` / `- [!]` advisory list markers, visible `~~~?` / `~~~!` advisory
+  paragraphs, and clarified that inline `[? ...]` / `[! ...]` presentation remains consumer-owned.
+
 ### Added
 
+- Added proposal-stage `&ND` v1-to-v2 migration and v2 consumer-conventions documents, covering the
+  asymmetric parser boundary, mechanical syntax migration, supported v2 surface, and the explicit
+  split between Core fields and consumer-owned behavior.
+- Added the proposal-stage `&ND Core v2` AST contract, including effective-version metadata,
+  promoted node shapes, and canonical emission boundaries.
 - Added initial SANSA v1 draft specification tree under `sansa/v1/drafts/`.
 - Promoted SANSA Addressing and Resolve documents to draft status.
 - Added SANSA lifecycle placeholders for `sansa/v1/proposals/` and `sansa/v1/published/`.
 
 ### Changed
 
+- Clarified that v2 local-fragment integrity is a second-pass document validation rule, omitted image
+  modes intentionally normalize to explicit `inline`, `autoNumber?: true` is an additive opt-in AST
+  field, and `[.]` is solely a line-break node rather than a directional marker.
+- Replaced generic inline todo markers in the `&ND Core v2` proposal with homogeneous first-class
+  `todo_list` and `todo_item` structures introduced by exact `- [state] content` prefixes.
+- Made `[n]` contextual to headings and first-class `auto_number_list` blocks.
+- Promoted `[% content]`, `[% (id) content]`, and `[% (id)]` as anonymous/named footnote definitions
+  and backward named references, while leaving labels and presentation to processors.
+- Allowed immediate two-space nested lists in v2 and made the reference HTML projection visibly
+  calculate hierarchical numbers for opted-in headings.
+- Defined leading `[>]` and `[<]` markers in unordered items as contextual bullet replacements while
+  retaining their existing inline AST and later-marker behavior.
+- Extended the formatted paragraph fence family with `~~~*` strong, `~~~/` emphasis, and `~~~_`
+  underline blocks while keeping plain `~~~` as ordinary paragraph text.
+- Updated the `&ND Core v2` proposal to record the executable parser, canonical, HTML, budget,
+  extension, and strict forward-compatibility boundaries.
+- Consolidated the `&ND Core v2` first-draft candidate surface into Core, Core-syntax-plus-convention,
+  and deferred dispositions; content-bearing inline tags now use rich `children` while identifiers
+  and metadata remain scalar.
+- Defined local navigation through inherited `[@ #id | label]` links to `[# id]` anchors, with a
+  portable ID grammar, forward links, document-wide uniqueness, and strict unresolved-target errors;
+  external resources continue to use ordinary `[@ target | label]` links.
+- Promoted `[~ source | alt | mode]` as the v2 inline-image form with mandatory alt text, an
+  `inline` default, closed `inline`/`half`/`full` display intents, and deterministic canonical output.
+- Defined image-source resolution as a consumer boundary: Core preserves authored sources, while the
+  reference HTML renderer offers explicit credential-free HTTP(S) `imageBaseUrl` resolution,
+  source-provenance metadata, and fail-closed URL handling.
+- Audited `&ND` v2 first-draft readiness, separating the healthy executable grammar and tooling
+  surfaces from remaining publication blockers: embedding/API contract text, exact projection
+  snapshots, broader spans and combinations, migration guidance, and consumer conventions.
+- Closed all documented `&ND` v2 first-draft candidate gates while retaining proposal lifecycle
+  status pending an explicit reviewed promotion of formal documents and CTS metadata.
+- Froze headerless v2 selection as a host-controlled typed-channel operation requiring both reader
+  capability and explicit effective version, with source declarations taking precedence, and added
+  the corresponding v2 public API contract and boundary checks.
+- Added machine-readable projection contract `and-v2-projection-v1`, pinning complete promoted-surface
+  coverage through exact standalone/embedded canonical and inert HTML snapshots, including nested,
+  image-resolution, full-document, and unsafe-resource cases; the contract now also pins 46 exact
+  source-span assertions and a 36-entry cross-form interaction matrix.
+- Added proposal-stage v2 `~~~|` card containers: unnamed cards are visible boxes, while a rich
+  opener title carries collapsible intent; card bodies contain ordinary block children.
+- Replaced the provisional equals-free `&ND` typed-value spelling with exact AEON
+  `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
+  reserved type/literal compatibility checks, and AEON-canonical scalar output.
+- Pinned the `&ND` v2 inline-scalar boundary as machine-readable contract
+  `and-v2-aeon-inline-scalar-v1`, aligned with AEON TypeScript `0.12.0`, with mandatory AST,
+  canonical, HTML, alias, and exclusion checks plus an optional live AEON drift check.
 - Changed AEON draft encoding-family literal syntax from `$payload` to `&payload`.
 - Changed NEON draft AEON integration examples and text-preservation guidance to use `&...` encoding literals.
 - Expanded Shared AEON Value Semantics proposal with explicit profile-selection, string collation, temporal comparison, and mutation-compatibility guidance.
@@ -58,6 +136,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Spec Impact
 
+- Makes the current v2 implementation shape reviewable without promoting v2 beyond proposal stage.
 - Introduces draft SANSA specification text for semantic addressing and deterministic structural resolution.
 - Keeps read-only SANSA Query semantics in proposal status while the query surface continues to evolve.
 - Starts the encoding-family literal migration by reserving `&` for `encoding`, `base64`, `embed`, and `inline` payload literals in draft spec text.
@@ -72,7 +151,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Prevents encoding-family values from being treated as decoded bytes, decoded text, radix values, or generic string collation inputs by default.
 - Gives encoding-family values a deterministic portable fallback order without assigning decoded-byte, decoded-text, media, hash, or radix meaning.
 - Gives separator literals a deterministic portable fallback order without assigning domain meaning to separator characters.
-- Prevents document-local separator specs such as `sep[.]` from silently authorizing semantic splitting, IP parsing, version parsing, or domain ordering.
+- Prevents document-local separator clarifiers such as `sep["."]` from silently authorizing semantic splitting, IP parsing, version parsing, or domain ordering.
 - Prevents AEON-hosted `:sansa` values from being treated as AEON paths by default when they may target another SANSA-compatible semantic namespace.
 - Makes AEON's relationship to SANSA explicit as an AEON binding-model namespace adapter rather than the owner of SANSA traversal semantics.
 - Defines minimum structural equality for objects, lists, tuples, and nodes while keeping list/tuple coercion, structural ordering, and mutation behavior explicit.
@@ -81,6 +160,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### CTS Impact
 
+- The local v2 proposal runner now checks declared and embedded parsing, v1 compatibility,
+  canonical fixed points, HTML projection, nested contexts and rich inline content, inline and
+  paired-block budgets, document-local fragment integrity, opaque extensions, and unpromoted syntax.
 - Updated proposal-stage Value Semantics CTS expectations so `isValue(...)` follows the concrete-value basis, including accepting infinity and container values while excluding Missing, explicit null, explicit absence values, and NaN.
 - Added proposal-stage Value Semantics CTS coverage for portable `aeon.value.default.v1` and `aeon.value.string.codepoint.v1` profile selection.
 - Updated SANSA.Query CTS expectations to align query `isValue(...)` behavior with the Shared AEON Value Semantics concrete-value basis.

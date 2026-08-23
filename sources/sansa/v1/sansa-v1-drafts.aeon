@@ -1,0 +1,58 @@
+schemaVersion:string = "1"
+id:string = "sansa-v1-drafts"
+title:string = "SANSA v1 Drafts"
+description:string = "Draft-stage specification set for the SANSA v1 foundation layer."
+created:date = 2026-07-14
+modified:date = 2026-08-23
+family:string = "sansa"
+group:string = "SANSA"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/sansa/v1/drafts"
+order:number = 0
+publish:boolean = true
+keywords:list<string> = ["SANSA", "drafts", "addressing", "resolution", "foundation"]
+related:list<string> = []
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # SANSA v1 Drafts [# sansa-v1-drafts]
+
+  SANSA is the Semantic Address NameSpace Abstraction. It defines a common way for consumers to address, resolve, and query semantic information without depending on the physical implementation that stores or generates that information.
+
+  SANSA is independent within the Aeonite ecosystem. AEON, AEOS, AES, runtime object graphs, databases, services, and other systems may implement SANSA, but none of those systems owns the abstraction.
+
+  ## Draft Set [# draft-set]
+
+  - [@ document:sansa-v1-addressing | [$ addressing-v1]] defines the SANSA address model and selector vocabulary.
+  - [@ document:sansa-v1-resolve | [$ resolve-v1]] defines deterministic structural resolution over SANSA address expressions.
+
+  These documents are draft-stage because their foundation-layer behavior is now implemented and exercised by AEON TypeScript and the standalone [$ @altopelago/sansa] implementation.
+
+  ## Related Proposals [# related-proposals]
+
+  The following SANSA v1 documents remain in [$ ../proposals/] while their surfaces continue to evolve:
+
+  - [@ document:sansa-v1-query | [$ query-v1]]
+  - [@ document:sansa-v1-conformance | [$ conformance-v1]]
+  - [@ document:sansa-v1-extensions | [$ extensions-v1]]
+  - [@ document:sansa-v1-meaning-validation-integration | [$ meaning-validation-integration-v1]]
+  - [@ document:sansa-v1-mutate | [$ mutate-v1]]
+
+  ## Design Boundaries [# design-boundaries]
+
+  SANSA separates semantic interaction from representation, validation, persistence, and runtime implementation.
+
+  - AEON defines how meaning is represented.
+  - AEOS defines how meaning is constrained.
+  - AES defines how meaning is persisted.
+  - SANSA defines how meaning is accessed.
+  - Meaning validators define how domain rules are interpreted and reported.
+  - Future mutation consumers define how accepted change intent is authorized, orchestrated, and applied.
+
+  SANSA does not require data to originate from AEON. It requires only that a conforming implementation expose a deterministic semantic namespace to consumers.
+`

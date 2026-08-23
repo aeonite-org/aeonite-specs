@@ -1,0 +1,1596 @@
+{
+  "schemaVersion": "1",
+  "policy": {
+    "canonicalRepository": "aeonite-specs",
+    "created": "Date of the earliest author timestamp in canonical Markdown history, following renames.",
+    "modified": "Date of the latest canonical Markdown or later substantive AEON-source author timestamp; format migration and date-only changes are excluded.",
+    "fallback": "Documents without canonical Markdown use their AEON-source history."
+  },
+  "summary": {
+    "documents": 79,
+    "canonicalMarkdownMatches": 76,
+    "aeonHistoryFallbacks": 3
+  },
+  "documents": [
+    {
+      "id": "aeon-context-v1",
+      "currentSource": "sources/conventions/v1/aeon-context-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-context-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-context-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-context-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-conventions-overview",
+      "currentSource": "sources/conventions/v1/aeon-conventions.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-conventions.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-conventions.md"
+      },
+      "modified": {
+        "timestamp": "2026-06-06T01:05:28+10:00",
+        "commit": "24facc5df1dccec2a96438f60cea07b3ee57a42e",
+        "subject": "Normalize v1 appendices and conformance text",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-conventions.md"
+      }
+    },
+    {
+      "id": "aeon-core-v1",
+      "currentSource": "sources/aeon/v1/AEON-spec-v1.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/AEON-spec-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/AEON-spec-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/AEON-spec-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-core-v1-addressing-references",
+      "currentSource": "sources/aeon/v1/addressing-references-v1.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/addressing-references-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/addressing-references-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/addressing-references-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-core-v1-comments-annotations",
+      "currentSource": "sources/aeon/v1/comments-annotations-v1.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/comments-annotations-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/comments-annotations-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:55:01+10:00",
+        "commit": "81b9abe3d85c1270c521fee3ac8c9bc6368232e5",
+        "subject": "Normalize arrow notation in AEON examples",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/comments-annotations-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-core-v1-compliance",
+      "currentSource": "sources/aeon/v1/AEON-v1-compliance.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/aeon-core-compliance-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/aeon-core-compliance-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/AEON-v1-compliance.aeon"
+      }
+    },
+    {
+      "id": "aeon-core-v1-structure-syntax",
+      "currentSource": "sources/aeon/v1/structure-syntax-v1.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/structure-syntax-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/structure-syntax-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:38:26+10:00",
+        "commit": "dc83112a38a37a7f0f22519123b61fac808be137",
+        "subject": "Drop .md suffixes from spec references",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/structure-syntax-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-core-v1-value-types",
+      "currentSource": "sources/aeon/v1/value-types-v1.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/value-types-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/value-types-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/value-types-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-gp-collection-v1",
+      "currentSource": "sources/conventions/v1/aeon-gp-collection-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-gp-collection-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-29T21:38:58+10:00",
+        "commit": "41cd01a553c157baaf47d30265fbad179e7d5495",
+        "subject": "Add aeon.gp.collection.v1 convention and references",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-gp-collection-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-gp-collection-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-gp-convention-v1",
+      "currentSource": "sources/conventions/v1/aeon-gp-convention-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-gp-convention-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-gp-convention-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-gp-convention-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-gp-document-v1",
+      "currentSource": "sources/conventions/v1/aeon-gp-document-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-gp-document-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-gp-document-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-gp-document-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-gp-encryption-v1",
+      "currentSource": "sources/conventions/v1/aeon-gp-encryption-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-gp-encryption-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-06-06T00:09:24+10:00",
+        "commit": "e4bec7fd1816fce6c60053f41e03932c6ebb8e15",
+        "subject": "Update AEON/AEOS docs and conventions",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-gp-encryption-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-gp-encryption-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-gp-integrity-v1",
+      "currentSource": "sources/conventions/v1/aeon-gp-integrity-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-gp-integrity-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-06-06T00:09:24+10:00",
+        "commit": "e4bec7fd1816fce6c60053f41e03932c6ebb8e15",
+        "subject": "Update AEON/AEOS docs and conventions",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-gp-integrity-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-gp-integrity-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-gp-measurement-v1",
+      "currentSource": "sources/conventions/v1/aeon-gp-measurement-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-gp-measurement-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-06-06T00:09:24+10:00",
+        "commit": "e4bec7fd1816fce6c60053f41e03932c6ebb8e15",
+        "subject": "Update AEON/AEOS docs and conventions",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-gp-measurement-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-gp-measurement-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-gp-security-envelope-v1",
+      "currentSource": "sources/conventions/v1/aeon-gp-security-envelope-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-gp-security-envelope-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-gp-security-envelope-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-gp-security-envelope-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-gp-signature-v1",
+      "currentSource": "sources/conventions/v1/aeon-gp-signature-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-gp-signature-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-06-06T00:09:24+10:00",
+        "commit": "e4bec7fd1816fce6c60053f41e03932c6ebb8e15",
+        "subject": "Update AEON/AEOS docs and conventions",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-gp-signature-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-gp-signature-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-gp-temporal-v1",
+      "currentSource": "sources/conventions/v1/aeon-gp-temporal-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-gp-temporal-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-13T03:04:10+10:00",
+        "commit": "e40c0e3918205fe25ca9c7d7fcde66bacdb7cb7a",
+        "subject": "Rename 'switch' → 'toggle'; add temporal convention",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-gp-temporal-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-gp-temporal-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-quick-mental-model",
+      "currentSource": "sources/conventions/v1/aeon-quick-mental-model.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-quick-mental-model.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-quick-mental-model.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-quick-mental-model.aeon"
+      }
+    },
+    {
+      "id": "aeon-secure-document-lifecycle",
+      "currentSource": "sources/conventions/v1/aeon-secure-document-lifecycle.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-secure-document-lifecycle.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-secure-document-lifecycle.md"
+      },
+      "modified": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-secure-document-lifecycle.md"
+      }
+    },
+    {
+      "id": "aeon-security-architecture",
+      "currentSource": "sources/conventions/v1/aeon-security-architecture.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-security-architecture.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-security-architecture.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-security-architecture.aeon"
+      }
+    },
+    {
+      "id": "aeon-security-best-practices",
+      "currentSource": "sources/conventions/v1/aeon-security-best-practices.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-security-best-practices.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-security-best-practices.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-security-best-practices.aeon"
+      }
+    },
+    {
+      "id": "aeon-security-profiles-v1",
+      "currentSource": "sources/conventions/v1/aeon-security-profiles-v1.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/aeon-security-profiles-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-06-06T00:09:24+10:00",
+        "commit": "e4bec7fd1816fce6c60053f41e03932c6ebb8e15",
+        "subject": "Update AEON/AEOS docs and conventions",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/aeon-security-profiles-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/aeon-security-profiles-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-v1-conformance-matrix",
+      "currentSource": "sources/aeon/v1/conformance-matrix.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/conformance-matrix.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/conformance-matrix.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/conformance-matrix.aeon"
+      }
+    },
+    {
+      "id": "aeon-v1-consolidation-source-map",
+      "currentSource": "sources/aeon/v1/consolidation-source-map.aeon",
+      "canonicalMarkdown": null,
+      "basis": "aeon-source-history-no-canonical-markdown",
+      "created": {
+        "timestamp": "2026-08-21T18:58:33+10:00",
+        "commit": "88805564645f454fc2db4f392d0e551eb5208c6b",
+        "subject": "Add consolidated AEON/AEOS v1 spec set",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/consolidation-source-map.aeon"
+      },
+      "modified": {
+        "timestamp": "2026-08-21T18:58:33+10:00",
+        "commit": "88805564645f454fc2db4f392d0e551eb5208c6b",
+        "subject": "Add consolidated AEON/AEOS v1 spec set",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/consolidation-source-map.aeon"
+      }
+    },
+    {
+      "id": "aeon-v1-contracts",
+      "currentSource": "sources/contracts/v1/contracts-v1.aeon",
+      "canonicalMarkdown": "contracts/v1/drafts/contracts-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "contracts/v1/drafts/contracts-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/contracts/v1/contracts-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-v1-official-index",
+      "currentSource": "sources/aeon/v1/official-v1-index.aeon",
+      "canonicalMarkdown": null,
+      "basis": "aeon-source-history-no-canonical-markdown",
+      "created": {
+        "timestamp": "2026-08-21T18:58:33+10:00",
+        "commit": "88805564645f454fc2db4f392d0e551eb5208c6b",
+        "subject": "Add consolidated AEON/AEOS v1 spec set",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/official-v1-index.aeon"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:38:26+10:00",
+        "commit": "dc83112a38a37a7f0f22519123b61fac808be137",
+        "subject": "Drop .md suffixes from spec references",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/official-v1-index.aeon"
+      }
+    },
+    {
+      "id": "aeon-v1-parameterized-object-node-claims",
+      "currentSource": "sources/aeon/v1/parameterized-object-node-claims.aeon",
+      "canonicalMarkdown": "aeon/v1/proposals/parameterized-object-node-claims.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-06-02T22:16:01+10:00",
+        "commit": "794f7e1359763dc24c60b6d8540981826c788f02",
+        "subject": "Add parameterized node<T>/object<T> docs",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/proposals/parameterized-object-node-claims.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/parameterized-object-node-claims.aeon"
+      }
+    },
+    {
+      "id": "aeon-v1-release-governance",
+      "currentSource": "sources/aeon/v1/release-governance-v1.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/release-governance-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/release-governance-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/release-governance-v1.aeon"
+      }
+    },
+    {
+      "id": "aeon-v1-sansa-address-literals",
+      "currentSource": "sources/aeon/v1/sansa-address-literals.aeon",
+      "canonicalMarkdown": "aeon/v1/proposals/sansa-address-literals.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-17T06:43:05+10:00",
+        "commit": "47910da7e5bc2e5aad9ef9dfb8c68a5ce2f38f97",
+        "subject": "Add proposal for AEON SANSA address literals",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/proposals/sansa-address-literals.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/sansa-address-literals.aeon"
+      }
+    },
+    {
+      "id": "aeon-v1-supersession-table",
+      "currentSource": "sources/aeon/v1/supersession-table.aeon",
+      "canonicalMarkdown": null,
+      "basis": "aeon-source-history-no-canonical-markdown",
+      "created": {
+        "timestamp": "2026-08-21T18:58:33+10:00",
+        "commit": "88805564645f454fc2db4f392d0e551eb5208c6b",
+        "subject": "Add consolidated AEON/AEOS v1 spec set",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/supersession-table.aeon"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/supersession-table.aeon"
+      }
+    },
+    {
+      "id": "aeon-v1-value-semantics",
+      "currentSource": "sources/aeon/v1/value-semantics-v1.aeon",
+      "canonicalMarkdown": "aeon/v1/proposals/value-semantics-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-21T12:23:13+10:00",
+        "commit": "039da57decdd6833b2eb16a8efcd9a843165bb3a",
+        "subject": "Add shared value semantics proposal",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/proposals/value-semantics-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/aeon/v1/value-semantics-v1.aeon"
+      }
+    },
+    {
+      "id": "aeos-v1",
+      "currentSource": "sources/aeos/v1/AEOS-spec-v1.aeon",
+      "canonicalMarkdown": "aeos/v1/drafts/AEOS-spec-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeos/v1/drafts/AEOS-spec-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:55:01+10:00",
+        "commit": "81b9abe3d85c1270c521fee3ac8c9bc6368232e5",
+        "subject": "Normalize arrow notation in AEON examples",
+        "repository": "aeonite-and",
+        "path": "sources/aeos/v1/AEOS-spec-v1.aeon"
+      }
+    },
+    {
+      "id": "aeos-v1-compliance",
+      "currentSource": "sources/aeos/v1/aeos-compliance-v1.aeon",
+      "canonicalMarkdown": "aeos/v1/drafts/aeos-compliance-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeos/v1/drafts/aeos-compliance-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:38:26+10:00",
+        "commit": "dc83112a38a37a7f0f22519123b61fac808be137",
+        "subject": "Drop .md suffixes from spec references",
+        "repository": "aeonite-and",
+        "path": "sources/aeos/v1/aeos-compliance-v1.aeon"
+      }
+    },
+    {
+      "id": "and-core-v1-draft",
+      "currentSource": "sources/and/v1/and-core-v1-draft.aeon",
+      "canonicalMarkdown": "and/v1/drafts/and-core-proposal.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "and/v1/drafts/and-core-proposal.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-21T06:07:04+10:00",
+        "commit": "63535ce029741ec9d7f06f65a90e924767737bd6",
+        "subject": "Add proposal v2 card blocks",
+        "repository": "aeonite-specs",
+        "path": "and/v1/drafts/and-core-proposal.md"
+      }
+    },
+    {
+      "id": "and-core-v2-ast-contract",
+      "currentSource": "sources/and/v2/and-core-v2-ast-contract.aeon",
+      "canonicalMarkdown": "and/v2/proposals/and-core-v2-ast-contract.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-08-19T22:20:18+10:00",
+        "commit": "24e9e7d59a37a7b9c8921dc2f2a276eac0841e92",
+        "subject": "Document &ND Core v2 AST contract",
+        "repository": "aeonite-specs",
+        "path": "and/v2/proposals/and-core-v2-ast-contract.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/and/v2/and-core-v2-ast-contract.aeon"
+      }
+    },
+    {
+      "id": "and-core-v2-proposal",
+      "currentSource": "sources/and/v2/and-core-v2-proposal.aeon",
+      "canonicalMarkdown": "and/v2/proposals/and-core-v2-proposal.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "and/v2/proposals/and-core-v2-proposal.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/and/v2/and-core-v2-proposal.aeon"
+      }
+    },
+    {
+      "id": "and-v1-to-v2-migration",
+      "currentSource": "sources/and/v2/and-v1-to-v2-migration.aeon",
+      "canonicalMarkdown": "and/v2/proposals/and-v1-to-v2-migration.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-08-20T02:22:42+10:00",
+        "commit": "a668bb04f0c30d5060ec52697ff0cd762ea759cb",
+        "subject": "Add v2 migration and conventions docs",
+        "repository": "aeonite-specs",
+        "path": "and/v2/proposals/and-v1-to-v2-migration.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/and/v2/and-v1-to-v2-migration.aeon"
+      }
+    },
+    {
+      "id": "and-v2-consumer-conventions",
+      "currentSource": "sources/and/v2/and-consumer-conventions.aeon",
+      "canonicalMarkdown": "and/v2/proposals/and-consumer-conventions.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-08-20T02:22:42+10:00",
+        "commit": "a668bb04f0c30d5060ec52697ff0cd762ea759cb",
+        "subject": "Add v2 migration and conventions docs",
+        "repository": "aeonite-specs",
+        "path": "and/v2/proposals/and-consumer-conventions.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T02:27:38+10:00",
+        "commit": "beccf380e5a5a4104ea3f0d11cc70155db902e22",
+        "subject": "Add grammar railroad profiles",
+        "repository": "aeonite-and",
+        "path": "sources/and/v2/and-consumer-conventions.aeon"
+      }
+    },
+    {
+      "id": "appendix-addressing-v1",
+      "currentSource": "sources/appendices/v1/appendix-addressing.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-addressing.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-addressing.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:55:01+10:00",
+        "commit": "81b9abe3d85c1270c521fee3ac8c9bc6368232e5",
+        "subject": "Normalize arrow notation in AEON examples",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-addressing.aeon"
+      }
+    },
+    {
+      "id": "appendix-aeos-charter-v1",
+      "currentSource": "sources/appendices/v1/appendix-aeos-charter.aeon",
+      "canonicalMarkdown": "aeos/v1/drafts/appendices/appendix-aeos-charter.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeos/v1/drafts/appendices/appendix-aeos-charter.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-aeos-charter.aeon"
+      }
+    },
+    {
+      "id": "appendix-aes-v1",
+      "currentSource": "sources/appendices/v1/appendix-aes.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-aes.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-aes.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-aes.aeon"
+      }
+    },
+    {
+      "id": "appendix-altopelago-core-profile-v1",
+      "currentSource": "sources/appendices/v1/appendix-altopelago-core-profile.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-altopelago-core-profile.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-altopelago-core-profile.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-altopelago-core-profile.aeon"
+      }
+    },
+    {
+      "id": "appendix-annotation-stream-v1",
+      "currentSource": "sources/appendices/v1/appendix-annotation-stream.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-annotation-stream.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-annotation-stream.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:55:01+10:00",
+        "commit": "81b9abe3d85c1270c521fee3ac8c9bc6368232e5",
+        "subject": "Normalize arrow notation in AEON examples",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-annotation-stream.aeon"
+      }
+    },
+    {
+      "id": "appendix-bindings-v1",
+      "currentSource": "sources/appendices/v1/appendix-bindings.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-bindings.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-bindings.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-bindings.aeon"
+      }
+    },
+    {
+      "id": "appendix-canonical-form-v1",
+      "currentSource": "sources/appendices/v1/appendix-canonical-form.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-canonical-form.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-canonical-form.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:55:01+10:00",
+        "commit": "81b9abe3d85c1270c521fee3ac8c9bc6368232e5",
+        "subject": "Normalize arrow notation in AEON examples",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-canonical-form.aeon"
+      }
+    },
+    {
+      "id": "appendix-directive-block-capabilities-v1",
+      "currentSource": "sources/appendices/v1/appendix-directive-block-capabilities.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-directive-block-capabilities.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-05T23:33:16+10:00",
+        "commit": "5125d8ba037751206d683e8715f16650c3504f78",
+        "subject": "Add directive-block appendix; reserve semantics",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-directive-block-capabilities.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-directive-block-capabilities.aeon"
+      }
+    },
+    {
+      "id": "appendix-error-model-v1",
+      "currentSource": "sources/appendices/v1/appendix-error-model.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-error-model.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-error-model.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-error-model.aeon"
+      }
+    },
+    {
+      "id": "appendix-glossary-v1",
+      "currentSource": "sources/appendices/v1/appendix-glossary.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-glossary.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-glossary.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-glossary.aeon"
+      }
+    },
+    {
+      "id": "appendix-grammar-flow-v1",
+      "currentSource": "sources/appendices/v1/appendix-grammar-flow.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-grammar-flow.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-04T02:55:30+10:00",
+        "commit": "03566708144ccb99f49e2ffed789d67934d82a7c",
+        "subject": "Add attribute rules and grammar appendix",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-grammar-flow.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T02:27:38+10:00",
+        "commit": "beccf380e5a5a4104ea3f0d11cc70155db902e22",
+        "subject": "Add grammar railroad profiles",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-grammar-flow.aeon"
+      }
+    },
+    {
+      "id": "appendix-guide-authority-v1",
+      "currentSource": "sources/appendices/v1/appendix-guide-authority.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/README.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/README.md"
+      },
+      "modified": {
+        "timestamp": "2026-06-06T01:05:28+10:00",
+        "commit": "24facc5df1dccec2a96438f60cea07b3ee57a42e",
+        "subject": "Normalize v1 appendices and conformance text",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/README.md"
+      }
+    },
+    {
+      "id": "appendix-integrity-envelope-v1",
+      "currentSource": "sources/appendices/v1/appendix-integrity-envelope.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-integrity-envelope.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-integrity-envelope.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-integrity-envelope.aeon"
+      }
+    },
+    {
+      "id": "appendix-json-profile-v1",
+      "currentSource": "sources/appendices/v1/appendix-json-profile.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-json-profile.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-json-profile.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-json-profile.aeon"
+      }
+    },
+    {
+      "id": "appendix-node-model-v1",
+      "currentSource": "sources/appendices/v1/appendix-node-model.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-node-model.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-node-model.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-node-model.aeon"
+      }
+    },
+    {
+      "id": "appendix-pattern-profile-v1",
+      "currentSource": "sources/appendices/v1/appendix-pattern-profile.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-pattern-profile.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-pattern-profile.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-pattern-profile.aeon"
+      }
+    },
+    {
+      "id": "appendix-processing-model-v1",
+      "currentSource": "sources/appendices/v1/appendix-processing-model.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-processing-model.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-processing-model.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-processing-model.aeon"
+      }
+    },
+    {
+      "id": "appendix-profiles-framework-v1",
+      "currentSource": "sources/appendices/v1/appendix-profiles-framework.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-profiles-framework.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-profiles-framework.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T02:24:27+10:00",
+        "commit": "d3e0525bf9cec1cf140d023906241a01e49fd620",
+        "subject": "generated content",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-profiles-framework.aeon"
+      }
+    },
+    {
+      "id": "appendix-reference-philosophy-v1",
+      "currentSource": "sources/appendices/v1/appendix-reference-philosophy.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-reference-philosophy.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-reference-philosophy.md"
+      },
+      "modified": {
+        "timestamp": "2026-06-06T01:05:28+10:00",
+        "commit": "24facc5df1dccec2a96438f60cea07b3ee57a42e",
+        "subject": "Normalize v1 appendices and conformance text",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-reference-philosophy.md"
+      }
+    },
+    {
+      "id": "appendix-schema-profile-v1",
+      "currentSource": "sources/appendices/v1/appendix-schema-profile.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-schema-profile.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-schema-profile.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-schema-profile.aeon"
+      }
+    },
+    {
+      "id": "appendix-spans-v1",
+      "currentSource": "sources/appendices/v1/appendix-spans.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-spans.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-spans.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-spans.aeon"
+      }
+    },
+    {
+      "id": "appendix-tonic-v1",
+      "currentSource": "sources/appendices/v1/appendix-tonic.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-tonic.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-tonic.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-tonic.aeon"
+      }
+    },
+    {
+      "id": "appendix-transport-v1",
+      "currentSource": "sources/appendices/v1/appendix-transport.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-transport.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-transport.md"
+      },
+      "modified": {
+        "timestamp": "2026-06-06T01:05:28+10:00",
+        "commit": "24facc5df1dccec2a96438f60cea07b3ee57a42e",
+        "subject": "Normalize v1 appendices and conformance text",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-transport.md"
+      }
+    },
+    {
+      "id": "appendix-tuples-v1",
+      "currentSource": "sources/appendices/v1/appendix-tuples.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-tuples.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-tuples.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-tuples.aeon"
+      }
+    },
+    {
+      "id": "appendix-validator-conformance-v1",
+      "currentSource": "sources/appendices/v1/appendix-validator-conformance.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-validator-conformance.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-validator-conformance.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-validator-conformance.aeon"
+      }
+    },
+    {
+      "id": "appendix-whitespace-boundaries-v1",
+      "currentSource": "sources/appendices/v1/appendix-whitespace-boundaries.aeon",
+      "canonicalMarkdown": "aeon/v1/drafts/appendices/appendix-whitespace-boundaries.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-30T17:54:01+11:00",
+        "commit": "0065aa8115340822385d62dc0dbb6418c46e8447",
+        "subject": "Add appendix clarifying newline boundaries",
+        "repository": "aeonite-specs",
+        "path": "aeon/v1/drafts/appendices/appendix-whitespace-boundaries.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/appendices/v1/appendix-whitespace-boundaries.aeon"
+      }
+    },
+    {
+      "id": "compound-unit-labels",
+      "currentSource": "sources/conventions/v1/compound-unit-labels.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/compound-unit-labels.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/compound-unit-labels.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/compound-unit-labels.aeon"
+      }
+    },
+    {
+      "id": "contracts-artifacts-overview",
+      "currentSource": "sources/contracts/v1/contracts-artifacts-overview.aeon",
+      "canonicalMarkdown": "contracts/v1/drafts/artifacts/README.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "contracts/v1/drafts/artifacts/README.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T19:12:43+10:00",
+        "commit": "f796258d3433635b323c4aab2da4465165781bdc",
+        "subject": "removed relative links",
+        "repository": "aeonite-and",
+        "path": "sources/contracts/v1/contracts-artifacts-overview.aeon"
+      }
+    },
+    {
+      "id": "measurement-reference",
+      "currentSource": "sources/conventions/v1/measurement-reference.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/measurement-reference.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/measurement-reference.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/conventions/v1/measurement-reference.aeon"
+      }
+    },
+    {
+      "id": "neon-v1-draft",
+      "currentSource": "sources/neon/v1/neon-v1-design.aeon",
+      "canonicalMarkdown": "neon/v1/drafts/neon-v1-design.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "neon/v1/drafts/neon-v1-design.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T02:27:38+10:00",
+        "commit": "beccf380e5a5a4104ea3f0d11cc70155db902e22",
+        "subject": "Add grammar railroad profiles",
+        "repository": "aeonite-and",
+        "path": "sources/neon/v1/neon-v1-design.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-addressing",
+      "currentSource": "sources/sansa/v1/addressing-v1.aeon",
+      "canonicalMarkdown": "sansa/v1/drafts/addressing-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-14T01:59:24+10:00",
+        "commit": "779ab822701fb7cf7389225f7bad63dd34576938",
+        "subject": "Add SANSA v1 draft specs",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/drafts/addressing-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/addressing-v1.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-conformance",
+      "currentSource": "sources/sansa/v1/conformance-v1.aeon",
+      "canonicalMarkdown": "sansa/v1/proposals/conformance-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-22T17:40:22+10:00",
+        "commit": "d157ada72f939c248a59490c354ad972777e302f",
+        "subject": "Add SANSA v1 conformance capability proposal",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/proposals/conformance-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:38:26+10:00",
+        "commit": "dc83112a38a37a7f0f22519123b61fac808be137",
+        "subject": "Drop .md suffixes from spec references",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/conformance-v1.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-drafts",
+      "currentSource": "sources/sansa/v1/sansa-v1-drafts.aeon",
+      "canonicalMarkdown": "sansa/v1/drafts/README.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-14T01:59:24+10:00",
+        "commit": "779ab822701fb7cf7389225f7bad63dd34576938",
+        "subject": "Add SANSA v1 draft specs",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/drafts/README.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:38:26+10:00",
+        "commit": "dc83112a38a37a7f0f22519123b61fac808be137",
+        "subject": "Drop .md suffixes from spec references",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/sansa-v1-drafts.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-extensions",
+      "currentSource": "sources/sansa/v1/extensions-v1.aeon",
+      "canonicalMarkdown": "sansa/v1/proposals/extensions-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-21T02:27:30+10:00",
+        "commit": "e10192a81616b50dffdce7912ef49cd91110eaec",
+        "subject": "Add SANSA v1 extension proposal",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/proposals/extensions-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/extensions-v1.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-instruction",
+      "currentSource": "sources/sansa/v1/instruction-v1.aeon",
+      "canonicalMarkdown": "sansa/v1/proposals/instruction-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-26T19:17:25+10:00",
+        "commit": "34b0b7b8ad072e0011f1b598c4def0b8a556af4e",
+        "subject": "Add SANSA.Instruction proposal",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/proposals/instruction-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/instruction-v1.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-meaning-validation-integration",
+      "currentSource": "sources/sansa/v1/meaning-validation-integration-v1.aeon",
+      "canonicalMarkdown": "sansa/v1/proposals/meaning-validation-integration-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-22T19:03:41+10:00",
+        "commit": "17e9455f81b79e4967d8d51061aaef832f470dc1",
+        "subject": "Define SANSA validation boundaries",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/proposals/meaning-validation-integration-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/meaning-validation-integration-v1.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-mutate",
+      "currentSource": "sources/sansa/v1/mutate-v1.aeon",
+      "canonicalMarkdown": "sansa/v1/proposals/mutate-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-22T21:31:33+10:00",
+        "commit": "25e616cf55fe4ef0914295fda55086d7c72c0c05",
+        "subject": "Add SANSA.Mutate proposal outline",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/proposals/mutate-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/mutate-v1.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-proposals",
+      "currentSource": "sources/sansa/v1/sansa-v1-proposals.aeon",
+      "canonicalMarkdown": "sansa/v1/proposals/README.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-14T01:59:24+10:00",
+        "commit": "779ab822701fb7cf7389225f7bad63dd34576938",
+        "subject": "Add SANSA v1 draft specs",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/proposals/README.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:38:26+10:00",
+        "commit": "dc83112a38a37a7f0f22519123b61fac808be137",
+        "subject": "Drop .md suffixes from spec references",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/sansa-v1-proposals.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-query",
+      "currentSource": "sources/sansa/v1/query-v1.aeon",
+      "canonicalMarkdown": "sansa/v1/proposals/query-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-14T01:59:24+10:00",
+        "commit": "779ab822701fb7cf7389225f7bad63dd34576938",
+        "subject": "Add SANSA v1 draft specs",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/proposals/query-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-24T01:32:09+10:00",
+        "commit": "1ffeadee789863d43eaec6b9287c783211242077",
+        "subject": "Add captions to AEON and &ND tables",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/query-v1.aeon"
+      }
+    },
+    {
+      "id": "sansa-v1-resolve",
+      "currentSource": "sources/sansa/v1/resolve-v1.aeon",
+      "canonicalMarkdown": "sansa/v1/drafts/resolve-v1.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-07-14T01:59:24+10:00",
+        "commit": "779ab822701fb7cf7389225f7bad63dd34576938",
+        "subject": "Add SANSA v1 draft specs",
+        "repository": "aeonite-specs",
+        "path": "sansa/v1/drafts/resolve-v1.md"
+      },
+      "modified": {
+        "timestamp": "2026-08-23T23:13:22+10:00",
+        "commit": "621ea62f9dde026da11903b7086895b531a9a778",
+        "subject": "Add responsive navigation with details/summary",
+        "repository": "aeonite-and",
+        "path": "sources/sansa/v1/resolve-v1.aeon"
+      }
+    },
+    {
+      "id": "v1-working-conventions-readme",
+      "currentSource": "sources/conventions/v1/v1-working-conventions-readme.aeon",
+      "canonicalMarkdown": "conventions/v1/drafts/README.md",
+      "basis": "canonical-markdown-history",
+      "created": {
+        "timestamp": "2026-03-25T08:27:27+11:00",
+        "commit": "996f4b3be97f901822e0af2195a5575d394671e8",
+        "subject": "Initial specs import",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/README.md"
+      },
+      "modified": {
+        "timestamp": "2026-05-27T00:37:41+10:00",
+        "commit": "6c825112c90e4d9e6de321227e8635ebee080751",
+        "subject": "Add per-artifact licensing and restructure repo",
+        "repository": "aeonite-specs",
+        "path": "conventions/v1/drafts/README.md"
+      }
+    }
+  ]
+}

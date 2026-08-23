@@ -1,0 +1,83 @@
+schemaVersion:string = "1"
+id:string = "appendix-spans-v1"
+title:string = "Appendix — Spans"
+description:string = "Source span representation and diagnostic location semantics."
+created:date = 2026-03-25
+modified:date = 2026-08-23
+family:string = "appendices"
+group:string = "Core Semantics"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-spans-v1"
+order:number = 90
+publish:boolean = true
+keywords:list<string> = ["AEON", "source spans", "diagnostics", "offsets", "tooling", "determinism"]
+related:list<string> = ["aeos-v1", "aeon-core-v1-comments-annotations", "appendix-error-model-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Spans [# appendix-spans]
+
+  Canonical topic owners: AEOS Specification v1 and AEON v1 Comments and Annotations Reference.
+
+  If this appendix conflicts with the canonical v1 spec set, the canonical v1 spec set wins.
+
+  ## 1. Definition [# definition]
+
+  A span identifies a source range in the original AEON text.
+
+  ~~~$ ts
+  span: [start, end]
+  ~~~$
+
+  - [$ start] is inclusive
+  - [$ end] is exclusive
+  - offsets are document-level offsets emitted by AEON Core
+
+  ## 2. Purpose [# purpose]
+
+  Spans provide deterministic source linkage for:
+
+  - diagnostics
+  - auditing
+  - tooling/editor highlighting
+
+  Spans are metadata and do not change AEON semantics.
+
+  ## 3. Authority [# authority]
+
+  - Spans are produced by AEON Core.
+  - Validators and downstream processors propagate spans.
+  - Validators must not invent replacement spans for existing source-backed values.
+
+  ## 4. Required Output Behavior [# required-output-behavior]
+
+  For AEOS/CTS-style diagnostics:
+
+  - diagnostics should include a span when the target source region exists
+  - [$ span: null] is allowed only when no source region exists (for example missing required path)
+
+  ## 5. Targeting Rule [# targeting-rule]
+
+  A span should identify the narrowest source fragment responsible for the diagnostic (for example the offending literal or reference token).
+
+  ## 6. Non-Goals [# non-goals]
+
+  Spans are not:
+
+  - semantic values
+  - canonical paths
+  - line/column replacements
+
+  ## 7. Determinism [# determinism]
+
+  Given identical source and policy, diagnostics should carry stable spans.
+
+  ## 8. Implementation Note [# implementation-note]
+
+  Current TypeScript implementation emits token positions with line/column plus offset in lexer tokens. Consumers relying on spans should treat AEON Core output as authoritative for unit/offset interpretation.
+`

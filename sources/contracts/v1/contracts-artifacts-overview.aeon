@@ -1,0 +1,51 @@
+schemaVersion:string = "1"
+id:string = "contracts-artifacts-overview"
+title:string = "v1 Contract Artifacts"
+description:string = "Overview of the published contract artifacts, including the general-purpose profile, general-purpose schema, and registry files."
+created:date = 2026-05-27
+modified:date = 2026-08-23
+family:string = "contracts"
+group:string = "Contracts Overview"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/contracts/v1-contract-artifacts"
+order:number = 20
+publish:boolean = true
+keywords:list<string> = ["AEON", "contract artifacts", "profile", "schema", "registry", "downloads"]
+related:list<string> = ["aeon-v1-contracts", "aeon-v1-official-index"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # v1 Contract Artifacts [# v1-contract-artifacts]
+
+  This page lists the published baseline contract artifacts for:
+
+  - [$ aeon.gp.profile.v1]
+  - [$ aeon.gp.schema.v1]
+
+  ## Published artifacts [# published-artifacts]
+
+  ### [$ profiles/aeon.gp.profile.v1.aeon] [# profiles-aeon-gp-profile-v1-aeon]
+
+  The baseline general-purpose profile artifact. This is the published profile identifier implementers can match against when selecting shared processing behavior for AEON v1 documents.
+
+  Download the [@ /artifacts/assets/contracts/v1/profiles/aeon.gp.profile.v1.aeon | authoritative AEON profile artifact].
+
+  ### [$ schemas/aeon.gp.schema.v1.aeon] [# schemas-aeon-gp-schema-v1-aeon]
+
+  The baseline general-purpose schema artifact. This is the published schema identifier and schema definition surface used for validation-oriented contract selection.
+
+  Download the [@ /artifacts/assets/contracts/v1/schemas/aeon.gp.schema.v1.aeon | authoritative AEON schema artifact].
+
+  ### [$ registry.json] [# registry-json]
+
+  The registry file that maps published contract ids to their authoritative artifact paths. Consumers and tooling can use this as the trusted lookup surface for baseline contract resolution.
+
+  Download the [@ /artifacts/assets/contracts/v1/registry.json | verified contract registry].
+
+  These files are the published artifact surface used by runtime and CLI contract selection flows. The AEON v1 Contracts Specification defines the surrounding rules and authority boundaries.
+`
