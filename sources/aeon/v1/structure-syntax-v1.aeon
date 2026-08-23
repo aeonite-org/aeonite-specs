@@ -1,0 +1,523 @@
+schemaVersion:string = "1"
+id:string = "aeon-core-v1-structure-syntax"
+title:string = "AEON v1 Structure Syntax Reference"
+description:string = "Reference for binding shape, keys, attributes, datatype clarifiers, newline rules, and structural grammar decisions in AEON Core v1."
+created:date = 2026-03-25
+modified:date = 2026-08-23
+family:string = "aeon"
+group:string = "Core References"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aeon-v1-documentation/aeon-v1-structure-syntax-reference"
+order:number = 40
+publish:boolean = true
+keywords:list<string> = ["AEON", "structure syntax", "bindings", "keys", "attributes", "datatype clarifiers", "newline rules"]
+related:list<string> = ["aeon-core-v1", "aeon-core-v1-addressing-references"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # AEON v1 Structure Syntax Reference [# aeon-v1-structure-syntax-reference]
+
+  Scope: key syntax, structural identities, attributes, datatype clarifiers, list/tuple separators, and newline behavior.
+
+  ## 1. Binding Shape [# binding-shape]
+
+  Canonical binding surface:
+
+  ~~~$ aeon
+  key\\identity\\@{attributes}:type = value
+  ~~~$
+
+  Transport form may omit attributes and datatype:
+
+  ~~~$ aeon
+  key = value
+  ~~~$
+
+  Strict form requires datatype presence, but not generic arguments:
+
+  ~~~$ aeon
+  name:string = "AEON"
+  items:list = ["a", "b"]
+  point:tuple = (1, 2)
+  ~~~$
+
+  Core grammar summary:
+
+  ~~~$ ebnf
+  Binding ::= Key StructuralIdentity? Attribute? TypeAnnotation? "=" Value
+  ~~~$ (Full binding)
+  
+  ~~~$ ebnf
+  StructuralIdentity ::= "\\\\" StructuralIdentityName "\\\\"
+  ~~~$ (Structure Identity)
+
+  ~~~$ ebnf
+  Attribute ::= "@{" AttributeEntryList? "}"
+  AttributeEntryList ::= AttributeEntry (AttributeSep AttributeEntry)* AttributeSep?
+  AttributeEntry ::= Key StructuralIdentity? Attribute? TypeAnnotation? "=" Value
+  AttributeSep ::= "," | Newline
+  ~~~$ (Attributes)
+
+  ~~~$ ebnf
+  TypedValue ::= StructuralIdentity? Attribute? TypeAnnotation? "=" Value
+  TypeAnnotation ::= ":" TypeName GenericArgs? Clarifier?
+  ~~~$ (Types)
+
+  ~~~$ ebnf
+  Clarifier ::= "[" ClarifierValue ("," ClarifierValue)* "]"
+  ClarifierValue ::= StringLiteral | NumberLiteral
+  ~~~$ (Clarifiers)
+
+  Nuances:
+
+  - canonical order is [$ key\\\\id\\\\@{...}:type = value];
+  - reversed order such as [$ key:type@{...} = value] is not Core v1 canonical syntax;
+  - structural identity, when present, appears before attributes and datatype;
+  - attributes may appear without datatype;
+  - datatype may appear without attributes.
+  - [$ TypedValue] is valid only in anonymous value-element contexts: list elements, tuple elements, and node children.
+  - [$ TypedValue] is not a binding head and MUST NOT appear where [$ Binding] or [$ AttributeEntry] is expected.
+  - the datatype on [$ TypedValue] annotates only the immediate following [$ Value]; nested [$ :type = :type = value] forms are invalid.
+  - [$ *...*] is reserved for out-of-band preprocessing and templating conventions, but it is not part of Core v1 syntax.
+  - Core parsers must continue to fail closed if a [$ *...*] placeholder reaches AEON parsing unchanged.
+  - A preprocessor may replace [$ *...*] spans before AEON parsing, but that substitution occurs outside the Core language contract.
+
+  Informative parser-context illustrations are available in [@ document:appendix-grammar-flow-v1 | [$ appendices/appendix-grammar-flow]].
+
+  ## 2. Keys [# keys]
+
+  ### 2.1 Supported Key Forms [# supported-key-forms]
+
+  Valid key forms in all key positions:
+
+  ~~~$ aeon
+  user = 1
+  'user name' = 2
+  "a.b" = 3
+  ~~~$
+
+  Unsupported as core keys:
+
+  ~~~$ aeon
+  \`user\` = 1
+  ~~~$
+
+  Key grammar:
+
+  ~~~$ ebnf
+  Key ::= Identifier | SingleQuotedKey | DoubleQuotedKey
+  Identifier ::= IdentifierStart IdentifierContinue*
+  IdentifierStart ::= "A".."Z" | "a".."z" | "_"
+  IdentifierContinue ::= IdentifierStart | "0".."9"
+  ~~~$
+
+  Nuances:
+
+  - bare keys are best used when the key is identifier-safe;
+  - boolean and toggle literal words ([$ true], [$ false], [$ yes], [$ no], [$ on], [$ off]) are valid bare keys in key, attribute-key, tag, and path-segment contexts; they are literals only in value contexts;
+  - quoted keys are required for spaces, dots-as-data, and other non-bare characters;
+  - single and double quotes are both valid key delimiters;
+  - quoted keys must not be empty;
+  - backtick-quoted keys are not part of AEON Core v1 key syntax.
+  - asterisk-delimited placeholder forms such as [$ *secret-key*] are reserved for preprocessors and remain invalid as Core keys or Core values until replaced before parsing.
+
+  Canonical notes:
+
+  - canonical paths render non-bare keys using bracketed double-quoted form, for example [$ $.\\["a.b"\\]];
+  - [$ 'a.b'] and [$ "a.b"] are the same key identity when parsed as keys.
+
+  AES notes:
+
+  - key form is structural and does not create a distinct value kind;
+  - canonical path identity uses member and index segments only.
+
+  ## 3. Structural Identities [# structural-identities]
+
+  Structural identity is an optional occurrence identity attached to a binding head
+  or anonymous value head. It lets tools preserve an author-visible identity for a
+  specific structural occurrence even when position, surrounding comments, or
+  formatting change.
+
+  ~~~$ aeon
+  person\\person-1\\:object = {
+    name\\name-1\\:string = "Ada"
+  }
+
+  items:list = [
+    \\item-1\\:string = "red",
+    \\item-2\\@{source:string = "user"}:string = "green"
+  ]
+  ~~~$
+
+  Grammar:
+
+  ~~~$ ebnf
+  StructuralIdentity ::= "\\\\" StructuralIdentityName "\\\\"
+  StructuralIdentityName ::= StructuralIdentityChar+
+  StructuralIdentityChar ::= "A".."Z" | "a".."z" | "0".."9" | "_" | "-"
+  ~~~$
+
+  Nuances:
+
+  - structural identities are source metadata, not values;
+  - structural identities are optional in both transport and strict form;
+  - structural identities are valid on ordinary bindings, attribute entries, node heads, and anonymous child heads;
+  - structural identities are invalid as standalone scalar values;
+  - document-level structural identity values must be unique;
+  - structural identity appears before attributes and datatype: [$ key\\\\id\\\\@{...}:type = value];
+  - structural identity after attributes, for example [$ key@{...}\\\\id\\\\:type = value], is invalid;
+  - structural identity syntax inside quoted strings is ordinary string content.
+
+  Canonical notes:
+
+  - canonical rendering preserves structural identities in head position;
+  - structural identity does not change canonical path identity;
+  - structural identity is preserved in AST/AES metadata for tools that need stable occurrence identity across rewrites.
+
+  ## 4. Attributes [# attributes]
+
+  Attributes attach opaque metadata to a binding or node head:
+
+  ~~~$ aeon
+  user@{role="admin", level=5} = {
+    id = 1
+  }
+
+  content = <span@{id="text", class="dark"}("hello")>
+  ~~~$
+
+  Grammar:
+
+  ~~~$ ebnf
+  Attribute ::= "@{" AttributeEntryList? "}"
+  AttributeEntryList ::= AttributeEntry (AttributeSep AttributeEntry)* AttributeSep?
+  AttributeEntry ::= Key Attribute? TypeAnnotation? "=" Value
+  AttributeSep ::= "," | Newline
+  ~~~$
+
+  Nuances:
+
+  - attribute entries are key/value pairs;
+  - attribute entry heads may themselves carry attributes;
+  - attribute entry datatypes are allowed;
+  - attribute containers may be empty: [$ @{}];
+  - attribute entry separators may be commas or newlines;
+  - trailing attribute separator is accepted by current parser behavior.
+  - binding-attached attributes are valid on any binding head, including bindings whose values are objects, lists, tuples, or other literals;
+  - postfix literal attributes are not part of Core v1 syntax: [$ a = \\[0\\]@{b=2}] is invalid and fails closed;
+  - nested bindings inside container values may carry their own attributes, for example [$ a = \\[{x@{b=0}=1}\\]].
+  - nested attribute heads are part of Core v1 and count against [$ max_attribute_depth].
+  - duplicate keys inside one attribute block are invalid and fail closed;
+  - repeated nested attribute heads on the same attribute entry are invalid; use one nested attribute block with multiple entries instead.
+
+  Reference/addressing forms:
+
+  ~~~$ aeon
+  ~user.@.role
+  $.user.@.role
+  $.user.@.["profile.name"]
+  $.user.@.["profile.name"].["display.name"]
+  ~user.@.meta.["x.y"]
+  ~~~$
+
+  Canonical notes:
+
+  - attributes are selectors in addressing expressions, not canonical path identity segments;
+  - data namespace and attribute namespace remain distinct.
+  - quoted bracket member segments may follow ordinary member or attribute traversal using [$ .\\[\\\\"...\\\\"\\]].
+  - quoted attribute selectors may be followed by ordinary member, quoted member, or index traversal.
+  - empty quoted member segments, empty quoted attribute selectors, and incomplete forms such as [$ ~a.@] or [$ ~$.a.@.\\[] are invalid.
+
+  Examples:
+
+  ~~~$ aeon
+  a@{b=1} = [0]
+  a = [{x@{b=0}=1}]
+  f@{ns@{origin:string="core"}:string = "aeon"}:string = "fractal"
+  ~~~$
+
+  Rejected examples:
+
+  ~~~$ aeon
+  a@{x=1, x=2} = 3
+  a@{x@{y=1}@{z=2} = 3} = 4
+  x = { @{meta=1} k = 2 }
+  ~~~$
+
+  Namespace note:
+
+  - AEON Core v1 has no dedicated namespace syntax for ordinary keys;
+  - [$ #] has no intrinsic namespace meaning in core key syntax;
+  - when a consumer or ecosystem convention needs namespace labeling, the recommended metadata convention is [$ @{ns="..."}] as defined by [$ aeon.gp.convention.v1]:
+
+  ~~~$ aeon
+  key@{ns="aeon"} = "value"
+  ~~~$
+
+  Policy notes:
+
+  - implementations expose [$ max_attribute_depth];
+  - default lock is [$ 1];
+  - capability floor is at least [$ 8].
+
+  ## 5. Datatype Clarifiers [# datatype-clarifiers]
+
+  Datatype clarifiers decorate type annotations:
+
+  ~~~$ aeon
+  size:sep["x"] = ^300x250
+  triple:sep["x", "y", "z"] = ^100x200y300z
+  semver:kadot = ^3.14.15
+  ~~~$
+
+  Grammar:
+
+  ~~~$ ebnf
+  TypeAnnotation ::= ":" TypeName GenericArgs? Clarifier?
+  Clarifier ::= "[" ClarifierValue ("," ClarifierValue)* "]"
+  ClarifierValue ::= StringLiteral | NumberLiteral
+  ~~~$
+
+  Generic-depth notes:
+
+  - Core v1 reserves generic arguments for [$ list<T>], [$ tuple<T...>], [$ object<T>], [$ node<T>], [$ null<T>], [$ nan<T>], and [$ infinity<T>];
+  - binding-side [$ node<T>] accepts [$ T = node] or custom profile/domain/materialization arguments, but rejects reserved non-[$ node] value datatype arguments such as [$ string];
+  - other reserved Core datatypes do not accept generic arguments;
+  - generic depth counts nested type annotations that appear inside generic arguments;
+  - [$ tuple<n, n>] has generic depth [$ 0];
+  - [$ tuple<tuple<n, n>, tuple<n, n>>] has generic depth [$ 1];
+  - [$ tuple<tuple<tuple<n, n>, n>, n>] has generic depth [$ 2];
+  - implementations expose [$ max_generic_depth];
+  - default runtime lock is [$ 1];
+  - capability floor is at least [$ 8].
+
+  Current official v1 rules:
+
+  - a datatype may carry at most one clarifier list;
+  - a clarifier list must contain one or more string or numeric values;
+  - string clarifier values use ordinary AEON quoted string syntax;
+  - numeric clarifier values use ordinary AEON number literal syntax;
+  - clarifier value depth is the number of values in the list;
+  - repeated bracket lists such as [$ sep\\["x"\\]\\["y"\\]] are invalid.
+  - only ASCII space, tab, carriage return, and newline act as layout whitespace in Core v1 grammar positions unless another rule says otherwise;
+  - non-structural Unicode separators and joiners such as U+2060 WORD JOINER, U+2028 LINE SEPARATOR, and U+2029 PARAGRAPH SEPARATOR are not document, object, list, tuple, or attribute separators.
+
+  Nuances:
+
+  - [$ size:sep\\["x"\\]] has separator depth [$ 1];
+  - [$ triple:sep\\["x", "y", "z"\\]] has separator depth [$ 3];
+  - [$ semver:kadot] has separator depth [$ 0];
+  - [$ sep\\["x"\\]], [$ sep\\[ "x" \\]], and [$ sep\\[\\\\n"x"\\\\n\\]] are legal;
+  - [$ sep\\[x\\]] is invalid because string clarifier values must be quoted;
+  - multiple clarifier values are preserved in order, including duplicates;
+  - unparameterized [$ sep] datatypes may still bind separator literals;
+  - unparameterized [$ kadot] datatypes may bind separator literals; Core does not enforce the dot-separated numeric shape;
+  - separator payloads are compact tokens introduced by [$ ^];
+  - outside quoted string segments, raw separator payload characters are limited to [$ A-Za-z0-9!#$%&*+-.:;=?@^_\\|~<>];
+  - quoted segments use ordinary single-quoted or double-quoted AEON string lexical rules;
+  - backtick segments and raw separator escapes are not part of separator-literal syntax;
+  - outside quoted segments, whitespace, [$ \\\\\\\\], [$ /], [$ ,], newline, or a closing container boundary end or invalidate the token depending on surrounding grammar;
+  - U+2060, U+2028, and U+2029 do not act as interchangeable layout whitespace or newline tokens in those positions and therefore fail closed when inserted there;
+  - default runtime lock is [$ 1];
+  - capability floor is at least [$ 8].
+
+  Canonical notes:
+
+  - datatype clarifiers remain attached to the datatype surface;
+  - AEON Core parses datatype clarifiers but does not assign type-specific meaning to their values. Profiles and AEOS decide whether a clarifier is supported, compatible, or semantically useful. [$ aeon.gp.profile.v1] treats its datatype-semantic clarifier rules as closed: undeclared datatype clarifiers fail, [$ none] entries reject explicit clarifiers, [$ radix_base] requires exactly one integral numeric value from [$ 2] through [$ 64], [$ separator_chars] requires string values, and [$ encoding_name] requires exactly one string value.
+
+  ## 6. Assignment and Element Separators [# assignment-and-element-separators]
+
+  ### 6.1 Top-Level and Object Bindings [# top-level-and-object-bindings]
+
+  At document and object level, bindings may be separated by newline or comma:
+
+  ~~~$ aeon
+  a = 1
+  b = 2
+  ~~~$
+
+  ~~~$ aeon
+  a = 1, b = 2
+  obj = { a = 1, b = 2 }
+  ~~~$
+
+  Core v1 rules:
+
+  - newline and comma are structural binding separators at document and object level;
+  - plain spaces alone are never structural separators;
+  - [$ ;] is not a structural separator.
+
+  ### 6.2 Lists [# lists]
+
+  List examples:
+
+  ~~~$ aeon
+  items = ["a", "b", "c"]
+  items = [
+    "a"
+    "b"
+    "c"
+  ]
+  ~~~$
+
+  Grammar summary:
+
+  ~~~$ ebnf
+  List ::= "[" (ListElement ListSep?)* "]"
+  ListElement ::= Value | TypedValue
+  ListSep ::= "," | Newline
+  ~~~$
+
+  Nuances:
+
+  - list elements may be separated by commas or newlines;
+  - mixed comma/newline list formatting is accepted by parser behavior;
+  - indexed elements are addressable as [$ \\[0\\]], [$ \\[1\\]], and so on.
+  - anonymous typed/headed elements use [$ \\\\id\\\\@{...}:type = value] and do not introduce keys or reorder elements.
+
+  ### 6.3 Tuples [# tuples]
+
+  Tuple examples:
+
+  ~~~$ aeon
+  point = (1, 2)
+  point = (
+    1
+    2
+  )
+  ~~~$
+
+  Grammar summary:
+
+  ~~~$ ebnf
+  Tuple ::= "(" (TupleElement TupleSep?)* ")"
+  TupleElement ::= Value | TypedValue
+  TupleSep ::= "," | Newline
+  ~~~$
+
+  Nuances:
+
+  - tuple elements follow the same separator surface as lists;
+  - tuple semantics differ from list semantics, but the element separator grammar is the same.
+  - anonymous typed/headed tuple elements use [$ \\\\id\\\\@{...}:type = value]; the head metadata is local to that element.
+
+  ### 6.4 Node Children [# node-children]
+
+  Node child separators follow the same broad rule:
+
+  ~~~$ aeon
+  content = <div("hello", <br>, "world")>
+  content = <div(
+    "hello"
+    <br>
+    "world"
+  )>
+  icon = <glyph>
+  ~~~$
+
+  Grammar summary:
+
+  ~~~$ ebnf
+  Node ::= "<" Identifier StructuralIdentity? Attribute? TypeAnnotation? ( ">" | "(" (NodeChild NodeSep?)* ")" ">" )
+  NodeChild ::= Value | TypedValue
+  NodeSep ::= "," | Newline
+  ~~~$
+
+  Nuances:
+
+  - node children accept comma and newline separators;
+  - anonymous typed/headed node children use [$ \\\\id\\\\@{...}:type = value]; the head metadata is local to the immediate child value;
+  - empty-node shorthand uses [$ >] immediately after the tag metadata and is equivalent to an empty child list;
+  - child-bearing nodes require a closing [$ >] after the closing [$ )];
+  - canonical printed form uses the closing [$ >] and prefers [$ <tag>] over [$ <tag()>] for empty nodes;
+  - node heads MAY carry an inline datatype syntactically, but strict mode limits this form to [$ :node];
+  - node heads MAY carry [$ :node<T>]; this is a preserved child-content claim and Core does not validate children against [$ T];
+  - transport/custom forms MAY use other inline node-head datatypes, for example [$ <tag:pair("x", "y")>];
+  - generic inline node-head datatypes other than [$ :node<T>] remain invalid Core v1 syntax;
+  - trailing child separator acceptance is implementation-supported and documented in node appendices.
+
+  ## 6. Newline Rules [# newline-rules]
+
+  Newlines are structural in AEON, but only in specific places.
+
+  Between structural tokens, a newline is otherwise treated the same as ordinary inter-token whitespace. A newline becomes special only when the surrounding grammar consumes it as a separator, or when inserting it would split a compact token that must remain contiguous.
+
+  ### 6.1 Newline as Separator [# newline-as-separator]
+
+  Newline can separate:
+
+  - bindings in documents and objects;
+  - list elements;
+  - tuple elements;
+  - attribute entries;
+  - node children.
+
+  ### 6.2 Newline Forbidden in Compact Tokens [# newline-forbidden-in-compact-tokens]
+
+  Newline is not allowed inside:
+
+  - bare identifiers;
+  - single-quoted or double-quoted keys;
+  - single-quoted or double-quoted strings;
+  - datatype clarifiers ([$ \\["x"\\]], [$ \\[16\\]], or [$ \\["x", "y"\\]]);
+  - numbers;
+  - hex, radix, encoding, date, datetime, and separator literal tokens.
+
+  Notes:
+
+  - backtick strings may span newlines as string values, but backtick keys are not valid core keys;
+  - trimticks are multiline string values introduced by a contiguous [$ >] through [$ >>>>] marker immediately before a backtick string opener;
+  - trimticks trim the first empty line, trailing empty lines, and common left indentation according to the marker's tab policy;
+  - separator literals are compact tokens; outside quoted string segments they terminate at the first character that is not valid raw separator payload or at an enclosing grammar boundary.
+  - for worked boundary examples, see [@ document:appendix-whitespace-boundaries-v1 | [$ appendices/appendix-whitespace-boundaries]].
+
+  ### 6.3 Comments and Newlines [# comments-and-newlines]
+
+  Comments do not become separators by themselves.
+
+  Implications:
+
+  - a structured or plain comment may appear between bindings or elements;
+  - comment binding rules determine attachment, but comments do not redefine the surrounding grammar;
+  - line comments end at newline;
+  - block comments may span newlines.
+
+  ## 7. Addressing Interaction [# addressing-interaction]
+
+  Key and attribute syntax affects addressing and references:
+
+  ~~~$ aeon
+  "a.b" = 2
+  ref0 = ~"a.b"
+  ref1 = ~["a.b"]
+  ref2 = ~$.["a.b"]
+
+  user@{"profile.name"="dark"} = 1
+  ref3 = ~user.@.["profile.name"]
+  ~~~$
+
+  Nuances:
+
+  - [$ ~a.b] means traversal through two member segments;
+  - [$ ~"a.b"] and [$ ~\\["a.b"\\]] are equivalent initial quoted-member forms;
+  - [$ ~\\["a.b"\\]] means one quoted member segment;
+  - [$ .@.key] and [$ .@.\\["key"\\]] both address attribute namespace segments.
+
+  ## 8. Minimum Conformance Reminders [# minimum-conformance-reminders]
+
+  Implementations targeting Core v1 must at minimum:
+
+  - accept bare, single-quoted, and double-quoted keys;
+  - reject backtick keys;
+  - expose [$ max_attribute_depth] and [$ max_separator_depth];
+  - support capability floor [$ >=8] for both depth knobs;
+  - enforce the official separator-char exclusions;
+  - handle newline/comma binding separation deterministically;
+  - reject space-only and semicolon binding separation deterministically.
+`

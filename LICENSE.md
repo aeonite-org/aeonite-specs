@@ -16,12 +16,10 @@ they are meant to be reused.
 | Conventions, examples, fixtures, and reusable vocabularies | `CC0-1.0` | These artifacts are meant to be copied, embedded, and adopted with minimal friction. |
 | Repository maintenance scripts and other software | `MIT` | Software artifacts should remain implementation-friendly. |
 
-Individual Markdown documents declare their license in frontmatter:
+Individual formal documents declare their license in their AEON envelope:
 
-```yaml
----
-license: CC-BY-4.0
----
+```aeon
+license:string = "CC-BY-4.0"
 ```
 
 If a document declares a license explicitly, that declaration controls. If a

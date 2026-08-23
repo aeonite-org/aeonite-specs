@@ -1,0 +1,47 @@
+schemaVersion:string = "1"
+id:string = "appendix-guide-authority-v1"
+title:string = "Appendix Guide and Authority"
+description:string = "Defines appendix scope, authority boundaries, and precedence relative to canonical v1 specs."
+created:date = 2026-03-25
+modified:date = 2026-06-06
+family:string = "appendices"
+group:string = "Orientation"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-guide-and-authority-v1"
+order:number = 0
+publish:boolean = true
+keywords:list<string> = ["AEON", "appendices", "authority", "precedence", "orientation", "canonical specifications"]
+related:list<string> = ["aeon-v1-official-index", "aeon-v1-supersession-table", "aeon-core-v1", "aeon-core-v1-compliance", "aeos-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix Guide and Authority [# appendix-guide-and-authority]
+
+  Appendices are supporting documents for the consolidated AEON v1 spec set.
+
+  Authority rule:
+
+  - Canonical rules live in the top-level v1 specs and companion references.
+  - Appendices are informative unless a canonical document explicitly delegates a topic to an appendix.
+  - If an appendix conflicts with a canonical v1 document, the canonical v1 document wins.
+
+  See:
+
+  - AEON v1 Supersession and Precedence Table
+  - AEON Specification v1
+  - AEON Core v1 Compliance Specification
+  - AEOS Specification v1
+
+  Parser and grammar aids:
+
+  - Appendix — Grammar Flow Cards — context-card illustrations for legal Core v1 parser flow.
+
+  Evolution and forward-compatibility aids:
+
+  - Appendix — Directive Block Capabilities — informative v1 reservation for directive-block capability declarations and future v2 activation.
+`

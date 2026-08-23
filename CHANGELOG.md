@@ -17,6 +17,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Replaced the legacy formal Markdown corpus with 79 canonical AEON envelopes containing embedded
+  &ND documents, moved authoritative contract resources under `resources/`, and made generated
+  website and compatibility projections downstream artifacts rather than checked-in sources.
 - Aligned local anchors, fragment targets, named footnotes, and semantic wrappers on the shared
   case-sensitive v2 identifier grammar `[A-Za-z0-9][A-Za-z0-9._:-]*`.
 - Added proposal-stage v2 structural block escapes: a leading `\` at a block-open position quotes a

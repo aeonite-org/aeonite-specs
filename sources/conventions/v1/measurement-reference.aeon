@@ -1,0 +1,194 @@
+schemaVersion:string = "1"
+id:string = "measurement-reference"
+title:string = "Appendix — Informative Reference: Measurement Labels"
+description:string = "Informative reference for common unit and measurement-system labels used alongside convention attributes."
+created:date = 2026-05-27
+modified:date = 2026-08-24
+family:string = "conventions"
+group:string = "Informative Convention Appendices"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC0-1.0"
+path:string = "specification/conventions/measurement-labels-reference"
+order:number = 100
+publish:boolean = true
+keywords:list<string> = ["AEON", "measurement", "units", "systems", "labels", "reference"]
+related:list<string> = ["aeon-gp-measurement-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Informative Reference: Measurement Labels [# appendix-informative-reference-measurement-labels]
+
+  This appendix provides a [* non-exhaustive reference] of commonly used measurement labels that may appear with the [$ unit] and [$ system] attributes defined by AEON GP Measurement v1.
+
+  This list is [* informative only].
+  AEON GP Measurement v1 does not restrict or validate the values of these attributes.
+
+  Schemas, profiles, or processors may define stricter requirements if needed.
+
+  ---
+
+  ## Measurement Attributes [# measurement-attributes]
+
+  ### [$ unit] [# unit]
+
+  Identifies the measurement label.
+
+  Example:
+
+  ~~~$
+  distance@{unit="m"} = 3
+  ~~~$
+
+  ### [$ system] [# system]
+
+  Declares the measurement system or standard associated with the unit.
+
+  Example:
+
+  ~~~$
+  mass@{unit="oz", system="avoirdupois"} = 12
+  ~~~$
+
+  ---
+
+  ## Example Measurement Systems [# example-measurement-systems]
+
+  | System | Description |
+  | <-- | <-- |
+  | [$ metric] | International System of Units (SI) |
+  | [$ imperial] | British Imperial measurement system |
+  | [$ US-customary] | United States customary measurement system |
+  | [$ avoirdupois] | weight system used for most everyday mass units |
+  | [$ troy] | precious metal weight system |
+  | [$ display] | display, screen, and raster coordinate context |
+  | [$ css] | CSS layout and styling unit context |
+  | [$ typographic] | typography and font-relative measurement context |
+  | [$ print] | print and physical output resolution context |
+  |~ Example measurement systems
+
+  ---
+
+  ## Example Units (non-exhaustive) [# example-units-non-exhaustive]
+
+  ### Length [# length]
+
+  | Unit | Typical system |
+  | <-- | <-- |
+  | [$ mm] | metric |
+  | [$ cm] | metric |
+  | [$ m] | metric |
+  | [$ km] | metric |
+  | [$ in] | imperial / US-customary |
+  | [$ ft] | imperial / US-customary |
+  | [$ yd] | imperial |
+  | [$ mile] | imperial / US-customary |
+  |~ Length units and typical systems
+
+  Example:
+
+  ~~~$
+  length@{unit="cm", system="metric"} = 25
+  ~~~$
+
+  ---
+
+  ### Mass [# mass]
+
+  | Unit | Typical system |
+  | <-- | <-- |
+  | [$ g] | metric |
+  | [$ kg] | metric |
+  | [$ oz] | avoirdupois |
+  | [$ lb] | avoirdupois |
+  | [$ troy oz] | troy |
+  |~ Mass units and typical systems
+
+  Example:
+
+  ~~~$
+  weight@{unit="kg", system="metric"} = 82
+  ~~~$
+
+  ---
+
+  ### Volume [# volume]
+
+  | Unit | Typical system |
+  | <-- | <-- |
+  | [$ ml] | metric |
+  | [$ l] | metric |
+  | [$ fl oz] | US-customary |
+  | [$ pint] | imperial / US-customary |
+  | [$ gallon] | imperial / US-customary |
+  |~ Volume units and typical systems
+
+  Example:
+
+  ~~~$
+  volume@{unit="ml", system="metric"} = 500
+  ~~~$
+
+  ---
+
+  ### Display and Typography [# display-and-typography]
+
+  Display-oriented units often depend on a rendering context. For example, [$ px] may mean a CSS reference pixel, a raster image pixel, or a device pixel depending on the surrounding profile or schema.
+
+  | Unit | Typical system |
+  | <-- | <-- |
+  | [$ px] | display / css |
+  | [$ em] | css / typographic |
+  | [$ rem] | css / typographic |
+  | [$ pt] | typographic / print |
+  | [$ pc] | typographic / print |
+  | [$ vw] | css |
+  | [$ vh] | css |
+  | [$ dpi] | print / display |
+  | [$ ppi] | display |
+  | [$ dppx] | css / display |
+  |~ Display and typography units
+
+  Examples:
+
+  ~~~$
+  canvasWidth@{unit="px", system="display"} = 1280
+  fontSize@{unit="rem", system="css"} = 1.25
+  outputResolution@{unit="dpi", system="print"} = 300
+  ~~~$
+
+  When the distinction matters, a schema or profile should define whether [$ px] refers to CSS reference pixels, raster pixels, or device pixels.
+
+  ---
+
+  ## Precision Example [# precision-example]
+
+  Precision may be used to indicate measurement resolution.
+
+  ~~~$
+  distance@{unit="m", system="metric", precision=0.01} = 3
+  ~~~$
+
+  This indicates the value is measured to [* centimeter precision].
+
+  The attribute does not require rounding or formatting.
+
+  ---
+
+  ## Notes [# notes]
+
+  This appendix exists only to illustrate [* common measurement labels].
+
+  It does not:
+
+  - restrict the [$ unit] attribute
+  - define an official unit registry
+  - require a specific measurement ontology
+
+  Profiles or schemas may define stricter unit lists if required.
+
+  ---
+`

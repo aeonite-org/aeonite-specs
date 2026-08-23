@@ -1,0 +1,56 @@
+schemaVersion:string = "1"
+id:string = "aeon-v1-consolidation-source-map"
+title:string = "v1 Consolidation Source Map"
+description:string = "Maps canonical v1 documents to the historical source material they consolidate."
+created:date = 2026-08-21
+modified:date = 2026-08-21
+family:string = "aeon"
+group:string = "Publication"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aeon-v1-documentation/consolidation-source-map"
+order:number = 110
+publish:boolean = true
+keywords:list<string> = ["AEON", "consolidation", "provenance", "source map", "release history"]
+related:list<string> = ["aeon-v1-official-index", "aeon-v1-supersession-table", "aeon-core-v1", "aeos-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # v1 Consolidation Source Map [# v1-consolidation-source-map]
+
+  ## Core [# core]
+
+  - [$ AEON-spec-v1.md] <= [$ specs/03-releases/r7/AEON-spec-r7.md]
+  - [$ AEOS-spec-v1.md] <= [$ specs/03-releases/r7/AEOS-spec-r7.md]
+  - [$ comments-annotations-v1.md] <= prior top-level [$ specs/annotation-binding.md] and release-line annotation/comment guidance
+
+  ## Appendices [# appendices]
+
+  - [$ appendix-addressing.md] <= [$ specs/03-releases/r7/appendix-addressing.md]
+  - [$ appendix-annotation-stream.md] <= [$ specs/03-releases/r7/appendix-annotation-stream.md]
+  - [$ appendix-error-model.md] <= [$ specs/03-releases/r7/appendix-error-model.md]
+  - [$ appendix-aes.md] <= [$ specs/03-releases/r5/appendix-aes.md]
+  - [$ appendix-glossary.md] <= [$ specs/03-releases/r5/appendix-glossary.md]
+  - [$ appendix-processing-model.md] <= [$ specs/03-releases/r5/appendix-processing-model.md]
+  - [$ appendix-tonic.md] <= [$ specs/03-releases/r5/appendix-tonic.md]
+  - [$ appendix-tuples.md] <= [$ specs/03-releases/r5/appendix-tuples.md]
+  - [$ appendix-aeos-charter.md] <= [$ specs/03-releases/r4/appendix-aeos-charter.md]
+  - [$ appendix-altopelago-core-profile.md] <= [$ specs/03-releases/r4/appendix-altopelago-core-profile.md]
+  - [$ appendix-bindings.md] <= [$ specs/03-releases/r4/appendix-bindings.md]
+  - [$ appendix-canonical-form.md] <= [$ specs/03-releases/r4/appendix-canonical-form.md]
+  - [$ appendix-insane-profiles.md] <= [$ specs/03-releases/r4/appendix-insane-profiles.md]
+  - [$ appendix-integrity-envelope.md] <= [$ specs/03-releases/r4/appendix-integrity-envelope.md]
+  - [$ appendix-json-profile.md] <= [$ specs/03-releases/r4/appendix-json-profile.md]
+  - [$ appendix-node-model.md] <= [$ specs/03-releases/r4/appendix-node-model.md]
+  - [$ appendix-pattern-profile.md] <= [$ specs/03-releases/r4/appendix-pattern-profile.md]
+  - [$ appendix-profiles-framework.md] <= [$ specs/03-releases/r4/appendix-profiles-framework.md]
+  - [$ appendix-reference-philosophy.md] <= [$ specs/03-releases/r4/appendix-reference-philosophy.md]
+  - [$ appendix-schema-profile.md] <= [$ specs/03-releases/r4/appendix-schema-profile.md]
+  - [$ appendix-spans.md] <= [$ specs/03-releases/r4/appendix-spans.md]
+  - [$ appendix-transport.md] <= [$ specs/03-releases/r4/appendix-transport.md]
+  - [$ appendix-validator-conformance.md] <= [$ specs/03-releases/r4/appendix-validator-conformance.md]
+`

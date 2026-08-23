@@ -1,0 +1,73 @@
+schemaVersion:string = "1"
+id:string = "aeon-v1-official-index"
+title:string = "Official v1 Index"
+description:string = "Index of canonical normative documentation for AEON v1."
+created:date = 2026-08-21
+modified:date = 2026-08-23
+family:string = "aeon"
+group:string = "Publication"
+standing:string = "official"
+lifecycle:string = "published"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aeon-v1-documentation/official-v1-index"
+order:number = 0
+publish:boolean = true
+keywords:list<string> = ["AEON", "official v1", "index", "canonical specifications", "contracts", "CTS"]
+related:list<string> = ["aeon-core-v1", "aeon-core-v1-compliance", "aeos-v1", "aeos-v1-compliance", "aeon-v1-conformance-matrix", "aeon-v1-release-governance", "aeon-v1-supersession-table", "aeon-v1-consolidation-source-map", "aeon-v1-contracts", "contracts-artifacts-overview"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Official v1 Index [# official-v1-index]
+
+  Canonical normative documentation for AEON v1.
+
+  ## Core Specs [# core-specs]
+
+  - [@ document:aeon-core-v1 | [$ AEON-spec-v1]]
+  - [@ document:aeon-core-v1-compliance | [$ AEON-v1-compliance]]
+  - [@ document:aeos-v1 | [$ AEOS-spec-v1]]
+  - [@ document:aeon-v1-conformance-matrix | [$ conformance-matrix]]
+  - [@ document:aeon-v1-contracts | [$ contracts-v1]]
+  - [@ document:aeon-v1-release-governance | [$ release-governance-v1]]
+  - [@ document:aeon-core-v1-value-types | [$ value-types-v1]]
+  - [@ document:aeon-core-v1-structure-syntax | [$ structure-syntax-v1]]
+  - [@ document:aeon-core-v1-addressing-references | [$ addressing-references-v1]]
+  - [@ document:aeon-core-v1-comments-annotations | [$ comments-annotations-v1]]
+
+  ## Conformance [# conformance]
+
+  - CTS protocol baseline: [$ cts/protocol/v1] ([$ cts.protocol.v1])
+  - Lane manifests:
+    - [$ cts/aeos/v1/aeos-validator-cts.v1.json]
+    - [$ cts/core/v1/core-cts.v1.json]
+    - [$ cts/aes/v1/aes-cts.v1.json]
+    - [$ cts/annotations/v1/annotation-stream-cts.v1.json]
+
+  ## Companion Docs [# companion-docs]
+
+  - [$ appendices/] (consolidated from release-line docs; informative unless explicitly referenced by a canonical v1 spec)
+  - [$ conventions/] (working convention specs synced into publication surfaces such as aeonite-website)
+  - [@ document:aeon-v1-supersession-table | [$ supersession-table]] (canonical precedence and appendix status map)
+
+  ## Contracts [# contracts]
+
+  - [@ document:contracts-artifacts-overview | [$ contracts/README]]
+  - [@ /artifacts/assets/contracts/v1/registry.json | [$ registry.json]]
+  - [@ /artifacts/assets/contracts/v1/profiles/aeon.gp.profile.v1.aeon | [$ aeon.gp.profile.v1.aeon]]
+  - [@ /artifacts/assets/contracts/v1/schemas/aeon.gp.schema.v1.aeon | [$ aeon.gp.schema.v1.aeon]]
+
+  ## Consolidation Method [# consolidation-method]
+  This v1 set was assembled from release docs in [$ specs/03-releases] using a latest-applicable-source rule:
+
+  - core specs from the latest release-line baseline available at consolidation time
+  - appendices from latest available release docs per topic (fallback across prior release lines)
+
+  See [@ document:aeon-v1-consolidation-source-map | [$ consolidation-source-map]] for provenance.
+  See [@ document:aeon-v1-supersession-table | [$ supersession-table]] for canonical precedence and overlap handling.
+
+  ## Note [# note]
+  This folder is the canonical v1 documentation surface. Working proposals and implementation planning remain under [$ specs/01-proposals] and [$ specs/02-implementation].
+`

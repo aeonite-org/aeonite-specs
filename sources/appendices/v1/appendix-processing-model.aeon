@@ -1,0 +1,305 @@
+schemaVersion:string = "1"
+id:string = "appendix-processing-model-v1"
+title:string = "Appendix — Processing Model"
+description:string = "Conceptual phase pipeline from lexing through finalization, including assignment events."
+created:date = 2026-03-25
+modified:date = 2026-08-24
+family:string = "appendices"
+group:string = "Core Semantics"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-processing-model-v1"
+order:number = 30
+publish:boolean = true
+keywords:list<string> = ["AEON", "processing model", "phases", "processors", "reference evaluation", "orientation"]
+related:list<string> = ["aeon-core-v1", "aeon-core-v1-compliance", "aeos-v1", "appendix-aes-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Processing Model [# appendix-processing-model]
+
+  [* Appendix to:] AEON Specification v1
+
+  Canonical topic owners: AEON Specification v1 and AEOS Specification v1.
+
+  This appendix is an orientation aid for the v1 processing pipeline. Canonical phase ownership lives in the top-level v1 specs and compliance documents.
+  If this appendix conflicts with the canonical v1 spec set, the canonical v1 spec set wins.
+
+  This appendix illustrates AEON's conceptual processing phases, Assignment Events, processor selection boundaries, tuple/indexed-path support, and annotation stream emission.
+
+  ~~~!
+  [* v1 Baseline Surfaces]
+
+  Tuple literal parsing ([$ TupleLiteral]), indexed path segment assignment ([$ \\[n\\]]), annotation stream record emission, and indexed reference targets are part of the consolidated v1 surface described by the canonical specs.
+  ~~~!
+
+
+  ## 1. Processing Phases [# processing-phases]
+
+  Implementations should read these phases as a conceptual pipeline. Normative phase ownership and conformance requirements live in the canonical v1 specs and compliance documents.
+
+  +++graph
+  ["lexing", "Phase 1: Lexing\\nInput → Tokens\\nClassify Comment Channels", 50, 4]
+  ["parse", "Phase 2: Structural Parse\\nTokens → AST; Emit TupleLiteral", 50, 17]
+  ["paths", "Phase 3: Canonical Path Resolution\\nAssign Canonical and Indexed Paths", 50, 30]
+  ["events", "Phase 4: Assignment Event Emission\\nEmit Binding and\\nAnnotation Records", 50, 43]
+  ["profiles", "Phase 5: Profile Interpretation\\nInvoke Processors and\\nDatatype Hints", 50, 56]
+  ["schema", "Phase 6: Schema Validation\\nEvaluate Constraints and Violations", 50, 69]
+  ["references", "Phase 7: Reference Evaluation\\nResolve Values, Aliases, and\\nIndexed Targets", 50, 82]
+  ["finalization", "Phase 8: Finalization\\nMaterialize Final Document Model", 50, 95]
+  {"lexing", "CB", "parse", "CT", "to", "solid"}
+  {"parse", "CB", "paths", "CT", "to", "solid"}
+  {"paths", "CB", "events", "CT", "to", "solid"}
+  {"events", "CB", "profiles", "CT", "to", "solid"}
+  {"profiles", "CB", "schema", "CT", "to", "solid"}
+  {"schema", "CB", "references", "CT", "to", "solid"}
+  {"references", "CB", "finalization", "CT", "to", "solid"}
+  +++ (Figure 1: AEON processing phases)
+  +++fallback
+  ~~~$
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │ Phase 1: Lexing                                                         │
+  │   Input → Tokens; classify comment channel prefixes                     │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │ Phase 2: Structural Parse                                               │
+  │   Tokens → AST (objects, lists, tuples, scalars, bindings)              │
+  │   v1: emit TupleLiteral for (...) forms                                 │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │ Phase 3: Canonical Path Resolution                                      │
+  │   Each node assigned a canonical path ($.foo.bar)                       │
+  │   v1: assign indexed segments to list/tuple elements ($.foo[0])         │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │ Phase 4: Assignment Event Emission                                      │
+  │   Exactly one event per binding                                         │
+  │   v1: emit annotation stream records for structured comments            │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │ Phase 5: Profile Interpretation                                         │
+  │   Processors invoked, datatype hints interpreted                        │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │ Phase 6: Schema Validation                                              │
+  │   Constraints evaluated, violations reported                            │
+  │   v1: tuple constraints (TYPE_IS, LENGTH_EXACT, per-position)           │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │ Phase 7: Reference Evaluation                                           │
+  │   References resolved to values or aliases                              │
+  │   v1: indexed path targets resolved ($.a[1])                            │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │ Phase 8: Finalization                                                   │
+  │   Final document model materialized                                     │
+  └─────────────────────────────────────────────────────────────────────────┘
+  ~~~$
+  +++
+
+
+  ## 2. Assignment Events [# assignment-events]
+
+  ### 2.1 Definition [# definition]
+
+  An [* Assignment Event] is a normalized record emitted for each binding.
+
+  ### 2.2 Required Fields [# required-fields]
+
+  | Field | Type | Description |
+  | <-- | <-- | <-- |
+  | [$ path] | string | Canonical path to the node |
+  | [$ key] | string | Key name being bound |
+  | [$ value] | Value | Parsed AEON value ([$ ListNode], [$ TupleLiteral], etc.) |
+  | [$ span] | Span | Source location |
+  |~ Required processing-model fields
+
+  ### 2.3 Optional Fields [# optional-fields]
+
+  | Field | Type | Description |
+  | <-- | <-- | <-- |
+  | [$ datatype] | string | Datatype hint if present |
+  | [$ annotations] | map | Assignment annotations |
+  | [$ raw] | string | Raw literal text |
+  |~ Optional processing-model fields
+
+  ### 2.4 Example [# example]
+
+  ~~~$ aeon
+  p@{style:color = #FF0000}:point = { x = 23, y = 3, z = 34 }
+  ~~~$
+
+  Assignment Event:
+
+  ~~~$ json
+  {
+    "path": "$.p",
+    "key": "p",
+    "datatype": "point",
+    "annotations": { "style:color": "#FF0000" },
+    "value": { "x": 23, "y": 3, "z": 34 }
+  }
+  ~~~$
+
+  ### 2.5 Tuple Example (v1 baseline) [# tuple-example-v1-baseline]
+
+  ~~~$ aeon
+  score:tuple<string,int32> = ("alice", 95)
+  ~~~$
+
+  Assignment Events:
+
+  ~~~$ json
+  {
+    "path": "$.score",
+    "key": "score",
+    "datatype": "tuple<string,int32>",
+    "value": { "kind": "TupleLiteral", "elements": ["alice", 95] }
+  }
+  ~~~$
+
+  Element sub-events (if emitting per-element events):
+
+  ~~~$ json
+  { "path": "$.score[0]", "value": { "kind": "StringLiteral", "raw": "alice" } }
+  { "path": "$.score[1]", "value": { "kind": "NumberLiteral", "raw": "95" } }
+  ~~~$
+
+
+  ## 3. Uniqueness (Const Semantics) [# uniqueness-const-semantics]
+
+  AEON documents are immutable by construction:
+
+  - For any canonical path, there MUST be [* at most one] Assignment Event
+  - Duplicate path bindings MUST raise an error
+  - No implicit override, merge, or replacement semantics
+
+
+  ## 4. Annotation Stream Emission (v1 baseline) [# annotation-stream-emission-v1-baseline]
+
+  Annotation stream records are emitted in Phase 4, in parallel with Assignment Events. They do NOT appear in the AES.
+
+  See [/ Appendix: Annotation Stream] for record format and binding rules.
+
+  [* Key invariants:]
+
+  - Annotation stream emission MUST NOT affect AES contents
+  - AES with all comments stripped MUST equal AES with comments present
+  - Annotation stream records are source-ordered
+
+
+  ## 5. Processor Registry [# processor-registry]
+
+  ### 5.1 Definition [# definition-2]
+
+  A [* Processor] is a deterministic transformation function applied to Assignment Events.
+
+  ### 5.2 Design Principles [# design-principles]
+
+  1. [* No implicit execution] — Documents cannot invoke processors directly
+  2. [* Profile-scoped authority] — Only the active profile enables processors
+  3. [* Determinism] — Same input produces identical output
+  4. [* No structural mutation] — Processors cannot add/remove nodes
+  5. [* Explicit phase boundary] — Processors run in Phase 5 only
+
+  ### 5.3 Processor Binding [# processor-binding]
+
+  Profiles declare processors bound to:
+
+  - Datatype hints (e.g., [$ point] → [$ geom.point])
+  - Annotation keys (e.g., [$ style:color] → [$ core.hex])
+  - Canonical paths
+
+  ### 5.4 Invocation [# invocation]
+
+  During Phase 5, for each Assignment Event:
+
+  1. Profile determines applicable processors
+  2. Processors invoked in deterministic order
+  3. Each processor receives the event and current value
+  4. Processor may validate, transform, or attach metadata
+
+  ### 5.5 Processor Input [# processor-input]
+
+  Processors receive:
+
+  - [$ path] — canonical path
+  - [$ value] — current value (may be [$ ListNode] or [$ TupleLiteral] in v1)
+  - [$ datatype] — if present
+  - [$ annotations] — if present
+
+  ### 5.6 Processor Output [# processor-output]
+
+  Processors MAY:
+
+  - Return a transformed value
+  - Return the same value unchanged
+  - Raise a validation error
+
+  Processors MUST NOT:
+
+  - Return multiple values
+  - Alter the canonical path
+  - Emit new Assignment Events
+
+
+  ## 6. Reference Evaluation Phase [# reference-evaluation-phase]
+
+  ### 6.1 Binding Visibility Rule [# binding-visibility-rule]
+
+  A binding becomes eligible as a reference target [* only after] its Assignment Event has been committed.
+
+  Self-references (e.g., [$ a = ~a]) are therefore invalid.
+
+  ### 6.2 No Forward References [# no-forward-references]
+
+  References MUST target paths already bound earlier in the document.
+
+  The no-forward rule applies [* independently per namespace] (data and attribute).
+
+  ### 6.3 Indexed Reference Targets (v1 baseline) [# indexed-reference-targets-v1-baseline]
+
+  In v1 mode, references may target indexed paths:
+
+  ~~~$ aeon
+  items  = (10, 20, 30)
+  second = ~items[1]     // clone of element at $.items[1]
+  ~~~$
+
+  Resolution proceeds using the same no-forward rule (referenced indexed path must be already bound).
+
+  ### 6.4 Resolution Semantics [# resolution-semantics]
+
+  | Operator | Behavior |
+  | <-- | <-- |
+  | [$ ~] (clone) | Resolve terminal value, copy |
+  | [$ ~>] (pointer) | Return alias to named binding |
+  |~ Reference-resolution operators
+
+  ### 6.5 Cycles [# cycles]
+
+  Because AEON forbids forward references, cycles are unrepresentable.
+
+
+  ## 7. Error Reporting [# error-reporting]
+
+  Diagnostics should reference:
+
+  - Canonical path
+  - Span (when available)
+  - Phase where error occurred
+
+  Example:
+
+  ~~~$
+
+  Error: Unknown processor "geom.point"
+  Path: $.p
+  Phase: Profile Interpretation
+  ~~~$
+
+  +++document/modules
+  dependencies = {
+    graph = "org.aeonite.gp.graph.v1"
+  }
+  +++
+
+`
