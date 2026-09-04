@@ -59,6 +59,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Changed
 
+- Extended AEON structural identity to every headed structural occurrence, including attribute-entry
+  and literal-node heads, under one document-wide uniqueness rule.
 - Clarified that v2 local-fragment integrity is a second-pass document validation rule, omitted image
   modes intentionally normalize to explicit `inline`, `autoNumber?: true` is an additive opt-in AST
   field, and `[.]` is solely a line-break node rather than a directional marker.

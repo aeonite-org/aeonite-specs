@@ -152,6 +152,8 @@ body:prose = >`
     \\item-1\\:string = "red",
     \\item-2\\@{source:string = "user"}:string = "green"
   ]
+
+  record@{source\\source-1\\:string = "user"} = <entry\\entry-head-1\\>
   ~~~$
 
   Grammar:
@@ -166,10 +168,9 @@ body:prose = >`
 
   - structural identities are source metadata, not values;
   - structural identities are optional in both transport and strict form;
-  - structural identities are valid on ordinary binding heads and anonymous container child heads, including anonymous node children;
-  - structural identities are not valid on attribute-entry heads or on the literal head inside [$ <...>] node syntax;
+  - structural identities are valid on every headed structural occurrence: ordinary binding heads, attribute-entry heads, anonymous container child heads (including anonymous node children), and the literal head inside [$ <...>] node syntax;
   - structural identities are invalid as standalone scalar values;
-  - document-level structural identity values must be unique;
+  - structural identity values must be unique document-wide across all headed structural occurrences;
   - structural identity appears before attributes and datatype: [$ key\\\\id\\\\@{...}:type = value];
   - structural identity after attributes, for example [$ key@{...}\\\\id\\\\:type = value], is invalid;
   - structural identity syntax inside quoted strings is ordinary string content.
