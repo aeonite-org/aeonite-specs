@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-structure-syntax"
 title:string = "AEON v1 Structure Syntax Reference"
 description:string = "Reference for binding shape, keys, attributes, datatype clarifiers, newline rules, and structural grammar decisions in AEON Core v1."
 created:date = 2026-03-25
-modified:date = 2026-08-23
+modified:date = 2026-09-04
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -166,7 +166,8 @@ body:prose = >`
 
   - structural identities are source metadata, not values;
   - structural identities are optional in both transport and strict form;
-  - structural identities are valid on ordinary bindings, attribute entries, node heads, and anonymous child heads;
+  - structural identities are valid on ordinary binding heads and anonymous container child heads, including anonymous node children;
+  - structural identities are not valid on attribute-entry heads or on the literal head inside [$ <...>] node syntax;
   - structural identities are invalid as standalone scalar values;
   - document-level structural identity values must be unique;
   - structural identity appears before attributes and datatype: [$ key\\\\id\\\\@{...}:type = value];

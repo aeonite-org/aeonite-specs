@@ -1,0 +1,348 @@
+schemaVersion:string = "1"
+id:string = "aeon-gp-assertion-v1"
+title:string = "AEON GP Assertion v1"
+description:string = "General-purpose convention for interpreting typed AEON triples as semantic assertions."
+created:date = 2026-08-06
+modified:date = 2026-09-04
+family:string = "conventions"
+group:string = "General-Purpose Conventions"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "normative"
+license:string = "CC0-1.0"
+path:string = "specification/conventions/aeon-gp-assertion-v1"
+order:number = 55
+publish:boolean = true
+keywords:list<string> = ["AEON", "assertions", "triples", "semantic data", "interoperability"]
+related:list<string> = ["aeon-conventions-overview", "aeon-gp-convention-v1", "aeon-gp-document-v1", "aeon-core-v1-value-types"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # AEON GP Assertion v1 [# aeon-gp-assertion-v1]
+
+  Convention identifier: [$ aeon.gp.assertion.v1]
+
+  ---
+
+  ## 1. Purpose [# purpose]
+
+  [$ aeon.gp.assertion.v1] defines a standard interpretation for typed triples as semantic assertions.
+
+  The convention provides a common semantic model for relationship data, knowledge graphs, event descriptions, semantic datasets, and interoperability formats without extending AEON Core.
+
+  The convention defines how the three positions of an AEON [$ triple] are interpreted. It does not define graph processing, storage, querying, historical semantics, or execution behavior.
+
+  ---
+
+  ## 2. Adoption and Processing [# adoption-and-processing]
+
+  The convention applies only when a document, profile, schema, or trusted host explicitly activates [$ aeon.gp.assertion.v1].
+
+  A processor that does not implement or activate this convention continues to treat [$ triple<A,B,C>] as the AEON Core alias of [$ tuple<A,B,C>]. It must not infer subject-predicate-object meaning merely because a tuple has three positions.
+
+  An activated processor:
+
+  1. parses the document under the applicable AEON Core and profile rules;
+  2. recognizes values declared through the [$ triple<A,B,C>] alias;
+  3. interprets positions one, two, and three as subject, predicate, and object respectively; and
+  4. leaves application-specific graph, storage, query, validation, and historical behavior to the responsible higher layer.
+
+  ---
+
+  ## 3. Relationship to AEON Core [# relationship-to-aeon-core]
+
+  AEON Core defines structural semantics only.
+
+  The reserved datatype alias:
+
+  ~~~$ text
+  triple<A,B,C>
+  ~~~$
+
+  is structurally and operationally equivalent to:
+
+  ~~~$ text
+  tuple<A,B,C>
+  ~~~$
+
+  AEON Core does not assign semantic roles to those positions. This convention supplies that interpretation without introducing a new value category, parser primitive, canonical form, or runtime container.
+
+  All tuple rules continue to apply, including arity, positional typing, canonical serialization, equality, nesting, and schema behavior.
+
+  ---
+
+  ## 4. Assertion Model [# assertion-model]
+
+  A conforming assertion is a typed triple whose positions are interpreted as follows:
+
+  | Position | Semantic role | Meaning |
+  | <-- | <-- | <-- |
+  | 1 | Subject | The entity or value being described |
+  | 2 | Predicate | The relationship, property, action, or semantic connector |
+  | 3 | Object | The entity or value completing the assertion |
+  |~ Assertion triple positions
+
+  The terms subject, predicate, and object describe semantic roles. They are not AEON language keywords.
+
+  This interpretation resembles familiar subject-predicate-object models but does not require RDF compatibility, graph membership, ontology processing, or reference-only terms.
+
+  ---
+
+  ## 5. Basic Example [# basic-example]
+
+  ~~~$ aeon
+  friendship:triple<sansa, string, sansa> = (
+    $.person.alice,
+    "friend_of",
+    $.person.bob
+  )
+  ~~~$
+
+  Under this convention:
+
+  - [$ $.person.alice] is the subject;
+  - [$ "friend_of"] is the predicate; and
+  - [$ $.person.bob] is the object.
+
+  The SANSA address literals remain values. This convention does not resolve them or claim that they identify graph nodes.
+
+  ---
+
+  ## 6. Typed Assertions [# typed-assertions]
+
+  Assertion triples retain AEON's positional type system.
+
+  ~~~$ aeon
+  purchase:triple<sansa, string, decimal> = (
+    $.user.amy,
+    "paid",
+    %33.22
+  )
+  ~~~$
+
+  The first position must satisfy [$ sansa], the second [$ string], and the third [$ decimal] under the active profile or schema.
+
+  This convention does not weaken or replace those type claims. A processor must complete ordinary AEON and profile validation before relying on an assertion interpretation.
+
+  ---
+
+  ## 7. Subject [# subject]
+
+  The subject is the entity or value about which the assertion is made.
+
+  A subject may be any AEON value permitted by the declared first-position type. It is not restricted to a reference, identifier, path, graph node, or string.
+
+  Common subjects include people, organizations, products, documents, addresses, sensors, identifiers, and values.
+
+  ---
+
+  ## 8. Predicate [# predicate]
+
+  The predicate describes how the subject relates to the object.
+
+  Examples include [$ friend_of], [$ owns], [$ paid], [$ located_in], [$ member_of], and [$ temperature].
+
+  A predicate may use an application-defined datatype or closed vocabulary. This convention does not reserve predicate strings and does not make arbitrary predicate text authoritative.
+
+  ---
+
+  ## 9. Object [# object]
+
+  The object completes the assertion.
+
+  An object may be any AEON value permitted by the declared third-position type, including an identity, scalar, measurement, object, address, tuple, or node. It is not restricted to a graph node or reference.
+
+  ---
+
+  ## 10. Assertion Collections [# assertion-collections]
+
+  Datasets of assertions may use ordinary AEON collections.
+
+  ~~~$ aeon
+  relationships:list<triple<sansa, string, sansa>> = [
+    (
+      $.person.alice,
+      "friend_of",
+      $.person.bob
+    )
+    (
+      $.person.bob,
+      "works_for",
+      $.company.acme
+    )
+  ]
+  ~~~$
+
+  The surrounding list remains an ordinary AEON list. This convention does not create an implicit graph, assertion store, index, or query surface from the collection.
+
+  ---
+
+  ## 11. Qualified Assertions [# qualified-assertions]
+
+  Metadata about an assertion belongs around the triple rather than inside it.
+
+  ~~~$ aeon
+  purchase = {
+    assertion:triple<sansa, string, decimal> = (
+      $.user.amy,
+      "paid",
+      %33.22
+    )
+    asserted_at:datetime = 2026-08-06T10:30:00Z
+    source:sansa = $.checkout.transaction[381]
+  }
+  ~~~$
+
+  The triple carries the assertion. The surrounding object carries contextual claims such as provenance, time, confidence, authority, or workflow state.
+
+  This convention does not standardize those surrounding fields. A separate convention, profile, or application contract must define them.
+
+  ---
+
+  ## 12. Assertion Identity [# assertion-identity]
+
+  An application may assign a stable identifier to an assertion through a surrounding object or another explicit identity mechanism.
+
+  The identifier does not become a fourth triple position. Extending the triple would change its structure and would no longer conform to this convention's three-role model.
+
+  Assertion identity is distinct from AEON structural identity. Structural identity identifies an occurrence in a document; assertion identity identifies the semantic claim according to a higher-level contract.
+
+  ---
+
+  ## 13. Relationship to SANSA [# relationship-to-sansa]
+
+  SANSA addresses may appear as values within an assertion, but [$ aeon.gp.assertion.v1] does not resolve, traverse, or materialize them.
+
+  A path-shaped representation such as:
+
+  ~~~$ text
+  $.alice.friend_of.bob
+  ~~~$
+
+  may be a useful domain projection, but it is not the canonical representation defined by this convention. The assertion representation remains a typed triple.
+
+  SANSA.Graph may accept conforming assertion triples as one input representation. SANSA.Graph remains responsible for graph construction, traversal, constraints, provenance requirements, and graph-specific diagnostics.
+
+  ---
+
+  ## 14. Relationship to RDF and Graphs [# relationship-to-rdf-and-graphs]
+
+  A conforming assertion can be projected into a graph or RDF-compatible representation when an explicit mapping defines the conversion.
+
+  Such a mapping must account for AEON features that are not automatically RDF semantics, including arbitrary typed values, non-reference objects, datatype claims, nested structures, and surrounding metadata.
+
+  This convention does not define graph storage, graph algorithms, RDF identifiers, blank nodes, ontology rules, entailment, or serialization formats.
+
+  ---
+
+  ## 15. Relationship to AES [# relationship-to-aes]
+
+  An assertion is not an event.
+
+  An assertion expresses a semantic claim. AES may record when that claim was assigned, replaced, moved, or removed, together with event provenance and history.
+
+  Activating this convention does not create events, establish historical authority, or make the current assertion true. AES and its host remain responsible for event identity, revision semantics, provenance, and reconstruction.
+
+  ---
+
+  ## 16. Relationship to Documents [# relationship-to-documents]
+
+  Assertions may appear inside any AEON document whose active contract permits them.
+
+  Document metadata remains the responsibility of [$ aeon.gp.document.v1] or another declared document convention. Assertion interpretation must not treat document metadata as assertion qualification unless an explicit higher-level convention says so.
+
+  ---
+
+  ## 17. Authority and Truth [# authority-and-truth]
+
+  A conforming triple is an assertion, not proof that its contents are true.
+
+  Trust, evidence, provenance, authority, verification, conflict handling, and reconciliation belong to the application contract or another explicitly activated convention.
+
+  A processor must not infer authority solely from:
+
+  - the presence of the [$ triple] alias;
+  - activation of this convention;
+  - a predicate label;
+  - the location of the assertion in a document; or
+  - successful structural validation.
+
+  ---
+
+  ## 18. Unknown and Unsupported Content [# unknown-and-unsupported-content]
+
+  This convention does not reserve a global predicate vocabulary or a fixed set of subject and object datatypes.
+
+  Unknown values remain governed by AEON Core, the active profile, schema, and application contract. A processor may preserve a structurally valid assertion it cannot interpret, but it must not invent missing domain meaning.
+
+  If a processor claims conformance to this convention for an assertion, it must preserve all three positions, their order, datatype claims, and value distinctions.
+
+  ---
+
+  ## 19. Non-Goals [# non-goals]
+
+  This convention does not define:
+
+  - graph databases or graph storage;
+  - graph traversal or query languages;
+  - ontology modeling or inference;
+  - RDF compatibility without an explicit mapping;
+  - provenance, confidence, or authority vocabularies;
+  - historical semantics or event sourcing;
+  - storage layout, indexing, or execution behavior; or
+  - truth or trust policy.
+
+  ---
+
+  ## 20. Complete Example [# complete-example]
+
+  ~~~$ aeon
+  aeon:header = {
+    encoding = "utf-8"
+    mode = "strict"
+    convention = "aeon.gp.assertion.v1"
+  }
+
+  relationships:list<triple<sansa, string, sansa>> = [
+    (
+      $.person.alice,
+      "friend_of",
+      $.person.bob
+    )
+    (
+      $.person.bob,
+      "works_for",
+      $.company.acme
+    )
+  ]
+  ~~~$
+
+  A convention-aware consumer interprets the three positions of each triple as subject, predicate, and object. A convention-unaware consumer continues to observe an ordinary list of typed tuples.
+
+  ---
+
+  ## 21. Conformance [# conformance]
+
+  A processor claiming [$ aeon.gp.assertion.v1] conformance must:
+
+  1. require explicit convention activation or an equivalent trusted host profile;
+  2. recognize [$ triple<A,B,C>] as the AEON tuple alias rather than a new value kind;
+  3. preserve exactly three ordered positions;
+  4. interpret those positions as subject, predicate, and object;
+  5. retain applicable AEON datatype and value semantics;
+  6. keep assertion metadata outside the triple;
+  7. avoid inferring graph, RDF, historical, authority, or truth semantics; and
+  8. fail closed rather than invent domain meaning when an activated contract cannot interpret a value.
+
+  ---
+
+  ## 22. Summary [# summary]
+
+  [$ aeon.gp.assertion.v1] establishes one narrow agreement:
+
+  > A typed AEON triple represents a semantic assertion whose ordered positions are subject, predicate, and object.
+
+  The convention preserves AEON typing and representation neutrality while leaving graph processing, querying, storage, history, provenance, authority, and truth to their responsible layers.
+`

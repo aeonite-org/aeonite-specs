@@ -53,7 +53,7 @@ const errors = [];
 const ids = new Map();
 const publicationPaths = new Map();
 
-if (files.length !== 79) errors.push(`Expected 79 AEON specification sources, found ${files.length}.`);
+if (files.length !== 80) errors.push(`Expected 80 AEON specification sources, found ${files.length}.`);
 
 for (const file of files) {
   const relative = path.relative(repositoryRoot, file).split(path.sep).join('/');

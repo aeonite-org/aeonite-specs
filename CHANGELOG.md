@@ -45,6 +45,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Added
 
+- Added the normative draft `aeon.gp.assertion.v1` convention, defining the
+  explicitly activated subject-predicate-object interpretation of typed AEON triples while keeping
+  graph, RDF, provenance, history, authority, and truth semantics in their responsible layers.
 - Added proposal-stage `&ND` v1-to-v2 migration and v2 consumer-conventions documents, covering the
   asymmetric parser boundary, mechanical syntax migration, supported v2 surface, and the explicit
   split between Core fields and consumer-owned behavior.
