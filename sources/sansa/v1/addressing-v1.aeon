@@ -3,7 +3,7 @@ id:string = "sansa-v1-addressing"
 title:string = "SANSA v1 Addressing"
 description:string = "Draft-stage address model and selector vocabulary for SANSA."
 created:date = 2026-07-14
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -471,10 +471,14 @@ body:prose = >`
 
   Filters by representation kind.
 
+  Representation kind names use the ordinary [$ Identifier] grammar. Portable
+  AES namespaces expose the normative AEON representation names directly.
+
   Example:
 
   ~~~$ text
-  $.content.*%stringLiteral
+  $.content.*%StringLiteral
+  $.content.*%NodeHead
   ~~~$
 
   Semantic datatype and representation kind are distinct.
@@ -486,7 +490,7 @@ body:prose = >`
   }
   ~~~$
 
-  The expression [$ $.content.*#text] selects only [$ a]. The expression [$ $.content.*%stringLiteral] selects both [$ a] and [$ b].
+  The expression [$ $.content.*#text] selects only [$ a]. The expression [$ $.content.*%StringLiteral] selects both [$ a] and [$ b].
 
   ## 8. Canonical Addresses [# canonical-addresses]
 
