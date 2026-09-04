@@ -3,7 +3,7 @@ id:string = "appendix-tonic-v1"
 title:string = "Appendix — Tonic Processor Governance"
 description:string = "Governance model and operational constraints for tonic processor behavior."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "AEOS and Profiles"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-tonic-v1"
 order:number = 180
 publish:boolean = true
 keywords:list<string> = ["AEON", "Tonic", "processor governance", "materialization", "reference policy", "determinism"]
-related:list<string> = ["aeon-core-v1", "aeos-v1", "appendix-aes-v1", "appendix-processing-model-v1", "appendix-profiles-framework-v1"]
+related:list<string> = ["aeon-core-v1", "aeos-v1", "aes-events-v0", "appendix-processing-model-v1", "appendix-profiles-framework-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

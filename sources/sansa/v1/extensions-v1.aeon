@@ -3,7 +3,7 @@ id:string = "sansa-v1-extensions"
 title:string = "SANSA v1 Extension Candidates"
 description:string = "Proposal-stage candidate extensions for SANSA selectors and query helpers."
 created:date = 2026-07-21
-modified:date = 2026-08-23
+modified:date = 2026-09-05
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/sansa/v1/proposals/extensions"
 order:number = 130
 publish:boolean = true
 keywords:list<string> = ["SANSA", "extensions", "selectors", "query helpers", "proposal"]
-related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "sansa-v1-query", "aeon-v1-value-semantics"]
+related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "sansa-v1-query", "aeonic-semantic-language-v0"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -242,7 +242,7 @@ body:prose = >`
 
   The promoted surface uses [$ upper(...)] rather than [$ uppercase(...)], matching the existing [$ lower(...)] helper and avoiding aliases in the initial conformance surface.
 
-  Case mapping is defined by Shared AEON Value Semantics. An implementation slice may use its host runtime's default Unicode case mapping while the shared contract is still proposal-stage, but normative behavior should not depend on host locale, process locale, database collation, or host-language defaults.
+  Case mapping is defined by Aeonic Semantic Language. An implementation slice may use its host runtime's default Unicode case mapping while the shared contract is still proposal-stage, but normative behavior should not depend on host locale, process locale, database collation, or host-language defaults.
 
   ## 6. Experimental Field Projection Helper [# experimental-field-projection-helper]
 

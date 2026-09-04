@@ -3,7 +3,7 @@ id:string = "sansa-v1-query"
 title:string = "SANSA.Query v1"
 description:string = "Proposal-stage read-only semantic query model built on SANSA.Resolve."
 created:date = 2026-07-14
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/sansa/v1/proposals/query"
 order:number = 110
 publish:boolean = true
 keywords:list<string> = ["SANSA", "query", "read-only", "resolution", "semantic selection"]
-related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "aeon-v1-value-semantics"]
+related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "aeonic-semantic-language-v0"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -317,7 +317,7 @@ body:prose = >`
 
   The pre-order Binding Set entering the [$ order by] stage is the tie-preservation basis.
 
-  Ordering semantics are supplied by active Shared AEON Value Semantics profiles. SANSA.Query owns candidate ordering, stable tie preservation, diagnostics, and Binding Set flow. It does not define string collation, temporal comparison, null ordering, or datatype conversion locally.
+  Ordering semantics are supplied by active Aeonic Semantic Language profiles. SANSA.Query owns candidate ordering, stable tie preservation, diagnostics, and Binding Set flow. It does not define string collation, temporal comparison, null ordering, or datatype conversion locally.
 
   The default value-semantics profile uses portable codepoint string ordering. Implementations must not silently apply natural sorting, locale collation, process locale, database collation, or host-language string defaults. For example, under the default profile [$ part-10] sorts before [$ part-2] because the comparison is over codepoints. Under an explicitly selected Natural ASCII profile such as [$ aeon.value.string.natural.ascii.v1], ASCII digit runs may compare numerically so [$ part-2] sorts before [$ part-10].
 
@@ -386,7 +386,7 @@ body:prose = >`
   - the namespace root
   - mounted local address spaces
   - the query environment
-  - active Shared AEON Value Semantics profiles
+  - active Aeonic Semantic Language profiles
   - deterministic function definitions
 
   SANSA.Query v1 recognizes these conceptual expression categories:
@@ -516,7 +516,7 @@ body:prose = >`
   isInfinity(...)
   ~~~$
 
-  [$ isValue(expression)] returns true when the expression evaluates to exactly one concrete value as defined by Shared AEON Value Semantics. It may inspect value expressions directly or consume a Binding Set produced by a resolution expression or [$ path(...)]. It returns false for missing operands, explicit null, explicit absence values, and NaN. Finite numbers, infinities, strings, Booleans, toggles, temporal values, lexical structured scalars, SANSA address literals, objects, lists, tuples, nodes, and legal reference forms are concrete values for this predicate. If the operand resolves more than one binding, evaluation produces [$ CardinalityError].
+  [$ isValue(expression)] returns true when the expression evaluates to exactly one concrete value as defined by Aeonic Semantic Language. It may inspect value expressions directly or consume a Binding Set produced by a resolution expression or [$ path(...)]. It returns false for missing operands, explicit null, explicit absence values, and NaN. Finite numbers, infinities, strings, Booleans, toggles, temporal values, lexical structured scalars, SANSA address literals, objects, lists, tuples, nodes, and legal reference forms are concrete values for this predicate. If the operand resolves more than one binding, evaluation produces [$ CardinalityError].
 
   [$ isNull(expression)] returns true when the expression resolves exactly one explicit null binding.
 
@@ -591,7 +591,7 @@ body:prose = >`
   in
   ~~~$
 
-  Comparison semantics are defined by Shared AEON Value Semantics, not by the runtime host language.
+  Comparison semantics are defined by Aeonic Semantic Language, not by the runtime host language.
 
   The runtime must not define:
 
@@ -604,7 +604,7 @@ body:prose = >`
 
   Cross-type comparison is invalid unless an applicable shared value-semantics contract explicitly defines compatibility.
 
-  The initial comparison policy mirrors the Shared AEON Value Semantics minimum v1 consumer contract:
+  The initial comparison policy mirrors the Aeonic Semantic Language minimum v1 consumer contract:
 
   | Operands | Equality | Ordering | Notes |
   | <-- | <-- | <-- | <-- |
@@ -641,7 +641,7 @@ body:prose = >`
 
   Infinity values are explicit numeric special values. Where an applicable value-semantics numeric comparison profile accepts infinity, positive and negative infinity compare as numeric bounds. Queries may test for either infinity form with [$ isInfinity(...)].
 
-  Temporal values are not ordinary strings. A host may expose AEON [$ date], [$ time], [$ datetime], or [$ wtc] values through a string-like transport representation, but SANSA.Query compares or orders them through Shared AEON Value Semantics, not string collation. The minimum profile supports same-family canonical temporal payload comparison. Cross-family temporal comparison fails closed unless a richer active profile explicitly defines compatibility.
+  Temporal values are not ordinary strings. A host may expose AEON [$ date], [$ time], [$ datetime], or [$ wtc] values through a string-like transport representation, but SANSA.Query compares or orders them through Aeonic Semantic Language, not string collation. The minimum profile supports same-family canonical temporal payload comparison. Cross-family temporal comparison fails closed unless a richer active profile explicitly defines compatibility.
 
   Temporal query literals may be parsed as source literals so query syntax can carry the same lexical family as AEON values:
 
@@ -820,7 +820,7 @@ body:prose = >`
 
   The initial built-in string functions are [$ contains], [$ startsWith], [$ endsWith], [$ lower], [$ upper], and [$ concat]. They require string arguments and do not accept explicit null, NaN, infinity, Boolean, number, object, reference form, or Binding Set arguments.
 
-  String comparison, ordering, and case mapping are value-semantics concerns. Until the Shared AEON Value Semantics canonical string and case-mapping profiles are locked, the initial evaluator slice uses Unicode scalar-value ordering for string comparison and [$ order by]. Normative behavior must not depend on host locale, process locale, database collation, or host-language defaults. Case mapping for [$ lower(...)] and [$ upper(...)] remains tied to the shared value-semantics profile; implementations must document any provisional behavior.
+  String comparison, ordering, and case mapping are value-semantics concerns. Until the Aeonic Semantic Language canonical string and case-mapping profiles are locked, the initial evaluator slice uses Unicode scalar-value ordering for string comparison and [$ order by]. Normative behavior must not depend on host locale, process locale, database collation, or host-language defaults. Case mapping for [$ lower(...)] and [$ upper(...)] remains tied to the shared value-semantics profile; implementations must document any provisional behavior.
 
   String profiles are not domain profiles for non-string lexical value families. Selecting a locale or Natural ASCII string profile must not cause [$ hex], [$ radix], [$ encoding], [$ separator], or [$ sansa] values to be interpreted as numbers, bytes, decoded text, segmented records, semantic versions, target identity, or selector equivalence. Those meanings require an explicit shared value-semantics contract, consumer profile, or resolver/profile authority for that value family.
 
@@ -842,7 +842,7 @@ body:prose = >`
 
   Without [$ follow(...)], a reference is evaluated as a reference form. Reference-form comparison uses the reference kind and canonical exact target path, and does not inspect the target value.
 
-  With [$ follow(...)], SANSA.Query walks the reference target path under the consumer's reference policy and then applies active Shared AEON Value Semantics to the target value.
+  With [$ follow(...)], SANSA.Query walks the reference target path under the consumer's reference policy and then applies active Aeonic Semantic Language to the target value.
 
   For example:
 

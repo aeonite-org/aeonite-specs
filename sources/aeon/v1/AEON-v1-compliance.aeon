@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-compliance"
 title:string = "AEON Core v1 Compliance Specification"
 description:string = "Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/aeon-v1-documentation/aeon-core-v1-compliance-speci
 order:number = 20
 publish:boolean = true
 keywords:list<string> = ["AEON", "AEON Core v1", "compliance", "conformance", "CTS", "normative requirements"]
-related:list<string> = ["aeon-core-v1", "aeos-v1", "aeon-v1-conformance-matrix", "appendix-aes-v1", "appendix-error-model-v1"]
+related:list<string> = ["aeon-core-v1", "aeos-v1", "aeon-v1-conformance-matrix", "aes-events-v0", "appendix-error-model-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

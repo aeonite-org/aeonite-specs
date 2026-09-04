@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-value-types"
 title:string = "AEON v1 Value Types Reference"
 description:string = "Reference for AEON value kinds, reserved datatype names, literal families, container forms, and reference-bearing values."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -721,7 +721,7 @@ body:prose = >`
   - [$ aeon.gp.profile.v1] allows [$ encoding], [$ inline], and [$ embed] to carry exactly one string clarifier as an encoding-name claim, for example [$ encoding\\["base58"\\]];
   - [$ base64] is an encoding-family compatibility label, not a radix-family label. [$ base64] is not equivalent to [$ radix\\[64\\]];
   - [$ embed] and [$ inline] are reserved compatibility labels over the same [$ EncodingLiteral] family; Core does not assign media, resource-loading, or inline-expansion behavior to them;
-  - Shared Value Semantics may define naïve payload order over the preserved encoded payload characters, but decoded-byte ordering, decoded-text ordering, media ordering, or hash ordering belongs to profiles, schemas, or consumers;
+  - Aeonic Semantic Language may define naïve payload order over the preserved encoded payload characters, but decoded-byte ordering, decoded-text ordering, media ordering, or hash ordering belongs to profiles, schemas, or consumers;
   - [$ a = &aa=] is unambiguous in current lexer, because the second [$ =] remains part of the encoding token rather than being reinterpreted as assignment.
 
   AES:
@@ -819,7 +819,7 @@ body:prose = >`
   - [$ :sep] may bind separator literals with or without explicit clarifiers.
   - [$ :kadot] may bind unparameterized separator literals. The intended kadot shape is dot-separated numeric segments, for example [$ ip:kadot = ^198.0.126.255] or [$ semver:kadot = ^3.14.15], but Core only enforces the separator-literal family; stricter shape validation belongs to schema/profile layers.
   - Core does not assign IP, semantic-version, dimension, table, product-code, or other domain meaning to separator literals.
-  - Shared Value Semantics may define naïve separator order over the canonical separator payload. Naïve order does not split payloads, even when datatype clarifiers such as [$ \\["."\\]] are present.
+  - Aeonic Semantic Language may define naïve separator order over the canonical separator payload. Naïve order does not split payloads, even when datatype clarifiers such as [$ \\["."\\]] are present.
   - Domain ordering such as version order, numeric IP address order, or aspect-ratio order belongs to profiles, schemas, or consumers.
   - Datatype clarifiers are preserved claims. [$ aeon.gp.profile.v1] declares the GP interpretation of [$ sep]/[$ separator] string clarifiers as separator characters and rejects non-string separator clarifiers. Datatypes without an active GP clarifier rule, or GP entries with [$ clarifiers = "none"], do not accept explicit clarifier lists under the GP profile. Core-only processing preserves clarifier text but does not activate splitting or ordering from those clarifiers. Profile-defined splitting or ordering should use them only when the consumer trusts the source, validates the claim against the payload, or supplies separator structure from trusted configuration.
 
@@ -884,7 +884,7 @@ body:prose = >`
   - list element order and index-addressability are preserved;
   - tuple position and arity are preserved;
   - node tags, attributes, child order, and indexed child slots are preserved;
-  - structural equality and mutation compatibility are defined by Shared AEON Value Semantics and any active schema/profile authority;
+  - structural equality and mutation compatibility are defined by Aeonic Semantic Language and any active schema/profile authority;
   - structural ordering has no Core default.
 
   ## 4.1 Object [# object-2]
@@ -1062,7 +1062,7 @@ body:prose = >`
   Implementers should align with:
 
   - [@ document:appendix-canonical-form-v1 | [$ appendices/appendix-canonical-form]]
-  - [@ document:appendix-aes-v1 | [$ appendices/appendix-aes]]
+  - [@ document:aes-events-v0 | Portable AES Event Contract]
   - [@ document:aeon-core-v1-compliance | [$ AEON-v1-compliance]]
 
   This page is intentionally implementation-cross-checked to reduce inter-implementation drift.

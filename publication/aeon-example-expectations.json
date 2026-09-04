@@ -22,6 +22,7 @@
       "aeon-core-v1-structure-syntax#binding-shape:2",
       "aeon-core-v1-structure-syntax#attributes:2",
       "aeon-v1-value-semantics#hex-semantics:2",
+      "aeonic-semantic-language-v0#hex-semantics:2",
       "aeon-core-v1-value-types#references:1",
       "appendix-aeos-charter-v1#cross-binding-presence:1",
       "appendix-aeos-charter-v1#cross-binding-presence:2",
@@ -118,6 +119,7 @@
     ],
     "strict-json-incompatible": [
       "aeon-v1-value-semantics#hex-semantics:1",
+      "aeonic-semantic-language-v0#hex-semantics:1",
       "aeon-core-v1-value-types#infinity-2:1",
       "aeon-core-v1-value-types#nan-2:1",
       "aeon-core-v1-value-types#null-2:1",

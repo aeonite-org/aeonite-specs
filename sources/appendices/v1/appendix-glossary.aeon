@@ -3,7 +3,7 @@ id:string = "appendix-glossary-v1"
 title:string = "Appendix — Glossary"
 description:string = "Terminology used across AEON Core, AEOS, and companion references."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "Orientation"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-glossary-v1"
 order:number = 130
 publish:boolean = true
 keywords:list<string> = ["AEON", "AEOS", "glossary", "terminology", "definitions", "orientation"]
-related:list<string> = ["aeon-core-v1", "aeos-v1", "appendix-aes-v1", "aeon-v1-official-index"]
+related:list<string> = ["aeon-core-v1", "aeos-v1", "aes-events-v0", "aeon-v1-official-index"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -50,17 +50,17 @@ body:prose = >`
   Assignment Events are the basis for canonical hashing, schema validation, and reference resolution.
 
 
-  ## Assignment Event Set (AES) [# assignment-event-set-aes]
+  ## Assignment Event Stream (AES) [# assignment-event-set-aes]
 
-  The [* Assignment Event Set (AES)] is the ordered, canonical output of the AEON compilation pipeline.
+  The [* Assignment Event Stream (AES)] is the portable, transport-neutral event model shared by AEON-family producers and consumers.
 
-  - Consists of one immutable Assignment Event per binding
-  - Preserves lexical source order
-  - Retains original AST values (no coercion or resolution)
-  - Produced after all validation phases complete
-  - Fail-closed: empty if any errors exist
+  - Represents each structural occurrence as its own flat event
+  - Preserves stream order; an explicit canonical-order projection may be selected where required
+  - Carries recognized portable values rather than implementation-specific AST nodes
+  - Is semantically lossless relative to the selected AES profile and projection, not necessarily to original source bytes
+  - Uses explicit profiles to distinguish complete streams from partial streams
 
-  AES is the sole semantic output of AEON Core. See [/ Appendix: Assignment Event Stream (AES)].
+  AEON is one producer that projects valid source documents into AES. Telex and future Film encodings carry the same event model. See [@ document:aes-events-v0 | Portable AES Event Contract Draft 0].
 
 
   ## Binding [# binding]

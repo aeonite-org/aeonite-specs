@@ -1,0 +1,97 @@
+schemaVersion:string = "1"
+id:string = "aes-v0-index"
+title:string = "AES Draft 0"
+description:string = "Index and architecture for the portable Assignment Event Stream, its encodings, compatibility contract, and shared semantic language."
+created:date = 2026-09-05
+modified:date = 2026-09-05
+family:string = "aes"
+group:string = "Overview"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v0"
+order:number = 0
+publish:boolean = true
+keywords:list<string> = ["AES", "Assignment Event Stream", "Telex", "Film", "Tape", "Aeonic Semantic Language"]
+related:list<string> = ["aes-events-v0", "telex-aes-v0", "aes-compatibility-v0", "aeonic-semantic-language-v0", "aeon-core-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # AES Draft 0 [# aes-draft-0]
+
+  AES is the shared Assignment Event Stream layer of the Aeonite ecosystem. It
+  provides a portable event model between source-language producers and
+  validators, query systems, processors, storage engines, relays, and other
+  consumers.
+
+  This publication line is a draft. It is suitable for implementation and
+  interoperability review but is not yet a released conformance target.
+
+  ## Architecture [# architecture]
+
+  AES separates one transport-neutral event contract from the encodings that
+  carry it:
+
+  ~~~$ text
+  AEON and other producers
+            |
+            v
+    portable AES events
+         /       \\
+        v         v
+  telex.aes    film.aes
+    text         binary
+  ~~~$
+
+  The event contract owns record meaning. An encoding owns only its physical
+  framing and canonical bytes. A source language owns its grammar and the
+  projection from source constructs into AES events.
+
+  ## Current documents [# current-documents]
+
+  - [@ document:aes-events-v0 | Portable AES Event Contract] defines
+    [$ aes.events.v0], including flat records, representation kinds, paths,
+    profiles, projections, provenance, fidelity, and semantic diagnostics.
+  - [@ document:telex-aes-v0 | telex.aes Draft 0] defines the first textual
+    encoding of that event contract.
+  - [@ document:aes-compatibility-v0 | Portable AES Compatibility Contract]
+    defines explicit legacy adapters and the reader-before-writer deployment
+    barrier.
+  - [@ document:aeonic-semantic-language-v0 | Aeonic Semantic Language]
+    defines shared behavior over represented values after a valid AES
+    representation exists.
+
+  ## Boundaries [# boundaries]
+
+  AES is not an object tree, a source-language AST, a schema language, a query
+  language, or a persistence engine. It does not infer datatype meaning,
+  resolve references, or grant mutation authority.
+
+  AEON owns source syntax and source legality. AEOS owns schema validation.
+  SANSA owns semantic addressing, resolution, query, and mutation planning.
+  Tonics own materialization. ASP, AES-DB, ledger protocols, and hosts own
+  persistence and history.
+
+  ## Fidelity [# fidelity]
+
+  Portable AES can be semantically lossless relative to a selected event
+  profile and projection. It does not preserve exact source spelling or layout.
+  Exact source reconstruction requires the separately retained source artifact
+  identified by provenance.
+
+  ## Planned work [# planned-work]
+
+  [$ film.aes] is planned as a binary encoding of the same event model. Tape is
+  reserved for later stream or history work. Neither has a normative format in
+  Draft 0.
+
+  ## Conformance [# conformance]
+
+  Repository-local Telex vectors remain a mutable Draft 0 candidate. A release
+  copies the exact reviewed suite and specifications into the shared CTS,
+  records their digests, mints immutable snapshot identifiers, and requires at
+  least two independent passing implementations.
+`

@@ -3,7 +3,7 @@ id:string = "appendix-annotation-stream-v1"
 title:string = "Appendix — Annotation Stream"
 description:string = "Structured annotation channel model and source-order emission behavior."
 created:date = 2026-03-25
-modified:date = 2026-08-23
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-annotation-stream-v1"
 order:number = 110
 publish:boolean = true
 keywords:list<string> = ["AEON", "annotation stream", "structured comments", "source order", "bindings", "side channel"]
-related:list<string> = ["aeon-core-v1-comments-annotations", "appendix-aes-v1", "appendix-processing-model-v1"]
+related:list<string> = ["aeon-core-v1-comments-annotations", "aes-events-v0", "appendix-processing-model-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

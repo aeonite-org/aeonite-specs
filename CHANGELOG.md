@@ -45,6 +45,11 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Added
 
+- Added a first-class AES Draft 0 specification family containing the portable
+  event contract, Telex text encoding, compatibility contract, family index,
+  and Aeonic Semantic Language proposal.
+- Added explicit AES ownership boundaries for event representation, encoding,
+  profiles, projections, ordering, fidelity, and downstream value semantics.
 - Added the normative draft `aeon.gp.assertion.v1` convention, defining the
   explicitly activated subject-predicate-object interpretation of typed AEON triples while keeping
   graph, RDF, provenance, history, authority, and truth semantics in their responsible layers.
@@ -59,6 +64,10 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Changed
 
+- Superseded the legacy AST-shaped AES appendix with `aes.events.v0` and moved
+  Shared AEON Value Semantics into AES as the Aeonic Semantic Language while
+  retaining the historical document ID and `aeon.value.*` profile identifiers
+  for compatibility.
 - Extended AEON structural identity to every headed structural occurrence, including attribute-entry
   and literal-node heads, under one document-wide uniqueness rule.
 - Clarified that v2 local-fragment integrity is a second-pass document validation rule, omitted image
@@ -106,7 +115,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
   reserved type/literal compatibility checks, and AEON-canonical scalar output.
 - Pinned the `&ND` v2 inline-scalar boundary as machine-readable contract
-  `and-v2-aeon-inline-scalar-v1`, aligned with AEON TypeScript `0.12.0`, with mandatory AST,
+  `and-v2-aeon-inline-scalar-v1`, aligned with AEON TypeScript `0.12.1`, with mandatory AST,
   canonical, HTML, alias, and exclusion checks plus an optional live AEON drift check.
 - Changed AEON draft encoding-family literal syntax from `$payload` to `&payload`.
 - Changed NEON draft AEON integration examples and text-preservation guidance to use `&...` encoding literals.

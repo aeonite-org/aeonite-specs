@@ -3,7 +3,7 @@ id:string = "sansa-v1-mutate"
 title:string = "SANSA.Mutate v1"
 description:string = "Proposal-stage boundary and conservative core model for deterministic semantic mutation intent."
 created:date = 2026-07-22
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -465,7 +465,7 @@ body:prose = >`
   same logical namespace state. A failed precondition produces no executable plan.
 
   Comparison, ordering, temporal interpretation, case behavior, and other value
-  operations use the consumer-selected Shared AEON Value Semantics profile. The
+  operations use the consumer-selected Aeonic Semantic Language profile. The
   document being mutated must not select a more permissive comparison, validation,
   authorization, or mutation profile for itself.
 

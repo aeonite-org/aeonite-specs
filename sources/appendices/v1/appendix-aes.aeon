@@ -3,24 +3,30 @@ id:string = "appendix-aes-v1"
 title:string = "Appendix — Assignment Event Stream (AES)"
 description:string = "Assignment event stream structure and event-level consistency expectations."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
-lifecycle:string = "published"
-normativity:string = "normative"
+lifecycle:string = "superseded"
+normativity:string = "informative"
 license:string = "CC-BY-4.0"
 path:string = "specification/appendices/appendix-aes-v1"
 order:number = 20
 publish:boolean = true
 keywords:list<string> = ["AEON", "AES", "assignment event stream", "canonical paths", "events", "annotations"]
-related:list<string> = ["aeon-core-v1", "aeon-core-v1-compliance", "aeos-v1", "aeon-v1-supersession-table"]
+related:list<string> = ["aes-events-v0", "aes-compatibility-v0", "aeon-core-v1", "aeon-core-v1-compliance", "aeon-v1-supersession-table"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
   &ND v2
 
   # Appendix — Assignment Event Stream (AES) [# appendix-assignment-event-stream-aes]
+
+  This historical AEON v1 appendix is superseded by
+  [@ document:aes-events-v0 | the Portable AES Event Contract]. Its identity and
+  publication path are retained for historical and inbound-reference stability.
+  The definitions below describe the former implementation-shaped model and
+  are not the current portable AES contract.
 
   [* Appendix to:] AEON Specification v1
 

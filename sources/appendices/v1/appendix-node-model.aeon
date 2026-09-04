@@ -3,7 +3,7 @@ id:string = "appendix-node-model-v1"
 title:string = "Appendix — Node Model"
 description:string = "Node literal model and representation boundaries relative to canonical pathing."
 created:date = 2026-03-25
-modified:date = 2026-08-23
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-node-model-v1"
 order:number = 70
 publish:boolean = true
 keywords:list<string> = ["AEON", "node model", "profile-gated", "mixed content", "indexed paths", "structural containers"]
-related:list<string> = ["aeon-core-v1", "appendix-bindings-v1", "appendix-aes-v1"]
+related:list<string> = ["aeon-core-v1", "appendix-bindings-v1", "aes-events-v0"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -126,7 +126,7 @@ body:prose = >`
   Ordering is observable only by consumers that interpret node values.
 
 
-  ## 5. Canonical Path Semantics [# canonical-path-semantics]
+  ## 5. AEON source-path semantics [# canonical-path-semantics]
 
   ### 5.1 Nodes [# nodes]
 
@@ -138,11 +138,17 @@ body:prose = >`
   p = <paragraph("text")>
   ~~~$
 
-  Canonical paths:
+  AEON source paths:
 
   - [$ $.p] ✔
   - [$ $.p\\[0\\]] ✔
   - [$ $.p.text] ✘
+
+  Portable AES expands the implicit AEON node head. For a node at source path
+  [$ S], the [$ NodeLiteral] remains at [$ E(S)], its [$ NodeHead] is at
+  [$ E(S)\\[0\\]], and source child [$ S\\[i\\]] maps to [$ E(S)\\[0\\]\\[i\\]].
+  Therefore the first child above is represented at [$ $.p\\[0\\]\\[0\\]], while
+  [$ $.p\\[0\\]] is the node head.
 
 
   ### 5.2 Bindings Inside Node Children [# bindings-inside-node-children]
@@ -157,33 +163,27 @@ body:prose = >`
 
   - [$ $.p] is a binding
   - [$ $.p\\[0\\]] is the anonymous object child
-  - [$ $.p\\[0\\].emphasis] [* is a binding]
+  - [$ $.p\\[0\\].emphasis] [* is an AEON source binding path]
   - The object literal behaves normally
-  - The node child slot uses the same bracket-index path form as list and tuple elements
+  - Portable AES represents the object child at [$ $.p\\[0\\]\\[0\\]] and the
+    nested binding at [$ $.p\\[0\\]\\[0\\].emphasis]
 
 
   ## 6. Assignment Events [# assignment-events]
 
-  Nodes do [* not] emit named Assignment Events.
-
-  Bindings emit ordinary named Assignment Events. Ordered child slots, including node children, may emit synthetic indexed AES events so downstream tooling can validate, project, and materialize them consistently.
-
-  If a binding’s value is a node, the node appears as the value of the binding event and its children may be surfaced through indexed child paths.
+  A node binding emits a value-less [$ NodeLiteral] event. Each node head emits
+  a required indexed [$ NodeHead] event carrying the tag, and each child emits
+  its own descendant event. Portable children are not optional synthetic views.
 
   ~~~$ aeon
   title = <heading("Hello")>
   ~~~$
 
-  Emitted event:
+  Emitted events:
 
-  - path: [$ $.title]
-  - value: Node([$ heading], children…)
-
-  Synthetic indexed child events may be emitted for:
-
-  - child positions
-  - anonymous typed child values
-  - bindings contained inside object children
+  - [$ path=$.title], [$ kind=NodeLiteral], with no [$ value]
+  - [$ path=$.title\\[0\\]], [$ kind=NodeHead], [$ value=heading]
+  - [$ path=$.title\\[0\\]\\[0\\]], [$ kind=StringLiteral], [$ value=Hello]
 
 
   ## 7. References [# references]
@@ -196,8 +196,10 @@ body:prose = >`
 
   However:
 
-  - node child targets use numeric index segments, for example [$ $.page\\[0\\]]
-  - node tags are not independent reference targets
+  - an AEON source child target such as [$ $.page\\[0\\]] is translated to the
+    corresponding portable path such as [$ $.page\\[0\\]\\[0\\]]
+  - node heads are portable AES targets, but AEON v1 has no source-path spelling
+    for targeting the implicit head directly
   - references target canonical paths, not raw source positions
 
 

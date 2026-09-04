@@ -3,7 +3,7 @@ id:string = "aeon-core-v1"
 title:string = "AEON Specification v1"
 description:string = "Start here for the overall AEON Core v1 model, scope, behavior modes, and the companion documents that define the rest of the specification surface."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/aeon-v1-documentation/aeon-specification-v1"
 order:number = 10
 publish:boolean = true
 keywords:list<string> = ["AEON", "AEON Core v1", "typed notation", "behavior modes", "canonical paths", "conformance"]
-related:list<string> = ["aeon-core-v1-compliance", "aeos-v1", "aeon-v1-conformance-matrix", "aeon-core-v1-structure-syntax", "aeon-core-v1-addressing-references", "aeon-core-v1-comments-annotations", "aeon-core-v1-value-types", "aeon-v1-release-governance", "aeon-v1-official-index", "aeon-v1-contracts", "appendix-canonical-form-v1", "appendix-aes-v1", "appendix-processing-model-v1"]
+related:list<string> = ["aeon-core-v1-compliance", "aeos-v1", "aeon-v1-conformance-matrix", "aeon-core-v1-structure-syntax", "aeon-core-v1-addressing-references", "aeon-core-v1-comments-annotations", "aeon-core-v1-value-types", "aeon-v1-release-governance", "aeon-v1-official-index", "aeon-v1-contracts", "appendix-canonical-form-v1", "aes-events-v0", "appendix-processing-model-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

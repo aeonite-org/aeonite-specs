@@ -3,7 +3,7 @@ id:string = "sansa-v1-proposals"
 title:string = "SANSA v1 Proposals"
 description:string = "Proposal-stage specification set for SANSA query, conformance, integration, extension, instruction, and future mutation semantics."
 created:date = 2026-07-14
-modified:date = 2026-08-23
+modified:date = 2026-09-05
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -91,7 +91,7 @@ body:prose = >`
   author text, is preserved for explanation but does not authorize the change or
   prove actor identity.
 
-  SANSA.Mutate reuses consumer-selected Shared AEON Value Semantics for preconditions. Value legality remains the responsibility of the consumer, AEOS schema, or domain validator; a document being mutated cannot select its own mutation, validation, or authorization policy.
+  SANSA.Mutate reuses consumer-selected Aeonic Semantic Language for preconditions. Value legality remains the responsibility of the consumer, AEOS schema, or domain validator; a document being mutated cannot select its own mutation, validation, or authorization policy.
 
   Mutation policy is a trusted consumer boundary layered after planning and before
   apply. It may authorize or deny planned intent, but it does not become SANSA
@@ -121,7 +121,7 @@ body:prose = >`
 
   - AEON defines how meaning is represented.
   - AEOS defines how meaning is constrained.
-  - AES defines how meaning is persisted.
+  - AES defines the portable event representation of meaning.
   - SANSA defines how meaning is accessed and, through proposal-stage Mutate capability, how change intent is expressed.
   - Meaning validators define how domain rules are interpreted and reported.
   - Future mutation consumers define how accepted change intent is authorized, orchestrated, and applied.

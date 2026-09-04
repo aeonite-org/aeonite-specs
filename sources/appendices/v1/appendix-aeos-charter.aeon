@@ -3,7 +3,7 @@ id:string = "appendix-aeos-charter-v1"
 title:string = "Appendix — AEOS v1 Charter"
 description:string = "Charter-level scope and governance constraints for AEOS validation behavior."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "AEOS and Profiles"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-aeos-charter-v1"
 order:number = 230
 publish:boolean = true
 keywords:list<string> = ["AEOS", "charter", "validation boundary", "form", "guarantees", "governance"]
-related:list<string> = ["aeos-v1", "aeos-v1-compliance", "appendix-aes-v1", "appendix-tonic-v1", "appendix-validator-conformance-v1"]
+related:list<string> = ["aeos-v1", "aeos-v1-compliance", "aes-events-v0", "appendix-tonic-v1", "appendix-validator-conformance-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -55,10 +55,11 @@ body:prose = >`
 
   - AES is [* ordered]
   - AES is [* immutable]
-  - AES is [* lossless]
+  - AES is semantically lossless relative to its selected profile and projection
   - AES is [* uninterpreted]
 
-  AEOS MUST treat AES as a [* read-only ledger].
+  AEOS MUST treat the supplied AES event stream as read-only. AES does not by
+  itself claim ledger or historical semantics.
 
 
   ### 1.2 Deferred Meaning [# deferred-meaning]
@@ -106,7 +107,7 @@ body:prose = >`
 
   AEOS v1 MUST accept:
 
-  - A complete [* Assignment Event Stream (AES)]
+  - an [$ aes.events.v0] stream under [$ aes.complete.v0]
   - Optional schema definitions
 
   AEOS MUST NOT operate on:
@@ -116,15 +117,11 @@ body:prose = >`
   - partially emitted event streams
 
 
-  ### 3.2 Recovery Awareness [# recovery-awareness]
+  ### 3.2 Completeness profile [# recovery-awareness]
 
-  If AES was emitted in recovery mode, this MUST be explicit via metadata:
-
-  ~~~$ ebnf
-  AES.meta.recovery_mode ::= "none" | "allow-duplicates" | "best-effort"
-  ~~~$
-
-  AEOS MUST NOT infer recovery intent implicitly.
+  AEOS v1 requires [$ aes.complete.v0]. It does not infer recovery intent or
+  completeness from undeclared stream metadata. A partial stream requires an
+  explicit consumer contract outside this baseline.
 
 
   ## 4. Outputs [# outputs]
@@ -250,13 +247,8 @@ body:prose = >`
   ## 8. Uniqueness & Const Semantics [# uniqueness-const-semantics]
 
   - Each canonical path MUST appear at most once
-  - Duplicate bindings MUST be treated as errors
-    [* unless] [$ AES.meta.recovery_mode] explicitly permits them
-
-  Even in recovery mode:
-
-  - AEOS MAY observe duplicates
-  - AEOS MUST NOT reconcile or resolve them
+  - Duplicate paths are rejected by [$ aes.complete.v0]
+  - AEOS MUST NOT reconcile, merge, or resolve duplicates
 
 
   ## 9. Failure Model [# failure-model]

@@ -170,7 +170,7 @@ body:prose = >`
   inline subset.
 
   The reference implementation pins this boundary as machine-readable contract
-  [$ and-v2-aeon-inline-scalar-v1], aligned with AEON TypeScript package version [$ 0.12.0]. Mandatory
+  [$ and-v2-aeon-inline-scalar-v1], aligned with AEON TypeScript package version [$ 0.12.1]. Mandatory
   dependency-free snapshots cover the &ND AST, canonical text, and HTML projection; an optional sibling
   repository check detects lexer, parser, or canonicalizer drift in the corresponding AEON forms.
 

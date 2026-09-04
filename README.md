@@ -15,7 +15,7 @@ corpus.
 
 This repository is authoritative for:
 
-- AEON, AEOS, SANSA, NEON, and &ND specifications;
+- AEON, AES, AEOS, SANSA, NEON, and &ND specifications;
 - appendices, conventions, proposals, drafts, and publication metadata;
 - versioned contract registries, profiles, schemas, and other normative resources.
 
@@ -27,6 +27,7 @@ projections, or deployment configuration.
 ```text
 sources/
   aeon/v1/
+  aes/v0/
   aeos/v1/
   sansa/v1/
   neon/v1/
@@ -60,7 +61,7 @@ Before committing, run:
 bash ./scripts/pre-commit-check.sh
 ```
 
-This checks portable paths, the 80-document source inventory, required envelope declarations,
+This checks portable paths, the 85-document source inventory, required envelope declarations,
 identifier uniqueness, date ordering, and the contract-resource bundle. Full AEON and &ND parsing,
 projection tests, and website checks run in the consuming publication build.
 

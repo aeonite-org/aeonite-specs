@@ -3,7 +3,7 @@ id:string = "sansa-v1-drafts"
 title:string = "SANSA v1 Drafts"
 description:string = "Draft-stage specification set for the SANSA v1 foundation layer."
 created:date = 2026-07-14
-modified:date = 2026-08-23
+modified:date = 2026-09-05
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -49,7 +49,7 @@ body:prose = >`
 
   - AEON defines how meaning is represented.
   - AEOS defines how meaning is constrained.
-  - AES defines how meaning is persisted.
+  - AES defines the portable event representation of meaning.
   - SANSA defines how meaning is accessed.
   - Meaning validators define how domain rules are interpreted and reported.
   - Future mutation consumers define how accepted change intent is authorized, orchestrated, and applied.

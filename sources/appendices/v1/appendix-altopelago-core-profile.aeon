@@ -3,7 +3,7 @@ id:string = "appendix-altopelago-core-profile-v1"
 title:string = "Appendix — Core Profile v1"
 description:string = "Informative profile appendix describing the `core` profile and its minimal form-oriented behavior."
 created:date = 2026-03-25
-modified:date = 2026-08-23
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "Profiles and Extensions"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-altopelago-core-profile-v1"
 order:number = 160
 publish:boolean = true
 keywords:list<string> = ["AEON", "core profile", "AES", "form-only", "determinism", "validate-only"]
-related:list<string> = ["appendix-profiles-framework-v1", "aeon-core-v1", "aeon-v1-contracts", "appendix-aes-v1"]
+related:list<string> = ["appendix-profiles-framework-v1", "aeon-core-v1", "aeon-v1-contracts", "aes-events-v0"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

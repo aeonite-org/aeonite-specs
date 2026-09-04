@@ -1,44 +1,38 @@
 schemaVersion:string = "1"
-id:string = "aeon-v1-value-semantics"
-title:string = "Proposal: Shared AEON Value Semantics"
-description:string = "Architectural proposal for shared deterministic value behavior across AEON, AEOS, SANSA, Tonics, and future ecosystem components."
+id:string = "aeonic-semantic-language-v0"
+title:string = "Proposal: Aeonic Semantic Language"
+description:string = "Architectural proposal for deterministic value behavior shared across AES consumers, including equality, comparison, ordering, conversion, measurement, and future arithmetic."
 created:date = 2026-07-21
 modified:date = 2026-09-05
-family:string = "aeon"
-group:string = "Proposals"
+family:string = "aes"
+group:string = "Semantic Language"
 standing:string = "official"
-lifecycle:string = "superseded"
-normativity:string = "informative"
+lifecycle:string = "proposal"
+normativity:string = "mixed"
 license:string = "CC-BY-4.0"
-path:string = "specification/aeon-v1-documentation/proposals/value-semantics"
-order:number = 130
+path:string = "specification/aes/v0/aeonic-semantic-language"
+order:number = 40
 publish:boolean = true
 keywords:list<string> = ["AEON", "value semantics", "comparison", "equality", "ordering", "proposal"]
-related:list<string> = ["aeonic-semantic-language-v0", "aeon-core-v1-value-types", "aeos-v1", "sansa-v1-query"]
+related:list<string> = ["aes-v0-index", "aes-events-v0", "aeon-core-v1-value-types", "aeos-v1", "sansa-v1-query"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
   &ND v2
 
-  # Proposal: Shared AEON Value Semantics [# proposal-shared-aeon-value-semantics]
-
-  This historical proposal is superseded by
-  [@ document:aeonic-semantic-language-v0 | the Aeonic Semantic Language]. Its
-  existing identity and publication path are retained for snapshot and inbound
-  reference stability. New specifications and implementations should use the
-  AES-family successor.
+  # Proposal: Aeonic Semantic Language [# proposal-aeonic-semantic-language]
 
   Scope: architectural ownership of deterministic value behavior across the AEON ecosystem.
 
   ## 1. Purpose [# purpose]
 
-  Shared AEON Value Semantics defines deterministic behavior for values after AEON Core has recognized their representation.
+  Aeonic Semantic Language defines deterministic behavior for values after AEON Core has recognized their representation.
 
   AEON Core answers:
 
   > What was written?
 
-  Value Semantics answers:
+  The Aeonic Semantic Language answers:
 
   > How do values relate to one another?
 
@@ -67,7 +61,7 @@ body:prose = >`
 
   +++graph
   ["aeon-core", "AEON Core", 50, 10]
-  ["value-semantics", "Shared AEON Value Semantics", 50, 35]
+  ["value-semantics", "Aeonic Semantic Language", 50, 35]
   ["aeos", "AEOS", 15, 75]
   ["sansa", "SANSA", 38, 75]
   ["tonics", "Tonics", 62, 75]
@@ -83,7 +77,7 @@ body:prose = >`
   AEON Core
     |
     v
-  Shared AEON Value Semantics
+  Aeonic Semantic Language
     |
     +-- AEOS
     +-- SANSA
@@ -99,14 +93,16 @@ body:prose = >`
   - lexical grammar;
   - value families;
   - parsing;
-  - Assignment Event Stream;
   - canonical representation.
+
+  AES defines the portable event representation and normative representation
+  kinds produced from recognized source values.
 
   Core does not define broad semantic behavior such as ordering domains, conversion policy, locale-sensitive collation, or arithmetic.
 
-  ### 3.2 Shared Value Semantics [# shared-value-semantics]
+  ### 3.2 Aeonic Semantic Language [# shared-value-semantics]
 
-  Shared Value Semantics defines:
+  Aeonic Semantic Language defines:
 
   - equality domains;
   - comparison domains;
@@ -116,7 +112,7 @@ body:prose = >`
   - measurement contracts;
   - future arithmetic domains.
 
-  Shared Value Semantics begins only after a valid value representation exists.
+  Aeonic Semantic Language begins only after a valid value representation exists.
 
   ### 3.3 Consumers [# consumers]
 
@@ -131,7 +127,7 @@ body:prose = >`
 
   ## 4. Ownership [# ownership]
 
-  The following concepts belong to Shared Value Semantics.
+  The following concepts belong to Aeonic Semantic Language.
 
   ### 4.1 Equality Domains [# equality-domains]
 
@@ -170,7 +166,7 @@ body:prose = >`
 
   ### 4.3 Ordering and Collation Contracts [# ordering-and-collation-contracts]
 
-  String ordering belongs to Shared Value Semantics, not to SANSA.Query alone.
+  String ordering belongs to Aeonic Semantic Language, not to SANSA.Query alone.
 
   Collation profiles define how text is compared for ordering. A profile must be:
 
@@ -246,7 +242,7 @@ body:prose = >`
   median(...)
   ~~~$
 
-  Arithmetic domains belong to Shared Value Semantics so that query evaluation, validation, materialization, and future computation layers do not invent incompatible numeric behavior.
+  Arithmetic domains belong to Aeonic Semantic Language so that query evaluation, validation, materialization, and future computation layers do not invent incompatible numeric behavior.
 
   ## 5. Reuse Principle [# reuse-principle]
 
@@ -681,7 +677,7 @@ body:prose = >`
 
   | Question | Default owner |
   | <-- | <-- |
-  | Do two address literals have the same canonical expression? | Shared Value Semantics |
+  | Do two address literals have the same canonical expression? | Aeonic Semantic Language |
   | Does an exact address identify the same target in a namespace? | SANSA.Resolve consumer and namespace |
   | Are two selector expressions equivalent? | Consumer/profile, usually requiring resolver semantics |
   | Do two selector expressions resolve to the same Binding Set now? | SANSA.Resolve or SANSA.Query evaluation |
@@ -703,7 +699,7 @@ body:prose = >`
 
   Core preserves object members, list elements, tuple elements, node tags, node attributes, node children, lexical order, and index-addressable child slots where applicable.
 
-  Shared Value Semantics may then define structural equality over the preserved values.
+  Aeonic Semantic Language may then define structural equality over the preserved values.
 
   The minimum structural equality surface is:
 
@@ -715,7 +711,7 @@ body:prose = >`
   | [$ node] | same node family, same tag, same attribute keys with equal attribute values, same child count, and equal child values at each child position |
   |~ Structural container equality bases
 
-  Structural equality is recursive and uses the active Shared Value Semantics equality rule for each contained value. If a contained value cannot be compared under the active equality profile, the structural comparison fails closed.
+  Structural equality is recursive and uses the active Aeonic Semantic Language equality rule for each contained value. If a contained value cannot be compared under the active equality profile, the structural comparison fails closed.
 
   List and tuple values do not compare equal by default, even when they contain equal values in the same order. A profile may define an explicit coercion or compatibility operation, but the minimum profile does not silently collapse structural families.
 
@@ -764,7 +760,7 @@ body:prose = >`
   - must preserve diagnostics that identify both the reference source and the target path;
   - must not rewrite, substitute, inline, alias, or erase the original reference form.
 
-  After [$ follow(...)], active Shared Value Semantics apply to the resulting target value. For example, a followed reference to a number compares as a number, and a followed reference to a list participates in structural list equality.
+  After [$ follow(...)], the active Aeonic Semantic Language applies to the resulting target value. For example, a followed reference to a number compares as a number, and a followed reference to a list participates in structural list equality.
 
   Without an explicit follow operation or consumer-declared followed-value mode, constraints and comparisons apply to the reference form itself. This allows schemas to ask either:
 
@@ -775,7 +771,7 @@ body:prose = >`
 
   Reference resolution is a separate operation. In reference-resolution or materialization mode, the value carrying the reference may be replaced, inlined, cloned, aliased, or represented as an explicit runtime reference according to clone/pointer policy. That operation belongs to Tonics, runtime materializers, storage adapters, or explicit consumer profiles. It must not be confused with [$ follow(...)].
 
-  Pointer references may carry aliasing, identity, or mutation-authority semantics during reference resolution. Those meanings belong to the consuming layer. Shared Value Semantics can define target-value comparison after following, but it does not decide whether a pointer may be mutated, aliased, inlined, or materialized as host identity.
+  Pointer references may carry aliasing, identity, or mutation-authority semantics during reference resolution. Those meanings belong to the consuming layer. Aeonic Semantic Language can define target-value comparison after following, but it does not decide whether a pointer may be mutated, aliased, inlined, or materialized as host identity.
 
   ## 7. Minimum v1 Consumer Contract [# minimum-v1-consumer-contract]
 
@@ -988,7 +984,7 @@ body:prose = >`
   - normalization behavior before and after mapping;
   - whether one input scalar may expand to multiple output scalars.
 
-  Until the canonical case-mapping profile is locked, consumer implementations may expose [$ lower(...)] or [$ upper(...)] as implementation-slice behavior, but should document that normative behavior is still owned by Shared Value Semantics.
+  Until the canonical case-mapping profile is locked, consumer implementations may expose [$ lower(...)] or [$ upper(...)] as implementation-slice behavior, but should document that normative behavior is still owned by Aeonic Semantic Language.
 
   ### 7.9 Temporal Profile Candidate [# temporal-profile-candidate]
 
@@ -999,7 +995,7 @@ body:prose = >`
   - [$ datetime];
   - [$ wtc].
 
-  Shared Value Semantics defines a conservative same-family temporal comparison surface for canonical AEON temporal payloads. Richer temporal ordering, validation, conversion, temporal-reference behavior, and mutation compatibility remain profile-defined.
+  Aeonic Semantic Language defines a conservative same-family temporal comparison surface for canonical AEON temporal payloads. Richer temporal ordering, validation, conversion, temporal-reference behavior, and mutation compatibility remain profile-defined.
 
   Candidate identifier:
 
@@ -1021,7 +1017,7 @@ body:prose = >`
 
   Core WTC representation supplies three independent anchor forms: civil-anchored values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with uppercase [$ Z]. The temporal reference is independent of the anchor and may be exact lowercase [$ local], a named reference, or a geographic [$ latitude/longitude] or [$ latitude/longitude/height] reference. Case variants of the reserved [$ local] spelling are invalid; authored case in other named references is preserved.
 
-  The default geographic interpretation is WGS 84 latitude and longitude in decimal degrees with optional ellipsoidal height in metres. Core and minimum Shared Value Semantics preserve that representation without validating coordinate ranges, resolving a jurisdiction, or performing geodetic transformation.
+  The default geographic interpretation is WGS 84 latitude and longitude in decimal degrees with optional ellipsoidal height in metres. Core and minimum Aeonic Semantic Language preserve that representation without validating coordinate ranges, resolving a jurisdiction, or performing geodetic transformation.
 
   [$ conflictAuthority] is consumer-owned resolution policy, not document-owned authority. An authoritative resolver defaults to rejection when intrinsic temporal inputs and reference or convention metadata conflict, unless trusted host, profile, schema, or runtime configuration selects another policy. Preservation-only operations may retain the conflict without resolving it.
 
@@ -1041,7 +1037,7 @@ body:prose = >`
 
   ### 7.10 Mutation Compatibility [# mutation-compatibility]
 
-  Future mutation operations should consume the same Shared Value Semantics contracts used by query and validation.
+  Future mutation operations should consume the same Aeonic Semantic Language contracts used by query and validation.
 
   Mutation compatibility includes:
 
@@ -1061,15 +1057,15 @@ body:prose = >`
   set $.invoice.dueDate:date = 2026-07-24
   ~~~$
 
-  SANSA.Mutate identifies the target and operation. AEON Core parses the represented value. Shared Value Semantics decides whether the represented value is compatible with [$ date] and what normalization, if any, is required. The host or schema authority decides whether the mutation is authorized.
+  SANSA.Mutate identifies the target and operation. AEON Core parses the represented value. Aeonic Semantic Language decides whether the represented value is compatible with [$ date] and what normalization, if any, is required. The host or schema authority decides whether the mutation is authorized.
 
-  For structural values, Shared Value Semantics supplies compatibility concepts and equality behavior, while schema/profile authority decides the permitted mutation shape. For example, a tuple mutation may require exact arity compatibility, a list mutation may permit insertion and reindexing, an object mutation may permit member creation, and a node mutation may restrict child tags or attribute sets. Those policies must not be inferred from a document-local datatype claim alone.
+  For structural values, Aeonic Semantic Language supplies compatibility concepts and equality behavior, while schema/profile authority decides the permitted mutation shape. For example, a tuple mutation may require exact arity compatibility, a list mutation may permit insertion and reindexing, an object mutation may permit member creation, and a node mutation may restrict child tags or attribute sets. Those policies must not be inferred from a document-local datatype claim alone.
 
   ### 7.11 Consumer Handoff [# consumer-handoff]
 
   Consumers own where an operation appears and what diagnostic context is produced.
 
-  Shared Value Semantics owns what the operation means.
+  Aeonic Semantic Language owns what the operation means.
 
   For example:
 
@@ -1077,7 +1073,7 @@ body:prose = >`
   where .age > 18
   ~~~$
 
-  SANSA.Query owns [$ where], candidate filtering, Binding Set handling, and query diagnostics. Shared Value Semantics owns numeric comparison.
+  SANSA.Query owns [$ where], candidate filtering, Binding Set handling, and query diagnostics. Aeonic Semantic Language owns numeric comparison.
 
   For example:
 
@@ -1085,11 +1081,11 @@ body:prose = >`
   age minimum 18
   ~~~$
 
-  AEOS owns the schema rule and validation diagnostic. Shared Value Semantics owns numeric comparison.
+  AEOS owns the schema rule and validation diagnostic. Aeonic Semantic Language owns numeric comparison.
 
   ## 8. CTS Ownership [# cts-ownership]
 
-  Shared Value Semantics should have its own conformance coverage once individual contracts become normative.
+  Aeonic Semantic Language should have its own conformance coverage once individual contracts become normative.
 
   The proposal-stage CTS scaffold is:
 
@@ -1145,7 +1141,7 @@ body:prose = >`
 
   SANSA.Query is the first AEON-family consumer that exercises a broad portion of shared value behavior.
 
-  SANSA.Query should reference Shared AEON Value Semantics for:
+  SANSA.Query should reference Aeonic Semantic Language for:
 
   - scalar equality;
   - relational comparison;
@@ -1159,7 +1155,7 @@ body:prose = >`
 
   ## 11. Relationship to AEOS [# relationship-to-aeos]
 
-  AEOS consumes Shared Value Semantics when validating value relationships.
+  AEOS consumes Aeonic Semantic Language when validating value relationships.
 
   For example, an AEOS rule may require:
 
@@ -1167,19 +1163,19 @@ body:prose = >`
   age > 18
   ~~~$
 
-  AEOS owns the validation rule and diagnostic context. Shared Value Semantics owns what numeric comparison means.
+  AEOS owns the validation rule and diagnostic context. Aeonic Semantic Language owns what numeric comparison means.
 
   ## 12. Relationship to Tonics [# relationship-to-tonics]
 
-  Tonics consume Shared Value Semantics when materializing values into runtime environments.
+  Tonics consume Aeonic Semantic Language when materializing values into runtime environments.
 
   Tonics may expose runtime-specific APIs, but the behavior of shared conversions, comparisons, measurements, and ordering must remain aligned with the shared contracts unless a profile explicitly defines a different accepted surface.
 
   ## 13. Design Philosophy [# design-philosophy]
 
-  AEON Core defines representation.
+  AEON Core defines source representation and AES defines portable event representation.
 
-  Shared AEON Value Semantics defines deterministic behavior.
+  Aeonic Semantic Language defines deterministic behavior.
 
   Consumers apply that behavior to their own domains.
 

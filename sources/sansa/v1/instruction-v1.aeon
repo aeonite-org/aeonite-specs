@@ -3,7 +3,7 @@ id:string = "sansa-v1-instruction"
 title:string = "SANSA Instruction v1"
 description:string = "Proposal-stage human-authored instruction surface combining SANSA Addressing, Query, and Mutate vocabulary."
 created:date = 2026-07-26
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/sansa/v1/proposals/instruction"
 order:number = 150
 publish:boolean = true
 keywords:list<string> = ["SANSA", "instruction", "query", "mutation", "human-authored"]
-related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "sansa-v1-query", "sansa-v1-mutate", "aeon-v1-value-semantics"]
+related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "sansa-v1-query", "sansa-v1-mutate", "aeonic-semantic-language-v0"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

@@ -3,7 +3,7 @@ id:string = "appendix-integrity-envelope-v1"
 title:string = "Appendix — Integrity Envelope"
 description:string = "Integrity envelope structure and representation rules for signed or hashed payload metadata."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
@@ -188,18 +188,22 @@ body:prose = >`
 
   ### 7.2 Input Model [# input-model]
 
-  Canonical hashing derives from the Assignment Event stream:
+  Canonical hashing derives from an explicitly identified AES contract,
+  profile, projection, and ordering policy:
 
   1. compile the document body to AES
   2. exclude the selected top-level [$ :envelope] subtree (for example [$ $.close])
-  3. serialize the resulting canonical state deterministically
-  4. hash that serialization using the declared integrity algorithm
+  3. select either the body plane or the ordered document projection explicitly
+  4. serialize the resulting canonical state deterministically
+  5. hash that serialization using the declared integrity algorithm
 
   ### 7.3 Coverage Notes [# coverage-notes]
 
   - the envelope is never included in its own integrity hash
   - comments and annotation records are not part of canonical integrity coverage
-  - convention declarations in [$ aeon:header] are covered because they are part of the body state
+  - [$ aeon:header] declarations are not body state; body-only coverage excludes
+    them, while document coverage uses [$ aeon.document.v0] and includes the
+    ordered header plane before the ordered body plane
 
 
   ## 8. Signature Coverage [# signature-coverage]

@@ -3,7 +3,7 @@ id:string = "aeon-gp-assertion-v1"
 title:string = "AEON GP Assertion v1"
 description:string = "General-purpose convention for interpreting typed AEON triples as semantic assertions."
 created:date = 2026-08-06
-modified:date = 2026-09-04
+modified:date = 2026-09-05
 family:string = "conventions"
 group:string = "General-Purpose Conventions"
 standing:string = "official"
@@ -241,7 +241,9 @@ body:prose = >`
 
   An assertion is not an event.
 
-  An assertion expresses a semantic claim. AES may record when that claim was assigned, replaced, moved, or removed, together with event provenance and history.
+  An assertion expresses a semantic claim. AES may represent the claim and its
+  event provenance. Replacement, movement, removal, and history require an
+  explicit ledger, ASP, AES-DB, or other persistence-layer contract.
 
   Activating this convention does not create events, establish historical authority, or make the current assertion true. AES and its host remain responsible for event identity, revision semantics, provenance, and reconstruction.
 

@@ -3,7 +3,7 @@ id:string = "appendix-tuples-v1"
 title:string = "Appendix — Tuples and Indexed Paths"
 description:string = "Tuple semantics and indexed path behavior at parse, pathing, and validation boundaries."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-tuples-v1"
 order:number = 80
 publish:boolean = true
 keywords:list<string> = ["AEON", "tuples", "indexed paths", "generics", "TupleLiteral", "validation"]
-related:list<string> = ["aeon-core-v1-value-types", "aeon-core-v1-structure-syntax", "aeon-core-v1-addressing-references", "appendix-aes-v1", "aeos-v1"]
+related:list<string> = ["aeon-core-v1-value-types", "aeon-core-v1-structure-syntax", "aeon-core-v1-addressing-references", "aes-events-v0", "aeos-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
