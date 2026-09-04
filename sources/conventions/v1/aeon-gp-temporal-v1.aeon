@@ -1,9 +1,9 @@
 schemaVersion:string = "1"
 id:string = "aeon-gp-temporal-v1"
 title:string = "AEON GP Temporal v1"
-description:string = "Draft temporal convention for interpreting temporal literals with explicit timezone, timezone database version, calendar, and ambiguity metadata."
+description:string = "Draft temporal convention for interpreting Core temporal and WTC literals with explicit reference, timezone database, calendar, ambiguity, and conflict policy."
 created:date = 2026-05-13
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "conventions"
 group:string = "General-Purpose Conventions"
 standing:string = "official"
@@ -13,7 +13,7 @@ license:string = "CC0-1.0"
 path:string = "specification/conventions/aeon-gp-temporal-v1"
 order:number = 80
 publish:boolean = true
-keywords:list<string> = ["AEON", "temporal", "timezone", "calendar", "ambiguity", "metadata"]
+keywords:list<string> = ["AEON", "temporal", "WTC", "timezone", "geographic", "calendar", "ambiguity", "metadata"]
 related:list<string> = ["aeon-conventions-overview", "aeon-core-v1-value-types"]
 bodyFormat:string = "and-v2"
 
@@ -28,13 +28,14 @@ body:prose = >`
 
   ## 1. Purpose [# purpose]
 
-  [$ aeon.gp.temporal.v1] defines a standard metadata vocabulary for interpreting AEON temporal literals.
+  [$ aeon.gp.temporal.v1] defines a standard interpretation vocabulary for AEON temporal literals and the temporal-reference payload carried by Core [$ wtc] literals.
 
   It applies to ordinary Core temporal literal families such as:
 
   - [$ date]
   - [$ time]
   - [$ datetime]
+  - [$ wtc]
   - convention- or profile-defined duration representations
 
   The convention separates:
@@ -42,11 +43,12 @@ body:prose = >`
   | Concern | Responsibility |
   | <-- | <-- |
   | Temporal literal form | AEON Core value syntax |
+  | WTC temporal-reference form and preservation | AEON Core value syntax |
   | Temporal interpretation policy | [$ aeon.gp.temporal.v1] metadata |
   | Materialization and execution | Tonics, profiles, processors, or host runtimes |
   |~ Temporal convention responsibilities
 
-  This convention does not extend AEON Core syntax and does not make runtime scheduling, timezone conversion, or calendar conversion behavior mandatory.
+  This convention does not extend AEON Core syntax and does not make runtime scheduling, timezone conversion, geographic resolution, or calendar conversion behavior mandatory.
 
   Documents using this convention should declare it in the header:
 
@@ -71,6 +73,7 @@ body:prose = >`
   - historical timezone database drift
   - calendar systems
   - offset conflict handling
+  - named, resolver-local, and geographic WTC references
 
   [$ aeon.gp.temporal.v1] represents those concerns structurally with metadata rather than overloading timestamp punctuation.
 
@@ -89,6 +92,16 @@ body:prose = >`
 
   The literal remains an ordinary [$ datetime]; the convention metadata states how a cooperating consumer should interpret it.
 
+  WTC can instead carry temporal context directly in the Core value:
+
+  ~~~$ aeon
+  localMeeting:wtc = 2026-06-06T10:10:00&local
+  zonedMeeting:wtc = 2026-06-06T10:10:00+10:00&Australia/Melbourne
+  observedAt:wtc = 2026-06-06T00:10:00Z&-37.8136/144.9631/31
+  ~~~$
+
+  The temporal-value form and temporal-reference payload are independent preserved inputs. Resolution and conflict decisions belong to the consumer.
+
   ---
 
   ## 3. Scope [# scope]
@@ -103,6 +116,9 @@ body:prose = >`
   - canonical temporal serialization
   - runtime scheduling behavior
   - host-language temporal object materialization
+  - timezone or geographic-reference resolution
+  - civil-time jurisdiction selection from coordinates
+  - geodetic transformation
 
   Consumers that do not understand this convention should preserve the attributes as ordinary AEON metadata or fail according to their convention-adoption policy.
 
@@ -114,7 +130,7 @@ body:prose = >`
 
   ### 4.1 [$ target] [# target]
 
-  [$ target] identifies the intended temporal interpretation mode.
+  [$ target] identifies the intended temporal interpretation mode for temporal values that do not already carry an intrinsic WTC reference.
 
   Allowed values:
 
@@ -146,9 +162,11 @@ body:prose = >`
   }:datetime = 2026-06-06T10:10:00
   ~~~$
 
+  For [$ wtc], the intrinsic reference remains authoritative input. Consumers MUST NOT silently replace it with [$ target] metadata.
+
   ### 4.2 [$ zone] [# zone]
 
-  [$ zone] identifies the authoritative regional timezone.
+  [$ zone] identifies an authoritative regional timezone supplied as metadata.
 
   ~~~$ aeon
   zone = "Australia/Melbourne"
@@ -159,6 +177,8 @@ body:prose = >`
   - values SHOULD be IANA timezone database identifiers;
   - consumers applying [$ zone] MUST fail if the zone is unknown;
   - consumers MUST NOT silently substitute an equivalent or nearby zone.
+
+  When a [$ wtc] literal also carries a temporal reference, any disagreement between [$ zone] and that reference is a conflict governed by the consumer's [$ conflictAuthority] policy.
 
   ### 4.3 [$ calendar] [# calendar]
 
@@ -205,7 +225,6 @@ body:prose = >`
   | <-- | <-- |
   | [$ "earlier"] | Choose the earlier valid instant |
   | [$ "later"] | Choose the later valid instant |
-  | [$ "compatible"] | Use consumer-defined compatibility behavior |
   | [$ "reject"] | Fail on ambiguity or invalid local time |
   |~ Temporal disambiguation values
 
@@ -229,7 +248,7 @@ body:prose = >`
 
   This field is informational unless another selected profile, schema, or tonic defines stronger behavior.
 
-  Consumers MAY validate offset consistency, ignore offsets, or reject offset conflicts. This convention does not define offset precedence rules.
+  An explicit numeric offset or [$ Z] embedded in a [$ wtc] temporal value is intrinsic representation, not this metadata field. A disagreement between intrinsic and supplemental offset inputs is governed by the consumer's [$ conflictAuthority] policy.
 
   ### 4.8 [$ apply] [# apply]
 
@@ -244,38 +263,75 @@ body:prose = >`
 
   This field does not define execution semantics.
 
+  ## 5. Consumer Conflict Policy [# consumer-conflict-policy]
+
+  [$ conflictAuthority] is a consumer policy for handling inconsistent temporal inputs. It is not an AEON attribute defined by this convention and is not document-controlled execution authority.
+
+  Allowed values:
+
+  | Value | Meaning |
+  | <-- | <-- |
+  | [$ "reject"] | Reject inconsistent inputs. |
+  | [$ "temporal"] | Treat the temporal value, including an intrinsic offset or [$ Z], as authoritative. |
+  | [$ "reference"] | Treat the WTC temporal reference or convention metadata selected by the consumer as authoritative. |
+  | [$ "preserve"] | Preserve the conflict without resolving it. |
+  |~ Temporal conflict-authority values
+
+  A consumer performing authoritative temporal resolution MUST default to [$ "reject"] unless trusted host, profile, schema, or runtime configuration selects another value. Parsing, canonicalization, forwarding, and other preservation-only operations MAY retain conflicting inputs without selecting an authority. An arbitrary document MUST NOT grant itself conflict-resolution authority merely by carrying an attribute with this name.
+
   ---
 
-  ## 5. Fail-Closed Guidance [# fail-closed-guidance]
+  ## 6. Fail-Closed Guidance [# fail-closed-guidance]
 
   Consumers applying this convention SHOULD fail when:
 
   - timezone identifiers are unknown;
   - ambiguous or invalid local times violate the selected policy;
   - required metadata is missing;
-  - calendar systems are unsupported.
+  - calendar systems are unsupported;
+  - temporal inputs conflict under [$ conflictAuthority = "reject"].
 
   Consumers MUST NOT silently reinterpret temporal intent.
 
   ---
 
-  ## 6. Relationship to Core Temporal Types [# relationship-to-core-temporal-types]
+  ## 7. Relationship to Core Temporal Types [# relationship-to-core-temporal-types]
 
-  AEON Core v1 owns the literal syntax for [$ date], [$ time], and [$ datetime].
+  AEON Core v1 owns the literal syntax for [$ date], [$ time], [$ datetime], and [$ wtc].
 
-  [$ aeon.gp.temporal.v1] does not change those literal forms. It adds interpretation metadata around them.
+  [$ aeon.gp.temporal.v1] does not change those literal forms. It defines shared interpretation defaults around them.
+
+  A Core [$ wtc] value is a temporal value followed by [$ &] and a temporal reference. The reserved resolver-local reference is exactly lowercase [$ local]; case variants such as [$ Local] and [$ LOCAL] are invalid. Other named references retain their authored case.
+
+  WTC preserves three temporal-value forms:
+
+  - civil-anchored: no offset designator, for example [$ 2026-06-06T10:10:00&local];
+  - offset-qualified: an explicit numeric offset, for example [$ 2026-06-06T10:10:00+10:00&Australia/Melbourne];
+  - UTC-qualified: uppercase [$ Z], for example [$ 2026-06-06T00:10:00Z&Australia/Melbourne].
+
+  Offset-qualified and UTC-qualified forms identify exact instants, but they remain lexically distinct and MUST NOT be rewritten merely because they resolve to the same instant.
+
+  A WTC temporal reference may be:
+
+  - exact lowercase [$ local];
+  - a named reference such as [$ Australia/Melbourne];
+  - a geographic reference in [$ latitude/longitude] or [$ latitude/longitude/height] component order.
+
+  Unless an active trusted convention or profile overrides the interpretation, geographic components use WGS 84 latitude and longitude in decimal degrees and optional WGS 84 ellipsoidal height in metres. Core recognizes and preserves the component payload but does not validate coordinate ranges, perform geodetic resolution, or select a civil-time jurisdiction. Specialized coordinate reference systems, coordinate epochs, and vertical references require a separate spatial convention or profile.
+
+  Parsers, canonicalizers, and preservation-only processors MUST preserve both the authored temporal-value form and the temporal-reference payload. Consumers may interpret or resolve them only under an explicit policy.
 
   Duration semantics remain outside AEON Core v1. When duration-like values are needed, they are schema-, profile-, convention-, or consumer-defined.
 
   ---
 
-  ## 7. Relationship to Future [$ zdt] [# relationship-to-future-zdt]
+  ## 8. Relationship to Future [$ zdt] [# relationship-to-future-zdt]
 
   The datatype label [$ zdt] is reserved for a possible future zoned datetime type.
 
   [$ zdt] is not operational in AEON Core v1. This convention does not require processors to accept [$ :zdt], and it does not define bracketed zoned-datetime lexical syntax.
 
-  Future AEON versions or profiles may define a transport-oriented [$ zdt] type. The temporal convention remains orthogonal to that possibility because it represents timezone, calendar, ambiguity, and projection metadata structurally.
+  Future AEON versions or profiles may define a transport-oriented [$ zdt] type. It would not replace Core [$ wtc] or authorize rewriting preserved WTC forms. The temporal convention remains orthogonal to that possibility because it represents timezone, calendar, ambiguity, and projection metadata structurally.
 
   Possible future example:
 
@@ -287,7 +343,7 @@ body:prose = >`
 
   ---
 
-  ## 8. Related Standards [# related-standards]
+  ## 9. Related Standards [# related-standards]
 
   This convention is conceptually compatible with:
 

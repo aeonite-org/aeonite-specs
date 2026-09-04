@@ -406,7 +406,7 @@ body:prose = >`
   | [$ date] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | precision, calendar, conversion, and richer compatibility are profile-defined |
   | [$ time] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset handling, date-context rules, and richer compatibility are profile-defined |
   | [$ datetime] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset normalization, precision, instant semantics, and richer compatibility are profile-defined |
-  | [$ wtc] | temporal with temporal-reference data | literal recognition, temporal-reference payload preservation, and same-family canonical temporal comparison | reference authority, timezone database behavior, geographic-reference behavior, and richer compatibility are profile-defined |
+  | [$ wtc] | temporal with temporal-reference data | literal recognition; exact preservation of civil-, offset-, or UTC-qualified temporal form and temporal-reference payload; same-family canonical temporal comparison | reference resolution, conflict authority, timezone database behavior, geographic resolution, and richer compatibility are consumer/profile-defined |
   | [$ sep], [$ kadot] | separator-structured lexical scalar | canonical separator-payload identity; naïve separator order | IP address, semantic version, dimensions, product codes, delimited records, and similar meanings are profile-defined |
   | [$ sansa] | structured address expression | canonical address-expression identity; naïve address-expression order | resolution, selector expansion, canonical target identity, selector equivalence, namespace/domain meaning, authorization, and qualifier meaning belong to SANSA consumers |
   | [$ object], [$ obj], [$ o], [$ envelope] | structural container | member identity, Core object shape, and structural equality | ordering, envelope meaning, and member-value constraints are profile/schema-defined |
@@ -1013,6 +1013,12 @@ body:prose = >`
   - precision and fractional-second behavior;
   - diagnostics for unsupported or ambiguous temporal values.
 
+  Core WTC representation supplies three independent anchor forms: civil-anchored values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with uppercase [$ Z]. The temporal reference is independent of the anchor and may be exact lowercase [$ local], a named reference, or a geographic [$ latitude/longitude] or [$ latitude/longitude/height] reference. Case variants of the reserved [$ local] spelling are invalid; authored case in other named references is preserved.
+
+  The default geographic interpretation is WGS 84 latitude and longitude in decimal degrees with optional ellipsoidal height in metres. Core and minimum Shared Value Semantics preserve that representation without validating coordinate ranges, resolving a jurisdiction, or performing geodetic transformation.
+
+  [$ conflictAuthority] is consumer-owned resolution policy, not document-owned authority. An authoritative resolver defaults to rejection when intrinsic temporal inputs and reference or convention metadata conflict, unless trusted host, profile, schema, or runtime configuration selects another policy. Preservation-only operations may retain the conflict without resolving it.
+
   The minimum temporal comparison surface is:
 
   | Operands | Equality | Ordering | Notes |
@@ -1020,7 +1026,7 @@ body:prose = >`
   | date and date | allowed | allowed | Canonical date payload comparison. |
   | time and time | allowed | allowed | Canonical time payload comparison; richer profiles may define offset/date-context behavior. |
   | datetime and datetime | allowed | allowed | Canonical datetime payload comparison; richer profiles may define instant normalization. |
-  | wtc and wtc | allowed | allowed | Canonical WTC payload comparison; richer profiles may require temporal-reference authority, timezone database metadata, or geographic-reference metadata. |
+  | wtc and wtc | allowed | allowed | Canonical preserved WTC payload comparison; resolution requires consumer-owned temporal-reference and conflict policy. |
   | temporal and string | error | error | No implicit string comparison. |
   | mixed temporal categories | error | error | Allowed only when a profile explicitly defines cross-category comparison. |
   |~ Temporal comparison behavior
@@ -1037,7 +1043,7 @@ body:prose = >`
   - whether conversion is allowed;
   - which normalization, if any, is applied before storage;
   - how null, absence values, and Missing interact with a write target;
-  - how temporal precision, timezone offsets, and named zones are preserved or normalized;
+  - how temporal precision, civil/offset/UTC WTC forms, temporal references, and named zones are preserved or normalized;
   - whether structural writes replace, merge, insert, delete, or reindex;
   - how tuple arity, object member constraints, list element constraints, node child constraints, and node attribute constraints are enforced.
 
