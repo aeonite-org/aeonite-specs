@@ -64,6 +64,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Changed
 
+- Replaced AES text-only architecture diagrams with `org.aeonite.gp.graph.v1`
+  views and plain-text fallbacks, and removed the remaining Mermaid fallback
+  from the Neon v1 summary graph.
 - Superseded the legacy AST-shaped AES appendix with `aes.events.v0` and moved
   Shared AEON Value Semantics into AES as the Aeonic Semantic Language while
   retaining the historical document ID and `aeon.value.*` profile identifiers

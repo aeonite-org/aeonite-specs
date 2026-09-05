@@ -3,7 +3,7 @@ id:string = "neon-v1-draft"
 title:string = "Neon v1 — Container & Encoding Design"
 description:string = "Draft container and encoding design for the NEON hybrid text/binary codec and container format."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "neon"
 group:string = "NEON"
 standing:string = "official"
@@ -842,25 +842,15 @@ body:prose = >`
   {"extended-payload", "RC", "extended-crc", "LC", "to", "solid"}
   +++ (Neon v0 and v1 container layouts)
   +++fallback
-  ~~~$ mermaid
-  graph LR
-    subgraph "Experimental (v0)"
-      A["1-byte magic\\n0x4E"] --> B["Meta byte\\nver+enc+pad"]
-      B --> C["Payload"]
-      C --> D["Optional CRC-16"]
-    end
+  ~~~$ text
+  Experimental (v0):
+    1-byte magic (0x4E) -> Meta byte (ver+enc+pad) -> Payload -> Optional CRC-16
 
-    subgraph "Neon v1 — Simple"
-      E["3-byte magic\\n(optional)"] --> F["Flags byte\\nver+enc+pad"]
-      F --> G["Payload\\n(shift/latch)"]
-    end
+  Neon v1 — Simple:
+    3-byte magic (optional) -> Flags byte (ver+enc+pad) -> Payload (shift/latch)
 
-    subgraph "Neon v1 — Extended"
-      H["3-byte magic\\n(optional)"] --> I["Flags byte\\nver+enc+pad"]
-      I --> J["Extension byte\\ncrc+comp+dir"]
-      J --> K["Payload\\n(shift/latch)"]
-      K --> L["Optional CRC-32"]
-    end
+  Neon v1 — Extended:
+    3-byte magic (optional) -> Flags byte (ver+enc+pad) -> Extension byte (crc+comp+dir) -> Payload (shift/latch) -> Optional CRC-32
   ~~~$
   +++
 

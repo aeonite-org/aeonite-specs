@@ -668,6 +668,19 @@ body:prose = >`
   [$ value=010.00]. The Aeonic Semantic Language owns equality, comparison,
   ordering, conversion, measurement, and later arithmetic for that value.
   
+  +++graph
+  ["producer-value", "Recognized Producer Value", 50, 8]
+  ["aes-event", "Portable AES Event", 50, 32]
+  ["telex", "telex.aes", 25, 60]
+  ["film", "film.aes", 75, 60]
+  ["semantic-language", "Aeonic Semantic Language", 50, 90]
+  {"producer-value", "CB", "aes-event", "CT", "to", "solid"}
+  {"aes-event", "CB", "telex", "CT", "to", "solid"}
+  {"aes-event", "CB", "film", "CT", "to", "solid"}
+  {"telex", "CB", "semantic-language", "CT", "to", "solid"}
+  {"film", "CB", "semantic-language", "CT", "to", "solid"}
+  +++ (Figure 1: Portable AES representation and semantic-language boundary)
+  +++fallback
   ~~~$ text
   recognized producer value
             |
@@ -680,8 +693,15 @@ body:prose = >`
         v          v
     Aeonic Semantic Language
   ~~~$
+  +++
   
   This separation lets every AES encoding carry the same event without making an
   encoding the owner of event semantics.
+
+  +++document/modules
+  dependencies = {
+    graph = "org.aeonite.gp.graph.v1"
+  }
+  +++
   
 `

@@ -35,6 +35,16 @@ body:prose = >`
   AES separates one transport-neutral event contract from the encodings that
   carry it:
 
+  +++graph
+  ["producers", "AEON and Other Producers", 50, 10]
+  ["events", "Portable AES Events", 50, 45]
+  ["telex", "telex.aes\\nText", 25, 82]
+  ["film", "film.aes\\nBinary", 75, 82]
+  {"producers", "CB", "events", "CT", "to", "solid"}
+  {"events", "CB", "telex", "CT", "to", "solid"}
+  {"events", "CB", "film", "CT", "to", "solid"}
+  +++ (Figure 1: Portable AES architecture)
+  +++fallback
   ~~~$ text
   AEON and other producers
             |
@@ -45,6 +55,7 @@ body:prose = >`
   telex.aes    film.aes
     text         binary
   ~~~$
+  +++
 
   The event contract owns record meaning. An encoding owns only its physical
   framing and canonical bytes. A source language owns its grammar and the
@@ -94,4 +105,10 @@ body:prose = >`
   copies the exact reviewed suite and specifications into the shared CTS,
   records their digests, mints immutable snapshot identifiers, and requires at
   least two independent passing implementations.
+
+  +++document/modules
+  dependencies = {
+    graph = "org.aeonite.gp.graph.v1"
+  }
+  +++
 `
