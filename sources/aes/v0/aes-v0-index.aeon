@@ -7,7 +7,7 @@ modified:date = 2026-09-06
 family:string = "aes"
 group:string = "Overview"
 standing:string = "official"
-lifecycle:string = "draft"
+lifecycle:string = "published"
 normativity:string = "informative"
 license:string = "CC-BY-4.0"
 path:string = "specification/aes/v0"
@@ -62,6 +62,10 @@ body:prose = >`
   projection from source constructs into AES events.
 
   ## Current documents [# current-documents]
+
+  The v0 index, portable event contract, compatibility contract, and Telex
+  encoding are published conformance targets. The Aeonic Semantic Language
+  remains a proposal, and Film and Tape remain planned work.
 
   - [@ document:aes-events-v0 | Portable AES Event Contract] defines
     [$ aes.events.v0], including flat records, representation kinds, paths,
