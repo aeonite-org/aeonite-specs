@@ -3,7 +3,7 @@ id:string = "aes-v0-index"
 title:string = "AES v0"
 description:string = "Index and architecture for the portable Assignment Event Stream, its encodings, compatibility contract, and shared semantic language."
 created:date = 2026-09-05
-modified:date = 2026-09-05
+modified:date = 2026-09-06
 family:string = "aes"
 group:string = "Overview"
 standing:string = "official"
@@ -101,10 +101,12 @@ body:prose = >`
 
   ## Conformance [# conformance]
 
-  Repository-local Telex vectors remain a mutable v0 candidate. A release
-  copies the exact reviewed suite and specifications into the shared CTS,
-  records their digests, mints immutable snapshot identifiers, and requires at
-  least two independent passing implementations.
+  Repository-local Telex vectors remain a mutable v0 candidate. Stable shared
+  conformance is published as [$ aes-events-cts-v0-snapshot-0.1] for 38
+  transport-neutral event/profile vectors and [$ telex-cts-v0-snapshot-0.1]
+  for 50 encoding and format-limit vectors. Both snapshots pin suite digests
+  and pass in the independent JavaScript and Rust implementations. Future
+  changes require a new snapshot identifier.
 
   +++document/modules
   dependencies = {
