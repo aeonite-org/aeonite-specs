@@ -60,7 +60,7 @@ body:prose = >`
   - Is semantically lossless relative to the selected AES profile and projection, not necessarily to original source bytes
   - Uses explicit profiles to distinguish complete streams from partial streams
 
-  AEON is one producer that projects valid source documents into AES. Telex and future Film encodings carry the same event model. See [@ document:aes-events-v0 | Portable AES Event Contract Draft 0].
+  AEON is one producer that projects valid source documents into AES. Telex and future Film encodings carry the same event model. See [@ document:aes-events-v0 | Portable AES Event Contract v0].
 
 
   ## Binding [# binding]

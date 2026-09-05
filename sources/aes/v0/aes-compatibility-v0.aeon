@@ -1,11 +1,11 @@
 schemaVersion:string = "1"
 id:string = "aes-compatibility-v0"
-title:string = "Portable AES Compatibility Contract Draft 0"
-description:string = "Draft 0 compatibility, adapter, durable-history, and reader-first rollout contract for portable AES."
+title:string = "Portable AES Compatibility Contract v0"
+description:string = "v0 compatibility, adapter, durable-history, and reader-first rollout contract for portable AES."
 created:date = 2026-09-05
 modified:date = 2026-09-05
 family:string = "aes"
-group:string = "AES Draft 0"
+group:string = "AES v0"
 standing:string = "official"
 lifecycle:string = "draft"
 normativity:string = "normative"
@@ -20,9 +20,10 @@ bodyFormat:string = "and-v2"
 body:prose = >`
   &ND v2
 
-  # Portable AES Compatibility Contract Draft 0 [# portable-aes-compatibility-contract-draft-0]
+  # Portable AES Compatibility Contract v0 [# portable-aes-compatibility-contract-v0]
   
-  Status: exploratory draft
+  Scope: explicit legacy adapters, durable read views, and reader-before-writer
+  migration for portable AES.
   
   Portable contract: [$ aes.events.v0]
   
@@ -95,7 +96,7 @@ body:prose = >`
   | implicit tag carried by node | [$ $.a\\[0\\]] |
   | first child [$ $.a\\[0\\]] | [$ $.a\\[0\\]\\[0\\]] |
   | second child [$ $.a\\[1\\]] | [$ $.a\\[0\\]\\[1\\]] |
-  |~ AES Draft 0 table 1
+  |~ AES v0 table 1
   
   The same translation is applied recursively to descendant addresses and to
   [$ CloneReference] and [$ PointerReference] payloads. A numeric legacy child is
@@ -162,9 +163,12 @@ body:prose = >`
   
   ### 3.6 Values, ordering, and derived fields [# 3-6-values-ordering-and-derived-fields]
   
-  Legacy AST-shaped values are reduced to the portable [$ kind], canonical
-  [$ value], and declared [$ datatype] fields. Conversion fails when the declared
-  source contract cannot establish those fields without implementation-specific
+  Legacy AST-shaped values are reduced to portable [$ kind], canonical [$ value],
+  and the declared [$ datatype], [$ generics], and [$ clarifiers] fields. A legacy
+  combined datatype descriptor is parsed once by the named adapter into the
+  recursive portable form; string and numeric clarifiers remain distinct and
+  numeric payloads remain strings. Conversion fails when the declared source
+  contract cannot establish those fields without implementation-specific
   guessing.
   
   Derived keys, normalized paths, cached selectors, and nested AST objects are
@@ -255,9 +259,10 @@ body:prose = >`
   successful unit test alone is not reader readiness.
   
   Signatures and semantic hashes bind the contract identity, selected profile,
-  projection, and ordering policy. A converted stream is not verified under a
-  legacy signature merely because its semantic values match; signature
-  translation requires a separately defined and authorized signing operation.
+  projection, ordering policy, and expanded datatype structure. A converted
+  stream is not verified under a legacy signature merely because its semantic
+  values match; signature translation requires a separately defined and
+  authorized signing operation.
   
   ## 8. Compatibility diagnostics [# 8-compatibility-diagnostics]
   
@@ -274,7 +279,7 @@ body:prose = >`
   | [$ AES_COMPAT_SOURCE_REQUIRED] | exact source bytes are required for requested provenance conversion |
   | [$ AES_COMPAT_READER_NOT_READY] | a required reader has not acknowledged the selected context |
   | [$ AES_COMPAT_WRITER_DISABLED] | writer activation evidence is incomplete or unhealthy |
-  |~ AES Draft 0 table 2
+  |~ AES v0 table 2
   
   These diagnostics belong to the adapter and rollout layer. Once conversion
   succeeds, the resulting stream is validated independently under the portable

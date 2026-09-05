@@ -1,6 +1,6 @@
 schemaVersion:string = "1"
 id:string = "aeonic-semantic-language-v0"
-title:string = "Proposal: Aeonic Semantic Language"
+title:string = "Aeonic Semantic Language"
 description:string = "Architectural proposal for deterministic value behavior shared across AES consumers, including equality, comparison, ordering, conversion, measurement, and future arithmetic."
 created:date = 2026-07-21
 modified:date = 2026-09-05
@@ -20,7 +20,7 @@ bodyFormat:string = "and-v2"
 body:prose = >`
   &ND v2
 
-  # Proposal: Aeonic Semantic Language [# proposal-aeonic-semantic-language]
+  # Aeonic Semantic Language [# aeonic-semantic-language]
 
   Scope: architectural ownership of deterministic value behavior across the AEON ecosystem.
 
@@ -719,7 +719,10 @@ body:prose = >`
 
   Node child order is significant for structural equality. Attribute order is not significant when attributes are represented as keyed attributes; duplicate-attribute rejection remains a Core representation guarantee.
 
-  Datatype annotations, generic parameters, and bracket arguments are preserved claims. They do not by themselves make two otherwise equal structural values unequal unless an active profile or schema declares annotation-sensitive equality.
+  Datatype base names, recursive generic descriptors, and tagged clarifier
+  arrays are preserved claims. They do not by themselves make two otherwise
+  equal structural values unequal unless an active profile or schema declares
+  annotation-sensitive equality.
 
   Structural ordering is intentionally absent from the minimum profile. There is no portable default order for objects, lists, tuples, or nodes. Consumers that need sorted containers must provide an explicit order key, schema rule, or profile-defined container ordering.
 

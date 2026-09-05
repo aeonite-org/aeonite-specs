@@ -4,6 +4,14 @@ license: CC-BY-4.0
 
 # Changelog
 
+## Unreleased
+
+- Split portable AES datatype metadata into base-name `datatype`, recursive
+  ordered `generics`, and ordered tagged-literal `clarifiers`. Telex retains one
+  compact `datatype=` line and expands or recombines it at the encoding boundary.
+- Set the default AES v0 generic-depth guard to `1` for both complete and partial
+  streams, with explicit opt-in required for a higher supported limit.
+
 All notable changes to `aeonite-specs` are tracked here.
 
 This changelog follows the release-governance sections used by the AEON v1 draft governance policy:
@@ -45,7 +53,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Added
 
-- Added a first-class AES Draft 0 specification family containing the portable
+- Added a first-class AES v0 specification family containing the portable
   event contract, Telex text encoding, compatibility contract, family index,
   and Aeonic Semantic Language proposal.
 - Added explicit AES ownership boundaries for event representation, encoding,

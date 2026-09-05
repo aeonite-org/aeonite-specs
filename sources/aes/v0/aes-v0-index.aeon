@@ -1,6 +1,6 @@
 schemaVersion:string = "1"
 id:string = "aes-v0-index"
-title:string = "AES Draft 0"
+title:string = "AES v0"
 description:string = "Index and architecture for the portable Assignment Event Stream, its encodings, compatibility contract, and shared semantic language."
 created:date = 2026-09-05
 modified:date = 2026-09-05
@@ -20,15 +20,15 @@ bodyFormat:string = "and-v2"
 body:prose = >`
   &ND v2
 
-  # AES Draft 0 [# aes-draft-0]
+  # AES v0 [# aes-v0]
+
+  Scope: portable Assignment Event Stream architecture, ownership boundaries,
+  encodings, shared semantics, and conformance publication.
 
   AES is the shared Assignment Event Stream layer of the Aeonite ecosystem. It
   provides a portable event model between source-language producers and
   validators, query systems, processors, storage engines, relays, and other
   consumers.
-
-  This publication line is a draft. It is suitable for implementation and
-  interoperability review but is not yet a released conformance target.
 
   ## Architecture [# architecture]
 
@@ -66,7 +66,7 @@ body:prose = >`
   - [@ document:aes-events-v0 | Portable AES Event Contract] defines
     [$ aes.events.v0], including flat records, representation kinds, paths,
     profiles, projections, provenance, fidelity, and semantic diagnostics.
-  - [@ document:telex-aes-v0 | telex.aes Draft 0] defines the first textual
+  - [@ document:telex-aes-v0 | telex.aes v0] defines the first textual
     encoding of that event contract.
   - [@ document:aes-compatibility-v0 | Portable AES Compatibility Contract]
     defines explicit legacy adapters and the reader-before-writer deployment
@@ -97,11 +97,11 @@ body:prose = >`
 
   [$ film.aes] is planned as a binary encoding of the same event model. Tape is
   reserved for later stream or history work. Neither has a normative format in
-  Draft 0.
+  v0.
 
   ## Conformance [# conformance]
 
-  Repository-local Telex vectors remain a mutable Draft 0 candidate. A release
+  Repository-local Telex vectors remain a mutable v0 candidate. A release
   copies the exact reviewed suite and specifications into the shared CTS,
   records their digests, mints immutable snapshot identifiers, and requires at
   least two independent passing implementations.
