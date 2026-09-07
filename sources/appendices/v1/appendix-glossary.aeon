@@ -3,7 +3,7 @@ id:string = "appendix-glossary-v1"
 title:string = "Appendix — Glossary"
 description:string = "Terminology used across AEON Core, AEOS, and companion references."
 created:date = 2026-03-25
-modified:date = 2026-09-05
+modified:date = 2026-09-08
 family:string = "appendices"
 group:string = "Orientation"
 standing:string = "official"
@@ -325,10 +325,11 @@ body:prose = >`
 
   ## Span [# span]
 
-  A [* Span] identifies the precise location in source text from which a value originated.
+  A [* Span] identifies a half-open byte range in the exact AEON source artifact from which a value originated.
 
-  - Format: [$ \\[start, end\\]] offsets as emitted by AEON Core
+  - Format: [$ \\[start, end\\]] using zero-based UTF-8 byte offsets
   - [$ start] is inclusive, [$ end] is exclusive
+  - Offsets are measured before BOM removal, newline translation, or Unicode normalisation
   - Produced by AEON Core only
   - Validators propagate spans unchanged
 
