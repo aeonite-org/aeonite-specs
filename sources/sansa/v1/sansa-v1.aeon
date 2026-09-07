@@ -1,46 +1,48 @@
 schemaVersion:string = "1"
-id:string = "sansa-v1-proposals"
-title:string = "SANSA v1 Proposals"
-description:string = "Proposal-stage specification set for SANSA query, conformance, integration, extension, instruction, and future mutation semantics."
+id:string = "sansa-v1"
+title:string = "SANSA v1"
+description:string = "Overview of the SANSA v1 specification family and its capability lifecycle."
 created:date = 2026-07-14
-modified:date = 2026-09-05
+modified:date = 2026-09-07
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
-lifecycle:string = "proposal"
+lifecycle:string = "published"
 normativity:string = "informative"
 license:string = "CC-BY-4.0"
-path:string = "specification/sansa/v1/proposals"
-order:number = 100
+path:string = "specification/sansa/v1"
+order:number = 0
 publish:boolean = true
-keywords:list<string> = ["SANSA", "proposals", "query", "mutation", "conformance", "extensions"]
-related:list<string> = []
+keywords:list<string> = ["SANSA", "addressing", "resolution", "query", "mutation", "conformance", "extensions"]
+related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "sansa-v1-query", "sansa-v1-conformance", "sansa-v1-extensions", "sansa-v1-meaning-validation-integration", "sansa-v1-mutate", "sansa-v1-instruction"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
   &ND v2
 
-  # SANSA v1 Proposals [# sansa-v1-proposals]
+  # SANSA v1 [# sansa-v1]
 
   SANSA is the Semantic Address NameSpace Abstraction. It defines a common way for consumers to address, resolve, and query semantic information without depending on the physical implementation that stores or generates that information.
 
   SANSA is independent within the Aeonite ecosystem. AEON, AEOS, AES, runtime object graphs, databases, services, and other systems may implement SANSA, but none of those systems owns the abstraction.
 
-  ## Draft Set [# draft-set]
+  Each document declares its own lifecycle in AEON metadata. This overview groups the current documents by that metadata without encoding lifecycle in filenames or document links.
 
-  The foundation layer has moved to [$ ../drafts/]:
+  ## Draft Documents [# draft-documents]
 
-  - [@ document:sansa-v1-addressing | [$ ../drafts/addressing-v1]] defines the SANSA address model and selector vocabulary.
-  - [@ document:sansa-v1-resolve | [$ ../drafts/resolve-v1]] defines deterministic structural resolution over SANSA address expressions.
+  - [@ document:sansa-v1-addressing | SANSA Addressing v1] defines the SANSA address model and selector vocabulary.
+  - [@ document:sansa-v1-resolve | SANSA Resolve v1] defines deterministic structural resolution over SANSA address expressions.
 
-  ## Proposal Set [# proposal-set]
+  These documents are draft-stage because their foundation-layer behavior is implemented and exercised by AEON TypeScript and the standalone [$ @altopelago/sansa] implementation.
 
-  - [@ document:sansa-v1-query | [$ query-v1]] defines the initial read-only semantic query pipeline built on SANSA.Resolve.
-  - [@ document:sansa-v1-conformance | [$ conformance-v1]] defines capability names, conformance profiles, and extension advertisement.
-  - [@ document:sansa-v1-extensions | [$ extensions-v1]] records candidate selector and query-helper extensions before they enter the core v1 conformance surface.
-  - [@ document:sansa-v1-meaning-validation-integration | [$ meaning-validation-integration-v1]] defines the AEON, AEOS, SANSA, and meaning-validation responsibility boundaries.
-  - [@ document:sansa-v1-mutate | [$ mutate-v1]] defines the conservative authority-bearing mutation-plan boundary and its growth path.
-  - [@ document:sansa-v1-instruction | [$ instruction-v1]] defines a proposed human-authored source surface that combines Addressing, Query, and Mutate vocabulary.
+  ## Proposal Documents [# proposal-documents]
+
+  - [@ document:sansa-v1-query | SANSA Query v1] defines the initial read-only semantic query pipeline built on SANSA.Resolve.
+  - [@ document:sansa-v1-conformance | SANSA Conformance v1] defines capability names, conformance profiles, and extension advertisement.
+  - [@ document:sansa-v1-extensions | SANSA Extensions v1] records candidate selector and query-helper extensions before they enter the core v1 conformance surface.
+  - [@ document:sansa-v1-meaning-validation-integration | SANSA Meaning Validation Integration v1] defines the AEON, AEOS, SANSA, and meaning-validation responsibility boundaries.
+  - [@ document:sansa-v1-mutate | SANSA Mutate v1] defines the conservative authority-bearing mutation-plan boundary and its growth path.
+  - [@ document:sansa-v1-instruction | SANSA Instruction v1] defines a proposed human-authored source surface that combines Addressing, Query, and Mutate vocabulary.
 
   ## Conceptual Stack [# conceptual-stack]
 
@@ -99,7 +101,7 @@ body:prose = >`
 
   ## Capability Families [# capability-families]
 
-  The SANSA v1 draft/proposal set covers these conformance capabilities:
+  The SANSA v1 specification family covers these conformance capabilities:
 
   - [$ SANSA.Addressing]
   - [$ SANSA.Resolve]

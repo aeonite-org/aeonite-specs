@@ -62,8 +62,9 @@ bash ./scripts/pre-commit-check.sh
 ```
 
 This checks portable paths, the 86-document source inventory, required envelope declarations,
-identifier uniqueness, date ordering, and the contract-resource bundle. Full AEON and &ND parsing,
-projection tests, and website checks run in the consuming publication build.
+identifier uniqueness, date ordering, related-document IDs, publication links and anchors, referenced
+publication assets, and the contract-resource bundle. Full AEON and &ND parsing, projection tests, and
+website checks run in the consuming publication build.
 
 ## Public repositories
 
