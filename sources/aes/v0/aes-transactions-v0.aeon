@@ -135,6 +135,25 @@ body:prose = >`
   that the supplied order and values are final. Repreparation produces new
   attempt/transaction identities and evidence. It never executes supplied code.
 
+  [$ aes.preparation.source-backed.v0] is the operation gate for an application
+  claiming every payload record has exact retained source evidence. Before
+  readiness, the trusted consumer requires origin on every record, resolves
+  each distinct origin to exact bytes, verifies its SHA-256 digest and valid
+  UTF-8, and checks every span for byte bounds and scalar boundaries. Artifact
+  locators remain trusted context rather than transaction fields. Missing
+  origins or bytes report [$ AES_SOURCE_REQUIRED]. Local event validity remains
+  independent, but a source-backed transaction cannot become ready until the
+  audit is valid and complete.
+
+  Artifact and range verification alone does not prove that event semantics
+  came from a span. That stronger claim requires a named source projection over
+  the verified bytes. Unchanged result occurrences may retain verified
+  provenance; changed occurrences drop old target provenance. Incoming verified
+  provenance becomes result provenance only when the named application maps it
+  to that result and performs every claimed projection. Trusted ASP operation
+  origin remains separate audit metadata. The initial scalar application keeps
+  identity preparation and makes no source-retention claim.
+
   [$ authorization] contains exactly [$ contract] and an opaque non-empty
   [$ context]. Initial [$ aes.authorization.host-context.v0] binds host-known
   context but is not a credential and never self-authorizes. Trusted request and
@@ -236,9 +255,10 @@ body:prose = >`
   ## 9. Lifecycle and authority [# 9-lifecycle-and-authority]
 
   Processing applies physical limits, validates envelope/body/events, resolves
-  every named contract, verifies required evidence, matches authenticated host
-  context, authorizes request and prepared plan, rechecks preconditions, and
-  commits atomically. Failure produces no partial commit.
+  every named contract, verifies required evidence, completes any selected
+  source-backed artifact audit, matches authenticated host context, authorizes
+  request and prepared plan, rechecks preconditions, and commits atomically.
+  Failure produces no partial commit.
 
   Inspection may report ready-for-authorization. Generic inspection always
   reports [$ actionable=false]; only the trusted application host crosses that
@@ -258,6 +278,7 @@ body:prose = >`
   | [$ AES_TRANSACTION_INTEGRITY_INVALID] | integrity evidence is invalid |
   | [$ AES_TRANSACTION_INTEGRITY_MISMATCH] | digest differs |
   | [$ AES_TRANSACTION_SIGNATURE_INVALID] | signature input is invalid |
+  | [$ AES_SOURCE_REQUIRED] | source-backed preparation lacks complete exact artifacts |
   | [$ AES_TRANSACTION_UNAUTHORIZED] | host authorization rejects |
   | [$ AES_TRANSACTION_STALE] | atomic precondition no longer holds |
   |~ AES transaction v0 table 3

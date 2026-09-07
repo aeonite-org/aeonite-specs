@@ -469,6 +469,23 @@ body:prose = >`
   If an available artifact does not match [$ origin], the audit reports
   [$ AES_ORIGIN_MISMATCH]. If its range is out of bounds or either endpoint splits
   a UTF-8 scalar, it reports [$ AES_INVALID_SPAN].
+
+  The source-artifact resolver is trusted application context, not event data.
+  It returns exact bytes for a declared origin; a filesystem path, URI, decoded
+  string, current document buffer, or similarly mutable locator is
+  insufficient. Each distinct origin is verified once and every present span
+  is checked against that verified artifact. Source bytes must be valid UTF-8,
+  and exact-byte APIs prevent silent BOM, line-ending, or encoding
+  normalization.
+
+  Audit validity and completeness are separate. Without a source-backed
+  operation claim, an unavailable artifact leaves otherwise valid provenance
+  incomplete and unverified. A profile or preparation contract requiring
+  source-backed provenance turns every missing origin or artifact into
+  [$ AES_SOURCE_REQUIRED] and cannot proceed. Invalid digest, UTF-8, or range
+  evidence is not treated as merely unavailable. Artifact/range audit alone
+  does not prove that event semantics were parsed from a span; that stronger
+  claim requires a named source projection over the verified bytes.
   
   ### 7.1 NodeHead span [# 7-1-nodehead-span]
   
@@ -716,6 +733,9 @@ body:prose = >`
   | Code | Condition |
   | <-- | <-- |
   | [$ AES_ORIGIN_MISMATCH] | available source bytes do not match the declared origin digest |
+  | [$ AES_SOURCE_REQUIRED] | a source-backed operation lacks a record origin or exact retained artifact |
+  | [$ AES_SOURCE_ARTIFACT_INVALID] | an artifact resolver did not return exact bytes |
+  | [$ AES_SOURCE_INVALID_UTF8] | digest-matching source bytes are not valid UTF-8 |
   |~ AES v0 table 8
   
   [$ AES_INVALID_SPAN] is also used by a source-backed audit when a range exceeds
