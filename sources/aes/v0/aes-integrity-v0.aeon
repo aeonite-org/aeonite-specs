@@ -3,7 +3,7 @@ id:string = "aes-integrity-v0"
 title:string = "Portable AES Integrity Contract v0"
 description:string = "Encoding-neutral v0 contract for deterministic AES logical bytes, digests, ordering, coverage, provenance and signature inputs."
 created:date = 2026-09-07
-modified:date = 2026-09-07
+modified:date = 2026-09-08
 family:string = "aes"
 group:string = "AES v0"
 standing:string = "official"
@@ -169,7 +169,10 @@ body:prose = >`
 
   Portable scalar strings are encoded exactly as their Unicode scalar sequence.
   No normalization, case folding, numeric parsing, null reinterpretation, or
-  reference resolution occurs.
+  reference resolution occurs. The record's normative [$ kind] is independently
+  covered, so equal string payloads under distinct recognized representation
+  kinds remain distinct integrity inputs. Source-only fields such as [$ raw] are
+  not part of [$ aes.events.v0] and fail validation instead of entering the digest.
 
   ## 7. Deterministic structural byte mapping [# 7-deterministic-structural-byte-mapping]
 
@@ -316,8 +319,10 @@ body:prose = >`
   both complete logical bytes and SHA-256 digests. Required vectors cover empty
   streams with expanded defaults; canonical equality and exact-order
   inequality; duplicate-address handling; expanded datatypes; body and document
-  scope; provenance policies; extensions and map-key ordering; non-ASCII UTF-8
-  lengths; and signature binding of algorithm and key identity.
+  scope; provenance policies; representation-kind distinctions for equal scalar
+  payload strings; rejection of source-only raw spelling; extensions and map-key
+  ordering; non-ASCII UTF-8 lengths; and signature binding of algorithm and key
+  identity.
 
   Vectors are owned by an AES integrity CTS lane, not by Telex. Telex and Film
   decoders pass their recovered logical stream to that lane without contributing
