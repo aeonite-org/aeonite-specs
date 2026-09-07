@@ -3,7 +3,7 @@ id:string = "aes-events-v0"
 title:string = "Portable AES Event Contract v0"
 description:string = "Transport-neutral v0 contract for portable AES records, paths, kinds, profiles, projections, ordering, provenance, fidelity, and diagnostics."
 created:date = 2026-09-05
-modified:date = 2026-09-06
+modified:date = 2026-09-07
 family:string = "aes"
 group:string = "AES v0"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/aes/v0/events"
 order:number = 10
 publish:boolean = true
 keywords:list<string> = ["AES", "Assignment Event Stream", "portable events", "event contract", "profiles", "projections"]
-related:list<string> = ["aes-v0-index", "telex-aes-v0", "aes-compatibility-v0", "aeonic-semantic-language-v0", "aeon-core-v1"]
+related:list<string> = ["aes-v0-index", "telex-aes-v0", "aes-integrity-v0", "aes-compatibility-v0", "aeonic-semantic-language-v0", "aeon-core-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -53,7 +53,9 @@ body:prose = >`
   - AES semantic diagnostic codes.
   
   Encodings own framing, escaping, canonical bytes, and syntax diagnostics.
-  Source languages own their grammar and projection into this model. SANSA owns
+  [@ document:aes-integrity-v0 | aes.integrity.v0] separately owns deterministic
+  logical bytes, ordering policies, digests, and signature inputs over this
+  event model. Source languages own their grammar and projection into this model. SANSA owns
   canonical address grammar and navigation semantics. The Aeonic Semantic
   Language owns operations over recognized values.
   
@@ -504,9 +506,12 @@ body:prose = >`
   heads, and NodeHead content preserve ascending index order. Paths, datatype
   components, values, and identities are never implicit sort keys.
   
-  A signature profile states which sequence it covers. A semantic document
-  signature may cover a profile-defined canonical projection; a ledger signature
-  covers supplied order exactly. AES does not infer a signing mode from content.
+  A signature profile states which sequence it covers.
+  [@ document:aes-integrity-v0 | aes.integrity.v0] registers
+  [$ aes.order.canonical-semantic.v0] for an explicitly order-independent
+  canonical projection and [$ aes.order.exact.v0] for supplied-order evidence.
+  A ledger signature uses the latter. AES does not infer a signing mode from
+  content.
   
   ## 9. Completeness profiles [# 9-completeness-profiles]
   
