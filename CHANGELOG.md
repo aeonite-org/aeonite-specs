@@ -64,6 +64,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Changed
 
+- Advanced the AEON v1 compliance and official-index conformance pointers to
+  the immutable Core 0.3 and AEON-to-portable-AES projection 0.3 CTS manifests;
+  historical generic-path snapshots remain unchanged.
 - Published the AES v0 index, `aes.events.v0`, the portable compatibility
   contract, and `telex.aes` v0. The Aeonic Semantic Language remains a proposal;
   Film and Tape remain planned work.

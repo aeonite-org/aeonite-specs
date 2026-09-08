@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-compliance"
 title:string = "AEON Core v1 Compliance Specification"
 description:string = "Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules."
 created:date = 2026-03-25
-modified:date = 2026-09-05
+modified:date = 2026-09-09
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -36,8 +36,8 @@ body:prose = >`
   - requirements in this compliance document
   - [$ cts.protocol.v1] runner and lane requirements in [$ cts/protocol/v1]
   - all REQUIRED CTS suites in the published v1 lane manifests relevant to the claimed surface:
-    - [$ cts/core/v1/core-cts.v1.json]
-    - [$ cts/aes/v1/aes-cts.v1.json]
+    - [$ cts/core/v1/core-cts.v1.snapshot-0.3.json]
+    - [$ cts/aes/v1/aes-cts.v1.snapshot-0.3.json]
     - [$ cts/canonical/v1/canonical-cts.v1.json] when canonical formatting is claimed
     - [$ cts/annotations/v1/annotation-stream-cts.v1.json] when annotation-stream behavior is claimed
     - [$ cts/aeos/v1/aeos-validator-cts.v1.json] when AEOS validator conformance is claimed

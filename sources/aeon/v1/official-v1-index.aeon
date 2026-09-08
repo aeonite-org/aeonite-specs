@@ -3,7 +3,7 @@ id:string = "aeon-v1-official-index"
 title:string = "Official v1 Index"
 description:string = "Index of canonical normative documentation for AEON v1."
 created:date = 2026-08-21
-modified:date = 2026-08-23
+modified:date = 2026-09-09
 family:string = "aeon"
 group:string = "Publication"
 standing:string = "official"
@@ -42,8 +42,8 @@ body:prose = >`
   - CTS protocol baseline: [$ cts/protocol/v1] ([$ cts.protocol.v1])
   - Lane manifests:
     - [$ cts/aeos/v1/aeos-validator-cts.v1.json]
-    - [$ cts/core/v1/core-cts.v1.json]
-    - [$ cts/aes/v1/aes-cts.v1.json]
+    - [$ cts/core/v1/core-cts.v1.snapshot-0.3.json]
+    - [$ cts/aes/v1/aes-cts.v1.snapshot-0.3.json]
     - [$ cts/annotations/v1/annotation-stream-cts.v1.json]
 
   ## Companion Docs [# companion-docs]
