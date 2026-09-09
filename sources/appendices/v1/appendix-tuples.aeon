@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-tuples-v1"
 order:number = 80
 publish:boolean = true
 keywords:list<string> = ["AEON", "tuples", "indexed paths", "generics", "TupleLiteral", "validation"]
-related:list<string> = ["aeon-core-v1-value-types", "aeon-core-v1-structure-syntax", "aeon-core-v1-addressing-references", "aes-events-v0", "aeos-v1"]
+related:list<string> = ["aeon-core-v1-value-types", "aeon-core-v1-structure-syntax", "aeon-core-v1-addressing-references", "aes-events-v1", "aeos-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

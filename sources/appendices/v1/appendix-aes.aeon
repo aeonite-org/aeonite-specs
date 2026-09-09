@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-aes-v1"
 order:number = 20
 publish:boolean = true
 keywords:list<string> = ["AEON", "AES", "assignment event stream", "canonical paths", "events", "annotations"]
-related:list<string> = ["aes-events-v0", "aes-compatibility-v0", "aeon-core-v1", "aeon-core-v1-compliance", "aeon-v1-supersession-table"]
+related:list<string> = ["aes-events-v1", "aes-compatibility-v1", "aeon-core-v1", "aeon-core-v1-compliance", "aeon-v1-supersession-table"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -23,7 +23,7 @@ body:prose = >`
   # Appendix — Assignment Event Stream (AES) [# appendix-assignment-event-stream-aes]
 
   This historical AEON v1 appendix is superseded by
-  [@ document:aes-events-v0 | the Portable AES Event Contract]. Its identity and
+  [@ document:aes-events-v1 | the Portable AES Event Contract]. Its identity and
   publication path are retained for historical and inbound-reference stability.
   The definitions below describe the former implementation-shaped model and
   are not the current portable AES contract.

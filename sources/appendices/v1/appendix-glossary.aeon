@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-glossary-v1"
 order:number = 130
 publish:boolean = true
 keywords:list<string> = ["AEON", "AEOS", "glossary", "terminology", "definitions", "orientation"]
-related:list<string> = ["aeon-core-v1", "aeos-v1", "aes-events-v0", "aeon-v1-official-index"]
+related:list<string> = ["aeon-core-v1", "aeos-v1", "aes-events-v1", "aeon-v1-official-index"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -60,7 +60,7 @@ body:prose = >`
   - Is semantically lossless relative to the selected AES profile and projection, not necessarily to original source bytes
   - Uses explicit profiles to distinguish complete streams from partial streams
 
-  AEON is one producer that projects valid source documents into AES. Telex and future Film encodings carry the same event model. See [@ document:aes-events-v0 | Portable AES Event Contract v0].
+  AEON is one producer that projects valid source documents into AES. Telex and future Film encodings carry the same event model. See [@ document:aes-events-v1 | Portable AES Event Contract v1].
 
 
   ## Binding [# binding]

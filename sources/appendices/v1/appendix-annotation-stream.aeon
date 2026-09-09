@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-annotation-stream-v1"
 order:number = 110
 publish:boolean = true
 keywords:list<string> = ["AEON", "annotation stream", "structured comments", "source order", "bindings", "side channel"]
-related:list<string> = ["aeon-core-v1-comments-annotations", "aes-events-v0", "appendix-processing-model-v1"]
+related:list<string> = ["aeon-core-v1-comments-annotations", "aes-events-v1", "appendix-processing-model-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

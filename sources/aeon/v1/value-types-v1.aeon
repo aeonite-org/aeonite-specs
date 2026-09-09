@@ -1062,7 +1062,7 @@ body:prose = >`
   Implementers should align with:
 
   - [@ document:appendix-canonical-form-v1 | [$ appendices/appendix-canonical-form]]
-  - [@ document:aes-events-v0 | Portable AES Event Contract]
+  - [@ document:aes-events-v1 | Portable AES Event Contract]
   - [@ document:aeon-core-v1-compliance | [$ AEON-v1-compliance]]
 
   This page is intentionally implementation-cross-checked to reduce inter-implementation drift.

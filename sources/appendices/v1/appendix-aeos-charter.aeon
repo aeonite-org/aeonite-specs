@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-aeos-charter-v1"
 order:number = 230
 publish:boolean = true
 keywords:list<string> = ["AEOS", "charter", "validation boundary", "form", "guarantees", "governance"]
-related:list<string> = ["aeos-v1", "aeos-v1-compliance", "aes-events-v0", "appendix-tonic-v1", "appendix-validator-conformance-v1"]
+related:list<string> = ["aeos-v1", "aeos-v1-compliance", "aes-events-v1", "appendix-tonic-v1", "appendix-validator-conformance-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -107,7 +107,7 @@ body:prose = >`
 
   AEOS v1 MUST accept:
 
-  - an [$ aes.events.v0] stream under [$ aes.complete.v0]
+  - an [$ aes.events.v1] stream under [$ aes.complete.v1]
   - Optional schema definitions
 
   AEOS MUST NOT operate on:
@@ -119,7 +119,7 @@ body:prose = >`
 
   ### 3.2 Completeness profile [# recovery-awareness]
 
-  AEOS v1 requires [$ aes.complete.v0]. It does not infer recovery intent or
+  AEOS v1 requires [$ aes.complete.v1]. It does not infer recovery intent or
   completeness from undeclared stream metadata. A partial stream requires an
   explicit consumer contract outside this baseline.
 
@@ -247,7 +247,7 @@ body:prose = >`
   ## 8. Uniqueness & Const Semantics [# uniqueness-const-semantics]
 
   - Each canonical path MUST appear at most once
-  - Duplicate paths are rejected by [$ aes.complete.v0]
+  - Duplicate paths are rejected by [$ aes.complete.v1]
   - AEOS MUST NOT reconcile, merge, or resolve duplicates
 
 

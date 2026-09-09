@@ -1,26 +1,26 @@
 schemaVersion:string = "1"
-id:string = "aes-v0-index"
-title:string = "AES v0"
+id:string = "aes-v1-index"
+title:string = "AES v1"
 description:string = "Index and architecture for the portable Assignment Event Stream, its encodings, compatibility contract, and shared semantic language."
 created:date = 2026-09-05
-modified:date = 2026-09-07
+modified:date = 2026-09-10
 family:string = "aes"
 group:string = "Overview"
 standing:string = "official"
 lifecycle:string = "published"
 normativity:string = "informative"
 license:string = "CC-BY-4.0"
-path:string = "specification/aes/v0"
+path:string = "specification/aes/v1"
 order:number = 0
 publish:boolean = true
 keywords:list<string> = ["AES", "Assignment Event Stream", "Telex", "Film", "Tape", "Aeonic Semantic Language"]
-related:list<string> = ["aes-events-v0", "telex-aes-v0", "aes-integrity-v0", "aes-transactions-v0", "aes-compatibility-v0", "aeonic-semantic-language-v0", "aeon-core-v1"]
+related:list<string> = ["aes-events-v1", "telex-aes-v1", "aes-integrity-v1", "aes-transactions-v1", "aes-compatibility-v1", "aeonic-semantic-language-v1", "aeon-core-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
   &ND v2
 
-  # AES v0 [# aes-v0]
+  # AES v1 [# aes-v1]
 
   Scope: portable Assignment Event Stream architecture, ownership boundaries,
   encodings, shared semantics, and conformance publication.
@@ -63,27 +63,27 @@ body:prose = >`
 
   ## Current documents [# current-documents]
 
-  The v0 index, portable event contract, compatibility contract, and Telex
+  The v1 index, portable event contract, compatibility contract, and Telex
   encoding are published conformance targets. The integrity and Assignment
   Event Transaction contracts are normative drafts for implementation and
   interoperability review. The Aeonic Semantic Language remains a proposal,
   and Film and Tape remain planned work.
 
-  - [@ document:aes-events-v0 | Portable AES Event Contract] defines
-    [$ aes.events.v0], including flat records, representation kinds, paths,
+  - [@ document:aes-events-v1 | Portable AES Event Contract] defines
+    [$ aes.events.v1], including flat records, representation kinds, paths,
     profiles, projections, provenance, fidelity, and semantic diagnostics.
-  - [@ document:telex-aes-v0 | telex.aes v0] defines the first textual
+  - [@ document:telex-aes-v1 | telex.aes v1] defines the first textual
     encoding of that event contract.
-  - [@ document:aes-integrity-v0 | Portable AES Integrity Contract] defines
+  - [@ document:aes-integrity-v1 | Portable AES Integrity Contract] defines
     encoding-neutral logical bytes, ordering and coverage policies, digests,
     and domain-separated signature inputs over portable records.
-  - [@ document:aes-transactions-v0 | Assignment Event Transaction Contract]
+  - [@ document:aes-transactions-v1 | Assignment Event Transaction Contract]
     defines a support-gated prepared-application envelope, exact-order
     transaction integrity, and the initial narrow ASP scalar replacement.
-  - [@ document:aes-compatibility-v0 | Portable AES Compatibility Contract]
+  - [@ document:aes-compatibility-v1 | Portable AES Compatibility Contract]
     defines explicit legacy adapters and the reader-before-writer deployment
     barrier.
-  - [@ document:aeonic-semantic-language-v0 | Aeonic Semantic Language]
+  - [@ document:aeonic-semantic-language-v1 | Aeonic Semantic Language]
     defines shared behavior over represented values after a valid AES
     representation exists.
 
@@ -109,13 +109,13 @@ body:prose = >`
 
   [$ film.aes] is planned as a binary encoding of the same event model. Tape is
   reserved for later stream or history work. Neither has a normative format in
-  v0.
+  v1.
 
   ## Conformance [# conformance]
 
-  Repository-local Telex vectors remain a mutable v0 candidate. Stable shared
-  conformance is published as [$ aes-events-cts-v0-snapshot-0.1] for 38
-  transport-neutral event/profile vectors and [$ telex-cts-v0-snapshot-0.1]
+  Repository-local Telex vectors remain a mutable v1 candidate. Stable shared
+  conformance is published as [$ aes-events-cts-v1-snapshot-0.1] for 38
+  transport-neutral event/profile vectors and [$ telex-cts-v1-snapshot-0.1]
   for 50 encoding and format-limit vectors. Both snapshots pin suite digests
   and pass in the independent JavaScript and Rust implementations. Future
   changes require a new snapshot identifier.

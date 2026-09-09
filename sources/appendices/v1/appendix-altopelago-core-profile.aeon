@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-altopelago-core-profile-v1"
 order:number = 160
 publish:boolean = true
 keywords:list<string> = ["AEON", "core profile", "AES", "form-only", "determinism", "validate-only"]
-related:list<string> = ["appendix-profiles-framework-v1", "aeon-core-v1", "aeon-v1-contracts", "aes-events-v0"]
+related:list<string> = ["appendix-profiles-framework-v1", "aeon-core-v1", "aeon-v1-contracts", "aes-events-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

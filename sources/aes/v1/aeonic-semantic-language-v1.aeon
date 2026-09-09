@@ -1,20 +1,20 @@
 schemaVersion:string = "1"
-id:string = "aeonic-semantic-language-v0"
+id:string = "aeonic-semantic-language-v1"
 title:string = "Aeonic Semantic Language"
 description:string = "Architectural proposal for deterministic value behavior shared across AES consumers, including equality, comparison, ordering, conversion, measurement, and future arithmetic."
 created:date = 2026-07-21
-modified:date = 2026-09-05
+modified:date = 2026-09-10
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
 lifecycle:string = "proposal"
 normativity:string = "mixed"
 license:string = "CC-BY-4.0"
-path:string = "specification/aes/v0/aeonic-semantic-language"
+path:string = "specification/aes/v1/aeonic-semantic-language"
 order:number = 40
 publish:boolean = true
 keywords:list<string> = ["AEON", "value semantics", "comparison", "equality", "ordering", "proposal"]
-related:list<string> = ["aes-v0-index", "aes-events-v0", "aeon-core-v1-value-types", "aeos-v1", "sansa-v1-query"]
+related:list<string> = ["aes-v1-index", "aes-events-v1", "aeon-core-v1-value-types", "aeos-v1", "sansa-v1-query"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

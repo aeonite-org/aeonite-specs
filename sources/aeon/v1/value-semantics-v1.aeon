@@ -14,7 +14,7 @@ path:string = "specification/aeon-v1-documentation/proposals/value-semantics"
 order:number = 130
 publish:boolean = true
 keywords:list<string> = ["AEON", "value semantics", "comparison", "equality", "ordering", "proposal"]
-related:list<string> = ["aeonic-semantic-language-v0", "aeon-core-v1-value-types", "aeos-v1", "sansa-v1-query"]
+related:list<string> = ["aeonic-semantic-language-v1", "aeon-core-v1-value-types", "aeos-v1", "sansa-v1-query"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -23,7 +23,7 @@ body:prose = >`
   # Proposal: Shared AEON Value Semantics [# proposal-shared-aeon-value-semantics]
 
   This historical proposal is superseded by
-  [@ document:aeonic-semantic-language-v0 | the Aeonic Semantic Language]. Its
+  [@ document:aeonic-semantic-language-v1 | the Aeonic Semantic Language]. Its
   existing identity and publication path are retained for snapshot and inbound
   reference stability. New specifications and implementations should use the
   AES-family successor.

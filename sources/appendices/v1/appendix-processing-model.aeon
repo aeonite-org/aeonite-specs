@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-processing-model-v1"
 order:number = 30
 publish:boolean = true
 keywords:list<string> = ["AEON", "processing model", "phases", "processors", "reference evaluation", "orientation"]
-related:list<string> = ["aeon-core-v1", "aeon-core-v1-compliance", "aeos-v1", "aes-events-v0"]
+related:list<string> = ["aeon-core-v1", "aeon-core-v1-compliance", "aeos-v1", "aes-events-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -101,7 +101,7 @@ body:prose = >`
   ### 2.1 Definition [# definition]
 
   AEON projects each represented value occurrence into the transport-neutral
-  event model defined by [@ document:aes-events-v0 | [$ aes.events.v0]]. Named
+  event model defined by [@ document:aes-events-v1 | [$ aes.events.v1]]. Named
   bindings, anonymous structural children, attribute entries, and node heads
   can therefore each produce flat events.
 

@@ -27,7 +27,7 @@ projections, or deployment configuration.
 ```text
 sources/
   aeon/v1/
-  aes/v0/
+  aes/v1/
   aeos/v1/
   sansa/v1/
   neon/v1/

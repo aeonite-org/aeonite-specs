@@ -202,7 +202,7 @@ body:prose = >`
   - the envelope is never included in its own integrity hash
   - comments and annotation records are not part of canonical integrity coverage
   - [$ aeon:header] declarations are not body state; body-only coverage excludes
-    them, while document coverage uses [$ aeon.document.v0] and includes the
+    them, while document coverage uses [$ aeon.document.v1] and includes the
     ordered header plane before the ordered body plane
 
 

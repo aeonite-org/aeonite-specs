@@ -1,31 +1,31 @@
 schemaVersion:string = "1"
-id:string = "aes-compatibility-v0"
-title:string = "Portable AES Compatibility Contract v0"
-description:string = "v0 compatibility, adapter, durable-history, and reader-first rollout contract for portable AES."
+id:string = "aes-compatibility-v1"
+title:string = "Portable AES Compatibility Contract v1"
+description:string = "v1 compatibility, adapter, durable-history, and reader-first rollout contract for portable AES."
 created:date = 2026-09-05
-modified:date = 2026-09-06
+modified:date = 2026-09-10
 family:string = "aes"
-group:string = "AES v0"
+group:string = "AES v1"
 standing:string = "official"
 lifecycle:string = "published"
 normativity:string = "normative"
 license:string = "CC-BY-4.0"
-path:string = "specification/aes/v0/compatibility"
+path:string = "specification/aes/v1/compatibility"
 order:number = 30
 publish:boolean = true
 keywords:list<string> = ["AES", "compatibility", "migration", "adapters", "reader-first", "durable history"]
-related:list<string> = ["aes-v0-index", "aes-events-v0", "telex-aes-v0"]
+related:list<string> = ["aes-v1-index", "aes-events-v1", "telex-aes-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
   &ND v2
 
-  # Portable AES Compatibility Contract v0 [# portable-aes-compatibility-contract-v0]
+  # Portable AES Compatibility Contract v1 [# portable-aes-compatibility-contract-v1]
   
   Scope: explicit legacy adapters, durable read views, and reader-before-writer
   migration for portable AES.
   
-  Portable contract: [$ aes.events.v0]
+  Portable contract: [$ aes.events.v1]
   
   This document defines how existing implementation-specific AES records may be
   read alongside the portable event contract. It also defines the deployment
@@ -36,19 +36,19 @@ body:prose = >`
   
   ## 1. Compatibility boundary [# 1-compatibility-boundary]
   
-  Portable AES has an explicit event-contract identity: [$ aes.events.v0].
-  [$ aes.complete.v0] and [$ aes.partial.v0] are profiles within that contract; they
+  Portable AES has an explicit event-contract identity: [$ aes.events.v1].
+  [$ aes.complete.v1] and [$ aes.partial.v1] are profiles within that contract; they
   are not substitutes for the contract identity.
   
   A carrier establishes the contract before profile defaults apply. Telex does
-  so through [$ telex.aes=0], which maps to [$ aes.events.v0]. Other encodings,
+  so through [$ telex.aes=1], which maps to [$ aes.events.v1]. Other encodings,
   protocol envelopes, database schemas, and API versions MUST bind their records
-  to [$ aes.events.v0] explicitly.
+  to [$ aes.events.v1] explicitly.
   
   An untagged JSON object or array is not identified as portable AES merely
   because it contains fields such as [$ path], [$ kind], or [$ value]. In particular,
   omitting [$ profile] from an untagged legacy surface does not select
-  [$ aes.complete.v0]. That default applies only after the carrier has established
+  [$ aes.complete.v1]. That default applies only after the carrier has established
   the portable contract.
   
   Implementations MUST NOT infer legacy-versus-portable interpretation from
@@ -62,7 +62,7 @@ body:prose = >`
   
   - one implementation-owned and versioned source-contract identifier;
   - its source profile or storage schema when one exists;
-  - [$ aes.events.v0] as its portable target contract;
+  - [$ aes.events.v1] as its portable target contract;
   - the selected portable profile and projection;
   - its adapter version; and
   - whether loss requiring caller authorization is permitted.
@@ -96,7 +96,7 @@ body:prose = >`
   | implicit tag carried by node | [$ $.a\\[0\\]] |
   | first child [$ $.a\\[0\\]] | [$ $.a\\[0\\]\\[0\\]] |
   | second child [$ $.a\\[1\\]] | [$ $.a\\[0\\]\\[1\\]] |
-  |~ AES v0 table 1
+  |~ AES v1 table 1
   
   The same translation is applied recursively to descendant addresses and to
   [$ CloneReference] and [$ PointerReference] payloads. A numeric legacy child is
@@ -121,9 +121,9 @@ body:prose = >`
   as authoritative only when both views represent the same source occurrence;
   that is schema mapping, not value-based deduplication.
   
-  If duplicates instead reach portable validation, [$ aes.complete.v0] reports
+  If duplicates instead reach portable validation, [$ aes.complete.v1] reports
   [$ AES_DUPLICATE_PATH]. Intentional repeated addresses remain distinct ordered
-  records under [$ aes.partial.v0].
+  records under [$ aes.partial.v1].
   
   ### 3.3 Identity [# 3-3-identity]
   
@@ -140,7 +140,7 @@ body:prose = >`
   ### 3.4 Headers [# 3-4-headers]
   
   Legacy synthetic [$ aeon:*] body events are excluded from the default body-only
-  projection. When [$ projection=aeon.document.v0] is explicitly selected, a
+  projection. When [$ projection=aeon.document.v1] is explicitly selected, a
   source-contract-specific adapter may move recognized header events to the
   [$ header] address plane and MUST prove that no ordinary body binding is being
   reclassified.
@@ -202,7 +202,7 @@ body:prose = >`
   ## 5. Durable history [# 5-durable-history]
   
   The default persistence strategy keeps existing legacy history immutable and
-  provides a versioned read-time projection into [$ aes.events.v0]. It does not
+  provides a versioned read-time projection into [$ aes.events.v1]. It does not
   rewrite an existing log, snapshot, checkpoint, signature, digest, or span in
   place.
   
@@ -263,10 +263,10 @@ body:prose = >`
 
   ## 7. Capability and evidence [# 7-capability-and-evidence]
   
-  A reader acknowledgement names [$ aes.events.v0], each supported profile, and
-  each supported projection. Support for [$ aes.complete.v0] does not imply support
-  for [$ aes.partial.v0], and body-only support does not imply
-  [$ aeon.document.v0] support.
+  A reader acknowledgement names [$ aes.events.v1], each supported profile, and
+  each supported projection. Support for [$ aes.complete.v1] does not imply support
+  for [$ aes.partial.v1], and body-only support does not imply
+  [$ aeon.document.v1] support.
   
   Writer activation evidence records the exact contract, profile, projection,
   adapter versions, reader deployments, target stores or interfaces, canary
@@ -294,7 +294,7 @@ body:prose = >`
   | [$ AES_COMPAT_SOURCE_REQUIRED] | exact source bytes are required for requested provenance conversion |
   | [$ AES_COMPAT_READER_NOT_READY] | a required reader has not acknowledged the selected context |
   | [$ AES_COMPAT_WRITER_DISABLED] | writer activation evidence is incomplete or unhealthy |
-  |~ AES v0 table 2
+  |~ AES v1 table 2
   
   These diagnostics belong to the adapter and rollout layer. Once conversion
   succeeds, the resulting stream is validated independently under the portable

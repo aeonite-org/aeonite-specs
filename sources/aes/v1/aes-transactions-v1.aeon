@@ -1,41 +1,41 @@
 schemaVersion:string = "1"
-id:string = "aes-transactions-v0"
-title:string = "Assignment Event Transaction Contract v0"
-description:string = "Transport-neutral v0 contract for prepared AES transaction bodies, support-gated envelopes, exact-order integrity, and the initial ASP scalar-value replacement application."
+id:string = "aes-transactions-v1"
+title:string = "Assignment Event Transaction Contract v1"
+description:string = "Transport-neutral v1 contract for prepared AES transaction bodies, support-gated envelopes, exact-order integrity, and the initial ASP scalar-value replacement application."
 created:date = 2026-09-07
-modified:date = 2026-09-07
+modified:date = 2026-09-10
 family:string = "aes"
-group:string = "AES v0"
+group:string = "AES v1"
 standing:string = "official"
 lifecycle:string = "draft"
 normativity:string = "normative"
 license:string = "CC-BY-4.0"
-path:string = "specification/aes/v0/transactions"
+path:string = "specification/aes/v1/transactions"
 order:number = 27
 publish:boolean = true
 keywords:list<string> = ["AES", "transactions", "AET", "SO", "ASP", "integrity", "authorization"]
-related:list<string> = ["aes-v0-index", "aes-events-v0", "aes-integrity-v0", "telex-aes-v0", "aes-compatibility-v0", "sansa-v1-mutate"]
+related:list<string> = ["aes-v1-index", "aes-events-v1", "aes-integrity-v1", "telex-aes-v1", "aes-compatibility-v1", "sansa-v1-mutate"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
   &ND v2
 
-  # Assignment Event Transaction Contract v0 [# assignment-event-transaction-contract-v0]
+  # Assignment Event Transaction Contract v1 [# assignment-event-transaction-contract-v1]
 
   Scope: transport-neutral prepared transaction bodies, non-actionable carrier
   validation, exact-order transaction integrity, the initial ASP scalar-value
   replacement application, and composition with trusted hosts and AEON security
   envelopes.
 
-  Transaction contract: [$ aes.transaction.v0]
+  Transaction contract: [$ aes.transaction.v1]
 
-  Logical envelope: [$ aes.transaction.envelope.v0]
+  Logical envelope: [$ aes.transaction.envelope.v1]
 
-  Integrity contract: [$ aes.transaction.integrity.v0]
+  Integrity contract: [$ aes.transaction.integrity.v1]
 
-  Initial application contract: [$ aes.application.asp.scalar-replacement.v0]
+  Initial application contract: [$ aes.application.asp.scalar-replacement.v1]
 
-  This contract sits above [$ aes.events.v0]. It does not change Telex framing,
+  This contract sits above [$ aes.events.v1]. It does not change Telex framing,
   infer mutation intent from event content, authorize a write, or extend ASP v0
   storage. A transaction becomes actionable only when a trusted consumer
   supports every named sub-contract, validates the complete envelope,
@@ -55,18 +55,18 @@ body:prose = >`
   actors, key trust, authorization decisions, schema selection, persistence,
   receipts, or encryption.
 
-  [$ telex.aes=0] remains an event stream. A physical carrier identifies
-  [$ aes.transaction.envelope.v0] before decoding its body; Poem, AEON, or an
+  [$ telex.aes=1] remains an event stream. A physical carrier identifies
+  [$ aes.transaction.envelope.v1] before decoding its body; Poem, AEON, or an
   API may provide that physical mapping separately.
 
   ## 2. Logical envelope [# 2-logical-envelope]
 
   | Field | Presence | Meaning |
   | <-- | <-- | <-- |
-  | [$ envelope] | required | [$ aes.transaction.envelope.v0] |
-  | [$ body] | required | one validated [$ aes.transaction.v0] body |
+  | [$ envelope] | required | [$ aes.transaction.envelope.v1] |
+  | [$ body] | required | one validated [$ aes.transaction.v1] body |
   | [$ evidence] | required | null or transaction integrity/signature evidence |
-  |~ AES transaction v0 table 1
+  |~ AES transaction v1 table 1
 
   Explicit null distinguishes an unsigned carrier from a truncated carrier.
   Evidence-required policy rejects an unsigned carrier before authorization or
@@ -80,14 +80,14 @@ body:prose = >`
 
   | Field | Logical value |
   | <-- | <-- |
-  | [$ transaction] | [$ aes.transaction.v0] |
+  | [$ transaction] | [$ aes.transaction.v1] |
   | [$ id] | transaction identity |
   | [$ intent] | semantic-intent identity |
   | [$ attempt] | prepared-attempt identity |
-  | [$ events] | [$ aes.events.v0] |
+  | [$ events] | [$ aes.events.v1] |
   | [$ profile] | explicit effective AES profile |
   | [$ projection] | explicit effective projection or null |
-  | [$ ordering] | [$ aes.order.exact.v0] |
+  | [$ ordering] | [$ aes.order.exact.v1] |
   | [$ application] | application map |
   | [$ target] | target map |
   | [$ preconditions] | ordered precondition list |
@@ -95,9 +95,9 @@ body:prose = >`
   | [$ authorization] | authorization-context map |
   | [$ limits] | limits-claim map |
   | [$ assertions] | assertions map |
-  | [$ records] | ordered [$ aes.events.v0] list |
+  | [$ records] | ordered [$ aes.events.v1] list |
   | [$ integrity] | transaction-integrity policy map |
-  |~ AES transaction v0 table 2
+  |~ AES transaction v1 table 2
 
   [$ id], [$ intent], and [$ attempt] are distinct strings of 1 through 256
   Unicode scalar values. They do not automatically identify a later target
@@ -114,16 +114,16 @@ body:prose = >`
   what records do; omission never implies a mutation operation.
 
   [$ target] contains exactly [$ contract], [$ id], and [$ boundary]. Initial
-  [$ aes.target.asp.v0] uses a trusted database identity and locked source scope.
+  [$ aes.target.asp.v1] uses a trusted database identity and locked source scope.
   Scalar replacement requires [$ boundary="$"].
 
-  Preconditions are ordered. Each v0 entry contains exactly [$ contract],
+  Preconditions are ordered. Each v1 entry contains exactly [$ contract],
   [$ scope], and canonical unsigned-decimal [$ revision]; its named contract
   owns the revision-check meaning. The initial ASP revision form is:
 
   ~~~$ text
   {
-    contract: "aes.precondition.asp-revision.v0",
+    contract: "aes.precondition.asp-revision.v1",
     scope: "$",
     revision: "42"
   }
@@ -131,11 +131,11 @@ body:prose = >`
 
   Revision is canonical unsigned decimal and is rechecked inside commit.
 
-  Initial [$ aes.preparation.identity.v0] contains only its contract and asserts
+  Initial [$ aes.preparation.identity.v1] contains only its contract and asserts
   that the supplied order and values are final. Repreparation produces new
   attempt/transaction identities and evidence. It never executes supplied code.
 
-  [$ aes.preparation.source-backed.v0] is the operation gate for an application
+  [$ aes.preparation.source-backed.v1] is the operation gate for an application
   claiming every payload record has exact retained source evidence. Before
   readiness, the trusted consumer requires origin on every record, resolves
   each distinct origin to exact bytes, verifies its SHA-256 digest and valid
@@ -155,11 +155,11 @@ body:prose = >`
   identity preparation and makes no source-retention claim.
 
   [$ authorization] contains exactly [$ contract] and an opaque non-empty
-  [$ context]. Initial [$ aes.authorization.host-context.v0] binds host-known
+  [$ context]. Initial [$ aes.authorization.host-context.v1] binds host-known
   context but is not a credential and never self-authorizes. Trusted request and
   prepared-plan authorization remain mandatory.
 
-  [$ limits] contains [$ contract=aes.limits.claim.v0], [$ id], and [$ version].
+  [$ limits] contains [$ contract=aes.limits.claim.v1], [$ id], and [$ version].
   It binds a preparation claim but cannot select or relax consumer limits.
   Physical parsing ceilings apply before this claim can be trusted.
 
@@ -168,12 +168,12 @@ body:prose = >`
   assertion has [$ path], [$ payloadDirectItemCount], and
   [$ resultDirectItemCount]. Counts are assertions, not event values.
 
-  [$ integrity] contains [$ contract=aes.transaction.integrity.v0] and
+  [$ integrity] contains [$ contract=aes.transaction.integrity.v1] and
   [$ digest=sha256]. The policy is body content; evidence stays outside.
 
   ## 5. Event payload [# 5-event-payload]
 
-  Records are final ordered logical [$ aes.events.v0] values validated under the
+  Records are final ordered logical [$ aes.events.v1] values validated under the
   explicit body profile and projection. Datatypes are expanded before integrity
   processing. AET changes no event semantics. Every present event field,
   including provenance and registered extensions, is integrity-covered.
@@ -184,14 +184,14 @@ body:prose = >`
 
   ## 6. Initial scalar-value replacement application [# 6-initial-scalar-value-replacement-application]
 
-  [$ aes.application.asp.scalar-replacement.v0] is the only application
+  [$ aes.application.asp.scalar-replacement.v1] is the only application
   registered by this draft. It maps to the tested ASP v0 value-only behavior
   without widening storage.
 
   Its body requires:
 
-  - [$ profile=aes.partial.v0] and null projection;
-  - [$ aes.target.asp.v0] at root and one root revision precondition;
+  - [$ profile=aes.partial.v1] and null projection;
+  - [$ aes.target.asp.v1] at root and one root revision precondition;
   - identity preparation and host authorization context;
   - empty container assertions and [$ eventCount=1]; and
   - one body record containing only [$ path], [$ kind], and [$ value].
@@ -211,12 +211,12 @@ body:prose = >`
 
   ## 7. Transaction integrity [# 7-transaction-integrity]
 
-  [$ aes.transaction.integrity.v0] reuses [$ E(value)] from
-  [@ document:aes-integrity-v0 | aes.integrity.v0], but not its event-stream map
+  [$ aes.transaction.integrity.v1] reuses [$ E(value)] from
+  [@ document:aes-integrity-v1 | aes.integrity.v1], but not its event-stream map
   or domain.
 
   ~~~$ text
-  UTF8("aes.transaction.integrity.v0") || 0x00 || E(body)
+  UTF8("aes.transaction.integrity.v1") || 0x00 || E(body)
   ~~~$
 
   SHA-256 produces 64 lowercase hexadecimal digits. Every body field is bound;
@@ -224,13 +224,13 @@ body:prose = >`
 
   Evidence contains [$ integrity], [$ digest], [$ hash], and ordered
   [$ signatures]. An empty signature list is valid digest-only evidence. Each
-  signature has [$ signature=aes.transaction.signature.v0], [$ alg], [$ kid],
+  signature has [$ signature=aes.transaction.signature.v1], [$ alg], [$ kid],
   and [$ sig]. Its input is:
 
   ~~~$ text
-  UTF8("aes.transaction.signature.v0") || 0x00 || E({
-    signature: "aes.transaction.signature.v0",
-    integrity: "aes.transaction.integrity.v0",
+  UTF8("aes.transaction.signature.v1") || 0x00 || E({
+    signature: "aes.transaction.signature.v1",
+    integrity: "aes.transaction.integrity.v1",
     digest: "sha256",
     hash: <transaction digest>,
     alg: <algorithm identifier>,
@@ -281,7 +281,7 @@ body:prose = >`
   | [$ AES_SOURCE_REQUIRED] | source-backed preparation lacks complete exact artifacts |
   | [$ AES_TRANSACTION_UNAUTHORIZED] | host authorization rejects |
   | [$ AES_TRANSACTION_STALE] | atomic precondition no longer holds |
-  |~ AES transaction v0 table 3
+  |~ AES transaction v1 table 3
 
   ## 11. Conformance status [# 11-conformance-status]
 

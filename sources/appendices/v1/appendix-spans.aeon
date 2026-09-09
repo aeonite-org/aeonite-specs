@@ -41,7 +41,7 @@ body:prose = >`
   - [$ start] MUST be less than or equal to [$ end]
   - when the source is valid UTF-8, both endpoints MUST fall on Unicode scalar boundaries
 
-  A diagnostic span MAY be empty, with [$ start == end], for an insertion point or end-of-input condition. A profile may impose a narrower rule; for example, portable AES v0 requires a non-empty span when a span is transported.
+  A diagnostic span MAY be empty, with [$ start == end], for an insertion point or end-of-input condition. A profile may impose a narrower rule; for example, portable AES v1 requires a non-empty span when a span is transported.
 
   ## 2. Exact Source Contract [# exact-source-contract]
 

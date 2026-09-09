@@ -14,7 +14,7 @@ path:string = "specification/appendices/appendix-node-model-v1"
 order:number = 70
 publish:boolean = true
 keywords:list<string> = ["AEON", "node model", "profile-gated", "mixed content", "indexed paths", "structural containers"]
-related:list<string> = ["aeon-core-v1", "appendix-bindings-v1", "aes-events-v0"]
+related:list<string> = ["aeon-core-v1", "appendix-bindings-v1", "aes-events-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

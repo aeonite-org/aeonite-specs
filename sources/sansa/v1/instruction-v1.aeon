@@ -14,7 +14,7 @@ path:string = "specification/sansa/v1/proposals/instruction"
 order:number = 150
 publish:boolean = true
 keywords:list<string> = ["SANSA", "instruction", "query", "mutation", "human-authored"]
-related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "sansa-v1-query", "sansa-v1-mutate", "aeonic-semantic-language-v0"]
+related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "sansa-v1-query", "sansa-v1-mutate", "aeonic-semantic-language-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
