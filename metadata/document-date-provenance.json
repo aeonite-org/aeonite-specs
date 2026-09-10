@@ -7,8 +7,8 @@
     "fallback": "Documents without canonical Markdown use their AEON-source history."
   },
   "summary": {
-    "documents": 79,
-    "canonicalMarkdownMatches": 76,
+    "documents": 78,
+    "canonicalMarkdownMatches": 75,
     "aeonHistoryFallbacks": 3
   },
   "documents": [
@@ -674,7 +674,7 @@
     },
     {
       "id": "and-core-v1-draft",
-      "currentSource": "sources/and/v1/and-core-v1-draft.aeon",
+      "currentSource": "sources/and/v1/and-core-v1.aeon",
       "canonicalMarkdown": "and/v1/drafts/and-core-proposal.md",
       "basis": "canonical-markdown-history",
       "created": {
@@ -714,7 +714,7 @@
     },
     {
       "id": "and-core-v2-proposal",
-      "currentSource": "sources/and/v2/and-core-v2-proposal.aeon",
+      "currentSource": "sources/and/v2/and-core-v2.aeon",
       "canonicalMarkdown": "and/v2/proposals/and-core-v2-proposal.md",
       "basis": "canonical-markdown-history",
       "created": {
@@ -1413,10 +1413,13 @@
       }
     },
     {
-      "id": "sansa-v1-drafts",
-      "currentSource": "sources/sansa/v1/sansa-v1-drafts.aeon",
-      "canonicalMarkdown": "sansa/v1/drafts/README.md",
-      "basis": "canonical-markdown-history",
+      "id": "sansa-v1",
+      "currentSource": "sources/sansa/v1/sansa-v1.aeon",
+      "canonicalMarkdown": [
+        "sansa/v1/drafts/README.md",
+        "sansa/v1/proposals/README.md"
+      ],
+      "basis": "combined-canonical-markdown-history",
       "created": {
         "timestamp": "2026-07-14T01:59:24+10:00",
         "commit": "779ab822701fb7cf7389225f7bad63dd34576938",
@@ -1510,26 +1513,6 @@
         "subject": "Add captions to AEON and &ND tables",
         "repository": "aeonite-and",
         "path": "sources/sansa/v1/mutate-v1.aeon"
-      }
-    },
-    {
-      "id": "sansa-v1-proposals",
-      "currentSource": "sources/sansa/v1/sansa-v1-proposals.aeon",
-      "canonicalMarkdown": "sansa/v1/proposals/README.md",
-      "basis": "canonical-markdown-history",
-      "created": {
-        "timestamp": "2026-07-14T01:59:24+10:00",
-        "commit": "779ab822701fb7cf7389225f7bad63dd34576938",
-        "subject": "Add SANSA v1 draft specs",
-        "repository": "aeonite-specs",
-        "path": "sansa/v1/proposals/README.md"
-      },
-      "modified": {
-        "timestamp": "2026-08-23T23:38:26+10:00",
-        "commit": "dc83112a38a37a7f0f22519123b61fac808be137",
-        "subject": "Drop .md suffixes from spec references",
-        "repository": "aeonite-and",
-        "path": "sources/sansa/v1/sansa-v1-proposals.aeon"
       }
     },
     {

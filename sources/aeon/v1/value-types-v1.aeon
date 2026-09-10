@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-value-types"
 title:string = "AEON v1 Value Types Reference"
 description:string = "Reference for AEON value kinds, reserved datatype names, literal families, container forms, and reference-bearing values."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -295,7 +295,7 @@ body:prose = >`
   | Date | [$ 2025-01-01],[.] [$ 2024-02-29] | [$ d = 2025-01-01] | [$ d:date = 2025-01-01] | [$ DateLiteral] |
   | Time | [$ 09:],[.] [$ 09:30],[.] [$ 09:30Z],[.] [$ 09:+02:00],[.] [$ 09:30+02:00],[.] [$ 09:30:00],[.] [$ 09:30:00Z] | [$ t = 09:30:00] | [$ t:time = 09:30:00Z] | [$ DateTimeLiteral] |
   | DateTime | [$ 2025-01-01T09],[.] [$ 2025-01-01T09Z],[.] [$ 2025-01-01T09+02:00],[.] [$ 2025-01-01T09:30:00Z] | [$ ts = 2025-01-01T09:30:00Z] | [$ ts:datetime = 2025-01-01T09:30:00Z] | [$ DateTimeLiteral] |
-  | WTC | [$ 2025-01-01T00:00:00Z&Australia/Sydney],[.] [$ 2025-01-01T09&Europe/Belgium/Brussels],[.] [$ 2025-01-01T09:30Z&Local],[.] [$ 2035-01-01T09:00&-36.7590183/144.2826718] | [$ z = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ WTCDateTimeLiteral] |
+  | WTC | [$ 2025-01-01T00:00:00Z&Australia/Sydney],[.] [$ 2025-01-01T09&Europe/Belgium/Brussels],[.] [$ 2025-01-01T09:30Z&local],[.] [$ 2035-01-01T09:00&-36.7590183/144.2826718] | [$ z = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ DateTimeLiteral] |
   | Separator Literal | [$ ^300x250] | [$ size = ^300x250] | [$ size:sep\\["x"\\] = ^300x250] | [$ SeparatorLiteral] |
   | SANSA Address | [$ $.path],[.] [$ ?.path],[.] [$ $.items.*.sku] | [$ path:sansa = $.contact.name] | [$ selector:sansa = $.inventory.items.*.sku] | [$ SansaAddressLiteral] |
   | Object | [$ { ... }] | [$ user = { name = "John" }] | [$ user:object = { name:string = "John" }] | [$ ObjectNode] |
@@ -721,7 +721,7 @@ body:prose = >`
   - [$ aeon.gp.profile.v1] allows [$ encoding], [$ inline], and [$ embed] to carry exactly one string clarifier as an encoding-name claim, for example [$ encoding\\["base58"\\]];
   - [$ base64] is an encoding-family compatibility label, not a radix-family label. [$ base64] is not equivalent to [$ radix\\[64\\]];
   - [$ embed] and [$ inline] are reserved compatibility labels over the same [$ EncodingLiteral] family; Core does not assign media, resource-loading, or inline-expansion behavior to them;
-  - Shared Value Semantics may define naïve payload order over the preserved encoded payload characters, but decoded-byte ordering, decoded-text ordering, media ordering, or hash ordering belongs to profiles, schemas, or consumers;
+  - Aeonic Semantic Language may define naïve payload order over the preserved encoded payload characters, but decoded-byte ordering, decoded-text ordering, media ordering, or hash ordering belongs to profiles, schemas, or consumers;
   - [$ a = &aa=] is unambiguous in current lexer, because the second [$ =] remains part of the encoding token rather than being reinterpreted as assignment.
 
   AES:
@@ -739,26 +739,30 @@ body:prose = >`
   local:time = 09:30:00+02:40
   ts:datetime = 2025-01-01T09:30:00Z
   z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney
-  localTime:wtc = 2025-01-01T00:00:00&Local         // WTC local time convention
+  localTime:wtc = 2025-01-01T00:00:00&local         // resolver-local temporal context
   geoTime:wtc = 2035-01-01T09:00&-36.7590183/144.2826718
   ~~~$
 
   Nuances:
 
   - parser emits [$ DateLiteral] for date-only token;
-  - parser emits [$ DateTimeLiteral] for time and datetime-family tokens and [$ WTCDateTimeLiteral] for WTC tokens with an [$ &temporal-reference] suffix;
+  - parser emits [$ DateTimeLiteral] for time, datetime, and WTC tokens; the [$ wtc] datatype and preserved [$ &temporal-reference] payload distinguish WTC without changing the parser value model;
   - standalone [$ time] is part of Core v1 and follows ISO 8601 time forms;
   - date, time, and datetime literal recognition includes intrinsic calendar/clock range validation;
   - zone suffixes ([$ Z], [$ +hh:mm], [$ -hh:mm]) may attach to valid reduced-precision time forms already admitted by Core v1, such as [$ 09:] and [$ 09:30];
   - [$ datetime] extends that same reduced-precision rule after the [$ T], so forms such as [$ 2025-01-01T09Z], [$ 2025-01-01T09+02:00], and [$ 2025-01-01T09:30Z] are valid;
-  - WTC extends the same reduced-precision datetime bases with a temporal reference suffix, so forms such as [$ 2025-01-01T09&Europe/Belgium/Brussels], [$ 2025-01-01T09Z&Europe/Belgium/Brussels], [$ 2025-01-01T09:30Z&Local], and [$ 2035-01-01T09:00&-36.7590183/144.2826718] are valid [$ wtc] literals;
+  - WTC extends the same reduced-precision datetime bases with a temporal reference suffix, so forms such as [$ 2025-01-01T09&Europe/Belgium/Brussels], [$ 2025-01-01T09Z&Europe/Belgium/Brussels], [$ 2025-01-01T09:30Z&local], and [$ 2035-01-01T09:00&-36.7590183/144.2826718] are valid [$ wtc] literals;
   - WTC temporal references may contain [$ /], [$ _], [$ -], [$ +], and [$ .] when used as part of a contiguous reference, so named timezone references such as [$ America/Port-au-Prince], [$ GB-Eire], [$ Etc/GMT-1], and [$ Etc/GMT+1], plus geographic references such as [$ -36.7590183/144.2826718], are valid reference payloads;
   - comment markers do not begin inside a contiguous WTC temporal-reference payload; forms such as [$ Europe//Brussels] and [$ Europe/*Brussels*/] are invalid reference payloads, not shortened values followed by comments;
   - uppercase [$ Z] is the Core v1 UTC marker form; lowercase [$ z] is not a temporal literal marker;
   - invalid ranges such as [$ 2025-13-40], [$ 2025-02-29], [$ 24:00], [$ 99:99], and [$ 23:59:60] are not temporal literals in Core v1;
-  - strict datatype compatibility treats [$ :time] and [$ :datetime] as [$ DateTimeLiteral]-compatible and [$ :wtc] as [$ WTCDateTimeLiteral]-compatible;
-  - local-time WTC convention is [$ ...&Local] (for example [$ 2025-01-01T00:00:00&Local]);
-  - WTC preserves whether the temporal value is instant-anchored ([$ ...Z&reference]) or civil-time-anchored ([$ ...&reference]); the temporal value and temporal reference together form the temporal context;
+  - strict datatype compatibility treats [$ :time] and [$ :datetime] as ordinary [$ DateTimeLiteral]-compatible forms and requires [$ :wtc] to be a [$ DateTimeLiteral] carrying a valid [$ &temporal-reference] payload;
+  - the reserved resolver-local temporal reference is exactly lowercase [$ local] (for example [$ 2025-01-01T00:00:00&local]); case variants such as [$ Local] and [$ LOCAL] are invalid rather than aliases;
+  - WTC preserves three temporal-value forms: civil-anchored values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with [$ Z]; offset-qualified and UTC-qualified forms identify exact instants but remain lexically distinct;
+  - the temporal reference is independent of the temporal-value form and may be [$ local], a named timezone, or a geographic position; the temporal value and temporal reference together form the temporal context;
+  - geographic temporal references use [$ latitude/longitude] or [$ latitude/longitude/height] component order. Core recognises and preserves the reference but does not validate coordinate ranges, select a civil-time jurisdiction, or perform geodetic resolution;
+  - unless an active convention or profile overrides the interpretation, geographic WTC references use WGS 84 latitude and longitude in decimal degrees, in explicit latitude/longitude axis order, with an optional ellipsoidal height in metres;
+  - parsers, canonicalizers, and preservation-only processors MUST preserve the authored temporal-value form and temporal-reference payload rather than resolving or rewriting them;
   - WTC is represented as DateTime token family in AST/AES.
 
   AES:
@@ -815,7 +819,7 @@ body:prose = >`
   - [$ :sep] may bind separator literals with or without explicit clarifiers.
   - [$ :kadot] may bind unparameterized separator literals. The intended kadot shape is dot-separated numeric segments, for example [$ ip:kadot = ^198.0.126.255] or [$ semver:kadot = ^3.14.15], but Core only enforces the separator-literal family; stricter shape validation belongs to schema/profile layers.
   - Core does not assign IP, semantic-version, dimension, table, product-code, or other domain meaning to separator literals.
-  - Shared Value Semantics may define naïve separator order over the canonical separator payload. Naïve order does not split payloads, even when datatype clarifiers such as [$ \\["."\\]] are present.
+  - Aeonic Semantic Language may define naïve separator order over the canonical separator payload. Naïve order does not split payloads, even when datatype clarifiers such as [$ \\["."\\]] are present.
   - Domain ordering such as version order, numeric IP address order, or aspect-ratio order belongs to profiles, schemas, or consumers.
   - Datatype clarifiers are preserved claims. [$ aeon.gp.profile.v1] declares the GP interpretation of [$ sep]/[$ separator] string clarifiers as separator characters and rejects non-string separator clarifiers. Datatypes without an active GP clarifier rule, or GP entries with [$ clarifiers = "none"], do not accept explicit clarifier lists under the GP profile. Core-only processing preserves clarifier text but does not activate splitting or ordering from those clarifiers. Profile-defined splitting or ordering should use them only when the consumer trusts the source, validates the claim against the payload, or supplies separator structure from trusted configuration.
 
@@ -880,7 +884,7 @@ body:prose = >`
   - list element order and index-addressability are preserved;
   - tuple position and arity are preserved;
   - node tags, attributes, child order, and indexed child slots are preserved;
-  - structural equality and mutation compatibility are defined by Shared AEON Value Semantics and any active schema/profile authority;
+  - structural equality and mutation compatibility are defined by Aeonic Semantic Language and any active schema/profile authority;
   - structural ordering has no Core default.
 
   ## 4.1 Object [# object-2]
@@ -1058,7 +1062,7 @@ body:prose = >`
   Implementers should align with:
 
   - [@ document:appendix-canonical-form-v1 | [$ appendices/appendix-canonical-form]]
-  - [@ document:appendix-aes-v1 | [$ appendices/appendix-aes]]
+  - [@ document:aes-events-v1 | Portable AES Event Contract]
   - [@ document:aeon-core-v1-compliance | [$ AEON-v1-compliance]]
 
   This page is intentionally implementation-cross-checked to reduce inter-implementation drift.

@@ -45,6 +45,14 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Added
 
+- Added a first-class AES v1 specification family containing the portable
+  event contract, Telex text encoding, compatibility contract, family index,
+  and Aeonic Semantic Language proposal.
+- Added explicit AES ownership boundaries for event representation, encoding,
+  profiles, projections, ordering, fidelity, and downstream value semantics.
+- Added the normative draft `aeon.gp.assertion.v1` convention, defining the
+  explicitly activated subject-predicate-object interpretation of typed AEON triples while keeping
+  graph, RDF, provenance, history, authority, and truth semantics in their responsible layers.
 - Added proposal-stage `&ND` v1-to-v2 migration and v2 consumer-conventions documents, covering the
   asymmetric parser boundary, mechanical syntax migration, supported v2 surface, and the explicit
   split between Core fields and consumer-owned behavior.
@@ -56,6 +64,26 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Changed
 
+- Advanced the AEON v1 compliance and official-index conformance pointers to
+  the immutable Core 0.3 and AEON-to-portable-AES projection 0.3 CTS manifests;
+  historical generic-path snapshots remain unchanged.
+- Published the AES v1 index, `aes.events.v1`, the portable compatibility
+  contract, and `telex.aes` v1. The Aeonic Semantic Language remains a proposal;
+  Film and Tape remain planned work.
+- Split portable AES datatype metadata into base-name `datatype`, recursive
+  ordered `generics`, and ordered tagged-literal `clarifiers`. Telex retains one
+  compact `datatype=` line and expands or recombines it at the encoding boundary.
+- Set the default AES v1 generic-depth guard to `1` for both complete and partial
+  streams, with explicit opt-in required for a higher supported limit.
+- Replaced AES text-only architecture diagrams with `org.aeonite.gp.graph.v1`
+  views and plain-text fallbacks, and removed the remaining Mermaid fallback
+  from the Neon v1 summary graph.
+- Superseded the legacy AST-shaped AES appendix with `aes.events.v1` and moved
+  Shared AEON Value Semantics into AES as the Aeonic Semantic Language while
+  retaining the historical document ID and `aeon.value.*` profile identifiers
+  for compatibility.
+- Extended AEON structural identity to every headed structural occurrence, including attribute-entry
+  and literal-node heads, under one document-wide uniqueness rule.
 - Clarified that v2 local-fragment integrity is a second-pass document validation rule, omitted image
   modes intentionally normalize to explicit `inline`, `autoNumber?: true` is an additive opt-in AST
   field, and `[.]` is solely a line-break node rather than a directional marker.
@@ -101,7 +129,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
   `[:type = scalar]` syntax, a closed inline-scalar family list, structured datatype adornments,
   reserved type/literal compatibility checks, and AEON-canonical scalar output.
 - Pinned the `&ND` v2 inline-scalar boundary as machine-readable contract
-  `and-v2-aeon-inline-scalar-v1`, aligned with AEON TypeScript `0.12.0`, with mandatory AST,
+  `and-v2-aeon-inline-scalar-v1`, aligned with AEON TypeScript `0.12.1`, with mandatory AST,
   canonical, HTML, alias, and exclusion checks plus an optional live AEON drift check.
 - Changed AEON draft encoding-family literal syntax from `$payload` to `&payload`.
 - Changed NEON draft AEON integration examples and text-preservation guidance to use `&...` encoding literals.
@@ -136,6 +164,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Spec Impact
 
+- Establishes `aes.events.v1` and `telex.aes` v1 as published conformance
+  targets without promoting the Aeonic Semantic Language proposal.
 - Makes the current v2 implementation shape reviewable without promoting v2 beyond proposal stage.
 - Introduces draft SANSA specification text for semantic addressing and deterministic structural resolution.
 - Keeps read-only SANSA Query semantics in proposal status while the query surface continues to evolve.
@@ -157,9 +187,14 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 - Defines minimum structural equality for objects, lists, tuples, and nodes while keeping list/tuple coercion, structural ordering, and mutation behavior explicit.
 - Prevents implicit reference following in comparison and validation contexts while keeping reference resolution/materialization separate from explicit read-only followed-value checks.
 - Migration: update encoding-family literals from `$payload` to `&payload`.
+- Migration: pre-publication AES consumers must adopt the split datatype fields
+  and v1 limit semantics before claiming conformance to the published baseline.
 
 ### CTS Impact
 
+- Published immutable shared targets `aes-events-cts-v1-snapshot-0.1` and
+  `telex-cts-v1-snapshot-0.1`, with pinned suite digests and independent
+  JavaScript and Rust passes.
 - The local v2 proposal runner now checks declared and embedded parsing, v1 compatibility,
   canonical fixed points, HTML projection, nested contexts and rich inline content, inline and
   paired-block budgets, document-local fragment integrity, opaque extensions, and unpromoted syntax.

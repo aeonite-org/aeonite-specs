@@ -3,7 +3,7 @@ id:string = "aeos-v1"
 title:string = "AEOS Specification v1"
 description:string = "Validation-layer specification for AEOS, covering schema authority, active-schema evaluation, diagnostics, and result-envelope rules."
 created:date = 2026-03-25
-modified:date = 2026-08-23
+modified:date = 2026-09-08
 family:string = "aeos"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -109,7 +109,7 @@ body:prose = >`
   - canonical [$ path] is authoritative;
   - [$ datatype] may be present or absent;
   - [$ value.type] carries the Core-emitted literal/container/reference kind;
-  - [$ span] may be present as Core span data or tuple form.
+  - [$ span] may be present as Core span data or tuple form; tuple endpoints are zero-based UTF-8 byte offsets into the exact, unnormalised source artifact, as defined by Appendix — Spans.
 
   Reference-bearing AES events may still be present in the stream, but AEOS treats their legality as already decided by Core. AEOS may validate schema constraints against the emitted reference kind, but it must not reinterpret missing-target, forward-reference, or self-reference conditions as schema failures.
 

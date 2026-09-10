@@ -3,7 +3,7 @@ id:string = "appendix-schema-profile-v1"
 title:string = "Appendix — AEOS Schema Profile v1"
 description:string = "Schema profile constraints, rule application semantics, and compatibility expectations."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-05
 family:string = "appendices"
 group:string = "AEOS and Profiles"
 standing:string = "official"
@@ -426,7 +426,7 @@ body:prose = >`
   - follow references
   - peek at referenced values
 
-  A schema rule may opt in to bounded followed-value checks through an explicit follow control such as [$ follow_reference_form]. In that mode, AEOS walks the reference target path and evaluates the target value under the active Shared AEON Value Semantics contract while preserving the original reference form and reference diagnostics. This is not reference resolution or materialization; AEOS does not rewrite the data value carrying the reference.
+  A schema rule may opt in to bounded followed-value checks through an explicit follow control such as [$ follow_reference_form]. In that mode, AEOS walks the reference target path and evaluates the target value under the active Aeonic Semantic Language contract while preserving the original reference form and reference diagnostics. This is not reference resolution or materialization; AEOS does not rewrite the data value carrying the reference.
 
 
   ### 8.2 Schema references [# schema-references]

@@ -3,7 +3,7 @@ id:string = "appendix-spans-v1"
 title:string = "Appendix — Spans"
 description:string = "Source span representation and diagnostic location semantics."
 created:date = 2026-03-25
-modified:date = 2026-08-23
+modified:date = 2026-09-08
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
@@ -28,17 +28,35 @@ body:prose = >`
 
   ## 1. Definition [# definition]
 
-  A span identifies a source range in the original AEON text.
+  A span identifies a half-open byte range in one exact AEON source artifact.
 
   ~~~$ ts
   span: [start, end]
   ~~~$
 
+  - [$ start] and [$ end] are non-negative integers
+  - both are zero-based offsets into the UTF-8 bytes of the source artifact
   - [$ start] is inclusive
   - [$ end] is exclusive
-  - offsets are document-level offsets emitted by AEON Core
+  - [$ start] MUST be less than or equal to [$ end]
+  - when the source is valid UTF-8, both endpoints MUST fall on Unicode scalar boundaries
 
-  ## 2. Purpose [# purpose]
+  A diagnostic span MAY be empty, with [$ start == end], for an insertion point or end-of-input condition. A profile may impose a narrower rule; for example, portable AES v1 requires a non-empty span when a span is transported.
+
+  ## 2. Exact Source Contract [# exact-source-contract]
+
+  Span offsets are measured against the exact, unnormalised UTF-8 source bytes accepted by the producer.
+
+  Producers MUST NOT remove a byte-order mark, normalise Unicode, translate newlines, or otherwise rewrite the source before calculating offsets. Consequently:
+
+  - a UTF-8 byte-order mark occupies three bytes
+  - CRLF occupies two bytes
+  - a combining sequence occupies the bytes of each scalar in that sequence
+  - an astral scalar occupies four UTF-8 bytes
+
+  When source text is supplied directly in a local call, that input binds the span to its source artifact implicitly. A span transported outside that source-bound call requires an origin identity under the applicable transport profile. Portable AES uses [$ origin] for this purpose.
+
+  ## 3. Purpose [# purpose]
 
   Spans provide deterministic source linkage for:
 
@@ -48,36 +66,39 @@ body:prose = >`
 
   Spans are metadata and do not change AEON semantics.
 
-  ## 3. Authority [# authority]
+  ## 4. Authority [# authority]
 
   - Spans are produced by AEON Core.
   - Validators and downstream processors propagate spans.
   - Validators must not invent replacement spans for existing source-backed values.
 
-  ## 4. Required Output Behavior [# required-output-behavior]
+  ## 5. Required Output Behavior [# required-output-behavior]
 
   For AEOS/CTS-style diagnostics:
 
   - diagnostics should include a span when the target source region exists
   - [$ span: null] is allowed only when no source region exists (for example missing required path)
 
-  ## 5. Targeting Rule [# targeting-rule]
+  ## 6. Targeting Rule [# targeting-rule]
 
   A span should identify the narrowest source fragment responsible for the diagnostic (for example the offending literal or reference token).
 
-  ## 6. Non-Goals [# non-goals]
+  ## 7. Non-Goals [# non-goals]
 
   Spans are not:
 
   - semantic values
   - canonical paths
-  - line/column replacements
+  - semantic identities
+  - mutation addresses
 
-  ## 7. Determinism [# determinism]
+  Line and column values are optional implementation conveniences, not the portable span coordinate system. An implementation exposing them MUST document their units. They MUST NOT override the UTF-8 byte offsets carried by [$ span].
+
+  ## 8. Determinism [# determinism]
 
   Given identical source and policy, diagnostics should carry stable spans.
 
-  ## 8. Implementation Note [# implementation-note]
+  ## 9. Implementation Note [# implementation-note]
 
-  Current TypeScript implementation emits token positions with line/column plus offset in lexer tokens. Consumers relying on spans should treat AEON Core output as authoritative for unit/offset interpretation.
+  Native lexer positions may carry richer location data. Portable consumers use the UTF-8 byte interval defined by this appendix and the event-specific source boundaries defined by the AES event model.
 `

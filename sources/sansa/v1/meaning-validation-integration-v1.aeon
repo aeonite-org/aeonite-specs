@@ -3,7 +3,7 @@ id:string = "sansa-v1-meaning-validation-integration"
 title:string = "SANSA v1 AEON, AEOS, and Meaning Validation Integration"
 description:string = "Proposal-stage integration boundary between SANSA Resolve/Query, AEON, AEOS, and meaning-validation consumers."
 created:date = 2026-07-22
-modified:date = 2026-08-23
+modified:date = 2026-09-05
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -110,7 +110,7 @@ body:prose = >`
 
   - SANSA.Resolve for binding discovery;
   - SANSA.Query under a validation policy for read-only semantic predicates;
-  - AEON Shared Value Semantics for comparison and scalar behavior;
+  - Aeonic Semantic Language for comparison and scalar behavior;
   - local schema, contract, or product rules.
 
   The validator decides what constitutes a violation and how diagnostics are reported.
@@ -176,7 +176,7 @@ body:prose = >`
   - exact and selector-based resolution expressions;
   - existence predicates;
   - cardinality predicates;
-  - comparisons using Shared AEON Value Semantics;
+  - comparisons using Aeonic Semantic Language;
   - Boolean composition;
   - approved deterministic value functions;
   - binding-preserving projection when the consumer needs candidate identity.

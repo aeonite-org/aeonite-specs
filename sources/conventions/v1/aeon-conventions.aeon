@@ -3,7 +3,7 @@ id:string = "aeon-conventions-overview"
 title:string = "AEON Conventions Overview"
 description:string = "Overview of what conventions are, how they relate to core syntax, and how documents declare them."
 created:date = 2026-05-27
-modified:date = 2026-06-06
+modified:date = 2026-09-04
 family:string = "conventions"
 group:string = "Convention Overview"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/conventions/overview"
 order:number = 20
 publish:boolean = true
 keywords:list<string> = ["AEON", "conventions", "overview", "declarations", "interoperability"]
-related:list<string> = []
+related:list<string> = ["aeon-gp-assertion-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -92,6 +92,7 @@ body:prose = >`
       "aeon.gp.document.v1"
       "aeon.gp.context.v1"
       "aeon.gp.collection.v1"
+      "aeon.gp.assertion.v1"
       "aeon.gp.temporal.v1"
       "aeon.gp.measurement.v1"
       "aeon.gp.security.v1"
@@ -157,6 +158,7 @@ body:prose = >`
   aeon.gp.document.v1
   aeon.gp.context.v1
   aeon.gp.collection.v1
+  aeon.gp.assertion.v1
   aeon.gp.temporal.v1
   aeon.gp.measurement.v1
   aeon.gp.security.v1
@@ -206,11 +208,12 @@ body:prose = >`
 
   ### Data Interpretation [# data-interpretation]
 
-  Standard representations such as measurement labels, collection semantics, or temporal semantics.
+  Standard representations such as assertions, measurement labels, collection semantics, or temporal semantics.
 
   Example:
 
   ~~~$ text
+  aeon.gp.assertion.v1
   aeon.gp.measurement.v1
   aeon.gp.collection.v1
   aeon.gp.temporal.v1
@@ -242,6 +245,7 @@ body:prose = >`
     conventions = [
       "aeon.gp.document.v1"
       "aeon.gp.context.v1"
+      "aeon.gp.assertion.v1"
       "aeon.gp.measurement.v1"
       "aeon.gp.security.v1"
     ]
