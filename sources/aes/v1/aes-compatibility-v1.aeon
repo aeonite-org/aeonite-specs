@@ -3,7 +3,7 @@ id:string = "aes-compatibility-v1"
 title:string = "Portable AES Compatibility Contract v1"
 description:string = "v1 compatibility, adapter, durable-history, and reader-first rollout contract for portable AES."
 created:date = 2026-09-05
-modified:date = 2026-09-10
+modified:date = 2026-09-12
 family:string = "aes"
 group:string = "AES v1"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/aes/v1/compatibility"
 order:number = 30
 publish:boolean = true
 keywords:list<string> = ["AES", "compatibility", "migration", "adapters", "reader-first", "durable history"]
-related:list<string> = ["aes-v1-index", "aes-events-v1", "telex-aes-v1"]
+related:list<string> = ["aes-v1-index", "aes-events-v1", "telex-aes-v1", "film-aes-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`

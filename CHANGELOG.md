@@ -45,6 +45,9 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Added
 
+- Added the normative Film v1 binary-encoding draft, aligned with
+  `film-specs-v1-snapshot-0.1` and the immutable 72-vector
+  `film-cts-v1-snapshot-0.1` conformance target.
 - Added a first-class AES v1 specification family containing the portable
   event contract, Telex text encoding, compatibility contract, family index,
   and Aeonic Semantic Language proposal.
