@@ -3,7 +3,7 @@ id:string = "aes-events-v1"
 title:string = "Portable AES Event Contract v1"
 description:string = "Transport-neutral v1 contract for portable AES records, paths, kinds, profiles, projections, ordering, provenance, fidelity, and diagnostics."
 created:date = 2026-09-05
-modified:date = 2026-09-10
+modified:date = 2026-09-12
 family:string = "aes"
 group:string = "AES v1"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/aes/v1/events"
 order:number = 10
 publish:boolean = true
 keywords:list<string> = ["AES", "Assignment Event Stream", "portable events", "event contract", "profiles", "projections"]
-related:list<string> = ["aes-v1-index", "telex-aes-v1", "aes-integrity-v1", "aes-compatibility-v1", "aeonic-semantic-language-v1", "aeon-core-v1"]
+related:list<string> = ["aes-v1-index", "telex-aes-v1", "film-aes-v1", "aes-integrity-v1", "aes-compatibility-v1", "aeonic-semantic-language-v1", "aeon-core-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -30,7 +30,7 @@ body:prose = >`
   Profiles: [$ aes.complete.v1], [$ aes.partial.v1]
   
   This document is transport-neutral. It defines the portable Assignment Event
-  Stream model encoded by [$ telex.aes], the future [$ film.aes], and other AES
+  Stream model encoded by [$ telex.aes], [$ film.aes], and other AES
   transports. It does not define a byte encoding.
   
   ## 1. Purpose and authority [# 1-purpose-and-authority]

@@ -3,7 +3,7 @@ id:string = "telex-aes-v1"
 title:string = "telex.aes v1"
 description:string = "v1 textual interchange encoding for portable AES event streams."
 created:date = 2026-09-05
-modified:date = 2026-09-10
+modified:date = 2026-09-12
 family:string = "aes"
 group:string = "Encodings"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/aes/v1/telex"
 order:number = 20
 publish:boolean = true
 keywords:list<string> = ["AES", "Telex", "telex.aes", "text encoding", "interchange", "canonical encoding"]
-related:list<string> = ["aes-v1-index", "aes-events-v1", "aes-compatibility-v1"]
+related:list<string> = ["aes-v1-index", "aes-events-v1", "film-aes-v1", "aes-compatibility-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -44,7 +44,7 @@ body:prose = >`
   The transport-neutral AES contract defines record meaning, value kinds,
   structure, profiles, projections, provenance, ordering, and semantic fidelity.
   Telex defines only their text framing, escaping, canonical bytes, and syntax
-  diagnostics. The future [$ film.aes] will encode the same records with different
+  diagnostics. [@ document:film-aes-v1 | [$ film.aes]] encodes the same records with different
   physical tradeoffs.
   
   Format version [$ 1] identifies this published wire contract. An incompatible
