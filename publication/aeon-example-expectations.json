@@ -125,7 +125,8 @@
       "aeon-core-v1-value-types#null-2:1",
       "appendix-json-profile-v1#references-resolved-values:1",
       "appendix-profiles-framework-v1#config-overlay-profile:1",
-      "appendix-reference-philosophy-v1#indirection-enables-adaptation:1"
+      "appendix-reference-philosophy-v1#indirection-enables-adaptation:1",
+      "aeon-v1-contracts#schema-contract-shape:1"
     ]
   }
 }
