@@ -302,6 +302,23 @@ body:prose = >`
 
   Unknown constraint keys are schema errors.
 
+  In the portable and in-memory [$ SchemaV1] representation, [$ min_value] and
+  [$ max_value] are canonical finite AEON number lexemes carried as strings so
+  their values survive JSON and machine-number boundaries without loss.
+
+  In native [$ .aeos] source, [$ min_value] and [$ max_value] MUST be authored as
+  AEON [$ NumberLiteral] values, not quoted strings. A loader MUST preserve the
+  canonical number lexeme when projecting native source into [$ SchemaV1].
+
+  ~~~$ aeon
+  min_value:number = -2147483648
+  max_value:number = 2147483647
+  ~~~$
+
+  A bound that is not a finite AEON decimal number is a schema error. When both
+  bounds are present, [$ min_value] MUST be numerically less than or equal to
+  [$ max_value].
+
   Additional schema-surface notes:
 
   - [$ reference_policy?: 'allow' \\| 'forbid'] is a schema-wide form control.
@@ -600,6 +617,8 @@ body:prose = >`
 
   - uses lexical representation for sign, digit-count, and radix digit checks;
   - uses numeric magnitude only when [$ min_value] or [$ max_value] are explicitly declared;
+  - compares bound and instance magnitudes exactly, without imposing binary
+    floating-point, safe-integer, or fixed-width integer limits;
   - integer digit count excludes sign.
 
   Failure diagnostic:
@@ -742,7 +761,7 @@ body:prose = >`
   Typical uses:
 
   - [$ uint] [>] [$ type = "IntegerLiteral"], [$ sign = "unsigned"]
-  - [$ int32] [>] [$ type = "IntegerLiteral"], [$ min_value = "-2147483648"], [$ max_value = "2147483647"]
+  - [$ int32] [>] [$ type = "IntegerLiteral"], [$ min_value = -2147483648], [$ max_value = 2147483647]
   - [$ float32] [>] [$ type = "FloatLiteral"]
 
   ### 5.20 [$ resource_policy] [# resourcepolicy]
