@@ -17,6 +17,7 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Defined the proposal-stage `aeon.value.radix.numeric.same-base.v1` profile for exact base-2-through-base-64 radix equality and ordering while preserving representation identity as the default and rejecting missing-base, mixed-base, and invalid-digit comparisons deterministically.
 - Replaced the legacy formal Markdown corpus with 79 canonical AEON envelopes containing embedded
   &ND documents, moved authoritative contract resources under `resources/`, and made generated
   website and compatibility projections downstream artifacts rather than checked-in sources.

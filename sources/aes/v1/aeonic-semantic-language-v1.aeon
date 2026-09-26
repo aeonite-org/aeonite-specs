@@ -3,7 +3,7 @@ id:string = "aeonic-semantic-language-v1"
 title:string = "Aeonic Semantic Language"
 description:string = "Architectural proposal for deterministic value behavior shared across AES consumers, including equality, comparison, ordering, conversion, measurement, and future arithmetic."
 created:date = 2026-07-21
-modified:date = 2026-09-10
+modified:date = 2026-09-27
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
@@ -325,11 +325,14 @@ body:prose = >`
   aeon.value.string.natural.ascii.v1
   aeon.value.string.locale.fr.v1
   aeon.value.temporal.iso8601.v1
+  aeon.value.radix.numeric.same-base.v1
   ~~~$
 
   [$ aeon.value.default.v1] is the candidate minimum consumer profile. It composes the minimum equality, ordering, concrete-value, and provisional case-mapping behavior defined in this proposal with the portable codepoint string profile.
 
   [$ aeon.value.string.codepoint.v1] is the portable locale-independent string-ordering floor. Natural-sort profiles, such as [$ aeon.value.string.natural.ascii.v1], and locale-aware profiles, such as a French collation profile, must be named explicitly and remain profile-selected behavior rather than host-locale defaults.
+
+  [$ aeon.value.radix.numeric.same-base.v1] gives [$ RadixLiteral] values exact numeric equality and ordering when both operands resolve to the same base. It is opt-in: the default profile continues to compare radix values by preserved representation identity and does not order them.
 
   Profile identifiers remain proposal-stage until promoted by focused contract documents. Implementations may expose local profile identifiers, but local identifiers should be clearly marked as non-portable.
 
@@ -362,6 +365,7 @@ body:prose = >`
       "aeon.value.string.natural.ascii.v1"
       "aeon.value.string.locale.fr.v1"
       "aeon.value.temporal.iso8601.v1"
+      "aeon.value.radix.numeric.same-base.v1"
     ]
     stringOrder:object = {
       profile:string = "aeon.value.string.codepoint.v1"
@@ -487,7 +491,52 @@ body:prose = >`
 
   Without explicit conversion or an active profile-defined compatibility rule, toggle and Boolean values are cross-type comparisons and fail closed.
 
-  ### 6.8 Hex Semantics [# hex-semantics]
+  ### 6.8 Same-Base Radix Numeric Profile [# same-base-radix-numeric-profile]
+
+  [$ aeon.value.radix.numeric.same-base.v1] is an explicit numeric interpretation of the radix family. It does not replace the preserved-representation behavior of [$ aeon.value.default.v1].
+
+  Under the default profile, [$ %19.9900] and [$ %19.99] are different representations. Under this numeric profile, when both values resolve to base 10, they are numerically equal. Source spelling, digit case, explicit plus signs, leading zeroes, fractional trailing zeroes, radix-point placement, and visual underscores remain available as representation metadata even when they do not change the numeric result.
+
+  The radix digit sequence is the Core [$ RadixLiteral] sequence, in order:
+
+  ~~~$ text
+  0-9 A-Z a-z & !
+  ~~~$
+
+  These characters have digit values [$ 0] through [$ 63]. Digit identity is case-sensitive. [$ A] has value 10 and [$ a] has value 36. [$ e] and [$ E] are ordinary radix digits whenever their values are admitted by the resolved base; radix payloads do not have exponent notation.
+
+  A numeric comparison under this profile MUST resolve one integral base from [$ 2] through [$ 64]:
+
+  - [$ decimal] resolves to base 10;
+  - the reserved aliases [$ radix2], [$ radix6], [$ radix8], and [$ radix12] resolve to their named bases;
+  - [$ radix\[n\]] resolves to [$ n] when [$ n] is an integral value from [$ 2] through [$ 64];
+  - a consumer MAY supply equivalent trusted base metadata from an AES adapter or schema;
+  - an untyped radix operand MAY inherit the base of its typed counterpart for that binary operation;
+  - if neither operand has a resolved base, the operation MUST fail closed with [$ radix_base_required];
+  - if both operands have resolved bases and the bases differ, the operation MUST fail closed with [$ mixed_radix_bases].
+
+  Cross-base conversion is not part of this profile. A consumer must not infer that payloads with different resolved bases are numerically equal, even when conversion would be mathematically possible.
+
+  Before comparison, an implementation MUST validate every non-separator digit against the resolved base. Invalid payloads MUST fail closed with [$ invalid_radix_value]. The optional sign, radix point, and underscore placement must satisfy the Core radix grammar. Underscores are visual separators only and do not contribute a digit.
+
+  Equality and ordering MUST be exact and MUST NOT pass through a host binary floating-point number. Implementations compare the mathematical values represented by sign, integer digits, and fractional digits. Leading integer zeroes and trailing fractional zeroes do not affect the numeric result. Positive and negative zero compare equal. For operands with the same sign, implementations compare integer magnitude first, then fractional digits with implicit trailing zero digits. Negative ordering reverses the resulting magnitude relation.
+
+  Examples under [$ aeon.value.radix.numeric.same-base.v1]:
+
+  | Operands | Resolved base | Result |
+  | <-- | <-- | <-- |
+  | [$ %19.9900] and [$ %19.99] | 10 | equal |
+  | [$ %0010] and [$ %10] | 2 | equal |
+  | [$ %-0.0] and [$ %+0.000] | 10 | equal |
+  | [$ %A] and [$ %a] | 64 | less |
+  | [$ %10] and [$ %2] | 2 and 10 | [$ mixed_radix_bases] |
+  |~ Same-base radix numeric examples
+
+  This profile defines numeric value semantics, not decimal scale semantics. It does not decide whether [$ %19.9900] carries a business scale of four places, whether scale participates in schema validation, or how arithmetic rounds. Those remain separate schema, measurement, or arithmetic contracts.
+
+  Consumers MUST apply their normal bounded-input policy to radix payloads. Implementations SHOULD support at least 65,536 payload characters or advertise a smaller deterministic limit. Exceeding the active limit MUST fail closed rather than fall back to an imprecise host representation.
+
+  ### 6.9 Hex Semantics [# hex-semantics]
 
   Hex values are their own AEON value family.
 
@@ -523,7 +572,7 @@ body:prose = >`
 
   Core v1 does not reserve [$ radix16] as a shorthand alias. Use [$ radix\\[16\\]] when a value is intended to remain in the radix-family numeric-representation surface. This keeps base-16 radix values explicit and avoids implying that [$ hex] and base-16 radix are interchangeable.
 
-  ### 6.9 Encoding Semantics [# encoding-semantics]
+  ### 6.10 Encoding Semantics [# encoding-semantics]
 
   Encoding values are encoded lexical payloads.
 
@@ -577,7 +626,7 @@ body:prose = >`
 
   Those meanings require an explicit profile. A consumer must not treat [$ base64] as [$ radix\\[64\\]], must not apply generic string collation as byte ordering, and must not assume that [$ encoding], [$ embed], or [$ inline] always means Base64 data with a particular media type.
 
-  ### 6.10 Separator Semantics [# separator-semantics]
+  ### 6.11 Separator Semantics [# separator-semantics]
 
   Separator literals are compact structured lexical scalars.
 
@@ -637,7 +686,7 @@ body:prose = >`
 
   Profile-defined separator ordering must also account for trust. A profile may use separator specs only when the consumer trusts the source of the claim, validates the claim against the payload, or supplies the separator structure from trusted configuration. Untrusted document-local separator specs should be treated as data claims, not as authority to choose parsing or ordering behavior.
 
-  ### 6.11 SANSA Address Semantics [# sansa-address-semantics]
+  ### 6.12 SANSA Address Semantics [# sansa-address-semantics]
 
   SANSA address literals are structured address expressions carried as AEON values.
 
@@ -690,7 +739,7 @@ body:prose = >`
 
   A consumer must not assume that SANSA member selectors are AEON binding keys or object traversal unless the active namespace is an AEON-backed namespace or another trusted adapter defines that mapping. SANSA member selectors describe semantic traversal; the addressed domain belongs to the namespace.
 
-  ### 6.12 Structural Container Semantics [# structural-container-semantics]
+  ### 6.13 Structural Container Semantics [# structural-container-semantics]
 
   AEON structural values have two separate surfaces:
 
@@ -728,7 +777,7 @@ body:prose = >`
 
   Structural mutation compatibility is also profile/schema-owned. Mutation rules must define replace versus merge behavior, list insertion and reindexing, tuple arity compatibility, object member creation and deletion, node child mutation, attribute mutation, and conflict handling. A document-local datatype claim such as [$ node<node>] is an input to validation; it does not authorize the document to choose schema behavior for itself.
 
-  ### 6.13 Reference Semantics [# reference-semantics]
+  ### 6.14 Reference Semantics [# reference-semantics]
 
   AEON references have two distinct semantic surfaces:
 
@@ -1094,7 +1143,9 @@ body:prose = >`
 
   ~~~$ text
   aeonite-cts/cts/value-semantics/v1/value-semantics-cts.v1.json
+  aeonite-cts/cts/value-semantics/v1/value-semantics-cts.v1.next.json
   aeonite-cts/cts/value-semantics/v1/suites/01-minimum-consumer-contract.json
+  aeonite-cts/cts/value-semantics/v1/suites/02-radix-numeric-same-base.json
   ~~~$
 
   Shared CTS cases can then be reused by consumers:
