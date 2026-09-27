@@ -1,9 +1,9 @@
 schemaVersion:string = "1"
 id:string = "aeon-gp-temporal-v1"
 title:string = "AEON GP Temporal v1"
-description:string = "Draft temporal convention for interpreting Core temporal and WTC literals with explicit reference, timezone database, calendar, ambiguity, and conflict policy."
+description:string = "Draft temporal convention for interpreting Core temporal and WTC literals with explicit reference, timescale, timezone database, calendar, ambiguity, and conflict policy."
 created:date = 2026-05-13
-modified:date = 2026-09-05
+modified:date = 2026-09-28
 family:string = "conventions"
 group:string = "General-Purpose Conventions"
 standing:string = "official"
@@ -13,7 +13,7 @@ license:string = "CC0-1.0"
 path:string = "specification/conventions/aeon-gp-temporal-v1"
 order:number = 80
 publish:boolean = true
-keywords:list<string> = ["AEON", "temporal", "WTC", "timezone", "geographic", "calendar", "ambiguity", "metadata"]
+keywords:list<string> = ["AEON", "temporal", "WTC", "timescale", "UTC", "TAI", "UT1", "TT", "GPS", "timezone", "geographic", "calendar", "ambiguity", "metadata"]
 related:list<string> = ["aeon-conventions-overview", "aeon-core-v1-value-types"]
 bodyFormat:string = "and-v2"
 
@@ -28,7 +28,7 @@ body:prose = >`
 
   ## 1. Purpose [# purpose]
 
-  [$ aeon.gp.temporal.v1] defines a standard interpretation vocabulary for AEON temporal literals and the temporal-reference payload carried by Core [$ wtc] literals.
+  [$ aeon.gp.temporal.v1] defines a standard interpretation vocabulary for AEON temporal literals and the temporal-context payload carried by Core [$ wtc] literals.
 
   It applies to ordinary Core temporal literal families such as:
 
@@ -43,7 +43,7 @@ body:prose = >`
   | Concern | Responsibility |
   | <-- | <-- |
   | Temporal literal form | AEON Core value syntax |
-  | WTC temporal-reference form and preservation | AEON Core value syntax |
+  | WTC temporal-context form and preservation | AEON Core value syntax |
   | Temporal interpretation policy | [$ aeon.gp.temporal.v1] metadata |
   | Materialization and execution | Tonics, profiles, processors, or host runtimes |
   |~ Temporal convention responsibilities
@@ -67,7 +67,10 @@ body:prose = >`
   Modern temporal data often combines several independent concerns:
 
   - UTC instants
-  - floating or local civil times
+  - floating civil times
+  - resolver-local and named-zone times
+  - explicit numeric offsets
+  - scientific, astronomical, and navigation timescales
   - geopolitical time zones
   - daylight-saving ambiguity
   - historical timezone database drift
@@ -100,7 +103,72 @@ body:prose = >`
   observedAt:wtc = 2026-06-06T00:10:00Z&-37.8136/144.9631/31
   ~~~$
 
-  The temporal-value form and temporal-reference payload are independent preserved inputs. Resolution and conflict decisions belong to the consumer.
+  The temporal-value form and temporal-context payload are independent preserved inputs. Resolution and conflict decisions belong to the consumer.
+
+  ### 2.1 Temporal Contexts [# temporal-contexts]
+
+  The useful first question is not merely "what time is it?" but "what context anchors this clock reading?"
+
+  WTC preserves two orthogonal dimensions rather than assigning one meaning to each [$ &] spelling:
+
+  | Dimension | Forms |
+  | <-- | <-- |
+  | Temporal-value form before [$ &] | unqualified clock reading, explicit numeric offset, or UTC-qualified with [$ Z] |
+  | Temporal context after [$ &] | resolver-selected [$ local], named timezone, geographic position, or convention-recognized timescale |
+  |~ WTC temporal dimensions
+
+  The context categories below describe the resulting meaning, not a one-to-one list of WTC suffixes. In particular, [$ &local] is a late-bound resolver-local context and [$ &Australia/Melbourne] is a fixed named-zone context. When either follows an unqualified temporal value, it can provide the rule context for zoned civil time.
+
+  [$ &local] does not by itself determine whether a value is civil or already identifies an instant; the temporal-value form before [$ &] determines that distinction. An unqualified value such as [$ 2027-01-31T23:59:59&local] is a resolver-local civil deadline rather than one global instant. A consumer may resolve it to just before midnight in Melbourne for one subject and just before midnight in Brussels for another. The declaration therefore represents a context-indexed family of possible instants, or a rolling event across local contexts.
+
+  By contrast, [$ 2027-01-31T23:59:59Z&local] already identifies one UTC instant. The [$ Z] applies to the temporal value before [$ &]: the clock fields are UTC fields, not local civil fields waiting to be converted to UTC. Its [$ &local] context may guide projection or presentation of that fixed instant in the resolver's local timezone, but it does not reinterpret the fields or make the instant float.
+
+  Under temporal interpretation, [$ 2027-01-31T23:59:59Z&local] and [$ 2027-01-31T23:59:59Z] therefore identify the same instant. They are not the same preserved AEON representation: the WTC form retains the additional [$ local] context, while the ordinary datetime does not.
+
+  The trusted consumer MUST define what [$ local] selects, such as the subject's current location, an account timezone, or a host environment. It MUST NOT silently substitute the executing machine's timezone when a different resolver-local policy is required by the application.
+
+  | Context | Question | Example | Consequence |
+  | <-- | <-- | <-- | <-- |
+  | Civil time | What does the clock say? | [$ 20:30] | The unqualified reading floats and does not identify an exact instant. |
+  | Local time (zoned civil time) | Where is the clock? | [$ 20:30] in [$ Australia/Melbourne] | The civil reading is paired with timezone rules, selected through [$ &local], a named zone, or equivalent convention metadata. A date is required and resolution may produce one, multiple, or no instants. Only a successfully resolved result is a zoned instant. |
+  | Offset time | How far is the clock from UTC? | [$ 20:30+10:00] | The date, time, and offset identify one instant, but do not preserve a location or its future and historical rules. |
+  | Universal time | What exact moment is it? | [$ 10:30Z] | The UTC-qualified value identifies one instant on the global timeline. |
+  | Geographic time | Where exactly is the clock located? | [$ 20:30] at [$ -37.8142/144.9631] | Timezone resolution also requires spatial-reference policy; direct geographic use cases include determining the Sun's position for solar panels. |
+  |~ Temporal context distinctions
+
+  These contexts are not interchangeable. Civil time deliberately lacks enough context to identify an instant. Local time depends on political timezone rules, which can change and which create overlaps or gaps during daylight-saving transitions. An explicit offset identifies an instant relative to UTC but cannot guarantee that future or past calculations stay aligned with the wall clock at a location. Geographic time inherits the timezone problem and also depends on a coordinate reference system, coordinate epoch, and the movement of the Earth and its surface.
+
+  This makes anchoring intent part of the data. If a meeting is planned in Melbourne for 09:00 one month from now and the applicable daylight-saving rules change before then, an application must know whether the meeting was intended to remain at 09:00 in Melbourne or remain attached to the originally resolved global instant.
+
+  A timescale is a separate concern again: it identifies the time coordinate used for a reading. UTC, TAI, UT1, TT, and GPS time are not interchangeable labels even when a trusted consumer can transform between them.
+
+  ### 2.2 Anchoring Invariants [# anchoring-invariants]
+
+  Anchoring applies to every temporal form and context. An anchor names the property that is intended to remain invariant when a value is resolved, converted, projected, or revisited under changed rules or reference data.
+
+  | Input | Anchor class | Intended invariant |
+  | <-- | <-- | <-- |
+  | unqualified civil fields | field-anchored civil time | authored calendar and clock fields |
+  | [$ &local] | resolver-anchored local context | trusted resolver policy, plus civil fields when the temporal value is unqualified |
+  | named timezone such as [$ &Australia/Melbourne] | zone anchor | named zone identity, plus civil fields when the temporal value is unqualified |
+  | explicit numeric offset | offset anchor | exact instant and authored numeric relationship to UTC |
+  | uppercase [$ Z] or convention-recognized [$ &UTC] | UTC anchor | exact UTC coordinate and global instant |
+  | geographic position | geographic anchor | authored coordinates and their spatial-reference metadata, plus civil fields when unqualified |
+  | [$ &TAI], [$ &UT1], [$ &TT], [$ &GPS], or [$ timescale] metadata | timescale anchor | authored time coordinate and timescale identity |
+  |~ Temporal anchor classes
+
+  Temporal forms and contexts compose, so one WTC value may carry more than one anchor:
+
+  | Form | Recommended name | Preserved anchor | Effect of changed timezone rules |
+  | <-- | <-- | <-- | <-- |
+  | [$ 2027-01-31T23:59:59&Australia/Melbourne] | zone-anchored zoned civil time | Melbourne zone identity and authored civil clock fields | Keep Melbourne civil time; the derived instant resolution may change, become ambiguous, or become invalid. |
+  | [$ 2027-01-31T23:59:59Z&Australia/Melbourne] | instant-anchored zoned instant | UTC instant and Melbourne context | Keep the global instant; the projected Melbourne civil time may change. |
+  | [$ 2027-01-31T23:59:59+11:00&Australia/Melbourne] | dual-anchored zoned-instant claim | Exact instant, authored offset, civil fields, and Melbourne context | If later rules disagree with the authored offset or civil projection, expose a conflict rather than silently changing an anchor. |
+  |~ Composed temporal anchoring examples
+
+  These names describe interpretation intent, not new Core value kinds. AEON Core preserves every component but does not determine whether a named zone exists, whether an offset agrees with its rules, which timezone database release applies, whether a geographic position selects a civil-time jurisdiction, whether a timescale conversion is authoritative, or whether a zoned civil time resolves uniquely. A temporal-aware consumer establishes those results under trusted policy.
+
+  If [$ tzdbVersion], coordinate reference metadata, timescale realization data, or equivalent trusted configuration pins the required reference inputs, interpretation can remain reproducible. The change behavior above applies when the value is deliberately resolved, converted, or projected using different reference data.
 
   ---
 
@@ -119,6 +187,7 @@ body:prose = >`
   - timezone or geographic-reference resolution
   - civil-time jurisdiction selection from coordinates
   - geodetic transformation
+  - authoritative timescale realization or conversion data
 
   Consumers that do not understand this convention should preserve the attributes as ordinary AEON metadata or fail according to their convention-adoption policy.
 
@@ -137,8 +206,9 @@ body:prose = >`
   | Value | Meaning |
   | <-- | <-- |
   | [$ "utc"] | Interpret as a universal instant |
-  | [$ "local"] | Interpret as a floating/local civil time |
-  | [$ "zone"] | Interpret as a regional civil time in a named zone |
+  | [$ "civil"] | Interpret as a floating civil time without a timezone |
+  | [$ "local"] | Interpret as zoned civil time using timezone rules selected by trusted resolver policy or other convention metadata |
+  | [$ "zone"] | Interpret as zoned civil time in the named [$ zone] |
   |~ Temporal target values
 
   Examples:
@@ -151,7 +221,14 @@ body:prose = >`
 
   ~~~$ aeon
   alarm@{
+    target = "civil"
+  }:datetime = 2026-06-06T09:00:00
+  ~~~$
+
+  ~~~$ aeon
+  localAlarm@{
     target = "local"
+    disambiguation = "reject"
   }:datetime = 2026-06-06T09:00:00
   ~~~$
 
@@ -161,6 +238,8 @@ body:prose = >`
     zone = "Australia/Melbourne"
   }:datetime = 2026-06-06T10:10:00
   ~~~$
+
+  These [$ target] values are interpretation metadata, not spellings for the text after [$ &]. In particular, [$ target = "local"] does not require the intrinsic context [$ &local]; a named [$ zone] can also provide the rules for zoned civil time.
 
   For [$ wtc], the intrinsic reference remains authoritative input. Consumers MUST NOT silently replace it with [$ target] metadata.
 
@@ -178,7 +257,7 @@ body:prose = >`
   - consumers applying [$ zone] MUST fail if the zone is unknown;
   - consumers MUST NOT silently substitute an equivalent or nearby zone.
 
-  When a [$ wtc] literal also carries a temporal reference, any disagreement between [$ zone] and that reference is a conflict governed by the consumer's [$ conflictAuthority] policy.
+  When a [$ wtc] literal also carries a temporal context, any disagreement between [$ zone] and that context is a conflict governed by the consumer's [$ conflictAuthority] policy.
 
   ### 4.3 [$ calendar] [# calendar]
 
@@ -217,7 +296,7 @@ body:prose = >`
 
   ### 4.6 [$ disambiguation] [# disambiguation]
 
-  [$ disambiguation] states how ambiguous or invalid local times should be handled.
+  [$ disambiguation] states how ambiguous or invalid zoned civil times should be handled.
 
   Allowed values:
 
@@ -225,7 +304,7 @@ body:prose = >`
   | <-- | <-- |
   | [$ "earlier"] | Choose the earlier valid instant |
   | [$ "later"] | Choose the later valid instant |
-  | [$ "reject"] | Fail on ambiguity or invalid local time |
+  | [$ "reject"] | Fail on ambiguous or invalid zoned civil time |
   |~ Temporal disambiguation values
 
   Example:
@@ -250,7 +329,46 @@ body:prose = >`
 
   An explicit numeric offset or [$ Z] embedded in a [$ wtc] temporal value is intrinsic representation, not this metadata field. A disagreement between intrinsic and supplemental offset inputs is governed by the consumer's [$ conflictAuthority] policy.
 
-  ### 4.8 [$ apply] [# apply]
+  ### 4.8 [$ timescale] [# timescale]
+
+  [$ timescale] identifies the time coordinate used by a temporal value independently of its timezone, offset, calendar, or geographic context.
+
+  Initial recognized values use the exact uppercase spellings below:
+
+  | Value | Meaning |
+  | <-- | <-- |
+  | [$ "UTC"] | Coordinated Universal Time, the international reference timescale and basis of civil time in most countries |
+  | [$ "TAI"] | International Atomic Time, a continuous atomic timescale produced by the BIPM |
+  | [$ "UT1"] | Universal Time determined from the observed rotation of the Earth |
+  | [$ "TT"] | Terrestrial Time, the idealized terrestrial coordinate timescale used in astronomy and geodesy |
+  | [$ "GPS"] | GPS Time, the continuous atomic timescale used by the Global Positioning System |
+  |~ Recognized timescales
+
+  Example metadata on an ordinary datetime:
+
+  ~~~$ aeon
+  observation@{
+    timescale = "TT"
+  }:datetime = 2026-01-01T09:10:10
+  ~~~$
+
+  The same identifiers may be carried intrinsically as WTC temporal contexts:
+
+  ~~~$ aeon
+  coordinated:wtc = 2026-01-01T09:10:10&UTC
+  tai:wtc = 2026-01-01T09:10:10&TAI
+  earthRotation:wtc = 2026-01-01T09:10:10&UT1
+  terrestrial:wtc = 2026-01-01T09:10:10&TT
+  navigation:wtc = 2026-01-01T09:10:10&GPS
+  ~~~$
+
+  AEON Core already accepts and preserves these as ordinary named WTC references. This convention assigns them timescale meaning; it does not add literal syntax.
+
+  An intrinsic [$ Z] designator or [$ target = "utc"] declares UTC. An intrinsic recognized timescale reference also declares its named timescale. Supplemental [$ timescale] metadata MUST agree with any intrinsic or target declaration unless the consumer's [$ conflictAuthority] policy explicitly selects an authority. For example, [$ 2026-01-01T09:10:10Z&TAI] presents conflicting UTC and TAI inputs and MUST be rejected by the default conflict policy.
+
+  A timescale identifier alone does not select a particular laboratory realization, Earth-orientation data release, prediction series, or conversion algorithm. Authoritative conversion can require external BIPM, IERS, or navigation-system data and remains consumer policy. Consumers MUST NOT treat the scales as aliases or silently relabel a reading without performing a defined conversion.
+
+  ### 4.9 [$ apply] [# apply]
 
   [$ apply] lists target projection zones for display or transformation workflows.
 
@@ -273,7 +391,7 @@ body:prose = >`
   | <-- | <-- |
   | [$ "reject"] | Reject inconsistent inputs. |
   | [$ "temporal"] | Treat the temporal value, including an intrinsic offset or [$ Z], as authoritative. |
-  | [$ "reference"] | Treat the WTC temporal reference or convention metadata selected by the consumer as authoritative. |
+  | [$ "reference"] | Treat the WTC temporal context or convention metadata selected by the consumer as authoritative. |
   | [$ "preserve"] | Preserve the conflict without resolving it. |
   |~ Temporal conflict-authority values
 
@@ -286,7 +404,9 @@ body:prose = >`
   Consumers applying this convention SHOULD fail when:
 
   - timezone identifiers are unknown;
-  - ambiguous or invalid local times violate the selected policy;
+  - ambiguous or invalid zoned civil times violate the selected policy;
+  - timescale identifiers are unknown or unsupported;
+  - authoritative timescale resolution requires data the consumer does not have;
   - required metadata is missing;
   - calendar systems are unsupported;
   - temporal inputs conflict under [$ conflictAuthority = "reject"].
@@ -301,25 +421,28 @@ body:prose = >`
 
   [$ aeon.gp.temporal.v1] does not change those literal forms. It defines shared interpretation defaults around them.
 
-  A Core [$ wtc] value is a temporal value followed by [$ &] and a temporal reference. The reserved resolver-local reference is exactly lowercase [$ local]; case variants such as [$ Local] and [$ LOCAL] are invalid. Other named references retain their authored case.
+  A Core [$ wtc] value is a temporal value followed by [$ &] and a temporal context. The reserved resolver-local context is exactly lowercase [$ local]; case variants such as [$ Local] and [$ LOCAL] are invalid. Other named contexts retain their authored case.
 
-  WTC preserves three temporal-value forms:
+  WTC preserves three temporal-value forms independently of the reference after [$ &]:
 
-  - civil-anchored: no offset designator, for example [$ 2026-06-06T10:10:00&local];
+  - unqualified: no offset designator, for example [$ 2026-06-06T10:10:00&local] or [$ 2026-01-01T09:10:10&TAI];
   - offset-qualified: an explicit numeric offset, for example [$ 2026-06-06T10:10:00+10:00&Australia/Melbourne];
   - UTC-qualified: uppercase [$ Z], for example [$ 2026-06-06T00:10:00Z&Australia/Melbourne].
 
   Offset-qualified and UTC-qualified forms identify exact instants, but they remain lexically distinct and MUST NOT be rewritten merely because they resolve to the same instant.
 
-  A WTC temporal reference may be:
+  A WTC temporal context may be:
 
   - exact lowercase [$ local];
-  - a named reference such as [$ Australia/Melbourne];
-  - a geographic reference in [$ latitude/longitude] or [$ latitude/longitude/height] component order.
+  - a named timezone such as [$ Australia/Melbourne];
+  - a timescale recognized by this convention: [$ UTC], [$ TAI], [$ UT1], [$ TT], or [$ GPS];
+  - a geographic position in [$ latitude/longitude] or [$ latitude/longitude/height] component order.
+
+  Timescale contexts are lexically ordinary named contexts in AEON Core. Their interpretation is supplied by this convention and does not require parser branching or a new AES value kind.
 
   Unless an active trusted convention or profile overrides the interpretation, geographic components use WGS 84 latitude and longitude in decimal degrees and optional WGS 84 ellipsoidal height in metres. Core recognizes and preserves the component payload but does not validate coordinate ranges, perform geodetic resolution, or select a civil-time jurisdiction. Specialized coordinate reference systems, coordinate epochs, and vertical references require a separate spatial convention or profile.
 
-  Parsers, canonicalizers, and preservation-only processors MUST preserve both the authored temporal-value form and the temporal-reference payload. Consumers may interpret or resolve them only under an explicit policy.
+  Parsers, canonicalizers, and preservation-only processors MUST preserve both the authored temporal-value form and the temporal-context payload. Consumers may interpret or resolve them only under an explicit policy.
 
   Duration semantics remain outside AEON Core v1. When duration-like values are needed, they are schema-, profile-, convention-, or consumer-defined.
 
@@ -349,6 +472,10 @@ body:prose = >`
 
   - RFC 3339
   - RFC 9557
+  - BIPM CCTF Recommendation 3 (2017) definitions of TAI and UTC
+  - IAU 2000 Resolutions B1.8 and B1.9 definitions of UT1 and TT
+  - IERS Earth-orientation products and conventions
+  - IS-GPS-200 definition of GPS Time
   - Java [$ ZonedDateTime]
   - JavaScript [$ Temporal]
 

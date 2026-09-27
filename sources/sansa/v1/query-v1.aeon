@@ -629,7 +629,7 @@ body:prose = >`
   | date and date | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical ISO-style date payloads. |
   | time and time | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical time payloads. |
   | datetime and datetime | allowed | allowed | Uses the active temporal value-semantics profile; the minimum profile orders canonical datetime payloads. |
-  | wtc and wtc | allowed | allowed | Uses the active temporal value-semantics profile; temporal-reference authority may be required by richer profiles. |
+  | wtc and wtc | allowed | allowed | Uses the active temporal value-semantics profile; temporal-context authority may be required by richer profiles. |
   | explicit null | error | error | Use [$ isNull(...)] or [$ isNullReason(...)]. |
   | NaN | error | error | Use [$ isNaN(...)]. |
   | infinity and finite number | allowed | allowed | Infinity is not equal to finite numeric values and compares as a numeric bound when numeric comparison is supported. |

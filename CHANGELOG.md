@@ -17,7 +17,12 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
-- Defined the proposal-stage `aeon.value.radix.numeric.same-base.v1` profile for exact base-2-through-base-64 radix equality and ordering while preserving representation identity as the default and rejecting missing-base, mixed-base, and invalid-digit comparisons deterministically.
+- Documented UTC, TAI, UT1, TT, and GPS timescales in the temporal convention, added the independent `timescale` attribute, clarified civil/zoned-civil/offset/universal/geographic anchoring, and recorded that Core and AES already preserve timescale-labelled WTC values as ordinary named temporal contexts.
+
+- Defined profile-independent radix fractional scale as preserved representation
+  metadata via `radixScale(...)`, without changing representation or numeric equality.
+
+- Defined the proposal-stage `aeon.value.radix.numeric.same-base.v1` and `aeon.value.radix.numeric.cross-base.v1` profiles for exact base-2-through-base-64 radix equality and ordering while preserving representation identity as the default. The same-base profile rejects mixed bases; the cross-base profile compares finite values with independently resolved bases as exact rationals without host-number conversion.
 - Replaced the legacy formal Markdown corpus with 79 canonical AEON envelopes containing embedded
   &ND documents, moved authoritative contract resources under `resources/`, and made generated
   website and compatibility projections downstream artifacts rather than checked-in sources.

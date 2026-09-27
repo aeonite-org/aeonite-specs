@@ -326,6 +326,7 @@ body:prose = >`
   aeon.value.string.locale.fr.v1
   aeon.value.temporal.iso8601.v1
   aeon.value.radix.numeric.same-base.v1
+  aeon.value.radix.numeric.cross-base.v1
   ~~~$
 
   [$ aeon.value.default.v1] is the candidate minimum consumer profile. It composes the minimum equality, ordering, concrete-value, and provisional case-mapping behavior defined in this proposal with the portable codepoint string profile.
@@ -333,6 +334,8 @@ body:prose = >`
   [$ aeon.value.string.codepoint.v1] is the portable locale-independent string-ordering floor. Natural-sort profiles, such as [$ aeon.value.string.natural.ascii.v1], and locale-aware profiles, such as a French collation profile, must be named explicitly and remain profile-selected behavior rather than host-locale defaults.
 
   [$ aeon.value.radix.numeric.same-base.v1] gives [$ RadixLiteral] values exact numeric equality and ordering when both operands resolve to the same base. It is opt-in: the default profile continues to compare radix values by preserved representation identity and does not order them.
+
+  [$ aeon.value.radix.numeric.cross-base.v1] extends that exact numeric interpretation to operands with independently resolved bases. It remains opt-in and does not change either default representation identity or the fail-closed cross-base boundary of the same-base profile.
 
   Profile identifiers remain proposal-stage until promoted by focused contract documents. Implementations may expose local profile identifiers, but local identifiers should be clearly marked as non-portable.
 
@@ -366,6 +369,7 @@ body:prose = >`
       "aeon.value.string.locale.fr.v1"
       "aeon.value.temporal.iso8601.v1"
       "aeon.value.radix.numeric.same-base.v1"
+      "aeon.value.radix.numeric.cross-base.v1"
     ]
     stringOrder:object = {
       profile:string = "aeon.value.string.codepoint.v1"
@@ -412,7 +416,7 @@ body:prose = >`
   | [$ date] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | precision, calendar, conversion, and richer compatibility are profile-defined |
   | [$ time] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset handling, date-context rules, and richer compatibility are profile-defined |
   | [$ datetime] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset normalization, precision, instant semantics, and richer compatibility are profile-defined |
-  | [$ wtc] | temporal with temporal-reference data | literal recognition; exact preservation of civil-, offset-, or UTC-qualified temporal form and temporal-reference payload; same-family canonical temporal comparison | reference resolution, conflict authority, timezone database behavior, geographic resolution, and richer compatibility are consumer/profile-defined |
+  | [$ wtc] | temporal with temporal-context data | literal recognition; exact preservation of unqualified, offset-qualified, or UTC-qualified temporal form and temporal-context payload; same-family canonical temporal comparison | context resolution, conflict authority, timescale interpretation and conversion, timezone database behavior, geographic resolution, and richer compatibility are consumer/profile-defined |
   | [$ sep], [$ kadot] | separator-structured lexical scalar | canonical separator-payload identity; naïve separator order | IP address, semantic version, dimensions, product codes, delimited records, and similar meanings are profile-defined |
   | [$ sansa] | structured address expression | canonical address-expression identity; naïve address-expression order | resolution, selector expansion, canonical target identity, selector equivalence, namespace/domain meaning, authorization, and qualifier meaning belong to SANSA consumers |
   | [$ object], [$ obj], [$ o], [$ envelope] | structural container | member identity, Core object shape, and structural equality | ordering, envelope meaning, and member-value constraints are profile/schema-defined |
@@ -491,7 +495,9 @@ body:prose = >`
 
   Without explicit conversion or an active profile-defined compatibility rule, toggle and Boolean values are cross-type comparisons and fail closed.
 
-  ### 6.8 Same-Base Radix Numeric Profile [# same-base-radix-numeric-profile]
+  ### 6.8 Radix Numeric Profiles [# radix-numeric-profiles]
+
+  #### 6.8.1 Same-Base Radix Numeric Profile [# same-base-radix-numeric-profile]
 
   [$ aeon.value.radix.numeric.same-base.v1] is an explicit numeric interpretation of the radix family. It does not replace the preserved-representation behavior of [$ aeon.value.default.v1].
 
@@ -535,6 +541,56 @@ body:prose = >`
   This profile defines numeric value semantics, not decimal scale semantics. It does not decide whether [$ %19.9900] carries a business scale of four places, whether scale participates in schema validation, or how arithmetic rounds. Those remain separate schema, measurement, or arithmetic contracts.
 
   Consumers MUST apply their normal bounded-input policy to radix payloads. Implementations SHOULD support at least 65,536 payload characters or advertise a smaller deterministic limit. Exceeding the active limit MUST fail closed rather than fall back to an imprecise host representation.
+
+  #### 6.8.2 Cross-Base Radix Numeric Profile [# cross-base-radix-numeric-profile]
+
+  [$ aeon.value.radix.numeric.cross-base.v1] includes every same-base rule above and additionally permits exact numeric equality and ordering when both operands have independently resolved bases.
+
+  Both bases MUST resolve through the same trusted datatype or adapter metadata rules used by the same-base profile. An untyped operand MAY inherit its typed counterpart's base for that binary operation; this is same-base interpretation, not guessed cross-base conversion. If neither operand supplies a base, the operation MUST fail closed with [$ radix_base_required].
+
+  Each payload MUST be validated against its own resolved base before comparison. An invalid digit, sign, point, or separator placement MUST fail closed with [$ invalid_radix_value].
+
+  Cross-base comparison MUST be exact. For a parsed finite radix value, let [$ M] be the unsigned integer formed by concatenating its integer and fractional digits, let [$ b] be its base, and let [$ f] be its fractional digit count. Its unsigned mathematical value is:
+
+  ~~~$ text
+  M / b^f
+  ~~~$
+
+  Implementations MUST compare two such values by exact rational arithmetic. They MAY compare [$ M_left * b_right^f_right] with [$ M_right * b_left^f_left] or use an equivalent exact algorithm. They MUST NOT convert through binary floating point, a bounded host integer, or a rounded decimal approximation. Sign comparison and negative-order reversal follow the same-base rules.
+
+  Examples under [$ aeon.value.radix.numeric.cross-base.v1]:
+
+  | Left | Right | Result |
+  | <-- | <-- | <-- |
+  | base 2 [$ %10] | base 10 [$ %2] | equal |
+  | base 2 [$ %.1] | base 10 [$ %.5] | equal |
+  | base 3 [$ %.1] | base 10 [$ %.333] | greater |
+  | base 64 [$ %!] | base 10 [$ %63] | equal |
+  |~ Cross-base radix numeric examples
+
+  The cross-base profile does not normalize or rewrite either representation. It supplies a comparison result while preserving both original bases, payloads, and datatype claims.
+
+  Cross-base arithmetic may require more work than same-base digit comparison. Consumers MUST apply deterministic input bounds before constructing exact intermediate values, and implementations MUST fail closed when an active resource limit is exceeded. Implementations SHOULD support the same advertised payload limit as their same-base profile when their exact arithmetic strategy can do so safely.
+
+  #### 6.8.3 Radix Fractional Scale [# radix-fractional-scale]
+
+  Radix fractional scale is representation metadata. The [$ radixScale(...)] operation returns the number of represented radix digits after the radix point, excluding visual [$ _] separators. It applies to the complete radix family and does not require a numeric comparison profile.
+
+  Examples:
+
+  | Value | [$ radixScale(...)] |
+  | <-- | <-- |
+  | [$ %19.9900] | 4 |
+  | [$ %19.99] | 2 |
+  | [$ %101] | 0 |
+  | [$ %-.0_0] | 2 |
+  |~ Radix fractional scale examples
+
+  The operation MUST preserve trailing fractional zeroes when counting. Leading integer zeroes, signs, and the radix point itself do not contribute to scale. The payload MUST satisfy the Core radix grammar, and, when a trusted base is available, every digit MUST be valid for that base. Invalid payloads fail closed with [$ invalid_radix_value]. Applying the operation to a non-radix value fails closed with [$ radix_required].
+
+  Fractional scale does not alter equality or ordering. Therefore [$ %19.9900] and [$ %19.99] remain representation-distinct under [$ aeon.value.default.v1], compare numerically equal under an applicable radix numeric profile, and report different fractional scales under [$ radixScale(...)].
+
+  Scale is counted in digits of the value's own base. Equal scale counts across different bases do not imply equal numeric quantum: base-2 [$ %.01] and base-10 [$ %.01] both have scale 2, but their least represented places are [$ 2^-2] and [$ 10^-2] respectively. Decimal business rules MAY use base-10 radix scale as an input, but schema constraints, arithmetic precision, rounding, and significant digits remain separate contracts.
 
   ### 6.9 Hex Semantics [# hex-semantics]
 
@@ -1047,7 +1103,7 @@ body:prose = >`
   - [$ datetime];
   - [$ wtc].
 
-  Aeonic Semantic Language defines a conservative same-family temporal comparison surface for canonical AEON temporal payloads. Richer temporal ordering, validation, conversion, temporal-reference behavior, and mutation compatibility remain profile-defined.
+  Aeonic Semantic Language defines a conservative same-family temporal comparison surface for canonical AEON temporal payloads. Richer temporal ordering, validation, conversion, temporal-context behavior, and mutation compatibility remain profile-defined.
 
   Candidate identifier:
 
@@ -1063,11 +1119,11 @@ body:prose = >`
   - normalization before comparison;
   - relationship to applicable temporal conventions such as [$ aeon.gp.temporal.v1];
   - timezone offset behavior;
-  - temporal-reference authority and timezone database version, when applicable;
+  - temporal-context authority and timezone database version, when applicable;
   - precision and fractional-second behavior;
   - diagnostics for unsupported or ambiguous temporal values.
 
-  Core WTC representation supplies three independent anchor forms: civil-anchored values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with uppercase [$ Z]. The temporal reference is independent of the anchor and may be exact lowercase [$ local], a named reference, or a geographic [$ latitude/longitude] or [$ latitude/longitude/height] reference. Case variants of the reserved [$ local] spelling are invalid; authored case in other named references is preserved.
+  Core WTC representation supplies three temporal-value forms: unqualified values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with uppercase [$ Z]. The temporal context is independent of that form and may be exact lowercase [$ local], a named timezone, a timescale, or a geographic [$ latitude/longitude] or [$ latitude/longitude/height] position. [$ &local] selects resolver-local rules while a named timezone selects an explicit ruleset; either may supply context for zoned civil time. Only successful resolution under an ambiguity policy produces a zoned instant. Strings such as [$ UTC], [$ TAI], [$ UT1], [$ TT], and [$ GPS] receive timescale meaning under an adopted convention such as [$ aeon.gp.temporal.v1], not Core or minimum Aeonic Semantic Language. Case variants of the reserved [$ local] spelling are invalid; authored case in other named contexts is preserved.
 
   The default geographic interpretation is WGS 84 latitude and longitude in decimal degrees with optional ellipsoidal height in metres. Core and minimum Aeonic Semantic Language preserve that representation without validating coordinate ranges, resolving a jurisdiction, or performing geodetic transformation.
 
@@ -1080,7 +1136,7 @@ body:prose = >`
   | date and date | allowed | allowed | Canonical date payload comparison. |
   | time and time | allowed | allowed | Canonical time payload comparison; richer profiles may define offset/date-context behavior. |
   | datetime and datetime | allowed | allowed | Canonical datetime payload comparison; richer profiles may define instant normalization. |
-  | wtc and wtc | allowed | allowed | Canonical preserved WTC payload comparison; resolution requires consumer-owned temporal-reference and conflict policy. |
+  | wtc and wtc | allowed | allowed | Canonical preserved WTC payload comparison; resolution requires consumer-owned temporal-context and conflict policy. |
   | temporal and string | error | error | No implicit string comparison. |
   | mixed temporal categories | error | error | Allowed only when a profile explicitly defines cross-category comparison. |
   |~ Temporal comparison behavior
@@ -1097,7 +1153,7 @@ body:prose = >`
   - whether conversion is allowed;
   - which normalization, if any, is applied before storage;
   - how null, absence values, and Missing interact with a write target;
-  - how temporal precision, civil/offset/UTC WTC forms, temporal references, and named zones are preserved or normalized;
+  - how temporal precision, unqualified/offset/UTC WTC forms, temporal contexts, timescales, and named zones are preserved, resolved, converted, or normalized;
   - whether structural writes replace, merge, insert, delete, or reindex;
   - how tuple arity, object member constraints, list element constraints, node child constraints, and node attribute constraints are enforced.
 
@@ -1146,6 +1202,7 @@ body:prose = >`
   aeonite-cts/cts/value-semantics/v1/value-semantics-cts.v1.next.json
   aeonite-cts/cts/value-semantics/v1/suites/01-minimum-consumer-contract.json
   aeonite-cts/cts/value-semantics/v1/suites/02-radix-numeric-same-base.json
+  aeonite-cts/cts/value-semantics/v1/suites/03-radix-numeric-cross-base.json
   ~~~$
 
   Shared CTS cases can then be reused by consumers:
