@@ -166,8 +166,8 @@ body:prose = >`
 
   | Form | Recommended name | Preserved anchor | Effect of changed timezone rules |
   | <-- | <-- | <-- | <-- |
-  | [$ 2027-01-31T23:59:59&Australia/Melbourne] | zone-anchored zoned civil time | Melbourne zone identity and authored civil clock fields | Keep Melbourne civil time; the derived instant resolution may change, become ambiguous, or become invalid. |
-  | [$ 2027-01-31T23:59:59Z&Australia/Melbourne] | instant-anchored zoned instant | UTC instant and Melbourne context | Keep the global instant; the projected Melbourne civil time may change. |
+  | [$ 2027-01-31T23:59:59&Australia/Melbourne] | zone-anchored zoned civil time | Melbourne zone identity and authored civil clock fields | Keep Melbourne civil time; authority assessment, mapping cardinality, or derived candidates may change. |
+  | [$ 2027-01-31T23:59:59Z&Australia/Melbourne] | instant-anchored zoned instant claim | authored UTC coordinate and Melbourne context | Keep the UTC instant anchor; under the same authority and clock-realization model, the projected Melbourne civil time may change without changing the resulting instant. |
   | [$ 2027-01-31T23:59:59+11:00&Australia/Melbourne] | dual-anchored zoned-instant claim | Exact instant, authored offset, civil fields, and Melbourne context | If later rules disagree with the authored offset or civil projection, expose a conflict rather than silently changing an anchor. |
   |~ Composed temporal anchoring examples
 
@@ -188,6 +188,8 @@ body:prose = >`
 
   [$ Z] and [$ +00:00] may resolve to the same instant, but they remain distinct authored representations and provenance claims. [$ -00:00] does not supply a known zero offset and does not by itself identify an instant. A consumer MUST preserve the minus sign and MUST NOT normalize [$ -00:00] to [$ Z] or [$ +00:00]. A profile or Tonic unable to preserve the unknown-offset distinction MUST reject the value.
 
+  An authored instant anchor is not an authority-backed resolved instant. Lexical [$ Z] asserts a UTC anchor but does not prove that the source clock was aligned exactly with unsmeared UTC. A confirmed leap second may also be projected through a known numeric offset or named zone, so the same instant can carry second [$ 60] at a local hour, minute, or date other than UTC [$ 23:59] on the announced UTC date.
+
   A named-zone context does not override [$ -00:00]. For example, [$ 2026-01-01T09:10:10-00:00&Australia/Melbourne] preserves both an unknown-offset claim and a Melbourne-zone claim. A downstream consumer may validate the civil fields against selected Melbourne rules, but it MUST NOT infer and substitute a known numeric offset or a particular daylight-saving branch merely from the zone. A result requiring one exact offset or instant remains unresolved unless explicit trusted policy supplies and records the missing knowledge.
 
   ### 2.4 Named-Place Contexts [# named-place-contexts]
@@ -205,9 +207,29 @@ body:prose = >`
 
   A place context does not inherently select a timezone, coordinate, jurisdiction, or instant. AEON Core, AES, AEOS, temporal profiles, schemas, and convention validators MUST NOT attempt to validate that the place exists or assign temporal meaning to it. They validate and preserve only the WTC representation and the convention-defined [$ +/] category.
 
-  Place identity and place-to-time association belong to the downstream domain consumer. For an unqualified temporal value, that consumer may use its own registry, effective-date rules, coordinates, or application policy to associate the place with local-time rules. Until then, the value remains civil fields anchored to an unresolved place. A value already carrying [$ Z] or a known numeric offset is already instant-anchored, so the place remains additional context and no place-to-time resolution is required to identify the instant.
+  Place identity and place-to-time association belong to the downstream domain consumer. For an unqualified temporal value, that consumer may use its own registry, effective-date rules, coordinates, or application policy to associate the place with local-time rules. Until then, the value remains civil fields anchored to an unresolved place. A value already carrying [$ Z] or a known numeric offset is already instant-anchored, so the place remains additional context and no place-to-time resolution is required to establish that anchor.
 
-  ### 2.5 Reduced Precision and Temporal Relations [# reduced-precision-and-relations]
+  ### 2.5 WTC Context Classification Precedence [# wtc-context-classification]
+
+  A convention-aware classifier applies the following precedence without
+  guessing from a slash-shaped name:
+
+  1. exact lowercase [$ local];
+  2. the exact uppercase recognized timescales [$ UTC], [$ TAI], [$ UT1],
+     [$ TT], and [$ GPS];
+  3. the exact [$ +/] named-place discriminator;
+  4. a complete geographic component form;
+  5. an exact timezone identifier confirmed by the trusted timezone authority;
+  6. another explicitly registered convention context;
+  7. [$ unresolved].
+
+  A payload such as [$ Area/Location] is not proven to be a timezone merely
+  because it resembles an IANA name. If the selected timezone authority does
+  not recognize it, classification remains [$ unresolved]. A classifier MUST
+  retain the original payload and MUST NOT fall through to a more convenient
+  category after an authority lookup fails.
+
+  ### 2.6 Reduced Precision and Temporal Relations [# reduced-precision-and-relations]
 
   Omitted minute or second fields are unresolved fields, not implicit zeroes. A reduced-precision value denotes the set of fully specified temporal coordinates compatible with its authored fields. Within an otherwise selected UTC date:
 
@@ -220,9 +242,24 @@ body:prose = >`
 
   When seconds are explicitly present, an omitted fractional part means an exact zero fractional coefficient. This preserves the existing relationship in which [$ 10:30:00.34Z] is 340 milliseconds after [$ 10:30:00Z]. Measurement uncertainty is separate metadata and is not inferred from omitted fields or fractional digit count.
 
-  Temporal equality requires identical resolved completion sets; mere overlap is not equality. A precision-aware resolver should distinguish at least [$ equal], [$ before], [$ after], [$ contains], [$ containedBy], [$ overlaps], and [$ incomparable]. Consequently, [$ 10:Z] contains [$ 10:30Z], but the values are not equal and neither is temporally before or after the other.
+  Temporal semantic equality requires identical completion sets in the selected comparison domain; mere overlap is not equality. It is separate from representation equality and resolved-result equality. Thus differently scaled spellings such as [$ .34] and [$ .340] can be temporally semantically equal while remaining representation-distinct. A precision-aware resolver should distinguish at least [$ equal], [$ before], [$ after], [$ contains], [$ containedBy], [$ overlaps], and [$ incomparable]. Consequently, [$ 10:Z] contains [$ 10:30Z], but the values are not equal and neither is temporally before or after the other. SANSA queries, indexes, and profiles must identify which equality domain they use.
 
   Deterministic serialization or index order is separate from temporal ordering. A profile may select broader-first, narrower-first, lower-bound-first, or canonical-payload order, but it MUST identify that policy and MUST NOT present containment as chronology.
+
+  ### 2.7 Admission, Authority Assessment, and Mapping [# admission-authority-and-mapping]
+
+  Temporal processing reports separate dimensions:
+
+  | Dimension | Outcomes |
+  | <-- | <-- |
+  | profile status | [$ admitted], [$ rejected] |
+  | authority assessment | [$ confirmed], [$ contradicted], [$ unresolved] |
+  | mapping cardinality | [$ zero], [$ one], [$ many], [$ unresolved] |
+  |~ Temporal processing dimensions
+
+  A timezone overlap can be admitted and confirmed while mapping to many candidates. A timezone gap can be admitted and confirmed while mapping to zero. A future leap claim can be admitted while its authority assessment and mapping remain unresolved. Profile rejection occurs before authority-backed mapping.
+
+  Selection or transformation follows mapping. [$ earlier] and [$ later] select actual candidates after a [$ many] result. A [$ zero] result has no candidate to select and requires a separately declared gap-materialization policy if the consumer does not preserve or reject it.
 
   ---
 
@@ -352,18 +389,32 @@ body:prose = >`
 
   Values SHOULD use IANA Time Zone Database release labels when the producer can identify the source rule set. This field improves reproducibility when timezone rules change after the document is produced.
 
-  ### 4.6 [$ disambiguation] [# disambiguation]
+  ### 4.6 [$ disambiguation] and [$ gapPolicy] [# disambiguation]
 
-  [$ disambiguation] states how ambiguous or invalid zoned civil times should be handled.
+  [$ disambiguation] states how a [$ many]-candidate zoned civil mapping should be handled.
 
   Allowed values:
 
   | Value | Meaning |
   | <-- | <-- |
-  | [$ "earlier"] | Choose the earlier valid instant |
-  | [$ "later"] | Choose the later valid instant |
-  | [$ "reject"] | Fail on ambiguous or invalid zoned civil time |
+  | [$ "earlier"] | Choose the earlier existing candidate |
+  | [$ "later"] | Choose the later existing candidate |
+  | [$ "reject"] | Reject selection from the ambiguous mapping |
+  | [$ "preserve"] | Preserve the candidates without selecting one |
   |~ Temporal disambiguation values
+
+  [$ gapPolicy] states what a materializer may do after mapping returns [$ zero] candidates:
+
+  | Value | Meaning |
+  | <-- | <-- |
+  | [$ "reject"] | Refuse to materialize the gap |
+  | [$ "null"] | Produce a reason-bearing typed null |
+  | [$ "previousValid"] | Explicitly transform to the nearest valid target coordinate before the gap |
+  | [$ "nextValid"] | Explicitly transform to the nearest valid target coordinate after the gap |
+  | [$ "preserveClaim"] | Preserve the authored claim without manufacturing a coordinate |
+  |~ Temporal gap-materialization values
+
+  Gap materialization is not resolution of the authored claim. [$ previousValid] and [$ nextValid] produce different coordinates and must be reported as explicit transformations. Duration-preserving shifts across a gap, if later admitted, require distinct policy names and are not implied by these boundary-selection policies.
 
   Example:
 
@@ -373,6 +424,16 @@ body:prose = >`
     zone = "Australia/Melbourne"
     disambiguation = "reject"
   }:datetime = 2025-04-06T02:30:00
+  ~~~$
+
+  A gap policy is separate:
+
+  ~~~$ aeon
+  skipped@{
+    target = "zone"
+    zone = "Australia/Melbourne"
+    gapPolicy = "preserveClaim"
+  }:datetime = 2025-10-05T02:30:00
   ~~~$
 
   ### 4.7 [$ offset] [# offset]
@@ -466,14 +527,44 @@ body:prose = >`
   Rules:
 
   - [$ smearPolicy] is REQUIRED when [$ clockModel = "smear"] and exact conversion is requested;
-  - an identifier SHOULD be stable and versioned when the provider changes algorithm, window, sign handling, or other conversion-relevant behavior;
-  - the identifier [$ "google"] records provider-family provenance but may require additional trusted version or interval data for exact conversion;
+  - the identifier uses a stable namespace and algorithm name, for example [$ google:linear-24h];
+  - algorithm version, adjustment sign, and effective interval are separate authority fields and MUST NOT be hidden inside an unparseable display label;
+  - a provider-family identifier such as [$ "google"] alone is incomplete for exact conversion;
   - document-provided policy text is a claim, not trusted executable conversion authority;
   - a consumer that lacks the named policy or required interval data MUST preserve the value as unresolved or reject exact conversion.
 
-  Source and destination policy are deliberately separate. These attributes are authored claims about the source value. They remain opaque to Core and do not grant execution authority. A downstream Tonic or materializer explicitly selects trusted source configuration, authority data, and destination clock policy. A leap-aware Tonic exporting to a non-leap-aware target, or handling an authority-declared negative leap gap, selects [$ reject], [$ clampDown], [$ clampUp], or [$ smear] under the Tonic governance rules. Import and export policies are declared separately. When source and destination models differ, the Tonic MUST perform the selected defined transformation, explicitly preserve semantic uncertainty or loss, or reject the mapping.
+  Source and destination policy are deliberately separate. These attributes are authored claims about the source value. They remain opaque to Core and do not grant execution authority. A downstream Tonic or materializer explicitly selects trusted source configuration, authority data, and destination clock policy. Positive-leap export uses a separately declared policy such as [$ reject], [$ foldPrevious], [$ foldNext], [$ clampDown], [$ clampUp], or [$ smear], with [$ preserve] available for a leap-aware target. An authority-declared negative leap gap first maps to [$ zero] candidates; subsequent materialization uses [$ reject], [$ null], [$ previousValid], [$ nextValid], or [$ preserveClaim]. Import and export policies are declared separately. When source and destination models differ, the Tonic MUST perform the selected defined transformation, explicitly preserve semantic uncertainty or loss, or reject the mapping.
 
-  ### 4.11 [$ apply] [# apply]
+  ### 4.11 Authority References [# authority-references]
+
+  Trusted resolver configuration and recorded resolution provenance use a
+  common authority-reference shape:
+
+  ~~~$ aeon
+  authority = {
+    kind = "tzdb"
+    id = "iana:tzdb"
+    version = "2025b"
+    retrievedAt:datetime = 2026-09-28T00:00:00Z
+    effectiveFrom:date = 2025-01-01
+    effectiveThrough:date = 2025-12-31
+  }
+  ~~~$
+
+  [$ kind] initially admits [$ leapSeconds], [$ tzdb],
+  [$ clockRealization], [$ calendar], [$ coordinates], and [$ smear].
+  [$ id] names the authority or algorithm family; [$ version] selects an exact
+  data or algorithm release; [$ retrievedAt] records acquisition provenance;
+  and the effective bounds state coverage when known. UT1 and observational
+  calendar authorities use the same shape even when their version vocabulary
+  is domain-specific. Missing required authority fields produce an unresolved
+  assessment, not an inferred current version.
+
+  Document-carried authority objects are provenance claims. Only a trusted
+  consumer registry or host configuration can authorize their contents for
+  resolution.
+
+  ### 4.12 [$ apply] [# apply]
 
   [$ apply] lists target projection zones for display or transformation workflows.
 
@@ -558,7 +649,8 @@ body:prose = >`
 
   - timezone identifiers are unknown;
   - a downstream domain consumer is asked to produce an authoritative local-time result for an unknown or ambiguous [$ &+/...] place identifier;
-  - ambiguous or invalid zoned civil times violate the selected policy;
+  - an ambiguous [$ many]-candidate zoned civil mapping violates the selected disambiguation policy;
+  - a [$ zero]-candidate gap is transformed without an admitted and visible [$ gapPolicy];
   - timescale identifiers are unknown or unsupported;
   - authoritative timescale resolution requires data the consumer does not have;
   - exact conversion of a smeared value requires an unknown smear policy or unavailable interval data;
@@ -579,7 +671,7 @@ body:prose = >`
 
   [$ aeon.gp.temporal.v1] does not change those literal forms. It defines shared interpretation defaults around them.
 
-  The general-purpose admitted domain restricts the seconds field to [$ 00-59]. Core v1 currently enforces that range during recognition. The planned [$ 0.14.0] Core expansion to structural second [$ 60] requires the corresponding general-purpose schema artifact to retain [$ 00-59] through an executable temporal-field constraint and stable diagnostic before release. A specialized leap-aware profile and schema may admit [$ 60] under separately declared authority and resolution requirements.
+  The general-purpose admitted domain restricts the seconds field to [$ 00-59]. The draft [$ 0.14.0] implementation expands Core structural recognition to second [$ 60], while the general-purpose schema artifact retains [$ 00-59] through the executable [$ temporal_max_second] constraint and [$ temporal_field_constraint_mismatch] diagnostic. Its [$ temporal_context_policy] constraint also rejects known UTC-relative anchors combined with recognized non-UTC timescales. A specialized leap-aware profile and schema may admit [$ 60] under separately declared authority and resolution requirements.
 
   A Core [$ wtc] value is a temporal value followed by [$ &] and a temporal context. The reserved resolver-local context is exactly lowercase [$ local]; case variants such as [$ Local] and [$ LOCAL] are invalid. Other named contexts retain their authored case.
 
@@ -605,7 +697,7 @@ body:prose = >`
 
   Named-place contexts are also lexically ordinary WTC contexts in Core. The [$ +/] prefix is a convention-defined semantic discriminator and does not require a new Core token or AES value kind. Processors applying this convention MUST preserve it exactly.
 
-  Unless an active trusted convention or profile overrides the interpretation, geographic components use WGS 84 latitude and longitude in decimal degrees and optional WGS 84 ellipsoidal height in metres. Core recognizes and preserves the component payload but does not validate coordinate ranges, perform geodetic resolution, or select a civil-time jurisdiction. Specialized coordinate reference systems, coordinate epochs, and vertical references require a separate spatial convention or profile.
+  Core preserves geographic component payloads without supplying a coordinate reference system. When this convention is actively adopted, and unless a stricter trusted profile overrides the interpretation, the convention explicitly interprets those components as WGS 84 latitude and longitude in decimal degrees and optional WGS 84 ellipsoidal height in metres. Core does not validate coordinate ranges, perform geodetic resolution, or select a civil-time jurisdiction. Precision-sensitive uses may require explicit coordinate reference system, datum, coordinate epoch, and vertical-reference metadata through a separate spatial convention or profile.
 
   Parsers, canonicalizers, and preservation-only processors MUST preserve both the authored temporal-value form and the temporal-context payload, including the distinction between [$ Z], [$ +00:00], and [$ -00:00]. Consumers may interpret or resolve them only under an explicit policy.
 

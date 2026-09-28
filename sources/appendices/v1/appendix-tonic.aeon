@@ -139,21 +139,28 @@ body:prose = >`
   object model unless it has applied an appropriate host-object safety strategy
   for that target.
 
-  ### 3.3 Leap-Second Materialization Policy [# leap-second-materialization-policy]
+  ### 3.3 Leap Materialization and Gap Policies [# leap-second-materialization-policy]
 
-  A leap-aware Tonic materializing into a non-leap-aware runtime, or handling an authority-declared negative leap gap, MUST declare one of these policies:
+  The expanded policy vocabulary in this subsection is a draft [$ 0.14.0] addition pending final specification review.
+
+  A leap-aware Tonic materializing a positive leap second into a non-leap-aware runtime MUST declare one of these export policies. [$ preserve] is available when the target itself is leap-aware:
 
   | Policy | Required behavior |
   | <-- | <-- |
+  | [$ preserve] | Retain the leap-aware value when the target supports it |
   | [$ reject] | Fail rather than materialize a leap-second instant in the target |
-  | [$ clampDown] | Map to the greatest target-representable value before the leap boundary or invalid civil coordinate |
-  | [$ clampUp] | Map to the least target-representable value after the leap boundary or invalid civil coordinate |
+  | [$ foldPrevious] | Map second [$ 60] onto second [$ 59] while retaining the fractional position, colliding with the previous ordinary second |
+  | [$ foldNext] | Map second [$ 60] onto the following ordinary second while retaining the fractional position, colliding with that second |
+  | [$ clampDown] | Map the entire leap interval to the greatest target-representable value before the leap boundary |
+  | [$ clampUp] | Map the entire leap interval to the first target-representable value after the leap boundary |
   | [$ smear] | Transform through a named and sufficiently specified smear algorithm and interval |
   |~ Leap-second export policies
 
-  [$ reject] is lossless and fail-closed. Both clamp directions are explicitly lossy, depend on target precision, and may collapse multiple source claims into one target value. The direction MUST be named; a bare [$ clamp] policy is insufficient. [$ smear] changes the coordinate during the smear interval and requires policy identity and conversion data.
+  [$ reject] is lossless and fail-closed. Fold and clamp policies are explicitly lossy and may collapse multiple source claims into one target value. Both clamp directions depend on target precision, and a bare [$ clamp] policy is insufficient. [$ smear] changes the coordinate during the smear interval and requires policy identity and conversion data.
 
-  Import and export policies MUST be declared separately. A known smear can be inverted only when the algorithm, interval, direction, and required authority data are available. A clamped value is not uniquely invertible; source provenance can expose the loss but cannot reconstruct an exact position within the leap second. A Tonic MUST preserve that result as ambiguous or unresolved, or reject it, rather than invent an instant.
+  An authority-declared negative leap gap first maps to [$ zero] candidates and then uses a separate materialization policy family: [$ reject], [$ null], [$ previousValid], [$ nextValid], or [$ preserveClaim]. [$ previousValid] and [$ nextValid] explicitly transform to the nearest valid target coordinate on the corresponding side of the missing interval. [$ null] returns a reason-bearing typed null. [$ preserveClaim] retains the unresolved authored fields. These transformations are distinct from [$ earlier] and [$ later], which select existing candidates after an ambiguous [$ many] mapping. A negative smear belongs to source or destination clock realization rather than resolution of an already-authored missing coordinate.
+
+  Import and export policies MUST be declared separately. A known smear can be inverted only when the algorithm, interval, direction, and required authority data are available. A folded or clamped value is not uniquely invertible; source provenance can expose the loss but cannot necessarily reconstruct an exact position within the leap second. A Tonic MUST preserve that result as ambiguous or unresolved, or reject it, rather than invent an instant.
 
   Rejecting literal second [$ 60] at a schema boundary does not prove that accepted [$ 00-59] timestamps are aligned with unsmeared UTC. Source values may originate from POSIX or smeared clocks while carrying nominal UTC fields. [$ clockModel] and [$ smearPolicy] metadata are authored claims. Tonics SHOULD preserve and expose them when present, but MUST defer conversion to explicit trusted source, authority, and destination configuration rather than treating document metadata as executable authority.
 

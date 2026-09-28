@@ -1,0 +1,15 @@
+profile_id = "aeon.test.temporal.calendar-precision.v1"
+profile_version = "0.1.0"
+core_id = "aeon.core.v1"
+schema_id = "aeon.test.temporal.calendar-precision.schema.v1"
+description = "Conformance probe for calendar objects, redundant fields, reduced precision, and completion-set comparison. Not a default production policy."
+test_only = true
+temporal = {
+  calendar_datatypes = ["calendarDate", "calendarDateTime"]
+  required_common_fields = ["calendar", "year", "monthCode", "day"]
+  redundant_fields_must_agree = true
+  observational_calendars_without_authority = "unresolved"
+  relations = ["equal", "before", "after", "contains", "containedBy", "overlaps", "incomparable"]
+  representation_equality_distinct = true
+  canonical_order_is_not_chronology = true
+}

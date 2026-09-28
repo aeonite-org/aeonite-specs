@@ -1,0 +1,16 @@
+profile_id = "aeon.test.temporal.leap-aware.v1"
+profile_version = "0.1.0"
+core_id = "aeon.core.v1"
+schema_id = "aeon.test.temporal.leap-aware.schema.v1"
+description = "Conformance probe for authority-backed leap claims, clock realization, and explicit lossy materialization. Not a default production policy."
+test_only = true
+temporal = {
+  admitted_timescales = ["UTC", "TAI", "UT1", "TT", "GPS"]
+  leap_authority = { kind = "leapSeconds", id = "ietf:leap-seconds.list", version = "2017-01-01-fixture", retrievedAt:datetime = 2026-09-28T00:00:00Z, effectiveFrom:date = 1972-01-01, effectiveThrough:date = 2026-12-31 }
+  smear_authority = { kind = "smear", id = "google:leap-smear", algorithm = "google:linear-24h", version = "linear-24h-fixture", retrievedAt:datetime = 2026-09-28T00:00:00Z, effectiveFrom:datetime = 2016-12-31T12:00:00Z, effectiveThrough:datetime = 2017-01-01T12:00:00Z }
+  uncovered_claims = "unresolved"
+  positive_leap_policies = ["preserve", "reject", "foldPrevious", "foldNext", "clampDown", "clampUp", "smear"]
+  negative_gap_policies = ["reject", "null", "previousValid", "nextValid", "preserveClaim"]
+  source_clock_required_for_confirmation = true
+  destination_clock_required_for_materialization = true
+}

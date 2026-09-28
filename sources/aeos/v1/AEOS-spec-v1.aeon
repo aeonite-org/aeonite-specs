@@ -294,6 +294,10 @@ body:prose = >`
     readonly min_length?: number;
     readonly max_length?: number;
     readonly pattern?: string;
+    readonly temporal_max_second?: number;
+    readonly temporal_min_year?: number;
+    readonly temporal_max_year?: number;
+    readonly temporal_context_policy?: string;
     readonly datatype?: string;
     readonly attributes?: Readonly<Record<string, ConstraintsV1>>;
     readonly closed_attributes?: boolean;
@@ -652,6 +656,39 @@ body:prose = >`
 
   - [$ string_length_violation]
   - [$ pattern_mismatch]
+
+  ### 5.14a Temporal Field Constraints [# temporal-field-constraints]
+
+  This subsection is a draft [$ 0.14.0] addition. It remains subject to final specification review even though implementations and conformance fixtures are available.
+
+  Temporal field constraints operate on preserved temporal literal structure:
+
+  - [$ temporal_max_second] is an integer from [$ 0] through [$ 60];
+  - [$ temporal_min_year] and [$ temporal_max_year] are integers from [$ 1] through [$ 9999];
+  - when both year bounds are present, the minimum MUST NOT exceed the maximum;
+  - a seconds constraint applies to [$ TimeLiteral], [$ DateTimeLiteral], and [$ WTCDateTimeLiteral];
+  - year constraints apply to [$ DateLiteral], [$ DateTimeLiteral], and [$ WTCDateTimeLiteral];
+  - an absent reduced-precision field is not filled with zero and therefore does not violate a bound on that field;
+  - a nullable [$ NullLiteral] bypasses the temporal field check in the same way as other nullable form checks.
+
+  Invalid constraint declarations fail schema validation with [$ unknown_constraint_key]. Applying a temporal constraint to an incompatible literal kind fails with [$ constraint_inapplicable]. A represented field outside the admitted range fails with [$ temporal_field_constraint_mismatch].
+
+  The general-purpose schema uses these constraints to reject second [$ 60] without narrowing Core's structural grammar.
+
+  The optional string constraint [$ temporal_context_policy] applies only to
+  [$ WTCDateTimeLiteral]. Its first portable value is
+  [$ aeon.gp.temporal.v1]. Under that policy, an explicit [$ Z] or known
+  numeric offset conflicts with the recognized non-UTC timescale contexts
+  [$ TAI], [$ UT1], [$ TT], and [$ GPS]. Such a value fails with
+  [$ temporal_context_conflict]. [$ -00:00] is an unknown-offset claim rather
+  than a known UTC-relative anchor and therefore does not trigger this
+  conflict. Unqualified civil fields with a timescale context are also left for
+  downstream authority-backed interpretation.
+
+  Applying [$ temporal_context_policy] to a non-WTC literal fails with
+  [$ constraint_inapplicable]. An unknown policy identifier fails schema
+  validation with [$ unknown_constraint_key]. A document cannot define or
+  activate an executable policy merely by inventing a policy string.
 
   ### 5.15 AEOS Portable Pattern Profile [# aeos-portable-pattern-profile]
 

@@ -515,7 +515,7 @@ body:prose = >`
 
   - [$ decimal] resolves to base 10;
   - the reserved aliases [$ radix2], [$ radix6], [$ radix8], and [$ radix12] resolve to their named bases;
-  - [$ radix\[n\]] resolves to [$ n] when [$ n] is an integral value from [$ 2] through [$ 64];
+  - [$ radix\\[n\\]] resolves to [$ n] when [$ n] is an integral value from [$ 2] through [$ 64];
   - a consumer MAY supply equivalent trusted base metadata from an AES adapter or schema;
   - an untyped radix operand MAY inherit the base of its typed counterpart for that binary operation;
   - if neither operand has a resolved base, the operation MUST fail closed with [$ radix_base_required];

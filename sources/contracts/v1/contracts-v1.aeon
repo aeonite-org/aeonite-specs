@@ -284,6 +284,7 @@ body:prose = >`
   - transitional aliases are not allowed in v1.0.0
   - if [$ world] is omitted, AEOS treats the schema as [$ open]
   - the published [$ aeon.gp.schema.v1] artifact declares [$ world = "open"] explicitly so the GP baseline policy is visible in the artifact itself
+  - [$ aeon.test.temporal.leap-aware.v1], [$ aeon.test.temporal.tz-transition.v1], and [$ aeon.test.temporal.calendar-precision.v1] are published test-only profiles with paired [$ .schema.v1] identifiers; they are conformance probes and MUST NOT be inferred as default production policy
 
   Schema [$ rules] use the AEOS [$ SchemaRule] shape. Each rule identifies targets
   with exactly one [$ path] or [$ selector] and a [$ constraints] object. Programmatic
@@ -313,10 +314,14 @@ body:prose = >`
     float = { type = "FloatLiteral" }
     float32 = { type = "FloatLiteral" }
     float64 = { type = "FloatLiteral" }
+    date = { type = "DateLiteral", temporal_min_year = 1, temporal_max_year = 9999 }
+    time = { type = "TimeLiteral", temporal_max_second = 59 }
+    datetime = { type = "DateTimeLiteral", temporal_max_second = 59, temporal_min_year = 1, temporal_max_year = 9999 }
+    wtc = { type = "WTCDateTimeLiteral", temporal_max_second = 59, temporal_min_year = 1, temporal_max_year = 9999, temporal_context_policy = "aeon.gp.temporal.v1" }
   }
   ~~~$
 
-  This artifact is the normative GP semantic layer for the reserved numeric datatype labels. Implementations MUST NOT claim GP schema support unless they honor these datatype rules substantively.
+  The temporal additions shown here are the draft [$ 0.14.0] candidate for the normative GP semantic layer. They retain the general-purpose [$ 00-59] seconds domain while Core can preserve a structurally plausible second [$ 60]. Implementations MUST NOT claim the candidate GP temporal behavior unless they honor these datatype rules substantively.
 
   ## 7. Canonical Schema Metadata Key Table [# canonical-schema-metadata-key-table]
 
