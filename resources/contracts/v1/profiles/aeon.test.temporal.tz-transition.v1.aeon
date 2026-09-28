@@ -1,0 +1,14 @@
+profile_id = "aeon.test.temporal.tz-transition.v1"
+profile_version = "0.1.0"
+core_id = "aeon.core.v1"
+schema_id = "aeon.test.temporal.tz-transition.schema.v1"
+description = "Conformance probe for timezone gaps, overlaps, offset conflicts, and unknown-offset precedence. Not a default production policy."
+test_only = true
+temporal = {
+  tzdb_authority = { kind = "tzdb", id = "iana:tzdb", version = "2025b-fixture", retrievedAt:datetime = 2026-09-28T00:00:00Z, effectiveFrom:date = 2025-01-01, effectiveThrough:date = 2025-12-31 }
+  fixture_zone = "Australia/Melbourne"
+  overlap_selection = ["reject", "earlier", "later"]
+  gap_materialization = ["reject", "null", "previousValid", "nextValid", "preserveClaim"]
+  unknown_offset_precedence = true
+  unresolved_without_authority = true
+}

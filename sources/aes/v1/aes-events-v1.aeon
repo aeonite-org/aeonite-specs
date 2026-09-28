@@ -263,21 +263,37 @@ body:prose = >`
   ### 4.4 WTC preservation [# 4-4-wtc-preservation]
   
   A [$ WTCDateTimeLiteral] event carries the complete canonical WTC text in
-  [$ value]. Its temporal anchor and temporal reference remain one opaque payload:
+  [$ value]. Its temporal-value form and temporal context remain one opaque payload:
   
-  | Anchor form | Example payload |
+  | Temporal-value form | Example payload |
   | <-- | <-- |
-  | civil | [$ 2025-01-01T09:30&local] |
+  | unqualified | [$ 2025-01-01T09:30&local] |
   | explicit offset | [$ 2025-01-01T09:30+11:00&Australia/Melbourne] |
   | UTC | [$ 2024-12-31T22:30Z&-36.7590183/144.2826718] |
+  | named timescale | [$ 2026-01-01T09:10:10&TAI] |
+  | convention-defined named place | [$ 2026-01-01T09:10:00+01:00&+/Antarctica/Elisabeth] |
   |~ AES v1 table 3
   
-  Each anchor form is independently valid with the exact lowercase [$ local]
-  reference, a named reference, or a geographic
-  [$ latitude/longitude\\[/height\\]] reference. [$ Local] and [$ LOCAL] are not aliases.
-  Authored case in other named references is preserved.
+  Each temporal-value form is independently valid with the exact lowercase [$ local]
+  context, a named context, a convention-defined [$ +/] named-place context, or a geographic
+  [$ latitude/longitude\\[/height\\]] context. [$ Local] and [$ LOCAL] are not aliases.
+  Authored case in other named contexts is preserved.
+
+  Timescale identifiers such as [$ UTC], [$ TAI], [$ UT1], [$ TT], and [$ GPS] remain
+  ordinary named contexts at the AES layer. A convention such as
+  [$ aeon.gp.temporal.v1] may interpret them, but AES does not distinguish or
+  convert them.
+
+  AES therefore preserves combinations such as [$ Z&TAI], known numeric offsets with
+  [$ &TAI], and [$ -00:00&Australia/Melbourne] without deciding their temporal truth.
+  Under [$ aeon.gp.temporal.v1], the first two are incompatible UTC-relative and TAI
+  claims, while the last remains unknown-offset even though it carries a named-zone
+  claim. A general-purpose schema or downstream convention-aware consumer owns those
+  outcomes.
+
+  The same convention may interpret exact leading [$ +/] as a named-place namespace. AES preserves the prefix but does not resolve the place or give it timezone meaning.
   
-  AES does not convert an offset to [$ Z], resolve a named reference, normalize
+  AES does not convert an offset to [$ Z], resolve a named context, normalize
   geographic components, or otherwise rewrite the payload. Offset and UTC forms
   remain lexically distinct even when they identify the same instant.
   

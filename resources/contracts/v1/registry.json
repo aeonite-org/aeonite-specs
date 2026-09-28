@@ -13,7 +13,55 @@
       "kind": "schema",
       "version": "1.0.0",
       "path": "schemas/aeon.gp.schema.v1.aeon",
-      "sha256": "2ee9c1153914e52b3e4adb4946f0228bee25975c910f0c294737b197b4c53da4",
+      "sha256": "472429def2d9f42e11ff80940bdfbc5283ffa9ba98dc41ae1fb1d894f6723f46",
+      "status": "active"
+    },
+    {
+      "id": "aeon.test.temporal.leap-aware.v1",
+      "kind": "profile",
+      "version": "0.1.0",
+      "path": "profiles/aeon.test.temporal.leap-aware.v1.aeon",
+      "sha256": "d81608754b1408b6ef39feaa5eaa74320da938105bc752b85f9624cb3f25e0ae",
+      "status": "active"
+    },
+    {
+      "id": "aeon.test.temporal.tz-transition.v1",
+      "kind": "profile",
+      "version": "0.1.0",
+      "path": "profiles/aeon.test.temporal.tz-transition.v1.aeon",
+      "sha256": "37f632b889fc3c8590d09b48f1b01832042d805acec759dd702d015990a755af",
+      "status": "active"
+    },
+    {
+      "id": "aeon.test.temporal.calendar-precision.v1",
+      "kind": "profile",
+      "version": "0.1.0",
+      "path": "profiles/aeon.test.temporal.calendar-precision.v1.aeon",
+      "sha256": "2ea47730b61d4dd5e02e77293928516626ac574c80783d4f57f90c46d04360d9",
+      "status": "active"
+    },
+    {
+      "id": "aeon.test.temporal.leap-aware.schema.v1",
+      "kind": "schema",
+      "version": "0.1.0",
+      "path": "schemas/aeon.test.temporal.leap-aware.v1.aeon",
+      "sha256": "1a82d0827f5e5e16937c647549dacffd6bc85c2aa8f05e7c37f7e04c5daa9206",
+      "status": "active"
+    },
+    {
+      "id": "aeon.test.temporal.tz-transition.schema.v1",
+      "kind": "schema",
+      "version": "0.1.0",
+      "path": "schemas/aeon.test.temporal.tz-transition.v1.aeon",
+      "sha256": "d341811a2cd0b132cdd134a1b0cd9e3a57a3e4902deeccc2540b4fab3515357f",
+      "status": "active"
+    },
+    {
+      "id": "aeon.test.temporal.calendar-precision.schema.v1",
+      "kind": "schema",
+      "version": "0.1.0",
+      "path": "schemas/aeon.test.temporal.calendar-precision.v1.aeon",
+      "sha256": "3dbd094a14d9a298a0d5d90d352ca214cd5d2c2896a85a00946867c8fbe3a296",
       "status": "active"
     }
   ]

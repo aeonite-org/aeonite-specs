@@ -1,0 +1,9 @@
+schema_id = "aeon.test.temporal.calendar-precision.schema.v1"
+schema_version = "0.1.0"
+description = "Test-only structural admission schema for calendarDate and calendarDateTime convention objects."
+world = "open"
+rules = []
+datatype_rules = {
+  calendarDate = { type = "ObjectNode" }
+  calendarDateTime = { type = "ObjectNode" }
+}

@@ -412,7 +412,7 @@ body:prose = >`
   | [$ date] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | precision, calendar, conversion, and richer compatibility are profile-defined |
   | [$ time] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset handling, date-context rules, and richer compatibility are profile-defined |
   | [$ datetime] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset normalization, precision, instant semantics, and richer compatibility are profile-defined |
-  | [$ wtc] | temporal with temporal-reference data | literal recognition; exact preservation of civil-, offset-, or UTC-qualified temporal form and temporal-reference payload; same-family canonical temporal comparison | reference resolution, conflict authority, timezone database behavior, geographic resolution, and richer compatibility are consumer/profile-defined |
+  | [$ wtc] | temporal with temporal-context data | literal recognition; exact preservation of unqualified, offset-qualified, or UTC-qualified temporal form and temporal-context payload; same-family canonical temporal comparison | context resolution, conflict authority, timescale interpretation and conversion, timezone database behavior, geographic resolution, and richer compatibility are consumer/profile-defined; named-place meaning is downstream domain-consumer-defined |
   | [$ sep], [$ kadot] | separator-structured lexical scalar | canonical separator-payload identity; naïve separator order | IP address, semantic version, dimensions, product codes, delimited records, and similar meanings are profile-defined |
   | [$ sansa] | structured address expression | canonical address-expression identity; naïve address-expression order | resolution, selector expansion, canonical target identity, selector equivalence, namespace/domain meaning, authorization, and qualifier meaning belong to SANSA consumers |
   | [$ object], [$ obj], [$ o], [$ envelope] | structural container | member identity, Core object shape, and structural equality | ordering, envelope meaning, and member-value constraints are profile/schema-defined |
@@ -999,7 +999,7 @@ body:prose = >`
   - [$ datetime];
   - [$ wtc].
 
-  Shared Value Semantics defines a conservative same-family temporal comparison surface for canonical AEON temporal payloads. Richer temporal ordering, validation, conversion, temporal-reference behavior, and mutation compatibility remain profile-defined.
+  Shared Value Semantics defines a conservative same-family temporal comparison surface for canonical AEON temporal payloads. Richer temporal ordering, validation, conversion, temporal-context behavior, and mutation compatibility remain profile-defined.
 
   Candidate identifier:
 
@@ -1015,11 +1015,19 @@ body:prose = >`
   - normalization before comparison;
   - relationship to applicable temporal conventions such as [$ aeon.gp.temporal.v1];
   - timezone offset behavior;
-  - temporal-reference authority and timezone database version, when applicable;
+  - temporal-context authority and timezone database version, when applicable;
   - precision and fractional-second behavior;
+  - reduced-precision completion-set behavior and the relations [$ contains], [$ containedBy], [$ overlaps], and [$ incomparable];
+  - any total sort policy separately from temporal chronology;
   - diagnostics for unsupported or ambiguous temporal values.
 
-  Core WTC representation supplies three independent anchor forms: civil-anchored values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with uppercase [$ Z]. The temporal reference is independent of the anchor and may be exact lowercase [$ local], a named reference, or a geographic [$ latitude/longitude] or [$ latitude/longitude/height] reference. Case variants of the reserved [$ local] spelling are invalid; authored case in other named references is preserved.
+  Core WTC representation supplies three temporal-value forms: unqualified values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with uppercase [$ Z]. The temporal context is independent of that form and may be exact lowercase [$ local], a named timezone, a convention-defined named place beginning with [$ +/], a timescale, or a geographic [$ latitude/longitude] or [$ latitude/longitude/height] position. [$ &local] selects resolver-local rules while a named timezone selects an explicit ruleset; either may supply context for zoned civil time. Only successful resolution under an ambiguity policy produces a zoned instant. Strings such as [$ UTC], [$ TAI], [$ UT1], [$ TT], and [$ GPS] receive timescale meaning under an adopted convention such as [$ aeon.gp.temporal.v1], not Core or minimum Shared Value Semantics. The same convention assigns exact leading [$ +/] to the named-place namespace while Core preserves it as an ordinary context payload. Case variants of the reserved [$ local] spelling are invalid; authored case in other named contexts is preserved.
+
+  The [$ +/] classification does not authorize AEON Core, Shared Value Semantics, AEOS, a profile, or a schema to validate place identity or infer place-to-timezone meaning. A downstream domain consumer owns that resolution when it is required.
+
+  The offset spellings [$ Z], [$ +00:00], and [$ -00:00] remain representation-distinct. Under [$ aeon.gp.temporal.v1], [$ -00:00] records an unknown or unspecified local offset rather than a known zero offset and MUST NOT be normalized to either of the other forms.
+
+  Under that convention, a named timezone does not replace [$ -00:00] with an inferred known offset. Numeric-offset agreement with a named timezone is evaluated downstream against the selected timezone-database data. A [$ Z] or known numeric offset combined with a recognized non-UTC timescale such as [$ &TAI] is a preserved Core conflict rejected by the general-purpose temporal schema or convention-aware validator.
 
   The default geographic interpretation is WGS 84 latitude and longitude in decimal degrees with optional ellipsoidal height in metres. Core and minimum Shared Value Semantics preserve that representation without validating coordinate ranges, resolving a jurisdiction, or performing geodetic transformation.
 
@@ -1032,12 +1040,14 @@ body:prose = >`
   | date and date | allowed | allowed | Canonical date payload comparison. |
   | time and time | allowed | allowed | Canonical time payload comparison; richer profiles may define offset/date-context behavior. |
   | datetime and datetime | allowed | allowed | Canonical datetime payload comparison; richer profiles may define instant normalization. |
-  | wtc and wtc | allowed | allowed | Canonical preserved WTC payload comparison; resolution requires consumer-owned temporal-reference and conflict policy. |
+  | wtc and wtc | allowed | allowed | Canonical preserved WTC payload comparison; resolution requires consumer-owned temporal-context and conflict policy. |
   | temporal and string | error | error | No implicit string comparison. |
   | mixed temporal categories | error | error | Allowed only when a profile explicitly defines cross-category comparison. |
   |~ Temporal comparison behavior
 
   Temporal transport as text does not imply string comparison. Temporal values are compared through the active temporal value-semantics profile. The default minimum profile uses canonical payload order only within the same temporal family.
+
+  Canonical payload order is deterministic representation order, not temporal chronology. In a precision-aware temporal profile, omitted minute or second fields define completion sets rather than implicit zeroes. [$ 10:Z] contains [$ 10:30Z]; the operands are not temporally equal and neither is temporally before or after the other. Comparing a time-only value with a dated value fails for insufficient context unless trusted policy supplies the date and explicitly admits the comparison.
 
   ### 7.10 Mutation Compatibility [# mutation-compatibility]
 
@@ -1049,7 +1059,7 @@ body:prose = >`
   - whether conversion is allowed;
   - which normalization, if any, is applied before storage;
   - how null, absence values, and Missing interact with a write target;
-  - how temporal precision, civil/offset/UTC WTC forms, temporal references, and named zones are preserved or normalized;
+  - how temporal precision, unqualified/offset/UTC WTC forms, temporal contexts, timescales, and named zones are preserved, resolved, converted, or normalized;
   - whether structural writes replace, merge, insert, delete, or reindex;
   - how tuple arity, object member constraints, list element constraints, node child constraints, and node attribute constraints are enforced.
 

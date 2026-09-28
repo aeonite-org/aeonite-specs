@@ -1,0 +1,811 @@
+schemaVersion:string = "1"
+id:string = "aeon-v1-temporal-precision-calendar-values"
+title:string = "Proposal: Temporal Claims, Precision, Calendars, and Runtime Boundaries"
+description:string = "Proposal for temporal claims and anchors, fractional-second Core literals, structurally representable leap seconds, ISO-anchored dates, calendar-native objects, authority provenance, and explicit runtime boundaries."
+created:date = 2026-09-28
+modified:date = 2026-09-28
+family:string = "aeon"
+group:string = "Proposals"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "mixed"
+license:string = "CC-BY-4.0"
+path:string = "specification/aeon-v1-documentation/proposals/temporal-precision-calendar-values"
+order:number = 140
+publish:boolean = true
+keywords:list<string> = ["AEON", "temporal", "temporal claims", "anchors", "fractional seconds", "leap seconds", "leap smear", "calendars", "calendarDate", "calendarDateTime", "ISO 8601", "WTC", "timescales", "profiles", "runtime boundaries", "precision"]
+related:list<string> = ["aeon-core-v1-value-types", "aeon-core-v1-compliance", "aeon-gp-temporal-v1", "aeonic-semantic-language-v1", "aes-events-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Proposal: Temporal Claims, Precision, Calendars, and Runtime Boundaries [# proposal-temporal-precision-calendar-values]
+
+  ## 1. Summary [# summary]
+
+  This proposal separates concerns that are easy to conflate:
+
+  1. the lexical representation preserved by AEON Core;
+  2. the calendar used by a Core date literal;
+  3. the temporal claim made by an authored value and what it is anchored to;
+  4. the contextual validity of a clock reading;
+  5. calendar-native representations defined above Core;
+  6. resolution by external authorities and representation by host runtimes.
+
+  It proposes that:
+
+  - Core [$ time], [$ datetime], and [$ wtc] literals may carry one or more fractional-second digits;
+  - Core permits a seconds field in the inclusive range [$ 00-60];
+  - Core acceptance of second [$ 60] records a structurally plausible temporal value and does not assert that a leap second occurred;
+  - the general-purpose schema rejects second [$ 60], while a leap-aware profile and schema may admit it under explicit resolution rules;
+  - the existence of a leap second is decided by a temporal profile or resolver using the timescale, date, and applicable reference data;
+  - [$ Z], [$ +00:00], and [$ -00:00] remain distinct authored claims even where two of them resolve to the same instant;
+  - [$ &] introduces temporal context rather than exclusively naming a timezone;
+  - omitted minute or second fields define reduced-precision completion sets rather than implicit zeroes;
+  - containment and overlap remain distinct from equality and chronological ordering;
+  - Core [$ YYYY-MM-DD] dates remain attached to the ISO 8601 calendar, using proleptic Gregorian year-month-day rules;
+  - convention metadata cannot reinterpret the digits of a Core date as fields from another calendar;
+  - calendar-native dates and datetimes use convention-defined structured objects such as [$ calendarDate] and [$ calendarDateTime];
+  - a compact clarifier form such as [$ calendarDateTime\\["gregory"\\]] remains profile-defined rather than convention-defined.
+
+  This is an implementation-gated draft. It remains non-authoritative until the proposed behavior has been exercised by implementations, dedicated temporal test profiles, and conformance fixtures, and is then adopted by the applicable Core and convention specifications. Current conformance requirements remain authoritative in the meantime.
+
+  ## 2. Motivation [# motivation]
+
+  Core currently accepts whole-second temporal literals and rejects second [$ 60]. That surface cannot represent subsecond measurements or a claimed UTC leap second.
+
+  Calendar metadata raises a different problem. Many calendars expose year, month, and day fields, but they do not share fixed Gregorian ranges. Some have thirteen months, some insert leap months, some require an era, and some depend on observational or authority-maintained data. A numeric month may also be insufficient to distinguish an ordinary month from a leap month.
+
+  Reinterpreting an existing [$ YYYY-MM-DD] literal according to supplemental calendar metadata would therefore make the meaning of the same Core token unstable. It would also leave the existing token unable to express calendar-specific fields such as a leap-month code.
+
+  The proposal keeps the simple Core surface explicit and moves context-sensitive interpretation into conventions and profiles.
+
+  ## 3. Responsibility Boundary [# responsibility-boundary]
+
+  | Layer | Responsibility under this proposal |
+  | <-- | <-- |
+  | AEON Core | Recognize temporal syntax, apply intrinsic ISO date rules and broad clock-field bounds, preserve every authored fractional digit, and classify the literal |
+  | AES and AEOS | Preserve and transport the Core temporal payload and convention-defined calendar structures without inventing temporal truth, causality, or ordering |
+  | Temporal convention | Define calendar-native object vocabulary and shared interpretation metadata |
+  | Temporal profile or schema | Admit specialized datatype forms and define field requirements, authority selection, normalization, comparison, validation, and loss policies |
+  | Authoritative resolver | Use selected calendar, timescale, timezone, location, and versioned reference data to report authority assessment and mapping cardinality without silently selecting or manufacturing an instant |
+  | Tonic or runtime adapter | Map a resolved or unresolved claim into a host type through an exact mapping, an explicit transformation, an explicitly permitted loss, or rejection |
+  |~ Proposed temporal responsibility boundary
+
+  ## 4. Temporal Claims and Anchors [# temporal-claims-and-anchors]
+
+  An authored temporal value is a claim. Core acceptance says that the claim is representable; it does not guarantee that the claim is true under every calendar, timescale, timezone, authority, or future rule set.
+
+  An anchor identifies the property the author intends to preserve when the claim is resolved, projected into another context, or revisited after reference data changes. Examples include:
+
+  - civil fields, preserving what the clock or calendar says without selecting one global instant;
+  - resolver-local context, where [$ &local] applies the consumer's selected local rules;
+  - a named timezone rule set, preserving the local reading in that zone;
+  - an explicit numeric offset, preserving the stated displacement from UTC;
+  - UTC or another named timescale, preserving a position on the selected global timeline;
+  - a named place or geographic coordinates, preserving location while a resolver selects applicable rules.
+
+  Because "local time" is overloaded, specifications should prefer more precise names:
+
+  | Shape | Recommended description | Carries an instant anchor in its authored syntax? |
+  | <-- | <-- | <-- |
+  | unqualified [$ datetime] | civil date-time claim | no |
+  | [$ datetime&local] | resolver-local civil claim | no; the same fields may resolve differently for different resolvers |
+  | [$ datetime&Australia/Melbourne] | zone-anchored civil claim, or zoned civil value | no; authority-backed mapping may produce zero, one, or multiple instants |
+  | [$ datetime+11:00] or [$ datetimeZ] | instant-anchored offset or UTC claim | yes |
+  | [$ datetimeZ&Australia/Melbourne] | instant-anchored claim with a named-zone projection context, or zoned instant | yes; the zone does not replace the instant anchor |
+  |~ Recommended temporal naming
+
+  In particular, [$ &local] does not mean "civil". It adds resolver-selected local context to civil fields. A value such as [$ 2027-01-31T23:59:59&local] can intentionally describe a rolling set of local expirations: just before midnight in each resolver's local context, rather than one shared instant.
+
+  These concepts form a pipeline rather than one datatype:
+
+  ~~~$ text
+  authored fields + anchor
+      -> profile: admitted | rejected
+      -> authority: confirmed | contradicted | unresolved
+      -> mapping: zero | one | many | unresolved candidates
+      -> optional candidate selection or explicit gap transformation
+      -> optional host-runtime representation
+  ~~~$
+
+  An anchor is not necessarily a resolved instant. For example, [$ 2027-01-31T23:59:59&Australia/Melbourne] is anchored to Melbourne's timezone rules and local civil reading. By contrast, [$ 2027-01-31T23:59:59Z&Australia/Melbourne] carries a UTC instant anchor; the named zone supplies a projection context. If timezone rules change, the former preserves the Melbourne reading while the latter preserves the authored UTC coordinate and may display a different Melbourne reading. Its authority-backed instant still depends on the selected clock-realization and authority model.
+
+  An authored instant anchor is not an authority-backed resolved instant. In particular, lexical [$ Z] asserts a UTC anchor but does not prove that the source clock was aligned exactly with unsmeared UTC.
+
+  A previously resolved result is derived data. Unless the authored value is instant-anchored, caching that result does not replace the original claim or its anchor.
+
+  ## 5. Core Date Invariant [# core-date-invariant]
+
+  A Core date literal of the form [$ YYYY-MM-DD] is an ISO 8601 calendar date using proleptic Gregorian year-month-day rules.
+
+  ~~~$ aeon
+  releaseDate:date = 2029-01-19
+  ~~~$
+
+  The literal is not a calendar-neutral tuple. Supplemental metadata does not change [$ 2029] into a year from another calendar and does not reinterpret [$ 01] as a calendar-specific month.
+
+  Core therefore continues to validate intrinsic ISO date relationships, including:
+
+  - month range;
+  - day range for the selected month;
+  - ISO leap-year rules for February 29.
+
+  For example, [$ 2024-02-29] is a valid Core date and [$ 2025-02-29] is not.
+
+  This rule describes the proleptic ISO calendar used by the literal. It does not claim that the Gregorian calendar was historically in civil use at the represented place and date.
+
+  ## 6. Fractional Seconds [# fractional-seconds]
+
+  ### 6.1 Proposed Grammar [# fractional-second-grammar]
+
+  Fractional seconds occur only after a complete seconds field:
+
+  ~~~$ ebnf
+  FractionalSecond ::= "." Digit+
+  Second            ::= TwoDigitSecond FractionalSecond?
+  ~~~$
+
+  [$ TwoDigitSecond] is bounded as described in [@ #leap-second-representability | leap-second representability].
+
+  Under this proposal the following are valid shapes:
+
+  ~~~$ aeon
+  sampleTime:time = 23:59:59.34
+  capturedAt:datetime = 2027-01-31T23:59:59.340000
+  utcSample:datetime = 2027-01-31T23:59:59.340000000Z
+  offsetSample:datetime = 2027-01-31T23:59:59.34+11:00
+  localSample:wtc = 2027-01-31T23:59:59.34&local
+  zonedSample:wtc = 2027-01-31T23:59:59.34+11:00&Australia/Melbourne
+  taiSample:wtc = 2027-01-31T23:59:59.34&TAI
+  ~~~$
+
+  A fraction is not permitted after an hour- or minute-precision value because its unit would be unclear:
+
+  ~~~$ text
+  23.5             invalid as a Core time
+  23:30.5          invalid as a Core time
+  23:30:59.5       valid shape
+  ~~~$
+
+  The decimal separator is an ASCII full stop. A bare separator, decimal comma, exponent notation, or sign in the fraction is invalid.
+
+  ### 6.2 Exact Decimal Meaning [# exact-decimal-meaning]
+
+  Fractional seconds are exact decimal coefficients and scales. Implementations MUST NOT pass them through binary floating-point representation during parsing, preservation, canonicalization, or exact comparison.
+
+  Examples:
+
+  | Spelling | Position after the whole second | Authored resolution |
+  | <-- | <-- | <-- |
+  | [$ .3] | 300 milliseconds | one tenth of a second |
+  | [$ .03] | 30 milliseconds | one hundredth of a second |
+  | [$ .003] | 3 milliseconds | one millisecond |
+  | [$ .000003] | 3 microseconds | one microsecond |
+  | [$ .000000003] | 3 nanoseconds | one nanosecond |
+  |~ Fractional-second examples
+
+  Consequently, [$ 23:59:59.34] is 340 milliseconds after [$ 23:59:59], not 34 milliseconds after it.
+
+  ### 6.3 Digits, Precision, and Preservation [# fractional-preservation]
+
+  Core accepts one or more fractional digits. The grammar does not assign a universal millisecond, microsecond, or nanosecond ceiling. Implementations MAY enforce documented input-size resource limits, but MUST NOT silently round or truncate an accepted fraction.
+
+  These spellings identify the same mathematical fraction of a second:
+
+  ~~~$ text
+  .34
+  .340
+  .340000
+  ~~~$
+
+  They remain distinct authored representations. Their digit counts may also communicate different measurement resolution under an adopted profile.
+
+  Core, AES, canonicalizers, and preservation-only processors preserve the authored digits, including trailing zeroes. A richer temporal profile may define mathematical temporal equality between differently scaled spellings, but it MUST NOT erase the representation distinction unless an explicitly selected output profile authorizes that rewrite.
+
+  Digit count describes representation precision or resolution. It does not prove measurement accuracy.
+
+  ## 7. Leap-Second Representability [# leap-second-representability]
+
+  ### 7.1 Core Range [# leap-second-core-range]
+
+  The proposed Core seconds range is [$ 00-60]. Minute remains [$ 00-59] and hour remains [$ 00-23]. Fractional digits may follow second [$ 60]:
+
+  ~~~$ aeon
+  claimedLeapSecond:datetime = 2016-12-31T23:59:60Z
+  subsecondWithinLeap:datetime = 2016-12-31T23:59:60.5Z
+  futureClaim:wtc = 2027-12-31T23:59:60&UTC
+  ~~~$
+
+  Core recognition means only that the temporal value is structurally representable. It does not establish that the leap second occurred or will occur.
+
+  Core does not carry a leap-second table and does not make calendar date, timescale, timezone, or future-announcement claims beyond its intrinsic literal structure.
+
+  ### 7.2 Contextual Validation [# leap-second-validation]
+
+  Validation of second [$ 60] requires context that may include:
+
+  - a complete date;
+  - a timescale;
+  - an offset or timezone projection policy;
+  - a named and versioned leap-second data source;
+  - policy for dates whose future status is not yet knowable.
+
+  Temporal processing distinguishes separate dimensions rather than returning one mutually exclusive [$ valid | invalid | ambiguous | unresolved] status:
+
+  | Dimension | Outcomes | Meaning |
+  | <-- | <-- | <-- |
+  | profile status | [$ admitted], [$ rejected] | Whether the selected profile permits the represented claim |
+  | authority assessment | [$ confirmed], [$ contradicted], [$ unresolved] | Whether selected authority data supports, disproves, or cannot yet decide the claim |
+  | mapping cardinality | [$ zero], [$ one], [$ many], [$ unresolved] | How many temporal candidates the claim maps to under the selected context |
+  |~ Temporal processing dimensions
+
+  These dimensions may coexist. A timezone overlap can be admitted and authority-confirmed while mapping to many candidates. A timezone or negative-leap gap can be admitted and authority-confirmed while mapping to zero candidates. A future leap-second claim can be admitted while authority assessment and mapping remain unresolved. A profile rejection occurs before authority-backed mapping is attempted.
+
+  Candidate selection and gap transformation follow mapping; they are not mapping itself. [$ earlier] and [$ later] select existing candidates after a [$ many] result. A [$ zero] result may instead be rejected, preserved, represented as a typed null, or explicitly transformed under a separately named gap policy.
+
+  A bare [$ 23:59:60] has insufficient context to establish an actual leap second, but it remains a valid Core representation under this proposal.
+
+  Timescale interpretation matters. A profile may confirm a second-[$ 60] value under UTC while rejecting UTC-style leap-second notation under TAI, TT, GPS, or another continuous timescale. Core preserves the claim in either case.
+
+  A leap second occurs at one instant globally and may be represented through a known numeric offset or projected into a named zone. A leap-aware resolver therefore treats these as projections of the same 2016 leap instant:
+
+  ~~~$ text
+  2016-12-31T23:59:60Z
+  2016-12-31T18:59:60-05:00
+  2017-01-01T12:59:60+13:00
+  2017-01-01T10:59:60+11:00&Australia/Melbourne
+  ~~~$
+
+  The local date may differ across the UTC boundary. Core does not restrict second [$ 60] to local [$ 23:59]; the leap-aware profile validates the projection against the selected authority data.
+
+  ### 7.3 Negative Leap Adjustments and Unrepresentable Civil Coordinates [# negative-leap-adjustments]
+
+  A negative leap adjustment does not require a new second spelling. Instead, an authority may declare that an otherwise ordinary civil second did not occur. Authority-backed mapping reports [$ zero] candidates for a claim in that gap. A subsequent materializer must use an explicit gap policy: [$ reject], produce a reason-bearing typed [$ null], transform to [$ previousValid] or [$ nextValid], or [$ preserveClaim] without inventing a coordinate. Core does not predict negative leap adjustments or consult an authority table.
+
+  Smearing a negative adjustment is a source or destination clock-realization policy. It is not a resolution of one already-authored missing coordinate and therefore is not part of the negative-gap policy vocabulary.
+
+  A downstream result that cannot be represented by Core temporal fields MUST NOT be fabricated as an invalid temporal literal. For example, if an external civil-time system introduced a clock coordinate outside Core's [$ 00-23] hour domain, a mapping may retain the source as opaque data and produce a typed null such as [$ result:null<datetime> = !"unrepresentable temporal coordinate"], or use another explicitly adopted structured representation. The typed null is a mapping result, not proof that the authored external claim was false.
+
+  ## 8. Profile Admissibility and Leap Seconds [# leap-second-profile-admissibility]
+
+  Core representability and profile admissibility are separate decisions. The general-purpose temporal schema MUST restrict seconds to [$ 00-59]. A second-[$ 60] value is rejected by that schema, not invalidated as Core syntax.
+
+  A leap-aware profile that admits second [$ 60] MUST define:
+
+  - the supported timescales;
+  - the leap-second authority and data version, or the mechanism used to select them;
+  - treatment of future dates for which no authoritative announcement exists;
+  - whether unresolved claims may be stored, compared, converted, or materialized;
+  - the behavior of comparison and conversion across leap-aware and non-leap-aware values;
+  - what happens when a target runtime cannot preserve the value.
+
+  The same contract MUST define its policy for authority-declared negative leap gaps. The initial gap-policy vocabulary is [$ reject], [$ null], [$ previousValid], [$ nextValid], and [$ preserveClaim]. [$ previousValid] and [$ nextValid] explicitly transform to the nearest valid target coordinate on the corresponding side of the missing interval. [$ null] returns an explicitly typed null carrying a reason. [$ preserveClaim] retains the unresolved authored fields without manufacturing a coordinate. These names remain distinct from [$ earlier] and [$ later], which select existing candidates after an ambiguous [$ many] mapping.
+
+  When the Core grammar expansion is adopted, the published general-purpose schema artifact MUST carry an executable second-[$ 60] rejection constraint rather than relying on prose or a runtime accident. The current schema engine does not yet define that temporal constraint key, so adding the executable rule is an adoption dependency of this proposal. Specialized leap-aware profiles and schemas may opt in without narrowing Core expressiveness.
+
+  ## 9. WTC Composition and Timescales [# wtc-composition]
+
+  Fractional seconds and leap-second fields belong to the temporal value before [$ &]. The suffix remains an independent temporal context:
+
+  ~~~$ aeon
+  resolverLocal:wtc = 2027-01-31T23:59:59.34&local
+  zoneCivil:wtc = 2027-01-31T23:59:59.34&Australia/Melbourne
+  zoneInstant:wtc = 2027-01-31T23:59:59.34Z&Australia/Melbourne
+  utcLeapClaim:wtc = 2016-12-31T23:59:60.5&UTC
+  taiClaim:wtc = 2016-12-31T23:59:60.5&TAI
+  ut1Claim:wtc = 2026-01-01T09:10:10&UT1
+  ttClaim:wtc = 2026-01-01T09:10:10&TT
+  gpsClaim:wtc = 2026-01-01T09:10:10&GPS
+  ~~~$
+
+  The [$ &] suffix introduces temporal context. It is not exclusively a timezone reference. Existing anchoring distinctions continue to apply:
+
+  - unqualified fields preserve a civil-field anchor;
+  - [$ &local] adds resolver-selected local context;
+  - a named timezone adds a zone anchor;
+  - an explicit known numeric offset other than [$ -00:00] adds an offset and instant anchor;
+  - [$ -00:00] adds an unknown-offset claim and does not identify an instant from that offset alone;
+  - [$ Z] adds a UTC instant anchor;
+  - a named timescale adds a timescale anchor.
+
+  Fractional precision does not change the kind of anchor. It refines the position or claimed resolution within the represented second.
+
+  Core preserves the context label. A convention or profile defines whether labels such as [$ UTC], [$ TAI], [$ UT1], [$ TT], and [$ GPS] are recognized, how they resolve, and which authorities they require. A consumer MUST NOT assume that all named timescales share UTC leap-second behavior.
+
+  Core and the parser treat the context after [$ &] as preserved syntax, not as a dispatched runtime type. Classification as [$ local], named place, coordinates, recognized timescale, timezone, or unresolved named context belongs to the adopted temporal convention and downstream consumer. The classification precedence remains a convention design question; it does not authorize parser branching.
+
+  Under the general-purpose temporal convention, [$ Z] or a known numeric offset is a UTC-relative claim and is incompatible with a non-UTC recognized timescale context. Forms such as [$ 2026-01-01T09:10:10Z&TAI] and [$ 2026-01-01T09:10:10+01:00&TAI] remain structurally preservable by Core but are rejected by the general-purpose temporal schema or convention-aware validator. A preservation-only processor may retain them as conflicting claims but MUST NOT resolve them as one coherent instant.
+
+  The unknown-offset marker has different composition semantics. In [$ 2026-01-01T09:10:10-00:00&Australia/Melbourne], [$ -00:00] takes precedence over any inference of a known numeric offset. The named zone remains a zone claim and may support downstream field validation, but it does not silently replace the authored unknown-offset claim or establish a particular daylight-saving branch. Resolution requiring one instant remains unresolved unless explicit trusted policy separately supplies and records the missing knowledge.
+
+  Second [$ 60] is not intrinsically restricted to [$ 23:59] at the Core layer. A leap second that occurs at the end of a UTC day may project to another hour and minute under a numeric offset or named timezone. Whether a particular projection is valid remains a resolver decision.
+
+  ## 10. UTC, Known Zero Offset, and Unknown Offset [# utc-zero-and-unknown-offset]
+
+  The following spellings carry different authored claims:
+
+  ~~~$ text
+  2027-01-31T23:59:59Z       explicit UTC anchor
+  2027-01-31T23:59:59+00:00  explicit known numeric zero offset
+  2027-01-31T23:59:59-00:00  offset unknown or unspecified
+  ~~~$
+
+  [$ Z] and [$ +00:00] may resolve to the same instant, but they are not representation-equal and do not express identical provenance. Under the temporal convention, [$ -00:00] adopts the RFC 3339 meaning that the offset is unknown; it MUST NOT be silently treated as a known zero offset.
+
+  A temporal profile may define resolved equality between [$ Z] and [$ +00:00]. It must still preserve their representation distinction unless an explicitly selected output profile authorizes canonical rewriting. A profile that cannot preserve the unknown-offset meaning of [$ -00:00] must reject it rather than reinterpret it silently.
+
+  Pairing [$ -00:00] with a named timezone does not upgrade the offset to known. The timezone and civil fields remain inspectable claims, but an exact-offset or exact-instant result remains unresolved. This is distinct from a structurally invalid Core temporal literal.
+
+  ## 11. Rule, Location, and Geographic Anchors [# rule-location-geographic-anchors]
+
+  A timezone identifier, a named place, and geographic coordinates answer different questions:
+
+  | Anchor | Preserved claim | Typical dependency |
+  | <-- | <-- | <-- |
+  | named timezone | the civil reading under a named rule set | timezone database and version |
+  | named location | the place whose applicable rules should be selected | place and boundary authority, timezone database, and effective date |
+  | geographic coordinates | the physical location used for temporal or astronomical resolution | coordinate reference system, datum, epoch, and resolver policy |
+  |~ Distinct rule and location anchors
+
+  These anchors MUST NOT be collapsed merely because they currently produce the same offset. A place may change timezone rules or political jurisdiction. Coordinates may map differently as boundary data changes, and coordinate values themselves depend on a reference system and epoch.
+
+  Geographic time is therefore useful for cases such as determining the Sun's position for solar panels, but coordinates alone do not define a timezone or an instant. Combined claims may preserve both an instant and a projection context, or both a place and a civil reading.
+
+  No new coordinate object is required for the default case. Core WTC preserves [$ latitude/longitude] and [$ latitude/longitude/height] contexts without supplying a coordinate reference system. Adoption of [$ aeon.gp.temporal.v1] explicitly assigns WGS 84 as the general-purpose convention default; this is convention interpretation rather than Core inference. Precision-sensitive profiles may require explicit coordinate reference system, datum, and epoch metadata.
+
+  The temporal convention assigns the reserved prefix [$ +/] within the existing WTC context payload to named places:
+
+  ~~~$ aeon
+  observed:wtc = 2026-01-01T09:10:00+01:00&+/Antarctica/Elisabeth
+  ~~~$
+
+  The exact prefix makes place identity permanently distinguishable from an ordinary named context. [$ &+/Antarctica/Elisabeth] remains a place context even if [$ Antarctica/Elisabeth] later becomes an IANA timezone identifier. The unprefixed [$ &Antarctica/Elisabeth] would then identify the timezone ruleset instead.
+
+  A named place can identify a city, building, venue, research station, administrative region, or moving asset. AEON, Aeonic, AEOS, profiles, schemas, and convention validators preserve the [$ +/] category but do not validate the place's existence or meaning. Place identity and any associated local-time rules belong entirely to the downstream domain consumer.
+
+  For an unqualified value, the downstream consumer must resolve what the place means and which local-time rules, if any, apply. Until then the civil fields remain place-anchored and unresolved. For a value carrying [$ Z] or a known numeric offset, the instant is already identified and the place is additional context; resolving the place is not required to determine the instant.
+
+  Core's broad structural numeric-offset range is not a prediction that every offset occurs in civil practice. The general-purpose convention does not impose a narrower timeless list. Agreement between an offset, civil fields, named zone, date, and selected timezone-database release is a downstream validation result.
+
+  ## 12. External Authorities and Rule Drift [# external-authorities-and-rule-drift]
+
+  Temporal resolution may depend on data that is external, versioned, political, observational, or all four. Relevant authorities include:
+
+  - timezone rules and jurisdictional boundary data;
+  - leap-second bulletins or tables;
+  - Earth-orientation data used for UT1;
+  - calendar variants, observations, or official announcements;
+  - timescale definitions and conversion constants;
+  - coordinate reference systems, datums, and epochs;
+  - clock-smear policy.
+
+  A resolver profile SHOULD make provenance inspectable. As applicable, a resolution record should identify the authority, dataset or ruleset version, effective interval, coordinate datum or epoch, retrieval time, and policy choices used to produce the result.
+
+  Resolution is evaluated against the selected authorities. A rule change can alter authority assessment, change mapping cardinality, or produce different candidates without mutating the authored claim. Systems that require reproducibility should retain both the claim and sufficient resolution provenance.
+
+  ## 13. Calendar-Native Convention Objects [# calendar-native-objects]
+
+  ### 13.1 Why a Structured Object [# why-calendar-object]
+
+  Non-ISO calendar values are represented above Core because calendar systems do not share one fixed month model. A structured object avoids a calendar-specific string mini-language and permits explicit fields such as era and leap-month identity.
+
+  This proposal defines two convention-level custom datatype labels:
+
+  - [$ calendarDate] for a calendar-native date;
+  - [$ calendarDateTime] for a calendar-native date with a civil time of day.
+
+  These are not new Core literal kinds. Core parses their values as ordinary objects and preserves the custom datatype claim in modes that admit custom datatypes.
+
+  The explicit object forms belong directly to the temporal convention and do not require a profile to acquire their vocabulary. The convention specifies common interoperable fields without claiming to exhaust every calendar system. Schemas and profiles may validate narrower application requirements, but they do not own the base [$ calendarDate] or [$ calendarDateTime] meaning.
+
+  ### 13.2 [$ calendarDate] [# calendar-date]
+
+  Example:
+
+  ~~~$ aeon
+  date:calendarDate = {
+    calendar:string = "hebrew"
+    year:int = 5779
+    monthCode:string = "M05L"
+    day:int = 23
+  }
+  ~~~$
+
+  The convention-level field model is:
+
+  | Field | Requirement | Meaning |
+  | <-- | <-- | <-- |
+  | [$ calendar] | required | Calendar system or algorithm identifier |
+  | [$ year] | required | Calendar-native arithmetic year, as defined for the selected calendar |
+  | [$ monthCode] | required for month-based calendars | Stable semantic calendar-specific month identity, including leap-month identity where applicable |
+  | [$ day] | required | Calendar-native day within the identified month |
+  | [$ era] | conditional | Era identifier when required to preserve or interpret the authored year |
+  | [$ eraYear] | conditional | Year within [$ era] when distinct from the arithmetic [$ year] |
+  | [$ month] | optional | Numeric month ordinal within this particular year |
+  | [$ monthName] | optional presentation data | Human-readable localized name; does not establish semantic month identity |
+  |~ Proposed calendarDate fields
+
+  Calendar identifiers should use registered interoperable identifiers such as [$ iso8601], [$ gregory], [$ hebrew], [$ japanese], or [$ islamic-umalqura]. Aliases may be recognized by a profile, but a convention-aware semantic canonical form should prefer the registered identifier.
+
+  [$ monthCode] uses stable codes such as [$ M01]. A leap month uses a distinct code such as [$ M05L]. [$ month] and [$ monthName] do not replace [$ monthCode].
+
+  When redundant fields occur, they are independent claims and MUST agree under calendar-aware validation. A mismatch is a visible validation conflict.
+
+  A [$ monthName] is presentation data. If it is carried, its language or locale should also be declared:
+
+  ~~~$ aeon
+  monthName@{locale:string = "en"}:string = "January"
+  ~~~$
+
+  ### 13.3 [$ calendarDateTime] [# calendar-date-time]
+
+  [$ calendarDateTime] contains the [$ calendarDate] fields and adds a required Core [$ time] value:
+
+  ~~~$ aeon
+  date:calendarDateTime = {
+    calendar:string = "gregory"
+    year:int = 2029
+    monthCode:string = "M01"
+    month:int = 1
+    day:int = 19
+    time:time = 23:00:01
+  }
+  ~~~$
+
+  The [$ time] field is civil time-of-day. It may use fractional seconds and second [$ 60] under this proposal:
+
+  ~~~$ aeon
+  observation:calendarDateTime = {
+    calendar:string = "gregory"
+    year:int = 2016
+    monthCode:string = "M12"
+    day:int = 31
+    time:time = 23:59:60.25
+  }
+  ~~~$
+
+  The calendar object alone does not provide a timezone, offset, timescale, or instant. Those remain orthogonal temporal concerns supplied by convention metadata, a containing structure, or an adopted profile.
+
+  ### 13.4 Calendars Outside the Field Model [# other-calendar-models]
+
+  [$ calendarDate] is intended for calendars that can identify a date using the proposed fields. A calendar based on weeks, cycles, seasons, or another incompatible model requires a different convention-defined structure. Consumers MUST NOT force every calendar into year-month-day fields merely to satisfy this datatype.
+
+  ## 14. ISO Anchors and Calendar Projections [# iso-anchor-calendar-projection]
+
+  A document may preserve both a Core ISO date and a calendar-native representation:
+
+  ~~~$ aeon
+  date@{
+    calendarDate:calendarDate = {
+      calendar:string = "hebrew"
+      year:int = 5779
+      monthCode:string = "M05L"
+      day:int = 23
+    }
+  }:date = 2019-02-28
+  ~~~$
+
+  In this composed form:
+
+  - the Core [$ date] remains the ISO anchor;
+  - [$ calendarDate] is a supplemental calendar-native representation;
+  - a calendar-aware validator may establish whether they identify the same date;
+  - disagreement remains visible and defaults to rejection for authoritative resolution unless trusted policy selects another authority.
+
+  A standalone [$ calendarDate] has no implicit ISO anchor. Conversion to an ISO date requires the selected calendar rules and any applicable variant or authority data.
+
+  ## 15. Convention Form and Profile Form [# convention-and-profile]
+
+  The convention form carries the calendar identifier as data:
+
+  ~~~$ aeon
+  date:calendarDateTime = {
+    calendar:string = "gregory"
+    year:int = 2029
+    monthCode:string = "M01"
+    day:int = 19
+    time:time = 23:00:01
+  }
+  ~~~$
+
+  A compact datatype-clarifier spelling is valid Core datatype syntax but is not assigned calendar semantics by this convention:
+
+  ~~~$ aeon
+  date:calendarDateTime["gregory"] = {
+    year:int = 2029
+    monthCode:string = "M01"
+    day:int = 19
+    time:time = 23:00:01
+  }
+  ~~~$
+
+  An adopted profile may define that compact form by specifying:
+
+  - which calendar clarifiers are allowed;
+  - whether the datatype may bind an object;
+  - required and optional object fields;
+  - equivalence to the explicit [$ calendar] field;
+  - validation, comparison, canonical semantic form, and conflict behavior.
+
+  Without such a profile, Core merely preserves the custom datatype and clarifier in a mode that admits them.
+
+  ## 16. Runtime and Tonic Boundaries [# runtime-and-tonic-boundaries]
+
+  Host runtimes do not define AEON temporal semantics. They may have narrower year ranges, fixed subsecond precision, no leap-second representation, no calendar-native type, or a timestamp model based on POSIX time.
+
+  A Tonic or runtime adapter MUST select one of four visible outcomes when mapping a temporal claim:
+
+  | Mapping outcome | Requirement |
+  | <-- | <-- |
+  | exact | The host value preserves the admitted semantics and required precision |
+  | explicit transformation | A declared conversion produces a different representation with defined semantics |
+  | explicitly permitted loss | An adopted profile authorizes a documented loss, such as fractional rounding |
+  | rejection | The target cannot safely represent the value under the selected policy |
+  |~ Runtime mapping outcomes
+
+  Silent truncation, silent leap-second normalization, silent calendar substitution, and silent replacement of an unresolved claim with a host default are not conforming mappings.
+
+  A leap smear is not ordinary UTC during the smear interval. It is a clock policy that distributes a discontinuity over time. Two boundaries must be modeled independently:
+
+  - convention metadata records the clock realization that produced an incoming value and identifies its smear policy when known;
+  - trusted Tonic or materializer policy identifies the destination clock model and performs a defined transformation, preserves the result as unresolved, or rejects it.
+
+  A profile that rejects literal second [$ 60] can still receive a value produced by a smeared clock because such a value uses ordinary [$ 00-59] fields. For example, a service may emit a [$ Z]-qualified timestamp from a Google-style smear even though its clock is not exactly aligned with UTC during the smear window. The temporal convention must allow that provenance to qualify the lexical UTC claim. Core does not infer or convert smear behavior from [$ Z] or [$ &UTC].
+
+  A leap-aware Tonic targeting a non-leap-aware system MUST declare an export policy of [$ reject], [$ foldPrevious], [$ foldNext], [$ clampDown], [$ clampUp], or [$ smear]. [$ preserve] is available when the target itself is leap-aware:
+
+  | Policy | Export behavior |
+  | <-- | <-- |
+  | [$ preserve] | Retain the leap-aware value when the target supports it |
+  | [$ reject] | Fail rather than materialize a leap-second instant in the target |
+  | [$ foldPrevious] | Map second [$ 60] onto second [$ 59] while retaining the fractional position; this collides with the previous ordinary second |
+  | [$ foldNext] | Map second [$ 60] onto the following ordinary second while retaining the fractional position; this collides with that following second |
+  | [$ clampDown] | Map the entire leap interval to the greatest target-representable value before the leap boundary; this is explicitly lossy and depends on target precision |
+  | [$ clampUp] | Map the entire leap interval to the first target-representable value after the leap boundary; this is explicitly lossy and depends on target precision |
+  | [$ smear] | Transform using a named smear algorithm, interval, and version |
+  |~ Leap-aware Tonic export policies
+
+  Import policy is separately declared. A known smear may be inverted only when its algorithm and interval are available. Folded and clamped values are not uniquely invertible: even with provenance, the original position may be unrecoverable and must remain ambiguous or unresolved. Without adequate clock provenance, a Tonic MUST NOT infer that an ordinary [$ 00-59] value was unsmeared, smeared, folded, or clamped.
+
+  Document-provided [$ clockModel], [$ smearPolicy], timescale, offset, zone, and authority metadata are claims. They are preserved and presented to downstream consumers, but they do not execute a transformation or grant themselves trust. A resolving consumer must explicitly select its trusted source configuration, authority data, conflict behavior, and destination materialization policy.
+
+  Implementation limits are adapter properties rather than Core semantic limits. Examples include the 2038 boundary in some signed 32-bit timestamp systems, nanosecond ceilings, and database-specific date ranges. An implementation MUST report these as mapping limitations rather than declaring the source claim universally invalid.
+
+  ## 17. Temporal Values and Event Ordering [# temporal-values-and-event-ordering]
+
+  A timestamp is not a complete ordering relation for events. This proposal distinguishes:
+
+  - physical or resolved temporal order;
+  - causal order between events;
+  - serialization, ingestion, or source order.
+
+  Clock uncertainty, different timescales, unresolved civil values, concurrent events, and clock adjustments can make these orders disagree. AES and AEOS MUST NOT infer causality or a total event order solely from temporal fields. A profile that requires causal or deterministic ordering must provide separate sequence, dependency, or logical-clock claims.
+
+  ## 18. Year Range and Future Grammar [# year-range-and-future-grammar]
+
+  The current Core v1 surface uses exactly four unsigned year digits in [$ YYYY-MM-DD]. Current recognizers appear to admit [$ 0000] as a well-formed four-digit year.
+
+  The successor temporal grammar introduced at a declared version boundary SHALL begin at year [$ 0001]. Year [$ 0000], negative years, and BCE dates are not admitted by that grammar. This is an AEON domain decision and not a claim that ISO-derived astronomical year numbering lacks year zero.
+
+  Five-digit years are not part of the planned [$ 0.14.0] implementation line. The current future-expansion candidate remains an exact five-digit year:
+
+  ~~~$ text
+  YYYYY-MM-DD
+  10000-01-01 through 99999-12-31
+  ~~~$
+
+  Leading-zero five-digit aliases such as [$ 00001-01-01] are not admitted because they would create a second spelling for a four-digit-domain date. The five-digit expansion adds roughly ninety thousand years of capacity while keeping the migration small and deterministic. A future team may still choose a six-digit or wider successor before that range is exhausted; this proposal does not prescribe when that later review occurs.
+
+  This future change requires a separate Core version boundary. A reader implementing the current grammar must not reinterpret a five-digit prefix as a four-digit date plus trailing text. Cross-width temporal ordering is consequently deferred with that future grammar; no [$ 0.14.0] comparator is required to order four-digit years against five-digit years. Runtime limits that are narrower than Core remain mapping constraints under [@ #runtime-and-tonic-boundaries | runtime and Tonic boundaries].
+
+  Because proposals may not remain on the public specification surface indefinitely, the public Core value-types specification must retain a durable future-expansion requirement even before syntax is selected. Removal of this proposal must not remove that obligation.
+
+  ## 19. Comparison and Canonicalization [# comparison-canonicalization]
+
+  ### 19.1 Equality Domains [# temporal-equality-domains]
+
+  This proposal distinguishes four equality questions:
+
+  | Equality domain | Example |
+  | <-- | <-- |
+  | representation equality | Whether [$ .34] and [$ .340] retain the same authored spelling; they do not |
+  | field equality | Whether two calendar objects carry the same calendar identifier and field claims |
+  | temporal semantic equality | Whether two values denote the same exact value or completion set within the same temporal domain; [$ .34] and [$ .340] do |
+  | resolved-result equality | Whether two claims produce the same authority-backed date or instant under an adopted calendar, timescale, timezone, and reference-data policy |
+  |~ Temporal equality domains
+
+  Core and AES preserve representation. A temporal profile may define field, temporal semantic, or resolved-result equality. SANSA queries and indexes MUST identify the equality domain they use when more than representation equality is intended. No layer should silently substitute one equality domain for another.
+
+  ### 19.2 Reduced Precision as Completion Sets [# reduced-precision-completion-sets]
+
+  Structurally omitted minute or second fields are not silently filled with zero. Under temporal interpretation, a reduced-precision value denotes the set or half-open interval of fully specified coordinates compatible with the authored fields:
+
+  ~~~$ text
+  10:Z       -> [10:00:00, 11:00:00) within an otherwise selected UTC date
+  10:30Z     -> [10:30:00, 10:31:00) within an otherwise selected UTC date
+  2025-01-01T09Z -> [2025-01-01T09:00:00Z, 2025-01-01T10:00:00Z)
+  ~~~$
+
+  A time-only value still lacks a date. [$ 10:30Z] is therefore a UTC time-of-day constraint recurring across possible dates, not one global instant. Comparing it with [$ 2023-03-01T11:29Z] fails with insufficient temporal context unless trusted policy supplies a date and explicitly authorizes the cross-category comparison.
+
+  Once seconds are present, omission of a fractional part means the exact zero fractional coefficient rather than an unknown fraction. Thus [$ 10:30:00Z] names an exact time-of-day coordinate, although it still lacks a date, and [$ 10:30:00.34Z] is 340 milliseconds after it. [$ .34] and [$ .340] remain the same exact mathematical fraction with different authored representations.
+
+  A complete date, complete time through seconds, and known offset or UTC anchor can identify an instant, subject to leap-second, smear, and authority rules. A [$ -00:00] offset, unresolved civil context, or omitted date or clock field does not.
+
+  ### 19.3 Partial Temporal Relations and Total Sorting [# partial-temporal-relations]
+
+  A convention-aware temporal comparison should expose relations rather than force every pair into a three-way scalar comparison:
+
+  | Relation | Meaning |
+  | <-- | <-- |
+  | equal | The temporal semantic completion sets are identical in the selected comparison domain |
+  | before | Every completion of the left operand precedes every completion of the right operand |
+  | after | Every completion of the left operand follows every completion of the right operand |
+  | contains | Every completion of the right operand is included by the left operand, but the sets are not equal |
+  | containedBy | Every completion of the left operand is included by the right operand, but the sets are not equal |
+  | overlaps | The completion sets intersect, but neither contains the other and they are not equal |
+  | incomparable | Context is insufficient or the operands use incompatible temporal domains |
+  |~ Precision-aware temporal relations
+
+  Therefore [$ 10:Z] contains [$ 10:30Z]. They are not temporally equal, and neither is temporally before or after the other.
+
+  Equality MUST NOT mean merely "has at least one compatible completion." Such an overlap relation is not transitive: [$ 10:Z] is compatible with both [$ 10:10Z] and [$ 10:50Z], while those two minute ranges do not overlap.
+
+  A system may still require a deterministic total order for serialization, indexes, or user-interface sorting. That order is a canonical or presentation order, not temporal chronology. A profile may choose broader-first, narrower-first, lower-bound-first, or canonical-payload order, but it MUST name the policy and MUST NOT expose containment as temporal [$ <] or [$ >]. This proposal does not privilege broader-first over narrower-first.
+
+  Calendar-object key ordering follows ordinary AEON canonical object rules. This proposal does not define a new byte-level canonicalization algorithm for calendar semantics.
+
+  ## 20. Compatibility and Versioning [# compatibility]
+
+  Fractional seconds and second [$ 60] expand the current Core temporal grammar. Existing conforming readers that implement the current whole-second and [$ 00-59] requirements will reject the new spellings.
+
+  Adoption therefore requires coordinated changes to:
+
+  - the Core value-types and compliance specifications;
+  - lexer and temporal-recognition implementations;
+  - canonical and portable representations;
+  - cross-language conformance fixtures;
+  - syntax highlighting and documentation examples;
+  - Aeonic Semantic Language temporal profiles;
+  - SANSA temporal source-literal handling;
+  - websites and generated search indexes.
+
+  The grammar expansion should be feature-versioned or released at a declared compatibility boundary. A writer MUST NOT assume that an older reader accepts fractional seconds or second [$ 60].
+
+  The current implementation target is the cumulative [$ 0.14.0] line following [$ 0.13.0]. Its temporal scope includes fractional seconds, Core representation of second [$ 60], the [$ 0001-9999] four-digit year domain, temporal-context preservation changes, convention updates, and the executable general-purpose-schema rejection of second [$ 60]. Exact five-digit years are explicitly excluded and remain future work.
+
+  Before that release can claim the expanded Core seconds range, AEOS must expose and implement a temporal-field schema constraint capable of rejecting second [$ 60] for the general-purpose schema, with a stable diagnostic. The constraint must inspect preserved temporal structure rather than rely on an incidental lexer rejection. This is a release gate, not optional follow-up documentation.
+
+  The proposed [$ 0.14.0] constraint surface uses [$ temporal_max_second], [$ temporal_min_year], and [$ temporal_max_year]. The general-purpose schema sets them to [$ 59], [$ 1], and [$ 9999] respectively. These constraints apply only when the corresponding field is present; they do not zero-fill reduced-precision values. A field violation reports the stable diagnostic [$ temporal_field_constraint_mismatch], while an invalid declaration or use on an incompatible value reports the ordinary schema-definition or [$ constraint_inapplicable] diagnostic. The AEOS specification, contract types, general-purpose schema artifact, implementations, and conformance fixtures must adopt this surface together.
+
+  Calendar objects do not require a Core grammar change. They use existing object, datatype, attribute, and literal syntax. Their semantic adoption can proceed as a temporal-convention revision, with profiles or schemas adding executable validation when required.
+
+  ## 21. Proposed Conformance Cases [# conformance-cases]
+
+  ### 21.1 Core-Accepted Temporal Shapes [# accepted-temporal-shapes]
+
+  ~~~$ text
+  23:59:59.34
+  23:59:59.340000
+  23:59:60
+  23:59:60.5
+  2027-01-31T23:59:59.34
+  2027-01-31T23:59:59.34Z
+  2027-01-31T23:59:59.34+00:00
+  2027-01-31T23:59:59.34-00:00
+  2027-01-31T23:59:59.34+11:00
+  2027-01-31T23:59:59.34&local
+  2027-01-31T23:59:59.34Z&Australia/Melbourne
+  2027-01-31T23:59:60.5&UTC
+  2016-12-31T18:59:60-05:00
+  2017-01-01T12:59:60+13:00
+  2017-01-01T10:59:60+11:00&Australia/Melbourne
+  ~~~$
+
+  ### 21.2 Core-Rejected Temporal Shapes [# rejected-temporal-shapes]
+
+  ~~~$ text
+  23.5
+  23:59.5
+  23:59:59.
+  23:59:59,5
+  23:59:59.5e2
+  23:59:61
+  2025-02-29
+  ~~~$
+
+  ### 21.3 Downstream Temporal Results [# downstream-results]
+
+  A temporal profile should test that:
+
+  - [$ .34], [$ .340], and [$ .340000] may compare as the same mathematical fraction while remaining distinct representations;
+  - [$ 10:Z] contains but is not equal to [$ 10:30Z], and neither is temporally before or after the other;
+  - a time-only value such as [$ 10:30Z] is incomparable with a dated value unless trusted policy supplies the missing date and admits cross-category comparison;
+  - a deterministic sort order over overlapping or containing values is identified as canonical or presentational rather than chronological;
+  - an actual UTC leap second is authority-confirmed and maps to one candidate under an applicable reference-data version;
+  - a non-leap date carrying second [$ 60] is Core-valid but authority-contradicted and maps to zero candidates under a sufficiently complete UTC profile;
+  - a future second-[$ 60] claim may remain authority- and mapping-unresolved;
+  - UTC-style second [$ 60] under a continuous timescale may be rejected by that timescale profile;
+  - [$ Z&TAI] and a known numeric offset combined with [$ &TAI] are Core-preserved conflicts rejected by the general-purpose temporal schema;
+  - [$ Z], [$ +00:00], and [$ -00:00] remain representation-distinct, and [$ -00:00] is not resolved as a known zero offset;
+  - [$ -00:00&Australia/Melbourne] remains unknown-offset and unresolved as an exact instant rather than acquiring an inferred offset from the named zone;
+  - offset agreement with a named timezone is checked against the selected timezone-database data downstream rather than predicted by Core or frozen into the convention;
+  - UTC, negative-offset, positive-offset date-rollover, and named-zone spellings of the same authority-confirmed leap instant map consistently;
+  - a claim in an authority-declared negative leap gap first maps to [$ zero] candidates and then follows explicit [$ reject], [$ null], [$ previousValid], [$ nextValid], or [$ preserveClaim] materialization policy;
+  - changing timezone rules may change the resolution of a zone-anchored civil claim without changing an instant-anchored claim;
+  - a runtime adapter rejects or explicitly reports a value it cannot represent without loss;
+  - [$ M05L] remains distinct from [$ M05];
+  - redundant [$ month], [$ monthCode], and ISO-anchor claims must agree when a validator resolves them.
+
+  ## 22. Decisions and Deferred Questions [# open-questions]
+
+  Implementation testing closes the decisions required by the [$ 0.14.0] candidate:
+
+  1. **Recognized timescales.** The initial labels are exact uppercase [$ UTC], [$ TAI], [$ UT1], [$ TT], and [$ GPS]. Resolution semantics remain outside Core.
+  2. **Leap-aware requirements.** The test profile [$ aeon.test.temporal.leap-aware.v1] admits second [$ 60] under pinned authority data. Positive-leap policies are [$ preserve], [$ reject], [$ foldPrevious], [$ foldNext], [$ clampDown], [$ clampUp], and [$ smear]. Zero-candidate gap policies are [$ reject], [$ null], [$ previousValid], [$ nextValid], and [$ preserveClaim]. The general-purpose schema rejects second [$ 60].
+  3. **Smear identifiers.** A stable algorithm identifier is separate from authority version, retrieval time, and effective interval. Source clock realization remains convention metadata; destination behavior remains trusted Tonic or materializer policy.
+  4. **Context classification.** Precedence is exact [$ local], exact recognized timescale, exact [$ +/] named place, complete geographic form, timezone confirmed by trusted authority, another explicitly registered context, then [$ unresolved]. Slash-shaped text alone is not timezone proof.
+  5. **Temporal relations.** Completion-set relations remain SANSA or profile operations. AEOS supplies structural admission constraints and does not claim authority-backed temporal ordering.
+
+  Authority identifiers for observational calendars remain deferred. Their absence produces unresolved authority assessment rather than preventing preservation of a [$ calendarDate] or [$ calendarDateTime] object.
+
+  ## 23. Decision Gate [# decision-gate]
+
+  Adoption should confirm the following principles independently of the unresolved syntax choices:
+
+  - temporal values are authored claims, not automatic assertions of external truth;
+  - every resolved result retains or exposes its anchor and relevant authority provenance;
+  - Core remains broadly expressive while profiles may be deliberately narrower;
+  - [$ &] denotes temporal context and is not restricted to timezone identifiers;
+  - rule, place, coordinates, offset, UTC, and named timescale anchors remain distinguishable;
+  - externally versioned rules may change resolution without mutating the authored claim;
+  - the general-purpose schema rejects second [$ 60], while specialized leap-aware contracts may admit it;
+  - [$ -00:00] is preserved as an unknown or unspecified offset, never silently normalized to known zero;
+  - source clock realization and destination clock materialization are separate smear boundaries;
+  - temporal processing exposes profile status, authority assessment, and mapping cardinality separately;
+  - candidate selection follows a [$ many] mapping while explicit gap materialization follows a [$ zero] mapping;
+  - leap-aware Tonics select an explicit positive-leap export policy independently from an authority-declared negative-gap materialization policy, and declare import policy separately;
+  - the [$ 0.14.0] temporal grammar begins at [$ 0001] and remains four digits through [$ 9999]; exact five-digit years [$ 10000-99999] remain a separate future version-boundary proposal;
+  - the [$ 0.14.0] general-purpose schema includes executable second-[$ 60] rejection and stable diagnostics before the Core expansion ships;
+  - runtime limitations and lossy mappings are explicit;
+  - temporal position does not imply causal or serialization order;
+  - incompatible grammar expansions are versioned.
+
+  ## 24. Reference Alignment [# reference-alignment]
+
+  This proposal is self-contained, but its vocabulary is intentionally aligned with established temporal work:
+
+  - [@ https://www.rfc-editor.org/rfc/rfc3339 | RFC 3339] defines a decimal [$ time-secfrac] after seconds, permits second [$ 60] for an inserted leap second, and distinguishes an unknown local offset from a known zero offset;
+  - [@ https://unicode.org/reports/tr35/tr35-dates.html | Unicode LDML Part 4: Dates] defines interoperable calendar identifiers and calendar-specific date vocabulary;
+  - [@ https://tc39.es/proposal-temporal/ | ECMAScript Temporal] provides precedent for exact subsecond fields, explicit calendar association, and stable month codes that distinguish leap months.
+
+  These references inform spelling and interoperability. They do not transfer calendar conversion, leap-second validation, host-runtime precision limits, or external canonicalization rules into AEON Core.
+
+  ## 25. Non-Goals [# non-goals]
+
+  This proposal does not:
+
+  - define temporal arithmetic or duration and calendar-period arithmetic;
+  - embed a leap-second table in Core;
+  - choose a universal maximum number of fractional digits;
+  - equate decimal digit count with measurement accuracy;
+  - make every calendar fit a year-month-day model;
+  - define calendar conversion algorithms in Core;
+  - define TAI, UT1, TT, GPS, or other timescale conversion algorithms;
+  - make [$ monthName] authoritative;
+  - make [$ calendarDate] or [$ calendarDateTime] new Core literal kinds;
+  - define the profile semantics of [$ calendarDateTime\\["gregory"\\]];
+  - add new Core grammar for named places or coordinates; [$ &+/...] uses the existing WTC context grammar and receives place semantics from the temporal convention;
+  - define geographic-to-timezone resolution;
+  - embed timezone, leap-second, Earth-orientation, calendar, or geographic authority data in Core;
+  - treat a leap smear as ordinary UTC;
+  - define causal or serialization order from timestamps;
+  - define BCE, negative-year, or six-digit-and-wider syntax;
+  - add second-level numeric offsets; Core numeric offsets remain hour-and-minute forms;
+  - require every target runtime to represent every Core temporal value;
+  - guarantee that a structurally valid temporal claim identifies an existing instant;
+  - resolve timezone gaps or overlaps;
+  - determine conflict authority from untrusted document content.
+`

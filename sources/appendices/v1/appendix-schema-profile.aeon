@@ -251,6 +251,7 @@ body:prose = >`
   Projection notes:
 
   - [$ .aeos] loaders MUST project [$ path:sansa] and [$ selector:sansa] literals into the in-memory [$ SchemaV1] [$ path] or [$ selector] string fields.
+  - Native [$ min_value] and [$ max_value] constraints MUST be finite AEON number literals; loaders project their exact decimal lexemes into the in-memory [$ SchemaV1] string fields without machine-number coercion.
   - [$ reference_target_path] is the preferred authoring surface.
   - [$ reference_target_pattern] is an advanced fallback escape hatch.
   - Loaders MUST project [$ reference_target_path] into an equivalent internal target-matching form before invoking AEOS.

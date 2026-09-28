@@ -1,0 +1,9 @@
+schema_id = "aeon.test.temporal.tz-transition.schema.v1"
+schema_version = "0.1.0"
+description = "Test-only timezone transition schema; gap and overlap mapping remain resolver operations."
+world = "open"
+rules = []
+datatype_rules = {
+  datetime = { type = "DateTimeLiteral", temporal_max_second = 59, temporal_min_year = 1, temporal_max_year = 9999 }
+  wtc = { type = "WTCDateTimeLiteral", temporal_max_second = 59, temporal_min_year = 1, temporal_max_year = 9999, temporal_context_policy = "aeon.gp.temporal.v1" }
+}

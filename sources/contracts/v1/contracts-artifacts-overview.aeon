@@ -41,6 +41,18 @@ body:prose = >`
 
   Download the [@ /artifacts/assets/contracts/v1/schemas/aeon.gp.schema.v1.aeon | authoritative AEON schema artifact].
 
+  ### Temporal conformance profiles [# temporal-conformance-profiles]
+
+  The contract bundle also publishes three explicitly test-only profile and
+  schema pairs: [$ aeon.test.temporal.leap-aware.v1],
+  [$ aeon.test.temporal.tz-transition.v1], and
+  [$ aeon.test.temporal.calendar-precision.v1]. They are executable design
+  probes for the draft temporal work, not default production policy. Their
+  paired schema identifiers add [$ .schema] before [$ .v1].
+
+  Download the artifacts from the [$ profiles/] and [$ schemas/] directories,
+  or resolve their exact paths and hashes through [$ registry.json].
+
   ### [$ registry.json] [# registry-json]
 
   The registry file that maps published contract ids to their authoritative artifact paths. Consumers and tooling can use this as the trusted lookup surface for baseline contract resolution.

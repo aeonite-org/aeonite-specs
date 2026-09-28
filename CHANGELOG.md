@@ -17,6 +17,12 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Documented UTC, TAI, UT1, TT, and GPS timescales in the temporal convention, added the independent `timescale` attribute, clarified civil/zoned-civil/offset/universal/geographic anchoring, and recorded that Core and AES already preserve timescale-labelled WTC values as ordinary named temporal contexts.
+
+- Defined profile-independent radix fractional scale as preserved representation
+  metadata via `radixScale(...)`, without changing representation or numeric equality.
+
+- Defined the proposal-stage `aeon.value.radix.numeric.same-base.v1` and `aeon.value.radix.numeric.cross-base.v1` profiles for exact base-2-through-base-64 radix equality and ordering while preserving representation identity as the default. The same-base profile rejects mixed bases; the cross-base profile compares finite values with independently resolved bases as exact rationals without host-number conversion.
 - Replaced the legacy formal Markdown corpus with 79 canonical AEON envelopes containing embedded
   &ND documents, moved authoritative contract resources under `resources/`, and made generated
   website and compatibility projections downstream artifacts rather than checked-in sources.
@@ -67,6 +73,12 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Changed
 
+- Changed native `.aeos` authoring so `min_value` and `max_value` are AEON
+  number literals, while the portable `SchemaV1` representation retains exact
+  canonical number lexemes as strings.
+- Required exact numeric-bound comparison independent of binary floating-point,
+  safe-integer, and fixed-width integer limits, including bound syntax and
+  ordering validation.
 - Advanced the AEON v1 compliance and official-index conformance pointers to
   the immutable Core 0.3 and AEON-to-portable-AES projection 0.3 CTS manifests;
   historical generic-path snapshots remain unchanged.
@@ -195,6 +207,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### CTS Impact
 
+- Extended AEOS numeric-form coverage for exact decimals, integers beyond
+  signed 128-bit range, invalid bound lexemes, and reversed ranges.
 - Published immutable shared targets `aes-events-cts-v1-snapshot-0.1` and
   `telex-cts-v1-snapshot-0.1`, with pinned suite digests and independent
   JavaScript and Rust passes.
