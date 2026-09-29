@@ -17,6 +17,21 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Added reduced-granularity Core date literals: [$ YYYY-] for year ticks and
+  [$ YYYY-MM] for month ticks. They retain the existing [$ DateLiteral] family,
+  preserve authored granularity, and leave datetime/WTC date components at the
+  complete [$ YYYY-MM-DD] form.
+
+- Added the conceptual temporal-ticks appendix, distinguishing source-domain
+  granularity, tick extent, exact coordinates, resolved instants, operational
+  point treatment, mapping images, and tick stepping from elapsed-duration
+  arithmetic without changing AEON Core syntax.
+
+- Added the implementation-gated WTC zone-resolution appendix, consolidating
+  named-zone candidate mapping, offset agreement, overlap selection, gap
+  materialization, unknown-offset preservation, dual-anchor conflicts,
+  timezone-authority drift, and the production-profile adoption gate.
+
 - Documented UTC, TAI, UT1, TT, and GPS timescales in the temporal convention, added the independent `timescale` attribute, clarified civil/zoned-civil/offset/universal/geographic anchoring, and recorded that Core and AES already preserve timescale-labelled WTC values as ordinary named temporal contexts.
 
 - Defined profile-independent radix fractional scale as preserved representation

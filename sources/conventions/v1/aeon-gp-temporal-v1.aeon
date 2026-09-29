@@ -3,7 +3,7 @@ id:string = "aeon-gp-temporal-v1"
 title:string = "AEON GP Temporal v1"
 description:string = "Draft temporal convention for interpreting Core temporal and WTC literals with explicit reference, timescale, timezone database, calendar, clock-realization, smear-provenance, ambiguity, and conflict policy."
 created:date = 2026-05-13
-modified:date = 2026-09-28
+modified:date = 2026-09-29
 family:string = "conventions"
 group:string = "General-Purpose Conventions"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/conventions/aeon-gp-temporal-v1"
 order:number = 80
 publish:boolean = true
 keywords:list<string> = ["AEON", "temporal", "WTC", "timescale", "UTC", "TAI", "UT1", "TT", "GPS", "timezone", "geographic", "calendar", "leap smear", "clock realization", "ambiguity", "metadata"]
-related:list<string> = ["aeon-conventions-overview", "aeon-core-v1-value-types"]
+related:list<string> = ["aeon-conventions-overview", "aeon-core-v1-value-types", "appendix-wtc-zone-resolution-v1", "appendix-temporal-ticks-resolution-extent-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -229,9 +229,9 @@ body:prose = >`
   retain the original payload and MUST NOT fall through to a more convenient
   category after an authority lookup fails.
 
-  ### 2.6 Reduced Precision and Temporal Relations [# reduced-precision-and-relations]
+  ### 2.6 Reduced Precision, Temporal Ticks, and Relations [# reduced-precision-and-relations]
 
-  Omitted minute or second fields are unresolved fields, not implicit zeroes. A reduced-precision value denotes the set of fully specified temporal coordinates compatible with its authored fields. Within an otherwise selected UTC date:
+  Omitted minute or second fields are unasserted subordinate fields, not implicit zeroes or inherently unknown measurements. A reduced-precision value is one exact temporal tick at its authored granularity. When refined into a finer temporal domain, its tick extent is the set of fully specified temporal coordinates compatible with the authored fields. Within an otherwise selected UTC date:
 
   ~~~$ text
   10:Z    -> [10:00:00, 11:00:00)
@@ -239,6 +239,8 @@ body:prose = >`
   ~~~$
 
   A time-only value does not supply that date. It remains a recurring time-of-day constraint and is not comparable with a dated instant unless trusted consumer policy supplies the missing date and admits cross-category comparison.
+
+  Temporal tick, granularity, refinement, extent, exact coordinate, and instant are defined in [@ document:appendix-temporal-ticks-resolution-extent-v1 | the temporal-ticks appendix]. Tick extent describes semantic breadth at a finer granularity; it is not measurement uncertainty. Selecting [$ 10:00:00] as the lower boundary of [$ 10:Z] is an explicit boundary-selection operation rather than an identity-preserving zero fill.
 
   When seconds are explicitly present, an omitted fractional part means an exact zero fractional coefficient. This preserves the existing relationship in which [$ 10:30:00.34Z] is 340 milliseconds after [$ 10:30:00Z]. Measurement uncertainty is separate metadata and is not inferred from omitted fields or fractional digit count.
 
@@ -415,6 +417,8 @@ body:prose = >`
   |~ Temporal gap-materialization values
 
   Gap materialization is not resolution of the authored claim. [$ previousValid] and [$ nextValid] produce different coordinates and must be reported as explicit transformations. Duration-preserving shifts across a gap, if later admitted, require distinct policy names and are not implied by these boundary-selection policies.
+
+  [$ earlier] and [$ later] are reserved for selecting among existing candidates after a [$ many] mapping. They do not apply to a [$ zero]-candidate gap. The full named-zone mapping and policy model is consolidated in [@ document:appendix-wtc-zone-resolution-v1 | the WTC zone-resolution appendix].
 
   Example:
 
@@ -640,6 +644,8 @@ body:prose = >`
   |~ Temporal conflict-authority values
 
   A consumer performing authoritative temporal resolution MUST default to [$ "reject"] unless trusted host, profile, schema, or runtime configuration selects another value. Parsing, canonicalization, forwarding, and other preservation-only operations MAY retain conflicting inputs without selecting an authority. An arbitrary document MUST NOT grant itself conflict-resolution authority merely by carrying an attribute with this name.
+
+  For an unqualified [$ datetime&Zone] WTC claim, the named zone and local civil fields provide the zone anchor and there is no competing intrinsic instant anchor. A [$ datetime+hh:mm&Zone] claim is dual-anchored: the known offset derives an instant while the zone maps the local civil fields, and disagreement is a conflict governed by this policy. A [$ datetimeZ&Zone] claim is instant-anchored: [$ Z] qualifies the preceding fields as UTC, while the zone supplies projection context and MUST NOT cause those fields to be reinterpreted as zone-local time. A known offset may select an existing overlap candidate, but it cannot manufacture a candidate during a gap.
 
   ---
 

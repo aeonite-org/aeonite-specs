@@ -3,7 +3,7 @@ id:string = "aeon-v1-temporal-precision-calendar-values"
 title:string = "Proposal: Temporal Claims, Precision, Calendars, and Runtime Boundaries"
 description:string = "Proposal for temporal claims and anchors, fractional-second Core literals, structurally representable leap seconds, ISO-anchored dates, calendar-native objects, authority provenance, and explicit runtime boundaries."
 created:date = 2026-09-28
-modified:date = 2026-09-28
+modified:date = 2026-09-29
 family:string = "aeon"
 group:string = "Proposals"
 standing:string = "official"
@@ -14,7 +14,7 @@ path:string = "specification/aeon-v1-documentation/proposals/temporal-precision-
 order:number = 140
 publish:boolean = true
 keywords:list<string> = ["AEON", "temporal", "temporal claims", "anchors", "fractional seconds", "leap seconds", "leap smear", "calendars", "calendarDate", "calendarDateTime", "ISO 8601", "WTC", "timescales", "profiles", "runtime boundaries", "precision"]
-related:list<string> = ["aeon-core-v1-value-types", "aeon-core-v1-compliance", "aeon-gp-temporal-v1", "aeonic-semantic-language-v1", "aes-events-v1"]
+related:list<string> = ["aeon-core-v1-value-types", "aeon-core-v1-compliance", "aeon-gp-temporal-v1", "aeonic-semantic-language-v1", "aes-events-v1", "appendix-wtc-zone-resolution-v1", "appendix-temporal-ticks-resolution-extent-v1"]
 bodyFormat:string = "and-v2"
 
 body:prose = >`
@@ -43,6 +43,7 @@ body:prose = >`
   - [$ Z], [$ +00:00], and [$ -00:00] remain distinct authored claims even where two of them resolve to the same instant;
   - [$ &] introduces temporal context rather than exclusively naming a timezone;
   - omitted minute or second fields define reduced-precision completion sets rather than implicit zeroes;
+  - Core [$ date] literals admit year, month, and day granularity as [$ YYYY-], [$ YYYY-MM], and [$ YYYY-MM-DD];
   - containment and overlap remain distinct from equality and chronological ordering;
   - Core [$ YYYY-MM-DD] dates remain attached to the ISO 8601 calendar, using proleptic Gregorian year-month-day rules;
   - convention metadata cannot reinterpret the digits of a Core date as fields from another calendar;
@@ -118,21 +119,32 @@ body:prose = >`
 
   ## 5. Core Date Invariant [# core-date-invariant]
 
-  A Core date literal of the form [$ YYYY-MM-DD] is an ISO 8601 calendar date using proleptic Gregorian year-month-day rules.
+  A Core date literal uses one of three ISO-calendar shapes:
+
+  ~~~$ ebnf
+  Date ::= Year "-" | Year "-" Month | Year "-" Month "-" Day
+  ~~~$
+
+  The trailing hyphen distinguishes a year-granularity date such as [$ 2029-] from the ordinary number [$ 2029]. A year-month value such as [$ 2029-01] has month granularity. A complete [$ YYYY-MM-DD] value has day granularity. Datetime and WTC literals continue to require a complete [$ YYYY-MM-DD] date component before [$ T].
 
   ~~~$ aeon
+  releaseYear:date = 2029-
+  releaseMonth:date = 2029-01
   releaseDate:date = 2029-01-19
   ~~~$
 
   The literal is not a calendar-neutral tuple. Supplemental metadata does not change [$ 2029] into a year from another calendar and does not reinterpret [$ 01] as a calendar-specific month.
 
-  Core therefore continues to validate intrinsic ISO date relationships, including:
+  Core therefore validates every authored ISO field, including:
 
+  - the four-digit year domain;
   - month range;
   - day range for the selected month;
   - ISO leap-year rules for February 29.
 
-  For example, [$ 2024-02-29] is a valid Core date and [$ 2025-02-29] is not.
+  For example, [$ 2024-], [$ 2024-02], and [$ 2024-02-29] are valid Core dates, while [$ 0000-], [$ 2024-00], [$ 2024-13], and [$ 2025-02-29] are not.
+
+  Omitted date fields are unasserted subordinate fields, not implicit first-month or first-day values. Under a completion-set comparison, [$ 2024-] contains [$ 2024-02], and [$ 2024-02] contains [$ 2024-02-29]. Selecting lower or upper boundaries is an explicit operation rather than identity-preserving zero filling.
 
   This rule describes the proleptic ISO calendar used by the literal. It does not claim that the Gregorian calendar was historically in civil use at the represented place and date.
 
@@ -618,9 +630,9 @@ body:prose = >`
 
   Core and AES preserve representation. A temporal profile may define field, temporal semantic, or resolved-result equality. SANSA queries and indexes MUST identify the equality domain they use when more than representation equality is intended. No layer should silently substitute one equality domain for another.
 
-  ### 19.2 Reduced Precision as Completion Sets [# reduced-precision-completion-sets]
+  ### 19.2 Reduced Precision as Tick Extents and Completion Sets [# reduced-precision-completion-sets]
 
-  Structurally omitted minute or second fields are not silently filled with zero. Under temporal interpretation, a reduced-precision value denotes the set or half-open interval of fully specified coordinates compatible with the authored fields:
+  Structurally omitted minute or second fields are not silently filled with zero. Under temporal interpretation, a reduced-precision value is one exact temporal tick at its authored granularity. Its refinement into a finer domain yields the tick extent or completion set of fully specified coordinates compatible with the authored fields:
 
   ~~~$ text
   10:Z       -> [10:00:00, 11:00:00) within an otherwise selected UTC date
@@ -629,6 +641,8 @@ body:prose = >`
   ~~~$
 
   A time-only value still lacks a date. [$ 10:30Z] is therefore a UTC time-of-day constraint recurring across possible dates, not one global instant. Comparing it with [$ 2023-03-01T11:29Z] fails with insufficient temporal context unless trusted policy supplies a date and explicitly authorizes the cross-category comparison.
+
+  The tick vocabulary does not make every finite temporal representation an interval. [@ document:appendix-temporal-ticks-resolution-extent-v1 | The temporal-ticks appendix] distinguishes reduced-granularity ticks and their finer extents from exact coordinates, resolved instants, measurement resolution, and uncertainty.
 
   Once seconds are present, omission of a fractional part means the exact zero fractional coefficient rather than an unknown fraction. Thus [$ 10:30:00Z] names an exact time-of-day coordinate, although it still lacks a date, and [$ 10:30:00.34Z] is 340 milliseconds after it. [$ .34] and [$ .340] remain the same exact mathematical fraction with different authored representations.
 
@@ -748,6 +762,7 @@ body:prose = >`
   3. **Smear identifiers.** A stable algorithm identifier is separate from authority version, retrieval time, and effective interval. Source clock realization remains convention metadata; destination behavior remains trusted Tonic or materializer policy.
   4. **Context classification.** Precedence is exact [$ local], exact recognized timescale, exact [$ +/] named place, complete geographic form, timezone confirmed by trusted authority, another explicitly registered context, then [$ unresolved]. Slash-shaped text alone is not timezone proof.
   5. **Temporal relations.** Completion-set relations remain SANSA or profile operations. AEOS supplies structural admission constraints and does not claim authority-backed temporal ordering.
+  6. **Named-zone resolution.** [@ document:appendix-wtc-zone-resolution-v1 | The WTC zone-resolution appendix] consolidates normal, overlap, gap, unknown-offset, dual-anchor conflict, and timezone-authority drift behavior. [$ earlier] and [$ later] select existing overlap candidates; [$ previousValid] and [$ nextValid] are explicit transformations after a zero-candidate gap.
 
   Authority identifiers for observational calendars remain deferred. Their absence produces unresolved authority assessment rather than preventing preservation of a [$ calendarDate] or [$ calendarDateTime] object.
 

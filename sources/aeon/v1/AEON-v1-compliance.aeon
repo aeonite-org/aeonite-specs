@@ -243,27 +243,29 @@ body:prose = >`
   Implementations MUST:
 
   1. treat temporal range validity as part of literal recognition rather than a later semantic-only phase;
-  2. reject [$ date] literals with invalid month/day combinations;
-  3. support leap-year date validity for February 29;
-  4. reject [$ time] literals whose hour is outside [$ 00-23];
-  5. reject [$ time] literals whose minute is outside [$ 00-59] or whose second is outside [$ 00-60];
-  6. apply the same bounded calendar/clock rules when recognizing [$ datetime] literals;
-  7. continue to accept the Core v1 partial forms already admitted by grammar shape, including hour-precision [$ time] ([$ 09:]) and [$ datetime] ([$ 2025-01-01T09]);
-  8. allow UTC/offset suffixes on valid reduced-precision time forms, including [$ 09:30Z], [$ 09:+02:00], and [$ 09:30+02:00];
-  9. allow UTC/offset suffixes on valid reduced-precision [$ datetime] forms, including [$ 2025-01-01T09Z], [$ 2025-01-01T09+02:00], and [$ 2025-01-01T09:30Z];
-  10. allow WTC temporal-context suffixes on valid reduced-precision datetime bases, including [$ 2025-01-01T09&Europe/Belgium/Brussels], [$ 2025-01-01T09Z&Europe/Belgium/Brussels], [$ 2025-01-01T09:30Z&local], [$ 2025-01-01T09+02:00&local], [$ 2025-01-01T09Z&America/Port-au-Prince], [$ 2025-01-01T09Z&Etc/GMT+1], [$ 2026-01-01T09:10:00+01:00&+/Antarctica/Elisabeth], [$ 2035-01-01T09:00&-36.7590183/144.2826718], and [$ 2035-01-01T09:00Z&-36.7590183/144.2826718/213], and classify them as [$ wtc] literals;
-  11. reserve exact lowercase [$ local] as the resolver-local WTC temporal context and reject case variants such as [$ Local] and [$ LOCAL];
-  12. treat uppercase [$ Z] as the UTC marker form and reject lowercase [$ z] as a temporal literal marker.
-  13. permit one or more decimal fractional digits only after a complete seconds field, preserve their authored scale and trailing zeroes, and reject a decimal point with no following digit;
-  14. admit exactly four-digit years [$ 0001-9999] and reject year [$ 0000];
-  15. reject second-level numeric offsets such as [$ +10:30:15]; Core numeric offsets contain hours and minutes only.
+  2. accept [$ date] literals at year, month, and day granularity as [$ YYYY-], [$ YYYY-MM], and [$ YYYY-MM-DD], preserving the authored granularity in the [$ DateLiteral] payload;
+  3. reject [$ date] literals with invalid authored fields, including year [$ 0000], month [$ 00] or [$ 13], and invalid month/day combinations;
+  4. support leap-year date validity for February 29;
+  5. require the date component of [$ datetime] and [$ wtc] literals to use the complete [$ YYYY-MM-DD] form;
+  6. reject [$ time] literals whose hour is outside [$ 00-23];
+  7. reject [$ time] literals whose minute is outside [$ 00-59] or whose second is outside [$ 00-60];
+  8. apply the same bounded calendar/clock rules when recognizing [$ datetime] literals;
+  9. continue to accept the Core v1 partial forms already admitted by grammar shape, including hour-precision [$ time] ([$ 09:]) and [$ datetime] ([$ 2025-01-01T09]);
+  10. allow UTC/offset suffixes on valid reduced-precision time forms, including [$ 09:30Z], [$ 09:+02:00], and [$ 09:30+02:00];
+  11. allow UTC/offset suffixes on valid reduced-precision [$ datetime] forms, including [$ 2025-01-01T09Z], [$ 2025-01-01T09+02:00], and [$ 2025-01-01T09:30Z];
+  12. allow WTC temporal-context suffixes on valid reduced-precision datetime bases, including [$ 2025-01-01T09&Europe/Belgium/Brussels], [$ 2025-01-01T09Z&Europe/Belgium/Brussels], [$ 2025-01-01T09:30Z&local], [$ 2025-01-01T09+02:00&local], [$ 2025-01-01T09Z&America/Port-au-Prince], [$ 2025-01-01T09Z&Etc/GMT+1], [$ 2026-01-01T09:10:00+01:00&+/Antarctica/Elisabeth], [$ 2035-01-01T09:00&-36.7590183/144.2826718], and [$ 2035-01-01T09:00Z&-36.7590183/144.2826718/213], and classify them as [$ wtc] literals;
+  13. reserve exact lowercase [$ local] as the resolver-local WTC temporal context and reject case variants such as [$ Local] and [$ LOCAL];
+  14. treat uppercase [$ Z] as the Core v1 UTC marker form and reject lowercase [$ z] as a temporal literal marker.
+  15. permit one or more decimal fractional digits only after a complete seconds field, preserve their authored scale and trailing zeroes, and reject a decimal point with no following digit;
+  16. admit exactly four-digit years [$ 0001-9999] and reject year [$ 0000];
+  17. reject second-level numeric offsets such as [$ +10:30:15]; Core numeric offsets contain hours and minutes only.
 
   The datatype label [$ zdt] is reserved for a possible future zoned datetime type. AEON Core v1 implementations MUST NOT treat [$ zdt] as an operational Core v1 datatype or recognize bracketed zoned-datetime syntax as Core v1 temporal syntax.
 
   Examples:
 
-  - valid: [$ 2024-02-29], [$ 09:], [$ 09:30], [$ 09:30Z], [$ 09:+02:00], [$ 2025-01-01T09Z], [$ 2025-01-01T09+02:00], [$ 2025-01-01T09&Europe/Belgium/Brussels], [$ 2025-01-01T09:30Z&local], [$ 2035-01-01T09:00&-36.7590183/144.2826718], [$ 2035-01-01T09:00Z&-36.7590183/144.2826718/213], [$ 23:59:59], [$ 23:59:59.3400], [$ 23:59:60], [$ 2024-02-29T09:30:00]
-  - invalid: [$ 0000-01-01], [$ 2025-02-29], [$ 2025-13-40], [$ 24:00], [$ 99:99], [$ 23:59:61], [$ 23:59:59.], [$ 09:30z], [$ 09:30+10:30:15], [$ 2025-01-01T09:30Z&/]
+  - valid: [$ 2024-], [$ 2024-02], [$ 2024-02-29], [$ 09:], [$ 09:30], [$ 09:30Z], [$ 09:+02:00], [$ 2025-01-01T09Z], [$ 2025-01-01T09+02:00], [$ 2025-01-01T09&Europe/Belgium/Brussels], [$ 2025-01-01T09:30Z&local], [$ 2035-01-01T09:00&-36.7590183/144.2826718], [$ 2035-01-01T09:00Z&-36.7590183/144.2826718/213], [$ 23:59:59], [$ 23:59:59.3400], [$ 23:59:60], [$ 2024-02-29T09:30:00]
+  - invalid: [$ 0000-], [$ 2024-00], [$ 2024-13], [$ 2024-2], [$ 0000-01-01], [$ 2025-02-29], [$ 2025-13-40], [$ 2024-02T09:30], [$ 24:00], [$ 99:99], [$ 23:59:61], [$ 23:59:59.], [$ 09:30z], [$ 09:30+10:30:15], [$ 2025-01-01T09:30Z&/]
 
   ## 11. Node Requirements [# node-requirements]
 

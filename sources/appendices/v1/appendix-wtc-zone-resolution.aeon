@@ -1,0 +1,436 @@
+schemaVersion:string = "1"
+id:string = "appendix-wtc-zone-resolution-v1"
+title:string = "Appendix — WTC Zone, Offset, Overlap, and Gap Resolution"
+description:string = "Draft resolution model for WTC named-zone claims, explicit offsets, timezone overlaps and gaps, authority drift, and profile-controlled conflict handling."
+created:date = 2026-09-29
+modified:date = 2026-09-29
+family:string = "appendices"
+group:string = "Temporal"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "mixed"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-wtc-zone-resolution-v1"
+order:number = 260
+publish:boolean = true
+keywords:list<string> = ["AEON", "WTC", "temporal", "timezone", "offset", "overlap", "gap", "tzdb", "ambiguity", "resolution", "profiles"]
+related:list<string> = ["aeon-gp-temporal-v1", "aeon-v1-temporal-precision-calendar-values", "appendix-temporal-ticks-resolution-extent-v1", "aeon-core-v1-value-types", "aeos-v1", "aeonic-semantic-language-v1", "appendix-profiles-framework-v1", "appendix-tonic-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — WTC Zone, Offset, Overlap, and Gap Resolution [# wtc-zone-resolution]
+
+  ## Status [# status]
+
+  This is an implementation-gated draft. It consolidates the WTC named-zone resolution model proposed for the broader AEON temporal work. It is not yet an adopted Core rule or a production resolver profile.
+
+  The appendix refines [@ document:aeon-gp-temporal-v1 | [$ aeon.gp.temporal.v1]] and [@ document:aeon-v1-temporal-precision-calendar-values | the temporal claims proposal]. Where this appendix conflicts with an adopted canonical specification, the adopted specification controls until the draft is promoted.
+
+  ## 1. Purpose [# purpose]
+
+  A WTC value can preserve several independently meaningful temporal components:
+
+  ~~~$ aeon
+  t:wtc = 2027-04-04T02:30:00+10:00&Australia/Melbourne
+  ~~~$
+
+  That value carries local civil fields, a known numeric offset, and a named timezone context. These components may agree, may expose an overlap, may describe a gap, or may disagree because of construction error or different timezone authority data.
+
+  This appendix defines:
+
+  - which anchors are preserved by each WTC form;
+  - how a resolver obtains zero, one, or many candidates from named-zone rules;
+  - how a known or unknown numeric offset participates in that result;
+  - how overlap selection differs from gap materialization;
+  - how the existing [$ conflictAuthority], [$ disambiguation], and [$ gapPolicy] vocabularies apply;
+  - which behavior belongs to Core, conventions, profiles, resolvers, and runtime adapters;
+  - which failure conditions must remain distinguishable.
+
+  ## 2. Scope and Non-Goals [# scope]
+
+  This appendix specifies a semantic resolution model. It does not:
+
+  - change WTC literal syntax;
+  - validate timezone identifiers in AEON Core;
+  - embed timezone database contents in a specification or parser;
+  - select the executing host's timezone database implicitly;
+  - define timezone arithmetic or recurrence behavior;
+  - make a document-carried policy trusted merely because it appears in input;
+  - require all processors to resolve a WTC claim to an instant;
+  - define second-level numeric offsets.
+
+  Preservation-only processors may carry all components without resolving them. A processor claiming authority-backed resolution must follow the distinctions in this appendix and the adopted profile.
+
+  ## 3. Layer Boundaries [# layer-boundaries]
+
+  | Layer | Responsibility |
+  | <-- | <-- |
+  | AEON Core | Recognize and preserve WTC syntax and its authored components without consulting timezone data |
+  | Temporal convention | Classify context and define shared anchors, result dimensions, and policy vocabulary |
+  | Schema or profile | Admit or reject forms and select trusted resolution requirements and defaults |
+  | Authoritative resolver | Map local civil fields under a selected named zone and pinned authority data, then report candidates, agreement, conflicts, and provenance |
+  | Tonic or runtime adapter | Materialize, transform, preserve, or reject a resolver result under an explicit destination policy |
+  |~ WTC named-zone responsibility boundaries
+
+  These stages must not be collapsed into parser behavior. A structurally accepted WTC value is a representable claim, not proof that its zone exists, its offset agrees, or its local civil reading identifies an instant.
+
+  ## 4. Terms [# terms]
+
+  **Local civil fields** are the authored calendar and clock fields before a named-zone mapping is selected.
+
+  A **zone anchor** preserves the identity of a named timezone ruleset and, for an unqualified WTC value, the authored local civil reading interpreted within that ruleset.
+
+  An **instant anchor** preserves a UTC coordinate or a coordinate derived from a known numeric offset.
+
+  A **candidate** is an instant and applicable offset produced by mapping local civil fields under a named zone and a selected timezone authority release.
+
+  This appendix's candidate model applies directly to complete local coordinates. A reduced-granularity temporal tick may instead map to one or more target regions, including partial or disjoint images. [@ document:appendix-temporal-ticks-resolution-extent-v1 | The temporal-ticks appendix] defines that vocabulary without changing the complete-coordinate rules below.
+
+  A **normal mapping** produces one candidate. An **overlap** produces two or more candidates. A **gap** produces zero candidates. An **unresolved mapping** means that required zone or authority information was unavailable or insufficient.
+
+  **Authority drift** is a change in the result caused by using different timezone data, not by changing the authored WTC representation.
+
+  ## 5. Preserved Anchors by WTC Form [# preserved-anchors]
+
+  | Form | Preserved semantic anchors | Initial interpretation |
+  | <-- | <-- | <-- |
+  | [$ datetime&Zone] | local civil fields and zone | zone-anchored civil claim |
+  | [$ datetime-00:00&Zone] | local civil fields, zone, and an explicit assertion that the authored offset is unknown | zone-anchored civil claim with unknown offset provenance |
+  | [$ datetime+hh:mm&Zone] | local civil fields, zone, and a known offset-derived instant | dual-anchored claim requiring agreement assessment |
+  | [$ datetimeZ&Zone] | UTC coordinate and zone projection context | instant-anchored claim; UTC fields are not reinterpreted as zone-local fields |
+  |~ WTC forms and preserved anchors
+
+  The named zone is the resolution authority for an unqualified zoned-civil claim because that form contains no competing instant anchor. A known offset or [$ Z] adds an independently meaningful instant anchor. It does not mutate the zone's rules, and the zone does not erase the intrinsic instant claim.
+
+  Consequently, the general rule is not that a zone always wins. Dual-anchored claims preserve both inputs, expose agreement or conflict, and apply trusted [$ conflictAuthority] policy only after assessment.
+
+  ## 6. Resolution State Model [# resolution-state-model]
+
+  Temporal processing reports separate dimensions:
+
+  | Dimension | Outcomes |
+  | <-- | <-- |
+  | profile status | [$ admitted], [$ rejected] |
+  | authority assessment | [$ confirmed], [$ contradicted], [$ unresolved] |
+  | zone mapping cardinality | [$ zero], [$ one], [$ many], [$ unresolved] |
+  | offset agreement | [$ matching], [$ nonmatching], [$ unknown], [$ absent], [$ notApplicable] |
+  | disposition | [$ preserved], [$ selected], [$ transformed], [$ null], [$ rejected], [$ unresolved] |
+  |~ WTC resolution dimensions
+
+  These states are not interchangeable. An overlap may be admitted and authority-confirmed while mapping to many candidates. A gap may be admitted and authority-confirmed while mapping to zero. A known offset may identify an instant even when the corresponding zone-local fields map to zero, leaving a conflict rather than a valid zoned instant.
+
+  ## 7. Named-Zone Candidate Mapping [# named-zone-candidate-mapping]
+
+  Let [$ L] be the authored local civil fields, [$ ZN] a named zone, and [$ A] the selected timezone authority data. A resolver conceptually evaluates:
+
+  ~~~$ text
+  M = mapZoneLocal(L, ZN, A)
+  ~~~$
+
+  The result is:
+
+  ~~~$ text
+  |M| = 0    gap
+  |M| = 1    normal mapping
+  |M| >= 2   overlap
+  unavailable authority or zone data    unresolved mapping
+  ~~~$
+
+  Profile policy is applied after this temporal condition is identified. A policy must not relabel a gap as an overlap, an ambiguity as invalid syntax, or absent authority data as a confirmed mapping.
+
+  ## 8. Numeric-Offset Participation [# numeric-offset-participation]
+
+  Let [$ O] be an authored known numeric offset, and let:
+
+  ~~~$ text
+  F = { candidate in M where candidate.offset = O }
+  ~~~$
+
+  A known offset has two roles:
+
+  1. it independently derives an instant from the local fields; and
+  2. when zone mapping candidates exist, it can confirm or select candidates already admitted by the zone.
+
+  It never changes the zone rules or creates a member of [$ M]. Therefore:
+
+  | Zone mapping | Offset result |
+  | <-- | <-- |
+  | one candidate and one offset match | confirmed normal mapping |
+  | one candidate and no offset match | offset/zone conflict |
+  | many candidates and a matching offset | offset selects the unique existing overlap candidate |
+  | many candidates and no offset match | offset/zone conflict; ordinary disambiguation must not conceal it |
+  | zero candidates | zone-local gap; the offset-derived instant remains an independent conflicting anchor |
+  | unresolved mapping | agreement remains unresolved |
+  |~ Known-offset participation in named-zone mapping
+
+  For fixed local fields and a fixed numeric offset, the derived instant is unique. A candidate set therefore cannot contain multiple distinct matches for the same offset; a resolver must deduplicate such output before applying policy.
+
+  ## 9. UTC-Qualified WTC [# utc-qualified-wtc]
+
+  In:
+
+  ~~~$ aeon
+  t:wtc = 2027-01-31T23:59:59Z&Australia/Melbourne
+  ~~~$
+
+  [$ Z] applies to the preceding datetime. The fields are UTC fields and identify an instant subject to the selected UTC clock-realization model. [$ &Australia/Melbourne] supplies projection context for displaying or evaluating that instant under the zone.
+
+  A resolver must not first interpret [$ 23:59:59] as Melbourne local time and then convert it to UTC. If timezone rules later change, the UTC coordinate remains anchored while its projected Melbourne civil reading may change.
+
+  ## 10. Normal Local Time [# normal-local-time]
+
+  A normal local reading maps to exactly one candidate:
+
+  ~~~$ aeon
+  t:wtc = 2027-04-04T03:30:00+10:00&Australia/Melbourne
+  ~~~$
+
+  If the selected zone authority gives [$ +10:00], the known offset confirms the candidate. If it gives another offset, the source contains two incompatible anchors. The resolver reports the mismatch and applies [$ conflictAuthority]; it does not silently rewrite either claim during validation.
+
+  ## 11. Overlap [# overlap]
+
+  During a backward clock transition, the same local reading may map to more than one instant:
+
+  ~~~$ aeon
+  first:wtc = 2027-04-04T02:30:00+11:00&Australia/Melbourne
+  second:wtc = 2027-04-04T02:30:00+10:00&Australia/Melbourne
+  ~~~$
+
+  If both offsets occur among the authority-backed candidates, each known offset selects its matching occurrence. The offset disambiguates; it does not override the zone.
+
+  Without a matching known offset, [$ disambiguation] controls a [$ many]-candidate result:
+
+  | Policy | Result |
+  | <-- | <-- |
+  | [$ earlier] | select the earlier existing candidate |
+  | [$ later] | select the later existing candidate |
+  | [$ reject] | reject selection from the ambiguous mapping |
+  | [$ preserve] | preserve the candidate set without selecting one |
+  |~ Overlap-selection policy
+
+  [$ earlier] and [$ later] are candidate-selection terms. They apply only when candidates exist and must not be reused as names for gap transformations.
+
+  ## 12. Unknown Offset [# unknown-offset]
+
+  [$ -00:00] asserts that the authored numeric offset is unknown or unspecified. It is representation- and meaning-distinct from known zero [$ +00:00] and from UTC [$ Z].
+
+  ~~~$ aeon
+  t:wtc = 2027-04-04T02:30:00-00:00&Australia/Melbourne
+  ~~~$
+
+  A trusted resolver may still use the civil fields, zone, and authority data to compute zero, one, or many candidates. It must preserve the source's unknown-offset assertion and must not pretend that the source supplied the resolved offset.
+
+  In an overlap, [$ -00:00] cannot select an occurrence. In a normal mapping, a resolver may report one derived candidate, but any exact offset is resolver-derived rather than authored. In a gap, the mapping remains zero. A processor lacking trusted zone data leaves the result unresolved.
+
+  A profile field such as [$ unknown_offset_precedence = true] means that no normalization or inference may overwrite the authored unknown-offset claim. It does not forbid a trusted resolver from separately reporting a derived zone mapping.
+
+  ## 13. Gap [# gap]
+
+  During a forward transition, some local civil readings have no zone-backed candidate:
+
+  ~~~$ aeon
+  unknown:wtc = 2027-10-03T02:30:00-00:00&Australia/Melbourne
+  beforeOffset:wtc = 2027-10-03T02:30:00+10:00&Australia/Melbourne
+  afterOffset:wtc = 2027-10-03T02:30:00+11:00&Australia/Melbourne
+  ~~~$
+
+  All three have the same zone-local mapping result:
+
+  ~~~$ text
+  mapZoneLocal(2027-10-03T02:30:00, Australia/Melbourne, A) = zero candidates
+  ~~~$
+
+  No offset can manufacture a valid zone candidate. A known offset can still derive an independent instant anchor, so the latter two representations expose a conflict between that instant and the nonexistent zone-local reading. They do not become valid zoned instants.
+
+  [$ gapPolicy] controls subsequent materialization:
+
+  | Policy | Result |
+  | <-- | <-- |
+  | [$ reject] | refuse to materialize the gap |
+  | [$ null] | produce a reason-bearing typed null |
+  | [$ previousValid] | transform to the nearest target coordinate before the gap |
+  | [$ nextValid] | transform to the nearest target coordinate after the gap |
+  | [$ preserveClaim] | preserve the authored claim without manufacturing a coordinate |
+  |~ Gap-materialization policy
+
+  [$ previousValid] and [$ nextValid] are explicitly lossy boundary transformations. They are not synonyms for overlap [$ earlier] and [$ later], and they do not imply duration-preserving shifts. Any future shift-by-gap-duration operation needs its own policy name and definition.
+
+  ## 14. Consolidated Profile Policies [# profile-policies]
+
+  Three independent policy axes apply after admission and assessment.
+
+  ### 14.1 Conflict Authority [# conflict-authority]
+
+  [$ conflictAuthority] handles disagreement between independent anchors:
+
+  | Policy | Result |
+  | <-- | <-- |
+  | [$ reject] | reject inconsistent inputs; mandatory default for authoritative resolution unless trusted configuration says otherwise |
+  | [$ temporal] | retain the intrinsic known-offset or UTC instant; the zone becomes projection context and any changed projection must be reported |
+  | [$ reference] | retain the named-zone interpretation; replacing or disregarding an intrinsic instant is an explicit transformation |
+  | [$ preserve] | retain both claims and the conflict without choosing an authority |
+  |~ Conflict-authority policy
+
+  ### 14.2 Overlap Selection [# overlap-selection]
+
+  [$ disambiguation] applies only after a [$ many] mapping. Its values are [$ reject], [$ earlier], [$ later], and [$ preserve]. A matching authored known offset normally selects an existing candidate before fallback disambiguation is needed. A nonmatching offset is a conflict, not permission to ignore the mismatch and select by position.
+
+  ### 14.3 Gap Materialization [# gap-materialization]
+
+  [$ gapPolicy] applies only after a [$ zero] mapping. Its values are [$ reject], [$ null], [$ previousValid], [$ nextValid], and [$ preserveClaim]. Gap materialization changes or defers the result; it never retroactively makes the original civil reading valid.
+
+  These axes must remain separate. A profile must not use one broad [$ strict] or [$ lenient] label without defining the resulting value for each axis.
+
+  ## 15. Convention and Profile Distinctions [# convention-profile-distinction]
+
+  Existing artifacts have different roles:
+
+  | Artifact | Role |
+  | <-- | <-- |
+  | [$ aeon.gp.temporal.v1] | Shared convention vocabulary and interpretation model; not a timezone resolver |
+  | [$ aeon.gp.schema.v1] | General-purpose structural admission, including second-[$ 60] rejection; not a timezone authority |
+  | [$ aeon.gp.profile.v1] | General-purpose baseline composition; does not silently select timezone resolution behavior |
+  | [$ aeon.test.temporal.tz-transition.v1] | Test-only, parameterized matrix for gap, overlap, offset conflict, and unknown-offset cases |
+  | [$ aeon.test.temporal.leap-aware.v1] | Separate test-only coverage for leap-aware behavior and clock policies |
+  |~ Existing temporal convention and profile roles
+
+  Arrays in the timezone-transition test profile enumerate conformance cases. They are not multiple simultaneously active production defaults.
+
+  A production resolver profile must select or require:
+
+  - a trusted timezone authority identifier and version policy;
+  - behavior when the authority lacks the zone or date range;
+  - exactly one default conflict-authority policy;
+  - exactly one default overlap-selection policy;
+  - exactly one default gap-materialization policy;
+  - whether and how a trusted operation can override those defaults;
+  - provenance recorded for a resolved or transformed result;
+  - canonicalization and permitted information-loss behavior;
+  - handling when the host runtime cannot represent the selected result.
+
+  Test fixtures must pin timezone authority data rather than depend on the host's current timezone database.
+
+  ## 16. Authority Drift [# authority-drift]
+
+  Producer and consumer timezone data may disagree because of legislative changes, corrected historical data, different releases, or different implementations.
+
+  A future civil commitment such as:
+
+  ~~~$ aeon
+  meeting:wtc = 2035-04-01T09:00:00&Australia/Melbourne
+  ~~~$
+
+  preserves the Melbourne civil reading and is re-resolved under the selected zone authority. A recorded known offset may later become nonmatching and reveal the earlier interpretation.
+
+  An instant-anchored value such as:
+
+  ~~~$ aeon
+  observed:wtc = 2035-03-31T22:00:00Z&Australia/Melbourne
+  ~~~$
+
+  preserves its UTC coordinate. Changed zone rules may change only its projected Melbourne reading.
+
+  A resolver must expose the timezone authority and version used for the result when reproducibility is required. Document-carried provenance is still a claim; trusted configuration selects the actual authority.
+
+  ## 17. Failure Classes [# failure-classes]
+
+  **Representability does not imply validity.** AEON permits temporal claims to preserve incomplete, ambiguous, inconsistent, or unresolved source information where the applicable syntax permits it. Profiles and trusted resolvers determine whether such claims are acceptable for a particular operation. A processor must not manufacture certainty merely to produce a resolvable value.
+
+  | Condition | Mapping or agreement | Typical cause |
+  | <-- | <-- | <-- |
+  | normal | one mapping | ordinary zoned civil reading |
+  | ambiguous | many mappings | transition overlap with no selecting offset |
+  | nonexistent | zero mappings | transition gap |
+  | inconsistent | nonmatching anchors | supplied offset conflicts with zone mapping |
+  | unresolved | unavailable assessment | missing zone, authority release, or coverage |
+  | interpretation mismatch | result differs by authority | producer and consumer use different timezone data |
+  | zone alias or equivalence | same candidates under selected authority data but distinct authored zone identifiers | alias substitution, link-target canonicalization, or inference from currently identical rules |
+  | information loss | one or more anchors removed | transformation drops offset, zone, or provenance |
+  |~ WTC temporal failure classes
+
+  Unknown is not invalid. Ambiguous is not nonexistent. Inconsistent is not necessarily malformed. Unresolved is not contradicted. An implementation must report the condition before applying policy.
+
+  Zone equivalence is authority- and version-scoped, not representation equality. Two zone identifiers may be aliases or produce identical candidates under one timezone database release while remaining distinct authored zone anchors. Equal offsets alone never establish zone equivalence. A resolver may report a confirmed alias or equivalent-rule relationship under its selected authority data, but it must preserve the authored identifier. A canonicalizer or transformer must not replace it with a link target or preferred name unless a trusted profile explicitly authorizes that transformation and its result retains the original identifier or records the information loss.
+
+  ## 18. Transformation Failure Modes [# transformation-failure-modes]
+
+  ### 18.1 Incorrect Construction [# incorrect-construction]
+
+  Attaching a zone or hardcoded offset without consulting the rules for the relevant date can create a mismatch or a nonexistent local reading. The presence of an offset does not repair a gap.
+
+  ### 18.2 Offset Loss [# offset-loss]
+
+  Reducing:
+
+  ~~~$ text
+  2027-04-04T02:30:00+11:00&Australia/Melbourne
+  ~~~$
+
+  to an unqualified or [$ -00:00] form loses the information that selected the first overlap occurrence. The result must not be presented as the same uniquely identified instant.
+
+  ### 18.3 Zone Loss [# zone-loss]
+
+  Reducing a dual-anchored value to [$ 2027-04-04T02:30:00+10:00] may preserve an instant but loses its civil-zone anchor. Later calendar arithmetic cannot assume continued alignment with Melbourne wall time.
+
+  ### 18.4 Provenance Loss [# provenance-loss]
+
+  Dropping timezone authority version or transformation records can make an earlier resolution irreproducible even when the serialized fields remain unchanged.
+
+  ## 19. Canonicalization and Preservation [# canonicalization]
+
+  Canonicalization must not perform authority-backed resolution unless a selected profile explicitly makes resolution part of that canonical form. A representation-preserving canonicalizer must retain:
+
+  - [$ Z], [$ +00:00], and [$ -00:00] as distinct authored forms;
+  - the named zone text;
+  - a known offset even when it currently agrees with the zone;
+  - conflicting anchors unless an authorized transformation produces a different value and records that fact;
+  - unresolved, ambiguous, and nonexistent claims when the selected disposition is preservation.
+
+  Resolution output should be represented as a result with provenance, not silently substituted for the source claim.
+
+  ## 20. Conformance Scenarios [# conformance-scenarios]
+
+  The conformance suite should cover at least:
+
+  1. an unqualified named-zone reading with one candidate;
+  2. a normal mapping with matching and nonmatching known offsets;
+  3. an overlap selected by each matching offset;
+  4. an overlap with no offset and with [$ -00:00] under every overlap policy;
+  5. an overlap with a known offset matching no candidate;
+  6. a gap with absent, unknown, pre-transition, post-transition, and unrelated offsets;
+  7. every gap-materialization policy, including reason-bearing null output;
+  8. each [$ conflictAuthority] outcome for a dual-anchored mismatch;
+  9. [$ Z&Zone] projection without reinterpretation of the UTC fields;
+  10. differing pinned timezone authority releases producing a visible interpretation mismatch;
+  11. authority data unavailable or outside its declared coverage;
+  12. preservation through AES and AEOS without implicit resolution;
+  13. offset-loss, zone-loss, and provenance-loss detection;
+  14. stable diagnostics for rejected cases;
+  15. two distinct zone identifiers that are aliases or rule-equivalent under pinned authority data, verifying identical resolved candidates where applicable while preserving representation and zone-anchor identity, plus a non-equivalent control case that merely shares the same offset.
+
+  ## 21. Adoption Gate [# adoption-gate]
+
+  This appendix remains draft until:
+
+  - the consolidated vocabulary is exercised by the timezone-transition test profile and CTS fixtures;
+  - fixtures use pinned timezone authority data and do not vary with the host environment;
+  - resolver behavior distinguishes admission, authority assessment, mapping, agreement, and disposition;
+  - AEOS and AES preservation boundaries are verified;
+  - Tonic materialization exposes every transformation and loss;
+  - at least two implementations agree on overlap, gap, unknown-offset, and dual-anchor conflict cases;
+  - the resulting behavior is promoted into the appropriate canonical specification and production profile documents.
+
+  ## 22. Deferred Questions [# deferred-questions]
+
+  The following remain outside this appendix's adopted requirements:
+
+  - temporal arithmetic and recurrence semantics across gaps and overlaps;
+  - duration-preserving gap shifts, if any, and their policy names;
+  - the exact result object or event shape used to expose candidates and provenance;
+  - production profile identifiers and versioning;
+  - canonical resolved-result serialization;
+  - retention duration and trust rules for historical timezone authority data;
+  - interaction with any future dedicated zoned-datetime transport type.
+`
