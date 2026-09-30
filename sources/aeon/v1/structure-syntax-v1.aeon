@@ -474,8 +474,9 @@ body:prose = >`
   Notes:
 
   - backtick strings may span newlines as string values, but backtick keys are not valid core keys;
-  - trimticks are multiline string values introduced by a contiguous [$ >] through [$ >>>>] marker immediately before a backtick string opener;
-  - trimticks trim the first empty line, trailing empty lines, and common left indentation according to the marker's tab policy;
+  - trimticks are multiline string values introduced by a single [$ >] marker immediately before a backtick string opener;
+  - trimticks trim the first empty line, trailing empty lines, and the minimum common run of the gutter character selected by the first nonblank payload line;
+  - a first line beginning with U+0009 TAB selects a tab gutter; all other first-line forms select U+0020 SPACE, and neither character is assigned a visual width;
   - separator literals are compact tokens; outside quoted string segments they terminate at the first character that is not valid raw separator payload or at an enclosing grammar boundary.
   - symbolic literals begin at [$ \|] in value position and continue to the matching unescaped [$ \|]. Whitespace and comment markers inside are content, while [$ \\\|] represents a literal pipe.
   - for worked boundary examples, see [@ document:appendix-whitespace-boundaries-v1 | [$ appendices/appendix-whitespace-boundaries]].

@@ -17,6 +17,11 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Replaced width-bearing trimtick markers with a single [$ >] opener and
+  defined exact gutter normalization: the first nonblank payload line selects
+  U+0020 SPACE or U+0009 TAB, the minimum common run is removed, mixed
+  indentation remains valid payload, and marker-width metadata is retired.
+
 - Added nonempty pipe-delimited symbolic literals, the reserved [$ :symbol]
   datatype, and the distinct AES [$ SymbolicLiteral] kind. Symbols use
   string-style escapes plus [$ \\|], remain distinct from strings, have no

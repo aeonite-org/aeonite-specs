@@ -291,7 +291,7 @@ body:prose = >`
   | Family | Surface | Transport Example | Strict Example | AES [$ value.type] |
   | <-- | <-- | <-- | <-- | <-- |
   | String | [$ "..."], [$ '...'], [$ \`...\`] | [$ name = "John"] | [$ name:string = "John"] | [$ StringLiteral] |
-  | Trimtick | [$ >\`...\`] through [$ >>>>\`...\`] | [$ note = >>\`...\`] | [$ note:trimtick = >>\`...\`] | [$ StringLiteral] |
+  | Trimtick | [$ >\`...\`] | [$ note = >\`...\`] | [$ note:trimtick = >\`...\`] | [$ StringLiteral] |
   | Number | [$ 42],[.] [$ 3.14],[.] [$ .5],[.] [$ 1e3],[.] [$ 1_000] | [$ count = 42] | [$ count:number = 42] | [$ NumberLiteral] |
   | Infinity | [$ Infinity], [$ -Infinity] | [$ top = Infinity] | [$ top:infinity = Infinity] | [$ InfinityLiteral] |
   | NaN | [$ NaN], [$ -NaN] | [$ bad = NaN] | [$ bad:nan = NaN] | [$ NaNLiteral] |
@@ -393,7 +393,7 @@ body:prose = >`
     two
   \`
 
-  note:trimtick = >>\`
+  note:trimtick = >\`
       one
     two
   \`
@@ -407,27 +407,31 @@ body:prose = >`
 
   Syntax:
 
-  - trimticks start with a contiguous [$ >] through [$ >>>>] marker;
+  - trimticks start with a single [$ >] marker;
   - the marker must be followed by a backtick string opener;
-  - spaces between the contiguous marker and the backtick opener are accepted;
-  - the marker itself may not be split.
+  - spaces between the marker and the backtick opener are accepted;
+  - repeated markers such as [$ >>], [$ >>>], and [$ >>>>] are invalid.
 
   Trimming rules:
 
   - trim the first empty line after the opener, if present;
   - trim trailing empty lines before the closer;
-  - inspect the remaining non-empty lines to determine common left indentation;
-  - remove that indentation according to the marker's tab policy;
-  - preserve trailing whitespace on non-empty lines;
+  - normalize whitespace-only interior lines to empty lines and exclude them from gutter analysis;
+  - determine the gutter character from the first nonblank line: [$ TAB] when that line begins with U+0009 TAB, otherwise [$ SPACE];
+  - measure each nonblank line's gutter depth as its initial run of the gutter character;
+  - an unindented line or a line beginning with the other whitespace character has depth [$ 0];
+  - the other whitespace character after a non-empty gutter run terminates the run and remains payload;
+  - remove the minimum gutter depth from every nonblank line;
+  - preserve trailing whitespace on nonblank lines;
   - preserve interior blank lines as blank lines;
   - if all remaining lines are empty, the resulting value is the empty string.
 
-  Marker-width policy:
+  Gutter policy:
 
-  - [$ >\`]: spaces-only indentation analysis; tabs remain payload;
-  - [$ >>\`]: tabs normalize to width [$ 2] for indentation analysis;
-  - [$ >>>\`]: tabs normalize to width [$ 3] for indentation analysis;
-  - [$ >>>>\`]: tabs normalize to width [$ 4] for indentation analysis.
+  - U+0020 SPACE and U+0009 TAB are compared as exact code points;
+  - tabs are never assigned a visual width or converted to spaces during parsing;
+  - mixed source indentation is valid and may reduce the common gutter depth to zero;
+  - source-aware linters may warn about suspicious alignment, but indentation style is not a Core validity rule.
 
   Single-line trimticks are valid and behave like ordinary raw backtick content,
   because there is no multiline gutter to remove.
@@ -443,7 +447,7 @@ body:prose = >`
 
   AES:
 
-  - [$ StringLiteral] with trimtick parser metadata preserved.
+  - [$ StringLiteral]; source-aware parser metadata may preserve the raw trimtick payload, but no marker-width field exists.
 
   ## 3.3 Number [# number-2]
 

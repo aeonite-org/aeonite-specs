@@ -228,8 +228,8 @@ body:prose = >`
   kind-specific field name.
   
   Source spelling is normalized before the event enters AES. Quoted, backtick,
-  and trimtick strings all become [$ kind=StringLiteral]; trimtick width and
-  indentation are source mechanics. Numeric separators and the leading AEON
+  and trimtick strings all become [$ kind=StringLiteral]; the trimtick marker
+  and source gutter are source mechanics. Numeric separators and the leading AEON
   sigils for hex, radix, encoding, and separator values are not transported.
   Symbol delimiters and source escape spelling are likewise not transported;
   [$ SymbolicLiteral] carries the decoded payload.
