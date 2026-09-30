@@ -3,7 +3,7 @@ id:string = "appendix-grammar-flow-v1"
 title:string = "Appendix — Grammar Flow Cards"
 description:string = "Informative parser-context flow cards for AEON Core v1 keys, attributes, types, values, containers, references, and comments."
 created:date = 2026-05-04
-modified:date = 2026-08-24
+modified:date = 2026-09-30
 family:string = "appendices"
 group:string = "Core Appendices"
 standing:string = "official"
@@ -145,6 +145,7 @@ body:prose = >`
   | [$ !] form | null literal |
   | boolean/toggle keyword | boolean or toggle |
   | [$ #], [$ %], [$ $], [$ ^] literal token | hex, radix, encoding, separator literal |
+  | [$ \|] | symbolic literal through the matching unescaped [$ \|] |
   | trimtick opener | trimtick string |
   |~ AEON value-start dispatch
 

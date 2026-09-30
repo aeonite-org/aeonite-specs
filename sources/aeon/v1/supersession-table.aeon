@@ -3,7 +3,7 @@ id:string = "aeon-v1-supersession-table"
 title:string = "v1 Supersession Table"
 description:string = "Shows which v1 documents are canonical for each topic and how appendices relate to the main specification set."
 created:date = 2026-08-21
-modified:date = 2026-09-05
+modified:date = 2026-09-29
 family:string = "aeon"
 group:string = "Publication"
 standing:string = "official"
@@ -75,9 +75,11 @@ body:prose = >`
   | [$ appendix-profiles-framework.md] | informative summary | profile governance also covered by [$ AEON-spec-v1.md] and contracts docs |
   | [$ appendix-reference-philosophy.md] | informative appendix | conceptual only |
   | [$ appendix-schema-profile.md] | implementation-ahead appendix | no stable canonical replacement yet |
+  | [$ appendix-temporal-ticks-resolution-extent-v1] | conceptual vocabulary draft | temporal convention and future arithmetic profiles own adopted behavior |
   | [$ appendix-tonic.md] | informative appendix | downstream processor guidance |
   | [$ appendix-transport.md] | informative appendix | transport/framing guidance |
   | [$ appendix-validator-conformance.md] | decision-needed | validator boundary wording still under cleanup |
+  | [$ appendix-wtc-zone-resolution-v1] | implementation-gated draft | [$ aeon.gp.temporal.v1] and the temporal claims proposal own current vocabulary |
   |~ Appendix publication status and canonical topic ownership
 
   ## Use Guidance [# use-guidance]

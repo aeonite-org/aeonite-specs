@@ -1,0 +1,345 @@
+schemaVersion:string = "1"
+id:string = "appendix-temporal-ticks-resolution-extent-v1"
+title:string = "Appendix — Temporal Ticks, Granularity, Extent, and Instants"
+description:string = "Conceptual vocabulary for temporal ticks, finer-grained extent, exact coordinates, timeline instants, mapping images, and future temporal arithmetic."
+created:date = 2026-09-29
+modified:date = 2026-09-29
+family:string = "appendices"
+group:string = "Temporal"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "mixed"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-temporal-ticks-resolution-extent-v1"
+order:number = 270
+publish:boolean = true
+keywords:list<string> = ["AEON", "temporal", "tick", "granularity", "resolution", "extent", "instant", "interval", "precision", "arithmetic"]
+related:list<string> = ["aeon-gp-temporal-v1", "aeon-v1-temporal-precision-calendar-values", "appendix-wtc-zone-resolution-v1", "aeon-core-v1-value-types", "aeonic-semantic-language-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Temporal Ticks, Granularity, Extent, and Instants [# temporal-ticks]
+
+  ## Status [# status]
+
+  This is a conceptual vocabulary draft for the broader AEON temporal model. It introduces no AEON Core syntax, literal kind, datatype, arithmetic operator, or runtime requirement.
+
+  Its purpose is to prevent a temporal value expressed at a discrete granularity from being confused with either an uncertain instant or a zero-duration position on a resolved timeline. Stable definitions may later move into the temporal convention, glossary, comparison profiles, or a future temporal-arithmetic specification.
+
+  ## 1. Motivation [# motivation]
+
+  Temporal values are often divided informally into points and ranges. A year or calendar date is usually described as a range, while a second, millisecond, or nanosecond is often described as an instant. No representational scale creates a principled boundary between those intuitions.
+
+  A value can instead be understood in its source temporal domain at its authored granularity. Some such values identify one discrete cell, or **temporal tick**. When refined into a finer domain, that tick may have an extent containing finer ticks. When anchored and mapped to a timeline, it may correspond to zero, one, or several positions or regions.
+
+  These are different questions:
+
+  - which value was authored in the source temporal domain;
+  - at what granularity it was authored;
+  - what finer-grained extent it represents;
+  - whether it identifies an exact coordinate;
+  - how it maps through calendar, timezone, timescale, and authority rules;
+  - whether an operation is allowed to approximate it as point-like.
+
+  ## 2. Core Vocabulary [# vocabulary]
+
+  ### 2.1 Temporal Domain [# temporal-domain]
+
+  A **temporal domain** is the coordinate system in which a temporal value is expressed. Examples include an ISO calendar, a civil clock, UTC under a selected realization, a named timescale, or a calendar-and-zone combination under selected authority data.
+
+  A domain determines which fields and values exist and how they are ordered or refined. Domain identity is therefore part of temporal meaning.
+
+  ### 2.2 Temporal Granularity [# temporal-granularity]
+
+  **Temporal granularity** identifies the discrete scale at which a temporal value is expressed, such as year, month, day, hour, minute, second, or a profile-defined subdivision.
+
+  This appendix prefers **granularity** over unqualified **resolution** because resolution also describes the operation that maps or disambiguates a temporal claim. A document may use **tick resolution** as a synonym only when the intended meaning cannot be confused with authority-backed temporal resolution.
+
+  Granularity is not measurement accuracy, uncertainty, or fractional digit count.
+
+  ### 2.3 Temporal Tick [# temporal-tick]
+
+  A **temporal tick** is one discrete value in a temporal domain at a declared or implied granularity.
+
+  A tick is exact as a member of that source domain. Finer fields outside its granularity are unasserted rather than unknown measurements or implicit zeroes.
+
+  Examples of conceptual ticks include:
+
+  ~~~$ text
+  2027                    one year-granularity calendar tick
+  2027-04                 one month-granularity calendar tick
+  2027-04-04              one day-granularity calendar tick
+  2027-T02                one year-by-hour-granularity civil tick
+  2027-04T02:30           one month-by-minute-granularity civil tick
+  2027-04-04T02           one hour-granularity civil tick
+  2027-04-04T02:30        one minute-granularity civil tick
+  ~~~$
+
+  AEON Core represents the year and year-month ticks above as [$ 2027-] and [$ 2027-04], respectively. The trailing hyphen distinguishes a year-granularity date from an ordinary number. These reduced-granularity dates preserve their authored fields without inserting a month or day. A datetime or WTC value may compose any year-, month-, or day-granularity date tick with a clock tick after [$ T]; omitted calendar fields remain unasserted.
+
+  ### 2.4 Tick Extent [# tick-extent]
+
+  A **tick extent** is the set of finer-grained coordinates represented by a tick under an explicitly selected refinement model.
+
+  For an ordered linear refinement, the extent is commonly described as a half-open region beginning at the tick's lower boundary and ending at the successor tick's lower boundary. Other temporal domains may require a different structure and must state it.
+
+  Extent is semantic breadth, not epistemic uncertainty. Refinement subdivides the tick; it does not reveal that the authored tick was incomplete or incorrect.
+
+  ### 2.5 Instant [# instant]
+
+  An **instant** is a position on a resolved timeline under a selected timescale, clock realization, and applicable authority model. An instant has no granularity-derived duration merely because a representation uses finitely many fields or digits.
+
+  An authored UTC or known-offset value may provide an instant anchor without proving that its source clock exactly realized that timeline. Authority-backed resolution and provenance remain separate.
+
+  ### 2.6 Exact Coordinate [# exact-coordinate]
+
+  An **exact temporal coordinate** identifies one coordinate in its domain rather than one cell whose subordinate coordinates are left unasserted.
+
+  A grammar or profile determines when a representation is tick-denoting and when it is coordinate-denoting. Lexical finiteness alone does not decide this.
+
+  ### 2.7 Operational Point [# operational-point]
+
+  An **operational point** is a tick or extent that an operation explicitly treats as point-like because its breadth is irrelevant within the operation's tolerance or working granularity.
+
+  Treating a tick as an operational point is an approximation or domain rule. It does not redefine the tick as a mathematical instant and must not be silently exported into a context requiring finer semantics.
+
+  ### 2.8 Tick Step [# tick-step]
+
+  A **tick step** moves to a successor or predecessor tick in the same temporal domain and granularity. A tick step is not necessarily an elapsed duration. Advancing one calendar month, one zoned civil day, and a fixed number of elapsed seconds are different operations.
+
+  ### 2.9 Mapping Image [# mapping-image]
+
+  A **mapping image** is the set of target-timeline positions or regions produced when a temporal coordinate, tick, or extent is interpreted through selected calendar, timezone, timescale, and authority rules.
+
+  A mapping image may be empty, point-like, connected, repeated, partial, or disjoint. A resolver must report the applicable structure rather than manufacture a single instant for convenience.
+
+  ## 3. Tick Identity [# tick-identity]
+
+  Tick identity requires more than a unit label. Depending on the domain, it includes:
+
+  - the temporal system or coordinate domain;
+  - the tick's coordinate value;
+  - its granularity;
+  - its origin or alignment rule when not intrinsic to the domain;
+  - its boundary convention;
+  - applicable calendar, zone, timescale, and authority identifiers where resolution is requested.
+
+  For example, **15-minute tick** is insufficient to identify a grid. The profile must state whether ticks align to the hour, an epoch, a session boundary, or another origin. Natural calendar fields may supply their own alignment rules, but those rules still belong to the selected calendar domain.
+
+  Two ticks may have equal elapsed extents under one mapping without having the same identity. Two zone-derived day ticks may also share a civil label while producing different timeline images under different authority versions.
+
+  ## 4. Tick Exactness and Uncertainty [# exactness-and-uncertainty]
+
+  A coarse tick is not an imprecise finer coordinate. For example, an hour-granularity value does not inherently mean that a minute was observed but lost. It makes no minute-level claim.
+
+  The following concepts remain separate:
+
+  | Concept | Meaning |
+  | <-- | <-- |
+  | coarse granularity | subordinate coordinates are outside the represented value |
+  | missing expected information | a schema expected a finer field that was not supplied |
+  | measurement uncertainty | the physical quantity may differ from the reported coordinate within stated bounds |
+  | unresolved mapping | anchoring or authority information is insufficient to map the value |
+  | ambiguity | more than one mapping satisfies the available claims |
+  |~ Granularity and uncertainty distinctions
+
+  A schema or observation convention may state that missing fields represent lost or unknown information. That interpretation is additional metadata; it is not inferred merely from a coarse temporal form.
+
+  ## 5. Refinement and Extent [# refinement]
+
+  Refinement relates one temporal domain or granularity to a finer one. Conceptually:
+
+  ~~~$ text
+  one hour tick
+      -> minute-granularity extent
+      -> second-granularity extent
+      -> finer extents selected by the domain
+  ~~~$
+
+  A refinement operation must identify:
+
+  - the source and target domains;
+  - the finer granularity;
+  - boundary inclusion;
+  - calendar or timescale rules;
+  - authority data where the result is externally determined.
+
+  Refinement is not zero-filling. Converting the hour tick [$ 09] into the coordinate [$ 09:00:00] selects its lower boundary; it does not preserve the original tick semantics unless the operation explicitly returns both the boundary and the source extent.
+
+  ## 6. Tick Versus Instant [# tick-versus-instant]
+
+  A tick and an instant answer different questions:
+
+  | Concept | Question |
+  | <-- | <-- |
+  | temporal tick | Which discrete value at granularity [$ G] was expressed? |
+  | tick extent | Which finer coordinates belong to that value? |
+  | instant | Which position on the resolved timeline is identified? |
+  | operational point | Is an operation allowed to ignore the extent? |
+  |~ Tick and instant distinction
+
+  Point-likeness is operationally relative; instant identity is not. A one-second tick may be negligible for a scheduling operation and substantial for high-frequency measurement. In both cases it remains a tick unless the applicable semantics defines the representation as one exact coordinate or explicitly selects a representative instant.
+
+  ## 7. Existing AEON Temporal Semantics [# existing-aeon-semantics]
+
+  This vocabulary does not redefine every AEON temporal token as a tick extent.
+
+  Under [@ document:aeon-gp-temporal-v1 | [$ aeon.gp.temporal.v1]]:
+
+  - [$ 2025-01-01T09Z] is an hour-granularity datetime tick whose finer completion set spans the compatible hour under the selected UTC date;
+  - [$ 2025-01-01T09:30Z] is a minute-granularity datetime tick;
+  - [$ 2025-01-01T09:30:00Z] has seconds explicitly present and an omitted fraction means an exact zero fractional coefficient;
+  - [$ 2025-01-01T09:30:00.34Z] carries the exact decimal fraction [$ .34], not an automatically inferred ten-millisecond bin;
+  - measurement accuracy and uncertainty require separate metadata.
+
+  Thus the grammar's field-completeness rules determine whether a form denotes a reduced-granularity tick or an exact coordinate. The number of displayed decimal digits preserves representation and may describe scale, but it does not by itself impose measurement uncertainty or a tick extent.
+
+  ## 8. Calendar Ticks [# calendar-ticks]
+
+  Calendar values are natural examples of ticks because calendar fields define discrete cells whose elapsed lengths may vary.
+
+  A Core [$ YYYY-MM-DD] date identifies one ISO calendar date. A temporal convention or operation may treat that date as a day-granularity calendar tick. It must not silently replace the date with the instant at the beginning of that day because doing so introduces a time, offset or zone, timescale, and boundary selection that the date did not contain.
+
+  Calendar-native objects may represent year, month, week, day, era, or calendar-specific cells. Their tick identity depends on the calendar and applicable authority data, not only on similarly named fields.
+
+  ## 9. Fixed and Variable Extents [# fixed-and-variable-extents]
+
+  Some tick extents have fixed elapsed durations within an applicable timescale model. Others do not.
+
+  Examples include:
+
+  - a calendar month with a variable number of days;
+  - a zoned civil day whose elapsed duration changes across a timezone transition;
+  - a UTC-labelled interval affected by leap-second or smear policy;
+  - an observational calendar cell whose boundaries require authority data.
+
+  Tick identity and elapsed duration must therefore remain distinct. A profile must not implement calendar-tick arithmetic by substituting a fixed elapsed duration unless that equivalence is an explicit domain rule.
+
+  ## 10. Zoned Civil Ticks [# zoned-civil-ticks]
+
+  Consider the reduced-granularity WTC claim:
+
+  ~~~$ aeon
+  t:wtc = 2027-04-04T02&Australia/Melbourne
+  ~~~$
+
+  It expresses one hour-granularity local civil tick anchored to Melbourne's named-zone context. Mapping its extent through selected timezone authority data is a separate operation.
+
+  The point-candidate model in [@ document:appendix-wtc-zone-resolution-v1 | the WTC zone-resolution appendix] applies directly to complete local coordinates. Mapping a tick extent generalizes that model from point candidates to target regions. Depending on transitions and tick boundaries, the mapping image may be:
+
+  - one connected region;
+  - multiple repeated or disjoint regions;
+  - empty;
+  - partially mapped;
+  - unresolved because authority data is unavailable.
+
+  The authored civil tick remains one source-domain value regardless of the cardinality or shape of its mapping image.
+
+  ## 11. Overlaps, Gaps, and Partial Mapping [# overlap-gap]
+
+  During a backward transition, a civil tick may map repeatedly. Multiplicity in the timeline image does not imply that multiple source ticks were authored.
+
+  During a forward transition, a civil tick may map to no target region if its entire extent lies in a gap. A tick that only intersects a transition gap may have a partially mapped image. An arbitrary or coarse tick may span valid time, a transition discontinuity, and further valid time, producing a more complex image than the zero/one/many model for a single complete coordinate.
+
+  An offset may select or confirm a compatible part of a mapping image under a future profile, but it must not manufacture regions excluded by the named-zone rules. Exact selection semantics for extent-valued mappings remain deferred.
+
+  ## 12. Granularity, Mapping Resolution, and Measurement [# resolution-distinction]
+
+  The word **resolution** is overloaded. Specifications should prefer the following terms:
+
+  | Term | Meaning |
+  | <-- | <-- |
+  | temporal granularity | the discrete scale of the represented value |
+  | refinement | expansion of a tick into a finer domain or extent |
+  | temporal mapping | application of anchors and authority rules to obtain a target image |
+  | disambiguation | selection among existing mappings |
+  | measurement resolution | the smallest change an observation system claims to distinguish |
+  | measurement uncertainty | bounds on the unknown difference between observation and quantity |
+  |~ Preferred temporal resolution terminology
+
+  Fine granularity does not guarantee a resolved mapping or accurate measurement. Coarse granularity does not imply uncertainty.
+
+  ## 13. Equality and Relations [# equality-and-relations]
+
+  Future profiles should distinguish at least:
+
+  | Relation domain | Question |
+  | <-- | <-- |
+  | representation equality | Are the authored forms identical under the selected representation rules? |
+  | tick identity | Are domain, coordinate, granularity, alignment, and boundary rules the same? |
+  | extent equality | Do the ticks refine to the same finer-coordinate set? |
+  | containment or overlap | How do their extents relate? |
+  | mapped-image equality | Do they map to the same target-timeline positions or regions under pinned authority data? |
+  | instant equality | Do exact resolved coordinates identify the same timeline position? |
+  |~ Tick-aware equality domains
+
+  For example, an hour tick may contain a minute tick without being equal to it and without being chronologically before or after it. Equal mapped images do not necessarily imply equal tick identity or representation.
+
+  ## 14. Arithmetic Vocabulary [# arithmetic]
+
+  This appendix does not define arithmetic, but future work should keep these operations distinct:
+
+  - **tick stepping**, which moves between cells in one domain and granularity;
+  - **calendar arithmetic**, which applies calendar field rules;
+  - **civil arithmetic**, which preserves selected wall-clock intent through zone rules;
+  - **elapsed-duration arithmetic**, which moves along a resolved timeline by a duration;
+  - **boundary selection**, which chooses a lower, upper, or other representative coordinate from an extent;
+  - **quantization**, which maps a coordinate or finer tick onto a coarser tick grid;
+  - **rounding**, which selects a tick according to a declared direction and tie policy;
+  - **refinement**, which exposes a tick's finer extent without selecting one constituent coordinate.
+
+  Arithmetic results must state which operation occurred. Adding one day tick, preserving local clock fields into the next day, and adding 86,400 elapsed seconds can produce different results.
+
+  ## 15. Relationship to AEON [# relationship-to-aeon]
+
+  Temporal tick is shared vocabulary, not a new Core value kind. Existing fields and literal structure already carry enough information to infer granularity for the reduced-precision temporal forms defined by Core and the temporal convention.
+
+  AEON Core continues to recognize and preserve syntax. Temporal conventions and profiles decide whether a form is tick-denoting or coordinate-denoting, define refinement and comparison domains, and select any arithmetic behavior. AES and AEOS preserve the authored claim and must not manufacture finer coordinates. Runtime adapters must expose boundary selection, approximation, rounding, or loss.
+
+  ## 16. Core Principles [# core-principles]
+
+  1. A temporal tick is one exact value in its source temporal domain at a selected granularity.
+  2. A tick's finer extent does not make the source value ambiguous or uncertain.
+  3. Omitted subordinate fields are unasserted, not implicit zeroes, unless the grammar explicitly defines a coordinate default.
+  4. A timeline instant is distinct from a tick and from an operationally point-like approximation.
+  5. Lexical finiteness does not imply a nonzero extent, measurement uncertainty, or limited physical accuracy.
+  6. Tick identity, extent, elapsed duration, and mapped image are separate properties.
+  7. Mapping multiplicity does not multiply the authored tick; an empty mapping does not erase its representability.
+  8. Tick stepping, calendar or civil arithmetic, and elapsed-duration arithmetic are different operations.
+  9. Any conversion from an extent to one representative coordinate is explicit policy, not resolution by implication.
+
+  ## 17. Conformance Scenarios [# conformance-scenarios]
+
+  Future tick-aware profiles and implementations should cover:
+
+  1. an hour-granularity temporal form that contains compatible minute ticks without being equal to them;
+  2. lower-bound selection that is reported as selection rather than treated as representation identity;
+  3. a fully specified second coordinate whose omitted fraction is exact zero rather than a one-second extent;
+  4. decimal fractions with equal mathematical values but distinct authored scales;
+  5. coarse granularity distinguished from missing expected information and measurement uncertainty;
+  6. calendar-month and zoned-day ticks with variable elapsed duration;
+  7. arbitrary fixed-size ticks requiring explicit origin and alignment;
+  8. zoned civil ticks with connected, repeated, empty, partial, and unresolved mapping images;
+  9. distinct tick identity, extent equality, mapped-image equality, and instant equality results;
+  10. tick stepping and elapsed-duration arithmetic producing deliberately different results across a timezone transition;
+  11. adapters that reject or explicitly report unsupported extent, rounding, or boundary-selection semantics.
+
+  ## 18. Deferred Questions [# deferred-questions]
+
+  This appendix intentionally does not define:
+
+  - Core syntax for year-only, year-month, arbitrary-grid, interval, or duration values;
+  - the complete catalogue of temporal granularities;
+  - equality and ordering operators for ticks;
+  - a universal boundary convention for every temporal domain;
+  - rounding, truncation, or quantization policy;
+  - refinement result representation;
+  - arithmetic for fixed, calendar, civil, or observational ticks;
+  - offset-based selection from an extent-valued zone mapping;
+  - recurrence semantics;
+  - runtime materialization types;
+  - a physically fundamental minimum temporal scale;
+  - whether physical time is continuous or discrete.
+`

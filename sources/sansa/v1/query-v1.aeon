@@ -3,7 +3,7 @@ id:string = "sansa-v1-query"
 title:string = "SANSA.Query v1"
 description:string = "Proposal-stage read-only semantic query model built on SANSA.Resolve."
 created:date = 2026-07-14
-modified:date = 2026-09-05
+modified:date = 2026-09-30
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -221,8 +221,8 @@ body:prose = >`
 
   - resolution expressions beginning with [$ .], [$ $], or [$ ?]
   - string, number, Boolean, AEON toggle literals, and AEON scalar source
-    literal families such as hex, radix, encoding, separator, explicit-null, and
-    temporal source literals
+    literal families such as hex, radix, encoding, separator, symbol,
+    explicit-null, and temporal source literals
 
   - comparison operators
   - membership operator shape
@@ -243,12 +243,20 @@ body:prose = >`
   that require whitespace, comma, slash, brackets, or other broader text use
   quoted separator payload segments, such as [$ ^"hello world"\\|"this, \\[is\\] fine"].
 
+  Symbol source literals use pipe delimiters and AEON string payload escapes.
+  They may contain whitespace and punctuation directly; an embedded pipe is
+  escaped as [$ \\|]. Symbol payloads must be non-empty and must not contain raw
+  newlines. For example, [$ \|approved\|] has decoded payload [$ approved], while
+  [$ \|in review\\|blocked\|] has decoded payload [$ in review|blocked]. A symbol
+  literal is one scalar token, so comment markers, commas, and clause keywords
+  inside its delimiters remain payload text.
+
   - deterministic function-call shape
   - projection expression shape
 
   The expression parser intentionally does not evaluate expressions, resolve addresses, assign function semantics, compare semantic values, enforce authorization, or decide datatype compatibility.
 
-  The evaluator slice is intentionally narrower than the full grammar. It covers execution of [$ from], Boolean [$ where], [$ order by], [$ offset], [$ limit], and [$ select] over scalar literals including AEON toggle literal spellings ([$ yes], [$ no], [$ on], [$ off]) and selected AEON scalar source literal families ([$ #hex], [$ %radix], [$ &encoding], [$ ^separator], [$ !null], and temporal-looking literals), resolution expressions, comparison expressions including same-kind structural container equality, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with [$ path(...)], missing-aware fallback with [$ fallback(...)], dynamic direct-child resolution with [$ resolveChild(...)], explicit reference following with [$ follow(...)], concrete-value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
+  The evaluator slice is intentionally narrower than the full grammar. It covers execution of [$ from], Boolean [$ where], [$ order by], [$ offset], [$ limit], and [$ select] over scalar literals including AEON toggle literal spellings ([$ yes], [$ no], [$ on], [$ off]) and selected AEON scalar source literal families ([$ #hex], [$ %radix], [$ &encoding], [$ ^separator], [$ \|symbol\|], [$ !null], and temporal-looking literals), resolution expressions, comparison expressions including same-kind structural container equality, Boolean expressions, membership expressions, string and number order keys, existence predicates over resolution expressions, cardinality predicates over resolved Binding Sets, built-in string functions, structured address activation with [$ path(...)], missing-aware fallback with [$ fallback(...)], dynamic direct-child resolution with [$ resolveChild(...)], explicit reference following with [$ follow(...)], concrete-value predicates, null predicates, special numeric predicates, and candidate-local projection expressions.
 
   Some implementations may also expose transform-library helpers such as [$ objectFrom(...)] and [$ fieldsFrom(...)]. These helpers operate across multiple Binding Sets and are not part of SANSA.Query v1 core conformance.
 
@@ -516,7 +524,7 @@ body:prose = >`
   isInfinity(...)
   ~~~$
 
-  [$ isValue(expression)] returns true when the expression evaluates to exactly one concrete value as defined by Aeonic Semantic Language. It may inspect value expressions directly or consume a Binding Set produced by a resolution expression or [$ path(...)]. It returns false for missing operands, explicit null, explicit absence values, and NaN. Finite numbers, infinities, strings, Booleans, toggles, temporal values, lexical structured scalars, SANSA address literals, objects, lists, tuples, nodes, and legal reference forms are concrete values for this predicate. If the operand resolves more than one binding, evaluation produces [$ CardinalityError].
+  [$ isValue(expression)] returns true when the expression evaluates to exactly one concrete value as defined by Aeonic Semantic Language. It may inspect value expressions directly or consume a Binding Set produced by a resolution expression or [$ path(...)]. It returns false for missing operands, explicit null, explicit absence values, and NaN. Finite numbers, infinities, strings, Booleans, toggles, symbols, temporal values, lexical structured scalars, SANSA address literals, objects, lists, tuples, nodes, and legal reference forms are concrete values for this predicate. If the operand resolves more than one binding, evaluation produces [$ CardinalityError].
 
   [$ isNull(expression)] returns true when the expression resolves exactly one explicit null binding.
 
@@ -618,6 +626,7 @@ body:prose = >`
   | hex and radix | error | error | Hex and radix are distinct value families even when payload characters overlap. |
   | encoding and encoding | allowed | allowed | Uses naïve payload order over preserved encoded payload characters; no decoding. |
   | separator and separator | allowed | allowed | Uses naïve separator order over whole canonical separator payloads; no splitting occurs unless a trusted profile supplies domain order. |
+  | symbol and symbol | allowed | error | Uses exact decoded symbol payload identity; symbols do not coerce to strings and have no intrinsic ordering. |
   | SANSA address and SANSA address | allowed | allowed | Uses canonical address-expression identity and naïve address-expression order; no resolution or selector equivalence. |
   | object and object | allowed | error | Structural member equality; object member order is not significant. |
   | list and list | allowed | error | Ordered structural equality by index; no portable default order. |
@@ -668,6 +677,22 @@ body:prose = >`
   The payload is compared as a separator-family value. Query comparison does not
   split separator payloads into fields unless a trusted profile supplies that
   meaning.
+
+  Symbol query literals preserve the AEON symbol source family:
+
+  ~~~$ text
+  from $.types.*%symbol
+  where . == |in review\|blocked|
+  select .
+  ~~~$
+
+  Symbol equality compares the decoded payload exactly. Symbols and strings are
+  distinct families even when their payload text is identical, and ordering
+  operators over symbols fail with a comparison diagnostic. Semantic datatype
+  filters and representation filters remain distinct: [$ #symbol] selects a
+  declared [$ symbol] datatype, while [$ %symbol] selects the symbolic literal
+  representation. A custom datatype carried by a symbolic literal therefore
+  retains its custom semantic name and is still visible through [$ %symbol].
 
   The [$ in] operator tests scalar membership in a Binding Set:
 
@@ -822,7 +847,7 @@ body:prose = >`
 
   String comparison, ordering, and case mapping are value-semantics concerns. Until the Aeonic Semantic Language canonical string and case-mapping profiles are locked, the initial evaluator slice uses Unicode scalar-value ordering for string comparison and [$ order by]. Normative behavior must not depend on host locale, process locale, database collation, or host-language defaults. Case mapping for [$ lower(...)] and [$ upper(...)] remains tied to the shared value-semantics profile; implementations must document any provisional behavior.
 
-  String profiles are not domain profiles for non-string lexical value families. Selecting a locale or Natural ASCII string profile must not cause [$ hex], [$ radix], [$ encoding], [$ separator], or [$ sansa] values to be interpreted as numbers, bytes, decoded text, segmented records, semantic versions, target identity, or selector equivalence. Those meanings require an explicit shared value-semantics contract, consumer profile, or resolver/profile authority for that value family.
+  String profiles are not domain profiles for non-string lexical value families. Selecting a locale or Natural ASCII string profile must not cause [$ hex], [$ radix], [$ encoding], [$ separator], [$ symbol], or [$ sansa] values to be interpreted as numbers, bytes, decoded text, segmented records, semantic versions, target identity, or selector equivalence. Those meanings require an explicit shared value-semantics contract, consumer profile, or resolver/profile authority for that value family.
 
   Consumers may configure accepted value-semantics profiles. Documents cannot select a more permissive comparison, ordering, conversion, or case-mapping profile without consumer authorization. Unsupported profile-dependent operations should be rejected rather than evaluated with host defaults.
 

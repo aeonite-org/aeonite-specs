@@ -3,7 +3,7 @@ id:string = "aeon-core-v1"
 title:string = "AEON Specification v1"
 description:string = "Start here for the overall AEON Core v1 model, scope, behavior modes, and the companion documents that define the rest of the specification surface."
 created:date = 2026-03-25
-modified:date = 2026-09-05
+modified:date = 2026-09-30
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -79,6 +79,7 @@ body:prose = >`
   - objects, lists, tuples, and nodes
   - clone and alias references
   - separator literals
+  - symbolic literals
 
   Normative detailed reference:
 

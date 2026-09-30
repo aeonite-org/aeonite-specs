@@ -3,7 +3,7 @@ id:string = "appendix-canonical-form-v1"
 title:string = "Appendix — Canonical AEON Form"
 description:string = "Canonicalization conventions and normalization outputs for stable interchange."
 created:date = 2026-03-25
-modified:date = 2026-08-23
+modified:date = 2026-09-30
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
@@ -180,6 +180,15 @@ body:prose = >`
 
   ~~~$ aeon
   data:sep["|"] = ^"one "|" two"   // preserved as-is
+  ~~~$
+
+  ### Symbolic Literals [# symbolic-literals]
+
+  Canonical symbolic literals use pipe delimiters and the decoded payload. A literal pipe is escaped as [$ \\\|], backslash and control characters use the ordinary canonical string escapes, and quote characters remain unescaped:
+
+  ~~~$ aeon
+  stage:symbol = |in review|
+  message:symbol = |say "yes" and \|wait\||
   ~~~$
 
 

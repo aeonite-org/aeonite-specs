@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-value-types"
 title:string = "AEON v1 Value Types Reference"
 description:string = "Reference for AEON value kinds, reserved datatype names, literal families, container forms, and reference-bearing values."
 created:date = 2026-03-25
-modified:date = 2026-09-05
+modified:date = 2026-09-30
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -75,7 +75,7 @@ body:prose = >`
 
   In particular:
 
-  - Core recognizes reserved names such as [$ int], [$ uint], [$ int32], [$ float64], [$ obj], [$ envelope], [$ trimtick], [$ prose], [$ sep], [$ kadot], and [$ sansa];
+  - Core recognizes reserved names such as [$ int], [$ uint], [$ int32], [$ float64], [$ obj], [$ envelope], [$ trimtick], [$ prose], [$ sep], [$ kadot], [$ symbol], and [$ sansa];
   - Core checks literal-family compatibility only;
   - stronger semantic enforcement such as integer-only, unsigned-only, width, or range belongs to profile/schema validation layers;
   - [$ aeon.gp.profile.v1] and [$ aeon.gp.schema.v1] are the intended general-purpose baseline for making those stronger meanings operational.
@@ -221,6 +221,15 @@ body:prose = >`
   | Reserved | [$ kadot] |
   |~ Separator value-type names
 
+  ### [$ symbol] [# symbol]
+
+  | Field | Names |
+  | <-- | <-- |
+  | Type | [$ symbol] |
+  | Alternative names | none |
+  | Reserved | none |
+  |~ Symbol value-type names
+
   ### [$ sansa] [# sansa]
 
   | Field | Names |
@@ -282,7 +291,7 @@ body:prose = >`
   | Family | Surface | Transport Example | Strict Example | AES [$ value.type] |
   | <-- | <-- | <-- | <-- | <-- |
   | String | [$ "..."], [$ '...'], [$ \`...\`] | [$ name = "John"] | [$ name:string = "John"] | [$ StringLiteral] |
-  | Trimtick | [$ >\`...\`] through [$ >>>>\`...\`] | [$ note = >>\`...\`] | [$ note:trimtick = >>\`...\`] | [$ StringLiteral] |
+  | Trimtick | [$ >\`...\`] | [$ note = >\`...\`] | [$ note:trimtick = >\`...\`] | [$ StringLiteral] |
   | Number | [$ 42],[.] [$ 3.14],[.] [$ .5],[.] [$ 1e3],[.] [$ 1_000] | [$ count = 42] | [$ count:number = 42] | [$ NumberLiteral] |
   | Infinity | [$ Infinity], [$ -Infinity] | [$ top = Infinity] | [$ top:infinity = Infinity] | [$ InfinityLiteral] |
   | NaN | [$ NaN], [$ -NaN] | [$ bad = NaN] | [$ bad:nan = NaN] | [$ NaNLiteral] |
@@ -292,11 +301,12 @@ body:prose = >`
   | Hex | [$ #ff00aa] | [$ color = #ff00aa] | [$ color:hex = #ff00aa] | [$ HexLiteral] |
   | Radix | [$ %1011],[.] [$ %19.9900] | [$ bits = %1011] | [$ bits:radix\\[2\\] = %1011] or [$ price:decimal = %19.9900] | [$ RadixLiteral] |
   | Encoding | [$ &QmFzZTY0IQ==] | [$ payload = &QmFzZTY0IQ==] | [$ payload:base64 = &QmFzZTY0IQ==] | [$ EncodingLiteral] |
-  | Date | [$ 2025-01-01],[.] [$ 2024-02-29] | [$ d = 2025-01-01] | [$ d:date = 2025-01-01] | [$ DateLiteral] |
+  | Date | [$ 2025-],[.] [$ 2025-01],[.] [$ 2025-01-01],[.] [$ 2024-02-29] | [$ d = 2025-01-01] | [$ d:date = 2025-01-01] | [$ DateLiteral] |
   | Time | [$ 09:],[.] [$ 09:30],[.] [$ 09:30Z],[.] [$ 09:+02:00],[.] [$ 09:30+02:00],[.] [$ 09:30:00],[.] [$ 09:30:00Z] | [$ t = 09:30:00] | [$ t:time = 09:30:00Z] | [$ DateTimeLiteral] |
-  | DateTime | [$ 2025-01-01T09],[.] [$ 2025-01-01T09Z],[.] [$ 2025-01-01T09+02:00],[.] [$ 2025-01-01T09:30:00Z] | [$ ts = 2025-01-01T09:30:00Z] | [$ ts:datetime = 2025-01-01T09:30:00Z] | [$ DateTimeLiteral] |
-  | WTC | [$ 2025-01-01T00:00:00Z&Australia/Sydney],[.] [$ 2025-01-01T09&Europe/Belgium/Brussels],[.] [$ 2025-01-01T09:30Z&local],[.] [$ 2035-01-01T09:00&-36.7590183/144.2826718] | [$ z = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ DateTimeLiteral] |
+  | DateTime | [$ 2025-T09:30],[.] [$ 2025-01T09Z],[.] [$ 2025-01-01T09],[.] [$ 2025-01-01T09+02:00],[.] [$ 2025-01-01T09:30:00Z] | [$ ts = 2025-01-01T09:30:00Z] | [$ ts:datetime = 2025-01-01T09:30:00Z] | [$ DateTimeLiteral] |
+  | WTC | [$ 2025-T09:30&Europe],[.] [$ 2025-01T09&Europe/Belgium/Brussels],[.] [$ 2025-01-01T00:00:00Z&Australia/Sydney],[.] [$ 2025-01-01T09:30Z&local],[.] [$ 2035-01-01T09:00&-36.7590183/144.2826718] | [$ z = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ DateTimeLiteral] |
   | Separator Literal | [$ ^300x250] | [$ size = ^300x250] | [$ size:sep\\["x"\\] = ^300x250] | [$ SeparatorLiteral] |
+  | Symbolic Literal | [$ \|approved\|],[.] [$ \|in review\|] | [$ stage = \|approved\|] | [$ stage:symbol = \|approved\|] | [$ SymbolicLiteral] |
   | SANSA Address | [$ $.path],[.] [$ ?.path],[.] [$ $.items.*.sku] | [$ path:sansa = $.contact.name] | [$ selector:sansa = $.inventory.items.*.sku] | [$ SansaAddressLiteral] |
   | Object | [$ { ... }] | [$ user = { name = "John" }] | [$ user:object = { name:string = "John" }] | [$ ObjectNode] |
   | List | [$ \\[ ... \\]] | [$ arr = \\[1,2,3\\]] | [$ arr:list = \\[1,2,3\\]] or [$ arr:list<number> = \\[1,2,3\\]] | [$ ListNode] |
@@ -383,7 +393,7 @@ body:prose = >`
     two
   \`
 
-  note:trimtick = >>\`
+  note:trimtick = >\`
       one
     two
   \`
@@ -397,27 +407,31 @@ body:prose = >`
 
   Syntax:
 
-  - trimticks start with a contiguous [$ >] through [$ >>>>] marker;
+  - trimticks start with a single [$ >] marker;
   - the marker must be followed by a backtick string opener;
-  - spaces between the contiguous marker and the backtick opener are accepted;
-  - the marker itself may not be split.
+  - spaces between the marker and the backtick opener are accepted;
+  - repeated markers such as [$ >>], [$ >>>], and [$ >>>>] are invalid.
 
   Trimming rules:
 
   - trim the first empty line after the opener, if present;
   - trim trailing empty lines before the closer;
-  - inspect the remaining non-empty lines to determine common left indentation;
-  - remove that indentation according to the marker's tab policy;
-  - preserve trailing whitespace on non-empty lines;
+  - normalize whitespace-only interior lines to empty lines and exclude them from gutter analysis;
+  - determine the gutter character from the first nonblank line: [$ TAB] when that line begins with U+0009 TAB, otherwise [$ SPACE];
+  - measure each nonblank line's gutter depth as its initial run of the gutter character;
+  - an unindented line or a line beginning with the other whitespace character has depth [$ 0];
+  - the other whitespace character after a non-empty gutter run terminates the run and remains payload;
+  - remove the minimum gutter depth from every nonblank line;
+  - preserve trailing whitespace on nonblank lines;
   - preserve interior blank lines as blank lines;
   - if all remaining lines are empty, the resulting value is the empty string.
 
-  Marker-width policy:
+  Gutter policy:
 
-  - [$ >\`]: spaces-only indentation analysis; tabs remain payload;
-  - [$ >>\`]: tabs normalize to width [$ 2] for indentation analysis;
-  - [$ >>>\`]: tabs normalize to width [$ 3] for indentation analysis;
-  - [$ >>>>\`]: tabs normalize to width [$ 4] for indentation analysis.
+  - U+0020 SPACE and U+0009 TAB are compared as exact code points;
+  - tabs are never assigned a visual width or converted to spaces during parsing;
+  - mixed source indentation is valid and may reduce the common gutter depth to zero;
+  - source-aware linters may warn about suspicious alignment, but indentation style is not a Core validity rule.
 
   Single-line trimticks are valid and behave like ordinary raw backtick content,
   because there is no multiline gutter to remove.
@@ -433,7 +447,7 @@ body:prose = >`
 
   AES:
 
-  - [$ StringLiteral] with trimtick parser metadata preserved.
+  - [$ StringLiteral]; source-aware parser metadata may preserve the raw trimtick payload, but no marker-width field exists.
 
   ## 3.3 Number [# number-2]
 
@@ -618,7 +632,6 @@ body:prose = >`
   - lexical forms: [$ yes], [$ no], [$ on], [$ off];
   - untyped toggle literals are allowed in transport mode;
   - in strict mode, untyped toggle literals must be annotated with [$ :toggle];
-  - non-[$ :toggle] custom datatype aliases such as [$ :myToggle] remain invalid even when general custom datatypes are otherwise enabled;
   - machine-readable surfaced [$ ToggleLiteral.value] remains lexical ([$ yes], [$ no], [$ on], [$ off]);
   - finalized JSON materializes toggle literals as booleans.
 
@@ -733,11 +746,15 @@ body:prose = >`
   Examples:
 
   ~~~$ aeon
+  year:date = 2025-
+  month:date = 2025-01
   start:date = 2025-01-01
   at:time = 09:30:00
   utc:time = 09:30:00Z
   local:time = 09:30:00+02:40
   ts:datetime = 2025-01-01T09:30:00Z
+  yearTick:datetime = 2025-T09:30
+  monthTick:wtc = 2025-01T09:30&Australia/Sydney
   z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney
   localTime:wtc = 2025-01-01T00:00:00&local         // resolver-local temporal context
   subscriptionEnd:wtc = 2027-01-31T23:59:59&local  // late-bound civil deadline
@@ -753,13 +770,15 @@ body:prose = >`
   Nuances:
 
   - parser emits [$ DateLiteral] for date-only token;
+  - [$ date] admits year-, month-, and day-granularity forms as [$ YYYY-], [$ YYYY-MM], and [$ YYYY-MM-DD]; the trailing hyphen distinguishes a year date from an ordinary number;
+  - omitted month or day fields remain unasserted and are not silently replaced with [$ 01]; the same year-, month-, and day-granularity date ticks may appear before [$ T] in datetime and WTC values;
   - parser emits [$ DateTimeLiteral] for time, datetime, and WTC tokens; the [$ wtc] datatype and preserved [$ &temporal-context] payload distinguish WTC without changing the parser value model;
   - standalone [$ time] is part of Core v1 and follows ISO 8601 time forms;
   - date, time, and datetime literal recognition includes intrinsic calendar/clock range validation;
   - zone suffixes ([$ Z], [$ +hh:mm], [$ -hh:mm]) may attach to valid reduced-precision time forms already admitted by Core v1, such as [$ 09:] and [$ 09:30];
   - numeric offsets contain hours and minutes only. Second-level numeric offsets are not Core syntax; historical resolution requiring sub-minute offsets uses an applicable named-zone ruleset or other downstream reference data;
-  - [$ datetime] extends that same reduced-precision rule after the [$ T], so forms such as [$ 2025-01-01T09Z], [$ 2025-01-01T09+02:00], and [$ 2025-01-01T09:30Z] are valid;
-  - WTC extends the same reduced-precision datetime bases with a temporal context suffix, so forms such as [$ 2025-01-01T09&Europe/Belgium/Brussels], [$ 2025-01-01T09Z&Europe/Belgium/Brussels], [$ 2025-01-01T09:30Z&local], and [$ 2035-01-01T09:00&-36.7590183/144.2826718] are valid [$ wtc] literals;
+  - [$ datetime] composes any valid date tick with the reduced-precision clock forms after [$ T], so forms such as [$ 2025-T09:30], [$ 2025-01T09Z], [$ 2025-01-01T09+02:00], and [$ 2025-01-01T09:30Z] are valid;
+  - WTC extends the same reduced-precision datetime bases with a temporal context suffix, so forms such as [$ 2025-T09:30&Europe], [$ 2025-01T09&Europe/Belgium/Brussels], [$ 2025-01-01T09Z&Europe/Belgium/Brussels], [$ 2025-01-01T09:30Z&local], and [$ 2035-01-01T09:00&-36.7590183/144.2826718] are valid [$ wtc] literals;
   - WTC temporal contexts may contain [$ /], [$ _], [$ -], [$ +], and [$ .] when used as part of a contiguous context, so named timezones such as [$ America/Port-au-Prince], [$ GB-Eire], [$ Etc/GMT-1], and [$ Etc/GMT+1], plus geographic positions such as [$ -36.7590183/144.2826718], are valid context payloads;
   - comment markers do not begin inside a contiguous WTC temporal-context payload; forms such as [$ Europe//Brussels] and [$ Europe/*Brussels*/] are invalid context payloads, not shortened values followed by comments;
   - uppercase [$ Z] is the Core v1 UTC marker form; lowercase [$ z] is not a temporal literal marker;
@@ -779,7 +798,7 @@ body:prose = >`
   - parsers, canonicalizers, and preservation-only processors MUST preserve the authored temporal-value form and temporal-context payload rather than resolving or rewriting them;
   - WTC is represented as DateTime token family in AST/AES.
 
-  Core preserves reduced precision and does not silently insert zeroes for omitted minute or second fields. Under [$ aeon.gp.temporal.v1], omitted clock fields define a completion set: for example, [$ 10:Z] contains [$ 10:30Z]. Containment is not equality or chronological precedence. A time-only form lacks a date even when it carries [$ Z] or a known offset.
+  Core preserves reduced precision and does not silently insert missing calendar or clock fields. Under [$ aeon.gp.temporal.v1], omitted fields define completion sets: [$ 2025-] contains [$ 2025-01], [$ 2025-01] contains [$ 2025-01-01], [$ 2025-T10:10] contains compatible month/day coordinates, and [$ 10:Z] contains [$ 10:30Z]. Containment is not equality or chronological precedence. A time-only form lacks a date even when it carries [$ Z] or a known offset.
 
   Once seconds are present, omission of a fractional part means fractional value zero. This is distinct from an omitted minute or second field and preserves ordinary whole-second semantics.
 
@@ -852,6 +871,37 @@ body:prose = >`
   AES:
 
   - [$ SeparatorLiteral] with raw payload preserved.
+
+  ### 3.10.1 Symbolic Literal ([$ \|...\|]) [# symbolic-literal]
+
+  A symbolic literal is a nonempty atomic symbolic value distinct from textual data:
+
+  ~~~$ aeon
+  stage = |approved|
+  label = |in review|
+  quoted = |say "yes"|
+  escaped = |wait\|ready|
+  ~~~$
+
+  Lexical rules:
+
+  - the opening and closing delimiter is [$ \|];
+  - the decoded payload MUST contain at least one Unicode scalar, so [$ \|\|] is invalid;
+  - spaces, comment markers, and quote characters inside the delimiters are payload content;
+  - raw line feeds and carriage returns are invalid;
+  - ordinary quoted-string escapes are supported, and [$ \\\|] additionally represents a literal pipe;
+  - the decoded payload is significant, including leading and trailing spaces;
+  - canonical form uses pipe delimiters, escapes [$ \|] as [$ \\\|], and otherwise applies minimal string-style escaping.
+
+  In transport mode, [$ stage = \|approved\|] infers [$ SymbolicLiteral]. In strict mode, [$ :symbol] is the reserved matching datatype. In custom mode, a custom datatype may bind a symbolic literal according to the ordinary custom-datatype rules.
+
+  A symbol is not inherently an enum, identifier, variable, reference, executable token, or schema constant. Those meanings belong to profiles, schemas, and consumers. Symbol identity compares the decoded symbol payload and does not equal a string with the same characters.
+
+  Core preserves datatype clarifiers structurally, but [$ aeon.gp.profile.v1] assigns [$ symbol] the [$ clarifiers = "none"] rule. The GP profile therefore rejects explicit clarifiers on [$ :symbol] and does not extend the separator/radix custom-clarifier exception to symbolic literals.
+
+  AES:
+
+  - [$ SymbolicLiteral] with the decoded payload in [$ value]; source delimiters and escape spelling remain source-level syntax.
 
   ## 3.11 SANSA Address Literal [# sansa-address-literal]
 
@@ -1074,8 +1124,8 @@ body:prose = >`
 
   ~~~$ ebnf
   Value ::= Literal | Reference | Object | List | Tuple | Node
-  Literal ::= String | Number | Boolean | Toggle            | Hex | Radix | Encoding
-          | Date | DateTime | SeparatorLiteral
+  Literal ::= String | SymbolicLiteral | Number | Boolean | Toggle
+          | Hex | Radix | Encoding | Date | DateTime | SeparatorLiteral
   Reference ::= "~" RefPath | "~>" RefPath
   Object ::= "{" (Binding)* "}"
   List ::= "[" (Value ("," Value)*)? "]"

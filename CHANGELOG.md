@@ -17,6 +17,32 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Replaced width-bearing trimtick markers with a single [$ >] opener and
+  defined exact gutter normalization: the first nonblank payload line selects
+  U+0020 SPACE or U+0009 TAB, the minimum common run is removed, mixed
+  indentation remains valid payload, and marker-width metadata is retired.
+
+- Added nonempty pipe-delimited symbolic literals, the reserved [$ :symbol]
+  datatype, and the distinct AES [$ SymbolicLiteral] kind. Symbols use
+  string-style escapes plus [$ \\|], remain distinct from strings, have no
+  Core ordering, and materialize to JSON strings only with an explicit lossy
+  diagnostic.
+
+- Added reduced-granularity Core date literals: [$ YYYY-] for year ticks and
+  [$ YYYY-MM] for month ticks. They retain the existing [$ DateLiteral] family,
+  preserve authored granularity, and may be composed with a clock tick in
+  datetime and WTC literals without defaulting omitted calendar fields.
+
+- Added the conceptual temporal-ticks appendix, distinguishing source-domain
+  granularity, tick extent, exact coordinates, resolved instants, operational
+  point treatment, mapping images, and tick stepping from elapsed-duration
+  arithmetic without changing AEON Core syntax.
+
+- Added the implementation-gated WTC zone-resolution appendix, consolidating
+  named-zone candidate mapping, offset agreement, overlap selection, gap
+  materialization, unknown-offset preservation, dual-anchor conflicts,
+  timezone-authority drift, and the production-profile adoption gate.
+
 - Documented UTC, TAI, UT1, TT, and GPS timescales in the temporal convention, added the independent `timescale` attribute, clarified civil/zoned-civil/offset/universal/geographic anchoring, and recorded that Core and AES already preserve timescale-labelled WTC values as ordinary named temporal contexts.
 
 - Defined profile-independent radix fractional scale as preserved representation
@@ -179,6 +205,10 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Spec Impact
 
+- Adds a new scalar representation family without assigning enum, identifier,
+  reference, or schema-constant semantics; the GP profile assigns [$ :symbol]
+  no clarifiers, and Film appends its code at [$ 18] without renumbering any
+  existing kind.
 - Establishes `aes.events.v1` and `telex.aes` v1 as published conformance
   targets without promoting the Aeonic Semantic Language proposal.
 - Makes the current v2 implementation shape reviewable without promoting v2 beyond proposal stage.
@@ -207,6 +237,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### CTS Impact
 
+- Adds mutable next-suite coverage for symbolic syntax and typing, portable AES
+  projection, canonical escaping, and strict-versus-transport JSON lossiness.
 - Extended AEOS numeric-form coverage for exact decimals, integers beyond
   signed 128-bit range, invalid bound lexemes, and reversed ranges.
 - Published immutable shared targets `aes-events-cts-v1-snapshot-0.1` and

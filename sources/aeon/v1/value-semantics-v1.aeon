@@ -3,7 +3,7 @@ id:string = "aeon-v1-value-semantics"
 title:string = "Proposal: Shared AEON Value Semantics"
 description:string = "Architectural proposal for shared deterministic value behavior across AEON, AEOS, SANSA, Tonics, and future ecosystem components."
 created:date = 2026-07-21
-modified:date = 2026-09-05
+modified:date = 2026-09-30
 family:string = "aeon"
 group:string = "Proposals"
 standing:string = "official"
@@ -641,6 +641,12 @@ body:prose = >`
 
   Profile-defined separator ordering must also account for trust. A profile may use separator specs only when the consumer trusts the source of the claim, validates the claim against the payload, or supplies the separator structure from trusted configuration. Untrusted document-local separator specs should be treated as data claims, not as authority to choose parsing or ordering behavior.
 
+  ### 6.10.1 Symbol Semantics [# symbol-semantics]
+
+  A symbol is an atomic symbolic scalar. Minimum-profile identity compares decoded symbol payloads exactly. A symbol and a string with the same Unicode characters are different value categories and are not equal without an explicit conversion.
+
+  Core assigns no enumeration, identifier, variable, reference, executable, or constant behavior to symbols. The minimum profile defines no symbol ordering; a profile may define a closed domain and ordering only when that contract is explicit.
+
   ### 6.11 SANSA Address Semantics [# sansa-address-semantics]
 
   SANSA address literals are structured address expressions carried as AEON values.
@@ -792,6 +798,7 @@ body:prose = >`
   - negative infinity;
   - NaN;
   - string;
+  - symbol;
   - Boolean;
   - toggle;
   - temporal value;
@@ -816,7 +823,7 @@ body:prose = >`
   - explicit absence values;
   - NaN.
 
-  Finite numbers, infinities, strings, Booleans, toggles, temporal values, lexical structured scalars, SANSA address literals, container values, and legal reference forms are concrete values for [$ isValue(...)] purposes.
+  Finite numbers, infinities, strings, symbols, Booleans, toggles, temporal values, lexical structured scalars, SANSA address literals, container values, and legal reference forms are concrete values for [$ isValue(...)] purposes.
 
   ### 7.2 Equality [# equality]
 
@@ -828,6 +835,8 @@ body:prose = >`
   | infinity and finite number | allowed | Positive and negative infinity are not equal to finite numeric values. |
   | infinity and infinity | allowed | Positive infinity equals positive infinity; negative infinity equals negative infinity; opposite infinities are not equal. |
   | string and string | allowed | Exact decoded string equality under the active string equality profile. |
+  | symbol and symbol | allowed | Exact decoded symbol-payload identity. |
+  | symbol and string | error | No implicit conversion between symbolic and textual values. |
   | Boolean and Boolean | allowed | [$ true] equals [$ true]; [$ false] equals [$ false]. |
   | toggle and toggle | allowed | Exact toggle-token equality; [$ yes] does not equal [$ on], and [$ no] does not equal [$ off]. |
   | toggle and Boolean | error | Boolean compatibility requires explicit conversion or a profile-defined comparison domain. |
@@ -859,6 +868,7 @@ body:prose = >`
   | infinity and finite number | allowed | Negative infinity sorts before finite numbers; positive infinity sorts after finite numbers. |
   | infinity and infinity | allowed | Equal infinities compare equal; negative infinity sorts before positive infinity. |
   | string and string | allowed | Uses the active string ordering profile. |
+  | symbol and symbol | error | Symbol ordering requires an explicit profile-defined domain. |
   | Boolean and Boolean | error | Boolean ordering is not part of the minimum profile. |
   | toggle and toggle | error | Toggle ordering is not part of the minimum profile. |
   | encoding and encoding | allowed | Naïve payload order over preserved encoded payload characters. |

@@ -3,7 +3,7 @@ id:string = "appendix-aes-v1"
 title:string = "Appendix — Assignment Event Stream (AES)"
 description:string = "Assignment event stream structure and event-level consistency expectations."
 created:date = 2026-03-25
-modified:date = 2026-09-05
+modified:date = 2026-09-30
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
@@ -109,6 +109,7 @@ body:prose = >`
   - [$ StringLiteral("hello")]
   - [$ NumberLiteral(120)]
   - [$ BooleanLiteral(true)]
+  - [$ SymbolicLiteral("approved")]
   - [$ ObjectNode]
   - [$ ListNode] — [$ \\[...\\]] surface form
   - [$ TupleLiteral] — [$ (...)] surface form (v1)

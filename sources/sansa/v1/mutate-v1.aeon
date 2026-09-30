@@ -3,7 +3,7 @@ id:string = "sansa-v1-mutate"
 title:string = "SANSA.Mutate v1"
 description:string = "Proposal-stage boundary and conservative core model for deterministic semantic mutation intent."
 created:date = 2026-07-22
-modified:date = 2026-09-05
+modified:date = 2026-09-30
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -275,9 +275,9 @@ body:prose = >`
   format, storage adapter, or interchange profile. For example, an AEON target
   surface may reject a datatype hint that is not legal for AEON values, while a
   JSON-compatible target surface may reject AEON attributes, node or tuple
-  containers, references, non-finite numbers, or SANSA selector literals. This is
-  not a mutation-planning failure. It means the plan is valid SANSA.Mutate intent
-  that the selected target cannot carry.
+  containers, references, symbols, non-finite numbers, or SANSA selector literals.
+  This is not a mutation-planning failure. It means the plan is valid SANSA.Mutate
+  intent that the selected target cannot carry.
 
   The plan must be inspectable before authorization or apply. Producing it must not
   mutate the namespace.
@@ -509,8 +509,17 @@ body:prose = >`
   valid AEON Core separator metadata, and [$ kadot\\[...\\]] metadata is not an AEON
   Core [$ kadot] surface. Quoted separator payloads such as
   [$ "hello world"\\|"this, \\[is\\] fine"] remain representable. This is still
-  representability validation. AEON target validation also checks datatype
-  expression shape and Core-owned binding-side container restrictions, such as
+  representability validation. Symbol-family payloads are representable when
+  they are non-empty strings; empty symbol payloads are rejected. Symbol is a
+  distinct representation kind and is not treated as string merely because its
+  structured payload uses host string storage. Custom semantic datatypes may
+  carry symbol representation, but the reserved [$ symbol] datatype rejects
+  bracket clarifiers under the GP profile's [$ clarifiers = none] rule. The strict
+  JSON-compatible target surface rejects symbol intent rather than silently
+  materializing it as a JSON string; an explicitly selected lossy conversion
+  mode belongs to the target adapter and must preserve its warning metadata.
+  AEON target validation also
+  checks datatype expression shape and Core-owned binding-side container restrictions, such as
   rejecting malformed datatype intent or [$ node<string>] over a node binding while
   accepting [$ node<node>] and custom profile/domain claims such as [$ node<html>].
   That check does not enforce child content; child semantics remain schema or

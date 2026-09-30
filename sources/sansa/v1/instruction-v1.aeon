@@ -3,7 +3,7 @@ id:string = "sansa-v1-instruction"
 title:string = "SANSA Instruction v1"
 description:string = "Proposal-stage human-authored instruction surface combining SANSA Addressing, Query, and Mutate vocabulary."
 created:date = 2026-07-26
-modified:date = 2026-09-05
+modified:date = 2026-09-30
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -187,6 +187,12 @@ body:prose = >`
   that require whitespace, comma, slash, brackets, or other broader text use
   quoted separator segments, such as [$ ^"hello world"\\|"this, \\[is\\] fine"].
 
+  Symbol value literals likewise preserve the AEON symbol family. Pipe delimiters
+  admit whitespace and punctuation directly, while [$ \\|] encodes an embedded
+  pipe. The payload must be non-empty and must not contain a raw newline. For
+  example, [$ :symbol, \|in review\\|blocked\|] lowers with datatype and
+  representation kind [$ symbol] and decoded payload [$ in review|blocked].
+
   Both of these are equivalent:
 
   ~~~$ sansa
@@ -209,8 +215,9 @@ body:prose = >`
   surface a non-fatal diagnostic when it is flattened during conservative
   lowering; incompatible nested datatype intent should be rejected rather than
   silently dropped. Nested non-plain literal representation families, such as
-  temporal literals, references, SANSA address literals, tuples, nodes, separators,
-  radix, encoding, null, NaN, Infinity, and toggle literals, should also surface a
+  temporal literals, references, SANSA address literals, tuples, nodes,
+  separators, symbols, radix, encoding, null, NaN, Infinity, and toggle literals,
+  should also surface a
   non-fatal diagnostic when their representation family is flattened without an
   explicit datatype annotation.
   Target-surface validation then evaluates the conservative flattened plan; it
@@ -264,6 +271,7 @@ body:prose = >`
   create enabled with true
   create count with 10
   create state with yes
+  create stage with |in review|
   create selector with $.inventory.items.*
   create "display name" with "Adapter"
   create $.inventory.@.selector with :sansa, $.inventory.items.*
@@ -874,8 +882,14 @@ body:prose = >`
   payloads and metadata are checked at target-surface validation: [$ :sep, ^root/main]
   is not representable because the slash requires quoting, [$ :sep\\[","\\], ^"hello, world"]
   is not representable as AEON Core separator metadata, and [$ :kadot\\[.\\], ^1.2.3]
-  is not representable because AEON Core [$ kadot] does not carry bracket metadata. AEON target
-  validation also distinguishes SANSA address data from AEON references:
+  is not representable because AEON Core [$ kadot] does not carry bracket metadata.
+  AEON target validation accepts non-empty symbol payloads and rejects empty symbol payloads.
+  Symbol payload text remains distinct from string representation even when the
+  decoded text is identical. A custom datatype may carry symbol representation
+  under the ordinary custom-datatype rules, while the reserved [$ symbol]
+  datatype rejects bracket clarifiers under the GP profile's [$ clarifiers = none]
+  rule. Target validation also distinguishes SANSA address
+  data from AEON references:
   [$ :sansa, $.inventory.items.*.sku] is representable address data, but [$ ~target.*]
   is not an AEON reference target because reference paths are exact. These checks do not decide whether a
   lexically valid radix payload is meaningful for a declared base, whether a
@@ -984,6 +998,7 @@ body:prose = >`
   | [$ replace $.x with lower("A")] | instruction value payload is not a literal |
   | [$ replace $.x with "a" in $.list.*] | instruction value payload is not a literal |
   | [$ create $.x with :date, 2025-02-29] | invalid temporal value literal |
+  | [$ create $.x with :symbol, \|\|] | empty symbol value literal |
   | [$ create $.x with :time, 24:00] | invalid temporal value literal |
   | [$ replace $.qty with 1 /* unterminated] | unterminated instruction block comment |
   | [$ because Bob\\\\nreplace $.inventory.qty with 1] | malformed [$ because] clause; expected quoted text |
@@ -1009,7 +1024,9 @@ body:prose = >`
   | [$ create $.inventory.badRadix with :radix\\[03\\], %101] against an AEON target | target surface rejects invalid reserved radix metadata |
   | [$ create $.inventory.badRadixAlias with :radix16, %10] against an AEON target | target surface rejects unsupported reserved-looking radix alias |
   | [$ create $.inventory.badSeparator with :sep\\[","\\], ^"hello, world"] against an AEON target | target surface rejects invalid reserved separator metadata |
+  | [$ create $.inventory.emptyStage with :symbol, \|\|] against an AEON target | target surface rejects empty symbol payload |
   | [$ create $.inventory.badKadot with :kadot\\[.\\], ^1.2.3] against an AEON target | target surface rejects invalid reserved [$ kadot] metadata |
+  | [$ create $.inventory.stage with :symbol, \|approved\|] against a JSON target | target surface rejects symbol intent rather than silently materializing a string |
   | [$ create $.inventory.badReference with :number, ~target.*] against an AEON target | target surface rejects selector-shaped AEON reference target |
   | [$ create $.inventory.pair with :tuple, ("sku", 7)] against a JSON target | target surface rejects tuple datatype intent |
   | [$ create $.inventory.badge with :node, <badge("new", 3)>] against a JSON target | target surface rejects node datatype intent |
