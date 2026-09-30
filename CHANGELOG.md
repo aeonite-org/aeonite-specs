@@ -30,8 +30,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 - Added reduced-granularity Core date literals: [$ YYYY-] for year ticks and
   [$ YYYY-MM] for month ticks. They retain the existing [$ DateLiteral] family,
-  preserve authored granularity, and leave datetime/WTC date components at the
-  complete [$ YYYY-MM-DD] form.
+  preserve authored granularity, and may be composed with a clock tick in
+  datetime and WTC literals without defaulting omitted calendar fields.
 
 - Added the conceptual temporal-ticks appendix, distinguishing source-domain
   granularity, tick extent, exact coordinates, resolved instants, operational

@@ -71,11 +71,13 @@ body:prose = >`
   2027                    one year-granularity calendar tick
   2027-04                 one month-granularity calendar tick
   2027-04-04              one day-granularity calendar tick
+  2027-T02                one year-by-hour-granularity civil tick
+  2027-04T02:30           one month-by-minute-granularity civil tick
   2027-04-04T02           one hour-granularity civil tick
   2027-04-04T02:30        one minute-granularity civil tick
   ~~~$
 
-  AEON Core represents the year and year-month ticks above as [$ 2027-] and [$ 2027-04], respectively. The trailing hyphen distinguishes a year-granularity date from an ordinary number. These reduced-granularity dates preserve their authored fields without inserting a month or day.
+  AEON Core represents the year and year-month ticks above as [$ 2027-] and [$ 2027-04], respectively. The trailing hyphen distinguishes a year-granularity date from an ordinary number. These reduced-granularity dates preserve their authored fields without inserting a month or day. A datetime or WTC value may compose any year-, month-, or day-granularity date tick with a clock tick after [$ T]; omitted calendar fields remain unasserted.
 
   ### 2.4 Tick Extent [# tick-extent]
 

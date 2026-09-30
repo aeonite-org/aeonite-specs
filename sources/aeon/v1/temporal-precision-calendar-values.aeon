@@ -125,7 +125,7 @@ body:prose = >`
   Date ::= Year "-" | Year "-" Month | Year "-" Month "-" Day
   ~~~$
 
-  The trailing hyphen distinguishes a year-granularity date such as [$ 2029-] from the ordinary number [$ 2029]. A year-month value such as [$ 2029-01] has month granularity. A complete [$ YYYY-MM-DD] value has day granularity. Datetime and WTC literals continue to require a complete [$ YYYY-MM-DD] date component before [$ T].
+  The trailing hyphen distinguishes a year-granularity date such as [$ 2029-] from the ordinary number [$ 2029]. A year-month value such as [$ 2029-01] has month granularity. A complete [$ YYYY-MM-DD] value has day granularity. Datetime and WTC literals compose any of those date ticks with a clock tick after [$ T], so [$ 2029-T09:30], [$ 2029-01T09:30], and [$ 2029-01-19T09:30] preserve year, month, and day date granularity respectively.
 
   ~~~$ aeon
   releaseYear:date = 2029-
