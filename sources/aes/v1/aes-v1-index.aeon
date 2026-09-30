@@ -122,9 +122,9 @@ body:prose = >`
   changes require a new snapshot identifier.
 
   The normative Film draft is aligned with
-  [$ film-specs-v1-snapshot-0.1]. Its binary framing, canonicalization,
-  diagnostics, limits, and Telex equivalence are fixed by the 72-vector
-  [$ film-cts-v1-snapshot-0.1]. Reader deployment and compatibility review
+  [$ film-specs-v1-snapshot-0.2]. Its binary framing, canonicalization,
+  diagnostics, limits, and Telex equivalence are fixed by the 73-vector
+  [$ film-cts-v1-snapshot-0.2]. Reader deployment and compatibility review
   still precede durable Film writers.
 
   +++document/modules
