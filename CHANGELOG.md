@@ -17,6 +17,12 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Added nonempty pipe-delimited symbolic literals, the reserved [$ :symbol]
+  datatype, and the distinct AES [$ SymbolicLiteral] kind. Symbols use
+  string-style escapes plus [$ \\|], remain distinct from strings, have no
+  Core ordering, and materialize to JSON strings only with an explicit lossy
+  diagnostic.
+
 - Added reduced-granularity Core date literals: [$ YYYY-] for year ticks and
   [$ YYYY-MM] for month ticks. They retain the existing [$ DateLiteral] family,
   preserve authored granularity, and leave datetime/WTC date components at the
@@ -194,6 +200,10 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### Spec Impact
 
+- Adds a new scalar representation family without assigning enum, identifier,
+  reference, or schema-constant semantics; the GP profile assigns [$ :symbol]
+  no clarifiers, and Film appends its code at [$ 18] without renumbering any
+  existing kind.
 - Establishes `aes.events.v1` and `telex.aes` v1 as published conformance
   targets without promoting the Aeonic Semantic Language proposal.
 - Makes the current v2 implementation shape reviewable without promoting v2 beyond proposal stage.
@@ -222,6 +232,8 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ### CTS Impact
 
+- Adds mutable next-suite coverage for symbolic syntax and typing, portable AES
+  projection, canonical escaping, and strict-versus-transport JSON lossiness.
 - Extended AEOS numeric-form coverage for exact decimals, integers beyond
   signed 128-bit range, invalid bound lexemes, and reversed ranges.
 - Published immutable shared targets `aes-events-cts-v1-snapshot-0.1` and

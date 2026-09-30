@@ -3,7 +3,7 @@ id:string = "aeos-v1"
 title:string = "AEOS Specification v1"
 description:string = "Validation-layer specification for AEOS, covering schema authority, active-schema evaluation, diagnostics, and result-envelope rules."
 created:date = 2026-03-25
-modified:date = 2026-09-08
+modified:date = 2026-09-30
 family:string = "aeos"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -640,7 +640,7 @@ body:prose = >`
   Length semantics:
 
   - applies to normalized string-like literal values:
-    [$ StringLiteral], [$ SeparatorLiteral], [$ NullLiteral], [$ EncodingLiteral], and temporal literal forms
+    [$ StringLiteral], [$ SymbolicLiteral], [$ SeparatorLiteral], [$ NullLiteral], [$ EncodingLiteral], and temporal literal forms
 
   - measured in UTF-16 code units ([$ JavaScript string.length])
 

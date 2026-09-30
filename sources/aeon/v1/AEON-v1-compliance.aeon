@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-compliance"
 title:string = "AEON Core v1 Compliance Specification"
 description:string = "Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules."
 created:date = 2026-03-25
-modified:date = 2026-09-09
+modified:date = 2026-09-30
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -237,6 +237,20 @@ body:prose = >`
   10. reject unterminated quoted segments and any raw payload that requires disallowed characters outside quotes;
   11. accept unparameterized [$ sep] datatypes when the bound value is a separator literal;
   12. accept unparameterized [$ kadot] datatypes when the bound value is a separator literal, without enforcing the kadot payload shape in Core.
+
+  ## 9.1 Symbol-Literal Requirements [# symbol-literal-requirements]
+
+  Implementations MUST:
+
+  1. recognize a value delimited by [$ \|] as [$ SymbolicLiteral];
+  2. require a nonempty decoded payload and reject [$ \|\|];
+  3. preserve spaces, quotes, and comment-marker characters inside the delimiters as payload content;
+  4. reject a raw line feed or carriage return before the closing delimiter;
+  5. support the ordinary quoted-string escape vocabulary plus [$ \\\|] for a literal pipe;
+  6. infer the symbolic literal family in transport mode and reserve [$ symbol] for that family in typed modes;
+  7. preserve custom datatypes over symbolic literals wherever the active mode permits general custom datatypes;
+  8. emit [$ SymbolicLiteral] to AES with the decoded payload rather than source delimiters;
+  9. reject explicit [$ :symbol] clarifiers under [$ aeon.gp.profile.v1].
 
   ## 10. Temporal Literal Requirements [# temporal-literal-requirements]
 

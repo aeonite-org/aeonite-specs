@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-structure-syntax"
 title:string = "AEON v1 Structure Syntax Reference"
 description:string = "Reference for binding shape, keys, attributes, datatype clarifiers, newline rules, and structural grammar decisions in AEON Core v1."
 created:date = 2026-03-25
-modified:date = 2026-09-04
+modified:date = 2026-09-30
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -469,7 +469,7 @@ body:prose = >`
   - single-quoted or double-quoted strings;
   - datatype clarifiers ([$ \\["x"\\]], [$ \\[16\\]], or [$ \\["x", "y"\\]]);
   - numbers;
-  - hex, radix, encoding, date, datetime, and separator literal tokens.
+  - hex, radix, encoding, date, datetime, separator, and symbolic literal tokens.
 
   Notes:
 
@@ -477,6 +477,7 @@ body:prose = >`
   - trimticks are multiline string values introduced by a contiguous [$ >] through [$ >>>>] marker immediately before a backtick string opener;
   - trimticks trim the first empty line, trailing empty lines, and common left indentation according to the marker's tab policy;
   - separator literals are compact tokens; outside quoted string segments they terminate at the first character that is not valid raw separator payload or at an enclosing grammar boundary.
+  - symbolic literals begin at [$ \|] in value position and continue to the matching unescaped [$ \|]. Whitespace and comment markers inside are content, while [$ \\\|] represents a literal pipe.
   - for worked boundary examples, see [@ document:appendix-whitespace-boundaries-v1 | [$ appendices/appendix-whitespace-boundaries]].
 
   ### 6.3 Comments and Newlines [# comments-and-newlines]

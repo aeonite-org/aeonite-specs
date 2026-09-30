@@ -3,7 +3,7 @@ id:string = "aeon-v1-contracts"
 title:string = "AEON v1 Contracts Specification"
 description:string = "Contract-layer specification covering contract identifiers, artifact shapes, registry format, and the boundary between core processing, contracts, and consumer policy."
 created:date = 2026-03-25
-modified:date = 2026-08-24
+modified:date = 2026-09-30
 family:string = "contracts"
 group:string = "Contracts Overview"
 standing:string = "official"
@@ -221,6 +221,10 @@ body:prose = >`
       literal_family = "SeparatorLiteral"
       clarifiers = "none"
     }
+    symbol = {
+      literal_family = "SymbolicLiteral"
+      clarifiers = "none"
+    }
     encoding = {
       literal_family = "EncodingLiteral"
       clarifiers = "encoding_name"
@@ -250,7 +254,7 @@ body:prose = >`
   - [$ collections] is closed for [$ aeon.gp.profile.v1]: only [$ list] and [$ tuple] have GP v1 collection semantics. Future profiles may define additional collection names without changing this artifact;
   - [$ containers] is closed for [$ aeon.gp.profile.v1]: only [$ object] and [$ node] have GP v1 container semantics. Future profiles may define additional container names without changing this artifact;
   - profile collection and container semantics are keyed by canonical family name. Alternative or reserved datatype names inherit the semantics of their canonical family, for example [$ obj], [$ o], and [$ envelope] inherit [$ object];
-  - profile datatype semantics are keyed by canonical datatype family name. [$ radix] validates and interprets exactly one integral numeric clarifier from [$ 2] through [$ 64] as a radix base when the GP profile is active. [$ decimal] is a fixed GP alias for [$ radix\\[10\\]] and does not accept explicit clarifiers. [$ sep] and [$ separator] validate and interpret string clarifiers as separator characters. [$ kadot] carries unparameterized separator-family intent and does not accept explicit clarifiers, with stricter payload shape checks supplied by schema rules when required. [$ encoding], [$ inline], and [$ embed] validate and interpret exactly one string clarifier as an encoding-name claim;
+  - profile datatype semantics are keyed by canonical datatype family name. [$ radix] validates and interprets exactly one integral numeric clarifier from [$ 2] through [$ 64] as a radix base when the GP profile is active. [$ decimal] is a fixed GP alias for [$ radix\\[10\\]] and does not accept explicit clarifiers. [$ sep] and [$ separator] validate and interpret string clarifiers as separator characters. [$ kadot] carries unparameterized separator-family intent and does not accept explicit clarifiers, with stricter payload shape checks supplied by schema rules when required. [$ symbol] binds [$ SymbolicLiteral] and does not accept explicit clarifiers. [$ encoding], [$ inline], and [$ embed] validate and interpret exactly one string clarifier as an encoding-name claim;
   - Core-only processing preserves datatype clarifiers but does not activate radix-base validation, separator splitting, separator ordering, or domain-specific separator meaning merely because the clarifier text is present;
   - [$ capabilities] is closed for [$ aeon.gp.profile.v1]: only [$ references] and [$ clones] are defined as GP v1 capability requirements by this artifact;
   - [$ capabilities.references = true] and [$ capabilities.clones = true] mean implementations claiming GP profile support must support those features. They do not require every GP document to use references or clones;

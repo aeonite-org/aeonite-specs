@@ -3,7 +3,7 @@ id:string = "film-aes-v1"
 title:string = "film.aes v1"
 description:string = "Canonical binary v1 encoding for portable AES event streams."
 created:date = 2026-09-12
-modified:date = 2026-09-12
+modified:date = 2026-09-30
 family:string = "aes"
 group:string = "Encodings"
 standing:string = "official"
@@ -327,16 +327,17 @@ body:prose = >`
   | [$ 15] | [$ NodeHead] | required |
   | [$ 16] | [$ CloneReference] | required |
   | [$ 17] | [$ PointerReference] | required |
+  | [$ 18] | [$ SymbolicLiteral] | required |
   |~ Film v1 kind-code mapping
   
-  Code [$ 00] and codes [$ 18] through [$ FF] are unassigned and invalid in Film v1. A
+  Code [$ 00] and codes [$ 19] through [$ FF] are unassigned and invalid in Film v1. A
   semantic decoder rejects them because it cannot determine the logical kind or
   value-presence contract. A framing-only relay may copy or skip the complete
   outer record opaquely but cannot expose it as AES or claim canonical record
   validation.
   
-  Adding an AES core kind requires another event-contract version and a Film
-  version mapped to that contract. Unassigned codes are not an extension space.
+  Adding an AES core kind requires an explicit event-contract and Film mapping.
+  Unassigned codes are not an extension space.
   
   ## 7. Datatype descriptors [# 7-datatype-descriptors]
   
