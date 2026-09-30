@@ -17,6 +17,10 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Advanced the symbol-capable Film v1 contract and reader-conformance
+  authorities to `film-specs-v1-snapshot-0.2` and
+  `film-cts-v1-snapshot-0.2`, preserving the historical 0.1 snapshots.
+
 - Replaced width-bearing trimtick markers with a single [$ >] opener and
   defined exact gutter normalization: the first nonblank payload line selects
   U+0020 SPACE or U+0009 TAB, the minimum common run is removed, mixed
