@@ -242,11 +242,11 @@ body:prose = >`
 
   Implementations MUST:
 
-  1. recognize a value delimited by [$ \|] as [$ SymbolicLiteral];
-  2. require a nonempty decoded payload and reject [$ \|\|];
+  1. recognize a value delimited by [$ |] as [$ SymbolicLiteral];
+  2. require a nonempty decoded payload and reject [$ ||];
   3. preserve spaces, quotes, and comment-marker characters inside the delimiters as payload content;
   4. reject a raw line feed or carriage return before the closing delimiter;
-  5. support the ordinary quoted-string escape vocabulary plus [$ \\\|] for a literal pipe;
+  5. support the ordinary quoted-string escape vocabulary plus [$ \\|] for a literal pipe;
   6. infer the symbolic literal family in transport mode and reserve [$ symbol] for that family in typed modes;
   7. preserve custom datatypes over symbolic literals wherever the active mode permits general custom datatypes;
   8. emit [$ SymbolicLiteral] to AES with the decoded payload rather than source delimiters;

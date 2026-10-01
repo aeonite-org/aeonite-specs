@@ -1,7 +1,12 @@
 schema_id = "aeon.gp.schema.v1"
 schema_version = "1.0.0"
 world = "open"
-rules = []
+rules = [
+  { selector = "$.**%DateLiteral", constraints = { temporal_min_year = 1, temporal_max_year = 9999 } }
+  { selector = "$.**%TimeLiteral", constraints = { temporal_max_second = 59, temporal_max_fraction_digits = 9 } }
+  { selector = "$.**%DateTimeLiteral", constraints = { temporal_max_second = 59, temporal_max_fraction_digits = 9, temporal_min_year = 1, temporal_max_year = 9999 } }
+  { selector = "$.**%WTCDateTimeLiteral", constraints = { temporal_max_second = 59, temporal_max_fraction_digits = 9, temporal_min_year = 1, temporal_max_year = 9999, temporal_context_policy = "aeon.gp.temporal.v1" } }
+]
 datatype_rules = {
   int = { type = "IntegerLiteral" }
   uint = { type = "IntegerLiteral", sign = "unsigned" }
@@ -17,7 +22,7 @@ datatype_rules = {
   float32 = { type = "FloatLiteral" }
   float64 = { type = "FloatLiteral" }
   date = { type = "DateLiteral", temporal_min_year = 1, temporal_max_year = 9999 }
-  time = { type = "TimeLiteral", temporal_max_second = 59 }
-  datetime = { type = "DateTimeLiteral", temporal_max_second = 59, temporal_min_year = 1, temporal_max_year = 9999 }
-  wtc = { type = "WTCDateTimeLiteral", temporal_max_second = 59, temporal_min_year = 1, temporal_max_year = 9999, temporal_context_policy = "aeon.gp.temporal.v1" }
+  time = { type = "TimeLiteral", temporal_max_second = 59, temporal_max_fraction_digits = 9 }
+  datetime = { type = "DateTimeLiteral", temporal_max_second = 59, temporal_max_fraction_digits = 9, temporal_min_year = 1, temporal_max_year = 9999 }
+  wtc = { type = "WTCDateTimeLiteral", temporal_max_second = 59, temporal_max_fraction_digits = 9, temporal_min_year = 1, temporal_max_year = 9999, temporal_context_policy = "aeon.gp.temporal.v1" }
 }

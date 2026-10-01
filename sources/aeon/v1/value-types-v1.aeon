@@ -306,7 +306,7 @@ body:prose = >`
   | DateTime | [$ 2025-T09:30],[.] [$ 2025-01T09Z],[.] [$ 2025-01-01T09],[.] [$ 2025-01-01T09+02:00],[.] [$ 2025-01-01T09:30:00Z] | [$ ts = 2025-01-01T09:30:00Z] | [$ ts:datetime = 2025-01-01T09:30:00Z] | [$ DateTimeLiteral] |
   | WTC | [$ 2025-T09:30&Europe],[.] [$ 2025-01T09&Europe/Belgium/Brussels],[.] [$ 2025-01-01T00:00:00Z&Australia/Sydney],[.] [$ 2025-01-01T09:30Z&local],[.] [$ 2035-01-01T09:00&-36.7590183/144.2826718] | [$ z = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ DateTimeLiteral] |
   | Separator Literal | [$ ^300x250] | [$ size = ^300x250] | [$ size:sep\\["x"\\] = ^300x250] | [$ SeparatorLiteral] |
-  | Symbolic Literal | [$ \|approved\|],[.] [$ \|in review\|] | [$ stage = \|approved\|] | [$ stage:symbol = \|approved\|] | [$ SymbolicLiteral] |
+  | Symbolic Literal | [$ |approved|],[.] [$ |in review|] | [$ stage = |approved|] | [$ stage:symbol = |approved|] | [$ SymbolicLiteral] |
   | SANSA Address | [$ $.path],[.] [$ ?.path],[.] [$ $.items.*.sku] | [$ path:sansa = $.contact.name] | [$ selector:sansa = $.inventory.items.*.sku] | [$ SansaAddressLiteral] |
   | Object | [$ { ... }] | [$ user = { name = "John" }] | [$ user:object = { name:string = "John" }] | [$ ObjectNode] |
   | List | [$ \\[ ... \\]] | [$ arr = \\[1,2,3\\]] | [$ arr:list = \\[1,2,3\\]] or [$ arr:list<number> = \\[1,2,3\\]] | [$ ListNode] |
@@ -782,7 +782,7 @@ body:prose = >`
   - WTC temporal contexts may contain [$ /], [$ _], [$ -], [$ +], and [$ .] when used as part of a contiguous context, so named timezones such as [$ America/Port-au-Prince], [$ GB-Eire], [$ Etc/GMT-1], and [$ Etc/GMT+1], plus geographic positions such as [$ -36.7590183/144.2826718], are valid context payloads;
   - comment markers do not begin inside a contiguous WTC temporal-context payload; forms such as [$ Europe//Brussels] and [$ Europe/*Brussels*/] are invalid context payloads, not shortened values followed by comments;
   - uppercase [$ Z] is the Core v1 UTC marker form; lowercase [$ z] is not a temporal literal marker;
-  - invalid ranges such as [$ 2025-13-40], [$ 2025-02-29], [$ 24:00], [$ 99:99], and [$ 23:59:60] are not temporal literals in Core v1;
+  - invalid ranges such as [$ 2025-13-40], [$ 2025-02-29], [$ 24:00], and [$ 99:99] are not temporal literals in Core v1; second [$ 60] remains structurally preservable in Core and is rejected by the general-purpose schema;
   - strict datatype compatibility treats [$ :time] and [$ :datetime] as ordinary [$ DateTimeLiteral]-compatible forms and requires [$ :wtc] to be a [$ DateTimeLiteral] carrying a valid [$ &temporal-context] payload;
   - the reserved resolver-local temporal context is exactly lowercase [$ local] (for example [$ 2025-01-01T00:00:00&local]); case variants such as [$ Local] and [$ LOCAL] are invalid rather than aliases;
   - WTC preserves three temporal-value forms: unqualified values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with [$ Z]; a complete date-time with [$ Z] or a known offset can identify an instant, while reduced-precision and time-only forms retain missing context, and all forms remain lexically distinct;
@@ -800,7 +800,7 @@ body:prose = >`
 
   Core preserves reduced precision and does not silently insert missing calendar or clock fields. Under [$ aeon.gp.temporal.v1], omitted fields define completion sets: [$ 2025-] contains [$ 2025-01], [$ 2025-01] contains [$ 2025-01-01], [$ 2025-T10:10] contains compatible month/day coordinates, and [$ 10:Z] contains [$ 10:30Z]. Containment is not equality or chronological precedence. A time-only form lacks a date even when it carries [$ Z] or a known offset.
 
-  Once seconds are present, omission of a fractional part means fractional value zero. This is distinct from an omitted minute or second field and preserves ordinary whole-second semantics.
+  Once seconds are present, omission of a fractional part means fractional value zero. This is distinct from an omitted minute or second field and preserves ordinary whole-second semantics. Core preserves one or more authored fractional digits without a universal precision ceiling. The general-purpose schema admits at most nine digits, including trailing zeroes, through [$ temporal_max_fraction_digits].
 
   AES:
 
@@ -872,7 +872,7 @@ body:prose = >`
 
   - [$ SeparatorLiteral] with raw payload preserved.
 
-  ### 3.10.1 Symbolic Literal ([$ \|...\|]) [# symbolic-literal]
+  ### 3.10.1 Symbolic Literal ([$ |...|]) [# symbolic-literal]
 
   A symbolic literal is a nonempty atomic symbolic value distinct from textual data:
 
@@ -880,20 +880,20 @@ body:prose = >`
   stage = |approved|
   label = |in review|
   quoted = |say "yes"|
-  escaped = |wait\|ready|
+  escaped = |wait\\|ready|
   ~~~$
 
   Lexical rules:
 
-  - the opening and closing delimiter is [$ \|];
-  - the decoded payload MUST contain at least one Unicode scalar, so [$ \|\|] is invalid;
+  - the opening and closing delimiter is [$ |];
+  - the decoded payload MUST contain at least one Unicode scalar, so [$ ||] is invalid;
   - spaces, comment markers, and quote characters inside the delimiters are payload content;
   - raw line feeds and carriage returns are invalid;
-  - ordinary quoted-string escapes are supported, and [$ \\\|] additionally represents a literal pipe;
+  - ordinary quoted-string escapes are supported, and [$ \\|] additionally represents a literal pipe;
   - the decoded payload is significant, including leading and trailing spaces;
-  - canonical form uses pipe delimiters, escapes [$ \|] as [$ \\\|], and otherwise applies minimal string-style escaping.
+  - canonical form uses pipe delimiters, escapes [$ |] as [$ \\|], and otherwise applies minimal string-style escaping.
 
-  In transport mode, [$ stage = \|approved\|] infers [$ SymbolicLiteral]. In strict mode, [$ :symbol] is the reserved matching datatype. In custom mode, a custom datatype may bind a symbolic literal according to the ordinary custom-datatype rules.
+  In transport mode, [$ stage = |approved|] infers [$ SymbolicLiteral]. In strict mode, [$ :symbol] is the reserved matching datatype. In custom mode, a custom datatype may bind a symbolic literal according to the ordinary custom-datatype rules.
 
   A symbol is not inherently an enum, identifier, variable, reference, executable token, or schema constant. Those meanings belong to profiles, schemas, and consumers. Symbol identity compares the decoded symbol payload and does not equal a string with the same characters.
 

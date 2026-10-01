@@ -44,7 +44,7 @@ body:prose = >`
   | [$ INVALID_ESCAPE] | SyntaxError | lex/parse | malformed quoted escape, malformed Unicode escape, lone surrogate, or out-of-range code point |
   | [$ UNTERMINATED_STRING] | SyntaxError | lex | quoted string crosses a raw newline or EOF before closing delimiter |
   | [$ INVALID_SYMBOLIC_LITERAL] | SyntaxError | lex/parse | symbolic literal has an empty decoded payload |
-  | [$ UNTERMINATED_SYMBOLIC_LITERAL] | SyntaxError | lex | symbolic literal crosses a raw newline or EOF before closing [$ \|] |
+  | [$ UNTERMINATED_SYMBOLIC_LITERAL] | SyntaxError | lex | symbolic literal crosses a raw newline or EOF before closing [$ |] |
   | [$ FINALIZE_JSON_PROFILE_SYMBOL] | FinalizationError/Warning | JSON materialization | symbolic literal would lose its value-kind distinction in JSON |
   | [$ UNTYPED_TOGGLE_LITERAL] | ModeError | mode enforcement | strict toggle literal not typed as [$ toggle] |
   | [$ UNTYPED_VALUE_IN_STRICT_MODE] | ModeError | mode enforcement | strict-mode value lacks required typing |
