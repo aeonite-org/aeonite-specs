@@ -202,7 +202,7 @@ body:prose = >`
 
   ### 6.3 Digits, Precision, and Preservation [# fractional-preservation]
 
-  Core accepts one or more fractional digits. The grammar does not assign a universal millisecond, microsecond, or nanosecond ceiling. Implementations MAY enforce documented input-size resource limits, but MUST NOT silently round or truncate an accepted fraction.
+  Core accepts one or more fractional digits. The grammar does not assign a universal millisecond, microsecond, or nanosecond ceiling. Implementations MAY enforce documented input-size resource limits, but MUST NOT silently round or truncate an accepted fraction. The general-purpose schema narrows this broad representation domain to at most nine authored fractional digits; profiles or schemas for higher-precision domains may select another ceiling.
 
   These spellings identify the same mathematical fraction of a second:
 
@@ -688,11 +688,11 @@ body:prose = >`
 
   The grammar expansion should be feature-versioned or released at a declared compatibility boundary. A writer MUST NOT assume that an older reader accepts fractional seconds or second [$ 60].
 
-  The current implementation target is the cumulative [$ 0.14.0] line following [$ 0.13.0]. Its temporal scope includes fractional seconds, Core representation of second [$ 60], the [$ 0001-9999] four-digit year domain, temporal-context preservation changes, convention updates, and the executable general-purpose-schema rejection of second [$ 60]. Exact five-digit years are explicitly excluded and remain future work.
+  The current implementation target is the cumulative [$ 0.14.0] line following [$ 0.13.0]. Its temporal scope includes fractional seconds, Core representation of second [$ 60], the [$ 0001-9999] four-digit year domain, temporal-context preservation changes, convention updates, and executable general-purpose-schema rejection of second [$ 60] and precision beyond nine authored fractional digits. Exact five-digit years are explicitly excluded and remain future work.
 
   Before that release can claim the expanded Core seconds range, AEOS must expose and implement a temporal-field schema constraint capable of rejecting second [$ 60] for the general-purpose schema, with a stable diagnostic. The constraint must inspect preserved temporal structure rather than rely on an incidental lexer rejection. This is a release gate, not optional follow-up documentation.
 
-  The proposed [$ 0.14.0] constraint surface uses [$ temporal_max_second], [$ temporal_min_year], and [$ temporal_max_year]. The general-purpose schema sets them to [$ 59], [$ 1], and [$ 9999] respectively. These constraints apply only when the corresponding field is present; they do not zero-fill reduced-precision values. A field violation reports the stable diagnostic [$ temporal_field_constraint_mismatch], while an invalid declaration or use on an incompatible value reports the ordinary schema-definition or [$ constraint_inapplicable] diagnostic. The AEOS specification, contract types, general-purpose schema artifact, implementations, and conformance fixtures must adopt this surface together.
+  The proposed [$ 0.14.0] constraint surface uses [$ temporal_max_second], [$ temporal_max_fraction_digits], [$ temporal_min_year], and [$ temporal_max_year]. The general-purpose schema sets them to [$ 59], [$ 9], [$ 1], and [$ 9999] respectively. SANSA representation-kind selectors apply the GP limits to typed and untyped temporal literals. These constraints apply only when the corresponding field is present; they do not zero-fill reduced-precision values. Fractional precision counts authored digits, including trailing zeroes. A field violation reports the stable diagnostic [$ temporal_field_constraint_mismatch], while an invalid declaration or use on an incompatible value reports the ordinary schema-definition or [$ constraint_inapplicable] diagnostic. The AEOS specification, contract types, general-purpose schema artifact, implementations, and conformance fixtures must adopt this surface together.
 
   Calendar objects do not require a Core grammar change. They use existing object, datatype, attribute, and literal syntax. Their semantic adoption can proceed as a temporal-convention revision, with profiles or schemas adding executable validation when required.
 

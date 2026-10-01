@@ -235,8 +235,10 @@ body:prose = >`
   reduced-precision temporal forms and calendar/clock range validation. For
   example, [$ 09:], [$ 2025-01-01T09Z], and
   [$ 2025-01-01T09Z&Europe/Belgium/Brussels] are temporal source literals.
-  Invalid ranges such as [$ 2025-02-29], [$ 2025-13-40], [$ 24:00], and [$ 23:59:60]
-  are parse errors rather than temporal values deferred to comparison semantics.
+  Invalid ranges such as [$ 2025-02-29], [$ 2025-13-40], [$ 24:00], and [$ 23:59:61]
+  are parse errors rather than temporal values deferred to comparison semantics. Core-valid
+  second [$ 60] and arbitrary fractional precision remain query literals; a bound schema or
+  profile may separately reject them.
 
   Separator source literals use AEON Core separator payload recognition after the
   leading [$ ^]. Unquoted separator payload text is intentionally narrow. Segments

@@ -303,7 +303,12 @@ body:prose = >`
   schema_id = "aeon.gp.schema.v1"
   schema_version = "1.0.0"
   world = "open"
-  rules = []
+  rules = [
+    { selector = "$.**%DateLiteral", constraints = { temporal_min_year = 1, temporal_max_year = 9999 } }
+    { selector = "$.**%TimeLiteral", constraints = { temporal_max_second = 59, temporal_max_fraction_digits = 9 } }
+    { selector = "$.**%DateTimeLiteral", constraints = { temporal_max_second = 59, temporal_max_fraction_digits = 9, temporal_min_year = 1, temporal_max_year = 9999 } }
+    { selector = "$.**%WTCDateTimeLiteral", constraints = { temporal_max_second = 59, temporal_max_fraction_digits = 9, temporal_min_year = 1, temporal_max_year = 9999, temporal_context_policy = "aeon.gp.temporal.v1" } }
+  ]
   datatype_rules = {
     int = { type = "IntegerLiteral" }
     uint = { type = "IntegerLiteral", sign = "unsigned" }
@@ -319,13 +324,13 @@ body:prose = >`
     float32 = { type = "FloatLiteral" }
     float64 = { type = "FloatLiteral" }
     date = { type = "DateLiteral", temporal_min_year = 1, temporal_max_year = 9999 }
-    time = { type = "TimeLiteral", temporal_max_second = 59 }
-    datetime = { type = "DateTimeLiteral", temporal_max_second = 59, temporal_min_year = 1, temporal_max_year = 9999 }
-    wtc = { type = "WTCDateTimeLiteral", temporal_max_second = 59, temporal_min_year = 1, temporal_max_year = 9999, temporal_context_policy = "aeon.gp.temporal.v1" }
+    time = { type = "TimeLiteral", temporal_max_second = 59, temporal_max_fraction_digits = 9 }
+    datetime = { type = "DateTimeLiteral", temporal_max_second = 59, temporal_max_fraction_digits = 9, temporal_min_year = 1, temporal_max_year = 9999 }
+    wtc = { type = "WTCDateTimeLiteral", temporal_max_second = 59, temporal_max_fraction_digits = 9, temporal_min_year = 1, temporal_max_year = 9999, temporal_context_policy = "aeon.gp.temporal.v1" }
   }
   ~~~$
 
-  The temporal additions shown here are the draft [$ 0.14.0] candidate for the normative GP semantic layer. They retain the general-purpose [$ 00-59] seconds domain while Core can preserve a structurally plausible second [$ 60]. Implementations MUST NOT claim the candidate GP temporal behavior unless they honor these datatype rules substantively.
+  The temporal additions shown here are the draft [$ 0.14.0] candidate for the normative GP semantic layer. They retain the general-purpose [$ 00-59] seconds domain and a nine-digit fractional-second ceiling while Core can preserve a structurally plausible second [$ 60] and arbitrary authored fractional precision. The selector rules apply that policy to typed and untyped temporal literals; the datatype rules additionally make the reserved temporal labels operational. Implementations MUST NOT claim the candidate GP temporal behavior unless they honor both rule sets substantively.
 
   ## 7. Canonical Schema Metadata Key Table [# canonical-schema-metadata-key-table]
 

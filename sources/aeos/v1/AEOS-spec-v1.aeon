@@ -295,6 +295,7 @@ body:prose = >`
     readonly max_length?: number;
     readonly pattern?: string;
     readonly temporal_max_second?: number;
+    readonly temporal_max_fraction_digits?: number;
     readonly temporal_min_year?: number;
     readonly temporal_max_year?: number;
     readonly temporal_context_policy?: string;
@@ -664,16 +665,17 @@ body:prose = >`
   Temporal field constraints operate on preserved temporal literal structure:
 
   - [$ temporal_max_second] is an integer from [$ 0] through [$ 60];
+  - [$ temporal_max_fraction_digits] is a non-negative integer limiting the authored digit count after the seconds decimal point;
   - [$ temporal_min_year] and [$ temporal_max_year] are integers from [$ 1] through [$ 9999];
   - when both year bounds are present, the minimum MUST NOT exceed the maximum;
-  - a seconds constraint applies to [$ TimeLiteral], [$ DateTimeLiteral], and [$ WTCDateTimeLiteral];
+  - seconds and fractional-precision constraints apply to [$ TimeLiteral], [$ DateTimeLiteral], and [$ WTCDateTimeLiteral];
   - year constraints apply to [$ DateLiteral], [$ DateTimeLiteral], and [$ WTCDateTimeLiteral];
   - an absent reduced-precision field is not filled with zero and therefore does not violate a bound on that field;
   - a nullable [$ NullLiteral] bypasses the temporal field check in the same way as other nullable form checks.
 
   Invalid constraint declarations fail schema validation with [$ unknown_constraint_key]. Applying a temporal constraint to an incompatible literal kind fails with [$ constraint_inapplicable]. A represented field outside the admitted range fails with [$ temporal_field_constraint_mismatch].
 
-  The general-purpose schema uses these constraints to reject second [$ 60] without narrowing Core's structural grammar.
+  The general-purpose schema uses SANSA representation-kind selectors to apply these constraints to typed and untyped temporal literals. It rejects second [$ 60] and fractional precision beyond nine digits without narrowing Core's structural grammar. The precision constraint is lexical: [$ .1234567890] carries ten authored digits and is rejected even though it denotes the same mathematical fraction as [$ .123456789].
 
   The optional string constraint [$ temporal_context_policy] applies only to
   [$ WTCDateTimeLiteral]. Its first portable value is

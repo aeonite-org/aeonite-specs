@@ -782,7 +782,7 @@ body:prose = >`
   - WTC temporal contexts may contain [$ /], [$ _], [$ -], [$ +], and [$ .] when used as part of a contiguous context, so named timezones such as [$ America/Port-au-Prince], [$ GB-Eire], [$ Etc/GMT-1], and [$ Etc/GMT+1], plus geographic positions such as [$ -36.7590183/144.2826718], are valid context payloads;
   - comment markers do not begin inside a contiguous WTC temporal-context payload; forms such as [$ Europe//Brussels] and [$ Europe/*Brussels*/] are invalid context payloads, not shortened values followed by comments;
   - uppercase [$ Z] is the Core v1 UTC marker form; lowercase [$ z] is not a temporal literal marker;
-  - invalid ranges such as [$ 2025-13-40], [$ 2025-02-29], [$ 24:00], [$ 99:99], and [$ 23:59:60] are not temporal literals in Core v1;
+  - invalid ranges such as [$ 2025-13-40], [$ 2025-02-29], [$ 24:00], and [$ 99:99] are not temporal literals in Core v1; second [$ 60] remains structurally preservable in Core and is rejected by the general-purpose schema;
   - strict datatype compatibility treats [$ :time] and [$ :datetime] as ordinary [$ DateTimeLiteral]-compatible forms and requires [$ :wtc] to be a [$ DateTimeLiteral] carrying a valid [$ &temporal-context] payload;
   - the reserved resolver-local temporal context is exactly lowercase [$ local] (for example [$ 2025-01-01T00:00:00&local]); case variants such as [$ Local] and [$ LOCAL] are invalid rather than aliases;
   - WTC preserves three temporal-value forms: unqualified values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with [$ Z]; a complete date-time with [$ Z] or a known offset can identify an instant, while reduced-precision and time-only forms retain missing context, and all forms remain lexically distinct;
@@ -800,7 +800,7 @@ body:prose = >`
 
   Core preserves reduced precision and does not silently insert missing calendar or clock fields. Under [$ aeon.gp.temporal.v1], omitted fields define completion sets: [$ 2025-] contains [$ 2025-01], [$ 2025-01] contains [$ 2025-01-01], [$ 2025-T10:10] contains compatible month/day coordinates, and [$ 10:Z] contains [$ 10:30Z]. Containment is not equality or chronological precedence. A time-only form lacks a date even when it carries [$ Z] or a known offset.
 
-  Once seconds are present, omission of a fractional part means fractional value zero. This is distinct from an omitted minute or second field and preserves ordinary whole-second semantics.
+  Once seconds are present, omission of a fractional part means fractional value zero. This is distinct from an omitted minute or second field and preserves ordinary whole-second semantics. Core preserves one or more authored fractional digits without a universal precision ceiling. The general-purpose schema admits at most nine digits, including trailing zeroes, through [$ temporal_max_fraction_digits].
 
   AES:
 
