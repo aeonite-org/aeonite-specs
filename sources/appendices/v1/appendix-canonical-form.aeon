@@ -184,11 +184,11 @@ body:prose = >`
 
   ### Symbolic Literals [# symbolic-literals]
 
-  Canonical symbolic literals use pipe delimiters and the decoded payload. A literal pipe is escaped as [$ \\\|], backslash and control characters use the ordinary canonical string escapes, and quote characters remain unescaped:
+  Canonical symbolic literals use pipe delimiters and the decoded payload. A literal pipe is escaped as [$ \\|], backslash and control characters use the ordinary canonical string escapes, and quote characters remain unescaped:
 
   ~~~$ aeon
   stage:symbol = |in review|
-  message:symbol = |say "yes" and \|wait\||
+  message:symbol = |say "yes" and \\|wait\\||
   ~~~$
 
 

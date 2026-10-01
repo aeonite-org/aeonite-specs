@@ -258,7 +258,7 @@ body:prose = >`
 
   ### Symbolic Literals → Lossy JSON Strings [# symbolic-literals-lossy-json-strings]
 
-  JSON has no native symbol value. Strict JSON-profile materialization MUST report [$ FINALIZE_JSON_PROFILE_SYMBOL] and fail closed rather than silently erase the distinction between [$ \|approved\|] and [$ "approved"]. Loose materialization MAY emit the decoded symbol payload as a JSON string, but MUST report the same code as a warning.
+  JSON has no native symbol value. Strict JSON-profile materialization MUST report [$ FINALIZE_JSON_PROFILE_SYMBOL] and fail closed rather than silently erase the distinction between [$ |approved|] and [$ "approved"]. Loose materialization MAY emit the decoded symbol payload as a JSON string, but MUST report the same code as a warning.
 
   ### Hex and Radix Literals → JSON Strings [# hex-and-radix-literals-json-strings]
 

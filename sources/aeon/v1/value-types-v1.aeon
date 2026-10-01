@@ -306,7 +306,7 @@ body:prose = >`
   | DateTime | [$ 2025-T09:30],[.] [$ 2025-01T09Z],[.] [$ 2025-01-01T09],[.] [$ 2025-01-01T09+02:00],[.] [$ 2025-01-01T09:30:00Z] | [$ ts = 2025-01-01T09:30:00Z] | [$ ts:datetime = 2025-01-01T09:30:00Z] | [$ DateTimeLiteral] |
   | WTC | [$ 2025-T09:30&Europe],[.] [$ 2025-01T09&Europe/Belgium/Brussels],[.] [$ 2025-01-01T00:00:00Z&Australia/Sydney],[.] [$ 2025-01-01T09:30Z&local],[.] [$ 2035-01-01T09:00&-36.7590183/144.2826718] | [$ z = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ DateTimeLiteral] |
   | Separator Literal | [$ ^300x250] | [$ size = ^300x250] | [$ size:sep\\["x"\\] = ^300x250] | [$ SeparatorLiteral] |
-  | Symbolic Literal | [$ \|approved\|],[.] [$ \|in review\|] | [$ stage = \|approved\|] | [$ stage:symbol = \|approved\|] | [$ SymbolicLiteral] |
+  | Symbolic Literal | [$ |approved|],[.] [$ |in review|] | [$ stage = |approved|] | [$ stage:symbol = |approved|] | [$ SymbolicLiteral] |
   | SANSA Address | [$ $.path],[.] [$ ?.path],[.] [$ $.items.*.sku] | [$ path:sansa = $.contact.name] | [$ selector:sansa = $.inventory.items.*.sku] | [$ SansaAddressLiteral] |
   | Object | [$ { ... }] | [$ user = { name = "John" }] | [$ user:object = { name:string = "John" }] | [$ ObjectNode] |
   | List | [$ \\[ ... \\]] | [$ arr = \\[1,2,3\\]] | [$ arr:list = \\[1,2,3\\]] or [$ arr:list<number> = \\[1,2,3\\]] | [$ ListNode] |
@@ -872,7 +872,7 @@ body:prose = >`
 
   - [$ SeparatorLiteral] with raw payload preserved.
 
-  ### 3.10.1 Symbolic Literal ([$ \|...\|]) [# symbolic-literal]
+  ### 3.10.1 Symbolic Literal ([$ |...|]) [# symbolic-literal]
 
   A symbolic literal is a nonempty atomic symbolic value distinct from textual data:
 
@@ -880,20 +880,20 @@ body:prose = >`
   stage = |approved|
   label = |in review|
   quoted = |say "yes"|
-  escaped = |wait\|ready|
+  escaped = |wait\\|ready|
   ~~~$
 
   Lexical rules:
 
-  - the opening and closing delimiter is [$ \|];
-  - the decoded payload MUST contain at least one Unicode scalar, so [$ \|\|] is invalid;
+  - the opening and closing delimiter is [$ |];
+  - the decoded payload MUST contain at least one Unicode scalar, so [$ ||] is invalid;
   - spaces, comment markers, and quote characters inside the delimiters are payload content;
   - raw line feeds and carriage returns are invalid;
-  - ordinary quoted-string escapes are supported, and [$ \\\|] additionally represents a literal pipe;
+  - ordinary quoted-string escapes are supported, and [$ \\|] additionally represents a literal pipe;
   - the decoded payload is significant, including leading and trailing spaces;
-  - canonical form uses pipe delimiters, escapes [$ \|] as [$ \\\|], and otherwise applies minimal string-style escaping.
+  - canonical form uses pipe delimiters, escapes [$ |] as [$ \\|], and otherwise applies minimal string-style escaping.
 
-  In transport mode, [$ stage = \|approved\|] infers [$ SymbolicLiteral]. In strict mode, [$ :symbol] is the reserved matching datatype. In custom mode, a custom datatype may bind a symbolic literal according to the ordinary custom-datatype rules.
+  In transport mode, [$ stage = |approved|] infers [$ SymbolicLiteral]. In strict mode, [$ :symbol] is the reserved matching datatype. In custom mode, a custom datatype may bind a symbolic literal according to the ordinary custom-datatype rules.
 
   A symbol is not inherently an enum, identifier, variable, reference, executable token, or schema constant. Those meanings belong to profiles, schemas, and consumers. Symbol identity compares the decoded symbol payload and does not equal a string with the same characters.
 

@@ -201,7 +201,7 @@ body:prose = >`
   | [$ RadixLiteral] | canonical radix payload without [$ %] or visual underscores |
   | [$ EncodingLiteral] | encoding payload without [$ &]; padding is preserved |
   | [$ SeparatorLiteral] | canonical separator payload without [$ ^] |
-  | [$ SymbolicLiteral] | decoded nonempty Unicode symbol payload without surrounding [$ \|] delimiters |
+  | [$ SymbolicLiteral] | decoded nonempty Unicode symbol payload without surrounding [$ |] delimiters |
   | [$ SansaAddressLiteral] | canonical SANSA address |
   | [$ DateLiteral] | canonical date text |
   | [$ TimeLiteral] | canonical time text |
