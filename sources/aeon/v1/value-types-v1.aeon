@@ -369,8 +369,9 @@ body:prose = >`
 
   Canonical notes:
 
-  - canonical single-line strings emit double-quoted strings with minimal escaping;
-  - canonical multiline strings may emit as trimticks using canonical indentation.
+  - ordinary strings canonically emit as double-quoted strings with minimal escaping;
+  - decoded line breaks in ordinary strings emit as escapes such as [$ \\n] rather than changing the value to the trimtick literal family;
+  - canonicalization preserves the ordinary-string versus trimtick literal-family boundary.
 
   AES:
 
@@ -438,12 +439,11 @@ body:prose = >`
 
   Canonical notes:
 
-  - canonical multiline semantic strings emit as spaces-only trimticks;
-  - canonical output normalizes the indentation gutter to spaces only.
-  - canonical output may collapse trimticks to ordinary string literals when the normalized value is rendered in an inline context;
-  - one-line normalized trimticks in inline containers canonically emit as ordinary double-quoted strings;
-  - multiline trimtick values rendered inside inline object or attribute forms canonically emit as escaped double-quoted strings rather than multiline trimtick blocks;
-  - multiline trimtick blocks are preserved in canonical output when the enclosing canonical layout is multiline.
+  - canonical output always preserves the trimtick literal family;
+  - one-line trimticks canonically use the compact [$ >] plus backtick form, including inside inline containers;
+  - multiline trimticks use spaces-only canonical gutters when the enclosing layout permits a multiline block;
+  - canonical output normalizes a multiline block's indentation gutter to spaces only;
+  - multiline trimticks rendered inside inline object or attribute forms remain trimticks and escape their line breaks within the compact form.
 
   AES:
 

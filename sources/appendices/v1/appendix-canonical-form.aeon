@@ -153,14 +153,14 @@ body:prose = >`
   - Raw line breaks → [$ \\\\n]
   - Non-ASCII preserved as UTF-8
 
-  Multiline semantic strings canonically emit as spaces-only trimticks:
+  Canonical strings preserve their literal family:
 
-  - canonical output never uses tabs in the trimtick gutter
-  - canonical equality is determined by the resulting trimmed string value
-  - single-line strings continue to emit as ordinary quoted strings
-  - trimticks may collapse to ordinary quoted strings in inline canonical contexts
-  - one-line normalized trimticks in inline containers emit as ordinary quoted strings
-  - multiline trimticks rendered inside inline object or attribute forms emit as escaped quoted strings rather than multiline trimtick blocks
+  - ordinary strings always emit as escaped double-quoted strings, including when their decoded value contains line breaks
+  - trimticks always retain the [$ >] marker and backtick delimiters
+  - canonical output never uses tabs in a multiline trimtick gutter
+  - canonical equality is determined by the literal family and the resulting decoded or trimmed string value
+  - one-line trimticks use the compact trimtick form, including inside inline containers
+  - multiline trimticks rendered inside inline object or attribute forms remain compact trimticks with escaped line breaks rather than collapsing to ordinary strings
 
   ### Separator Literals [# separator-literals]
 
