@@ -17,6 +17,11 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Corrected canonical string rendering to preserve the ordinary-string versus
+  trimtick literal-family boundary. Ordinary strings now remain escaped
+  double-quoted strings even when their decoded value contains line breaks;
+  trimticks retain their marker and delimiters in both block and inline forms.
+
 - Advanced the symbol-capable Film v1 contract and reader-conformance
   authorities to `film-specs-v1-snapshot-0.2` and
   `film-cts-v1-snapshot-0.2`, preserving the historical 0.1 snapshots.

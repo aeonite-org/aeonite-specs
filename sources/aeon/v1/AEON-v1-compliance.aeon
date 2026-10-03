@@ -201,7 +201,7 @@ body:prose = >`
   2. preserve canonical node-head ordering [$ tag\\\\id\\\\@{...}:datatype];
   3. elide redundant explicit root prefixes in rendered references ([$ ~$.a] [>] [$ ~a], [$ ~>$.a] [>] [$ ~>a]);
   4. collapse quoted reference selectors to bare identifier form when the decoded segment is already a canonical bare identifier;
-  5. preserve multiline trimticks only in multiline canonical layouts and render inline trimtick-normalized values as ordinary escaped strings when required by inline layout.
+  5. preserve the ordinary-string versus trimtick literal-family boundary in every canonical layout: ordinary strings use escaped double quotes, while trimticks retain the [$ >] marker and backtick delimiters, including in inline contexts;
   6. render nested object values as multiline canonical blocks when the enclosing canonical object or list layout is multiline, while still sorting keys lexicographically at every level.
 
   ## 8. Radix and Encoding Literal Requirements [# radix-and-encoding-literal-requirements]

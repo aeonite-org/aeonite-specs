@@ -998,7 +998,7 @@ body:prose = >`
   | [$ replace $.x with lower("A")] | instruction value payload is not a literal |
   | [$ replace $.x with "a" in $.list.*] | instruction value payload is not a literal |
   | [$ create $.x with :date, 2025-02-29] | invalid temporal value literal |
-  | [$ create $.x with :symbol, ||] | empty symbol value literal |
+  | [$ create $.x with :symbol, \\|\\|] | empty symbol value literal |
   | [$ create $.x with :time, 24:00] | invalid temporal value literal |
   | [$ replace $.qty with 1 /* unterminated] | unterminated instruction block comment |
   | [$ because Bob\\\\nreplace $.inventory.qty with 1] | malformed [$ because] clause; expected quoted text |
@@ -1024,9 +1024,9 @@ body:prose = >`
   | [$ create $.inventory.badRadix with :radix\\[03\\], %101] against an AEON target | target surface rejects invalid reserved radix metadata |
   | [$ create $.inventory.badRadixAlias with :radix16, %10] against an AEON target | target surface rejects unsupported reserved-looking radix alias |
   | [$ create $.inventory.badSeparator with :sep\\[","\\], ^"hello, world"] against an AEON target | target surface rejects invalid reserved separator metadata |
-  | [$ create $.inventory.emptyStage with :symbol, ||] against an AEON target | target surface rejects empty symbol payload |
+  | [$ create $.inventory.emptyStage with :symbol, \\|\\|] against an AEON target | target surface rejects empty symbol payload |
   | [$ create $.inventory.badKadot with :kadot\\[.\\], ^1.2.3] against an AEON target | target surface rejects invalid reserved [$ kadot] metadata |
-  | [$ create $.inventory.stage with :symbol, |approved|] against a JSON target | target surface rejects symbol intent rather than silently materializing a string |
+  | [$ create $.inventory.stage with :symbol, \\|approved\\|] against a JSON target | target surface rejects symbol intent rather than silently materializing a string |
   | [$ create $.inventory.badReference with :number, ~target.*] against an AEON target | target surface rejects selector-shaped AEON reference target |
   | [$ create $.inventory.pair with :tuple, ("sku", 7)] against a JSON target | target surface rejects tuple datatype intent |
   | [$ create $.inventory.badge with :node, <badge("new", 3)>] against a JSON target | target surface rejects node datatype intent |
