@@ -306,7 +306,7 @@ body:prose = >`
   | DateTime | [$ 2025-T09:30],[.] [$ 2025-01T09Z],[.] [$ 2025-01-01T09],[.] [$ 2025-01-01T09+02:00],[.] [$ 2025-01-01T09:30:00Z] | [$ ts = 2025-01-01T09:30:00Z] | [$ ts:datetime = 2025-01-01T09:30:00Z] | [$ DateTimeLiteral] |
   | WTC | [$ 2025-T09:30&Europe],[.] [$ 2025-01T09&Europe/Belgium/Brussels],[.] [$ 2025-01-01T00:00:00Z&Australia/Sydney],[.] [$ 2025-01-01T09:30Z&local],[.] [$ 2035-01-01T09:00&-36.7590183/144.2826718] | [$ z = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ z:wtc = 2025-01-01T00:00:00Z&Australia/Sydney] | [$ DateTimeLiteral] |
   | Separator Literal | [$ ^300x250] | [$ size = ^300x250] | [$ size:sep\\["x"\\] = ^300x250] | [$ SeparatorLiteral] |
-  | Symbolic Literal | [$ |approved|],[.] [$ |in review|] | [$ stage = |approved|] | [$ stage:symbol = |approved|] | [$ SymbolicLiteral] |
+  | Symbolic Literal | [$ \\|approved\\|],[.] [$ \\|in review\\|] | [$ stage = \\|approved\\|] | [$ stage:symbol = \\|approved\\|] | [$ SymbolicLiteral] |
   | SANSA Address | [$ $.path],[.] [$ ?.path],[.] [$ $.items.*.sku] | [$ path:sansa = $.contact.name] | [$ selector:sansa = $.inventory.items.*.sku] | [$ SansaAddressLiteral] |
   | Object | [$ { ... }] | [$ user = { name = "John" }] | [$ user:object = { name:string = "John" }] | [$ ObjectNode] |
   | List | [$ \\[ ... \\]] | [$ arr = \\[1,2,3\\]] | [$ arr:list = \\[1,2,3\\]] or [$ arr:list<number> = \\[1,2,3\\]] | [$ ListNode] |
@@ -370,7 +370,7 @@ body:prose = >`
   Canonical notes:
 
   - ordinary strings canonically emit as double-quoted strings with minimal escaping;
-  - decoded line breaks in ordinary strings emit as escapes such as [$ \\n] rather than changing the value to the trimtick literal family;
+  - decoded line breaks in ordinary strings emit as escapes such as [$ \\\\n] rather than changing the value to the trimtick literal family;
   - canonicalization preserves the ordinary-string versus trimtick literal-family boundary.
 
   AES:

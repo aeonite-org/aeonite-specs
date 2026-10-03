@@ -145,7 +145,7 @@ body:prose = >`
   | [$ !] form | null literal |
   | boolean/toggle keyword | boolean or toggle |
   | [$ #], [$ %], [$ $], [$ ^] literal token | hex, radix, encoding, separator literal |
-  | [$ |] | symbolic literal through the matching unescaped [$ |] |
+  | [$ \\|] | symbolic literal through the matching unescaped [$ \\|] |
   | trimtick opener | trimtick string |
   |~ AEON value-start dispatch
 
