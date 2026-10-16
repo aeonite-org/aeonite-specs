@@ -321,8 +321,22 @@ body:prose = >`
 
   - no-forward and no-self checks apply independently per namespace;
   - explicit attribute references use the same legality model;
+  - attribute entries become available in authored order, not atomically with their enclosing binding; a reference to a later sibling attribute is a forward reference, just as a reference to a later object member is;
+  - this rule also applies to metadata on anonymous list, tuple, and node-child bindings, and to nested attribute values;
+  - an attribute entry's attached metadata precedes that entry's payload; metadata cannot reference its own not-yet-available payload, while a payload may reference its already-declared metadata;
   - quoted member traversal after attribute selection does not change legality rules; it continues to resolve against the selected attribute value using ordinary member/index traversal;
   - legality is a Core concern, not AEOS/schema responsibility.
+
+  Both of these contain a forward reference:
+
+  ~~~$ aeon
+  a = { b = ~a.z, z = 1 }
+  a@{b = ~a.@.z, z = 1} = 0
+  ~~~$
+
+  These are separate examples, not two declarations in one document. Reversing the two sibling declarations in either example makes its reference backward and valid. The same rules apply to pointer references ([$ ~>]).
+
+  Node-head attributes do not become binding attributes. In [$ a = <tag@{z = 1}>], [$ a.@.z] is not a source-addressable target: AEON v1 has no source-path spelling for the implicit node head. If [$ a] also has key-attached attributes, [$ a.@.z] selects only that key-attached attribute namespace.
 
   ## 7. Duplicate Identity and Decoding [# duplicate-identity-and-decoding]
 
