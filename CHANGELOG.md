@@ -17,6 +17,15 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Required type-descriptor generic arguments consistently in AEON, logical
+  AES, Telex, Film, and integrity validation. Bare numeric and string arguments
+  are invalid even for custom datatypes; numeric parameters remain expressible
+  as clarifiers on the outer or nested type. Film retains historical physical
+  framing for generic tag `02` but rejects the resulting invalid AES record
+  before completed-stream acceptance or encoding. This is a breaking acceptance
+  correction; released specification/CTS snapshots remain historical compatibility targets,
+  and new CTS coverage starts in development manifests.
+
 - Corrected canonical string rendering to preserve the ordinary-string versus
   trimtick literal-family boundary. Ordinary strings now remain escaped
   double-quoted strings even when their decoded value contains line breaks;

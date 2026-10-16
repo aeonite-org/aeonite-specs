@@ -3,7 +3,7 @@ id:string = "film-aes-v1"
 title:string = "film.aes v1"
 description:string = "Canonical binary v1 encoding for portable AES event streams."
 created:date = 2026-09-12
-modified:date = 2026-09-30
+modified:date = 2026-10-17
 family:string = "aes"
 group:string = "Encodings"
 standing:string = "official"
@@ -371,9 +371,21 @@ body:prose = >`
   unknown tag, missing entry, or trailing descriptor byte.
   
   Generic tag [$ 00] carries a recursive datatype descriptor. Generic tag [$ 02]
-  carries a [$ NumberLiteral] string. Clarifier tag [$ 01] carries a [$ StringLiteral]
-  string and tag [$ 02] carries a [$ NumberLiteral] string. Numeric payloads remain
-  strings and are validated by AES rather than converted to host numbers.
+  retains its historical physical framing as a [$ NumberLiteral] string, but
+  it cannot produce a valid logical AES generic argument. Completed-stream
+  validation MUST reject any occurrence, including in a nested descriptor,
+  with [$ FILM_AES_INVALID] and [$ AES_INVALID_DATATYPE]. A provisional syntax
+  decoder may expose it only as unvalidated data; it MUST NOT report AES
+  acceptance or enable a writer to publish that record. The tag MUST NOT be
+  reassigned or interpreted as a clarifier. Clarifier tag [$ 01] carries a
+  [$ StringLiteral] string and tag [$ 02] carries a [$ NumberLiteral] string.
+  Numeric payloads remain strings and are validated by AES rather than converted
+  to host numbers.
+
+  This correction tightens logical AES acceptance without changing the Film
+  binary grammar, framing, or tag assignments. Historical specification and CTS
+  snapshots retain their earlier acceptance rules; adoption requires a newer
+  conformance target rather than a claim against the unchanged snapshots.
   
   Order and duplicates are preserved in both arrays. An absent datatype control
   bit means logical [$ datatype], [$ generics], and [$ clarifiers] are absent. A present

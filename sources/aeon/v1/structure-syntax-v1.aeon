@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-structure-syntax"
 title:string = "AEON v1 Structure Syntax Reference"
 description:string = "Reference for binding shape, keys, attributes, datatype clarifiers, newline rules, and structural grammar decisions in AEON Core v1."
 created:date = 2026-03-25
-modified:date = 2026-09-30
+modified:date = 2026-10-17
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -66,6 +66,8 @@ body:prose = >`
   ~~~$ ebnf
   TypedValue ::= StructuralIdentity? Attribute? TypeAnnotation? "=" Value
   TypeAnnotation ::= ":" TypeName GenericArgs? Clarifier?
+  TypeDescriptor ::= TypeName GenericArgs? Clarifier?
+  GenericArgs ::= "<" TypeDescriptor ("," TypeDescriptor)* ">"
   ~~~$ (Types)
 
   ~~~$ ebnf
@@ -287,6 +289,7 @@ body:prose = >`
 
   Generic-depth notes:
 
+  - every generic argument is a type descriptor, optionally carrying its own generics and clarifiers; bare numeric and string arguments are invalid, including for custom datatypes;
   - Core v1 reserves generic arguments for [$ list<T>], [$ tuple<T...>], [$ object<T>], [$ node<T>], [$ null<T>], [$ nan<T>], and [$ infinity<T>];
   - binding-side [$ node<T>] accepts [$ T = node] or custom profile/domain/materialization arguments, but rejects reserved non-[$ node] value datatype arguments such as [$ string];
   - other reserved Core datatypes do not accept generic arguments;
