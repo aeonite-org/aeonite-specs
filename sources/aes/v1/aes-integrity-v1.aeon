@@ -3,7 +3,7 @@ id:string = "aes-integrity-v1"
 title:string = "Portable AES Integrity Contract v1"
 description:string = "Encoding-neutral v1 contract for deterministic AES logical bytes, digests, ordering, coverage, provenance and signature inputs."
 created:date = 2026-09-07
-modified:date = 2026-09-10
+modified:date = 2026-10-17
 family:string = "aes"
 group:string = "AES v1"
 standing:string = "official"
@@ -158,14 +158,17 @@ body:prose = >`
   Datatype information is always the expanded [$ aes.events.v1] structure:
 
   - [$ datatype] is the base-name string;
-  - [$ generics] is an ordered list of datatype maps or tagged numeric-literal
-    maps; and
+  - [$ generics] is an ordered list of recursive datatype maps; and
   - [$ clarifiers] is an ordered list of tagged string/numeric-literal maps.
 
   The Telex combined datatype descriptor is never an integrity input.
   Extension-field names and string values are included like other record map
   members. An integrity implementation validates the selected AES profile and
   registered extension surface before claiming semantic conformance.
+
+  A tagged numeric or string literal in a generic list is invalid AES, not a
+  second integrity representation. It MUST fail validation before logical
+  bytes or a digest are produced. Tagged numeric clarifiers remain valid.
 
   Portable scalar strings are encoded exactly as their Unicode scalar sequence.
   No normalization, case folding, numeric parsing, null reinterpretation, or

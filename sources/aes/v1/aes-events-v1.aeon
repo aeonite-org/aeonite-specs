@@ -3,7 +3,7 @@ id:string = "aes-events-v1"
 title:string = "Portable AES Event Contract v1"
 description:string = "Transport-neutral v1 contract for portable AES records, paths, kinds, profiles, projections, ordering, provenance, fidelity, and diagnostics."
 created:date = 2026-09-05
-modified:date = 2026-09-30
+modified:date = 2026-10-17
 family:string = "aes"
 group:string = "AES v1"
 standing:string = "official"
@@ -143,19 +143,30 @@ body:prose = >`
   :null<string>   -> datatype="null", generics=[{datatype="string", generics=[], clarifiers=[]}], clarifiers=[]
   ~~~$
 
-  A datatype generic argument is either a recursively structured datatype
-  descriptor or a tagged [$ NumberLiteral]. A recursive descriptor has exactly
+  Every datatype generic argument MUST be a recursively structured datatype
+  descriptor. Bare numeric or string literals are invalid generic arguments,
+  including inside nested descriptors. A recursive descriptor has exactly
   the same three fields: non-empty [$ datatype], ordered [$ generics], and ordered
   [$ clarifiers]. A tagged value has exactly [$ kind] and [$ value]. A clarifier
   is a tagged [$ StringLiteral] or [$ NumberLiteral].
+  Each base datatype name MUST match the ASCII identifier grammar
+  [$ \\[A-Za-z_\\]\\[A-Za-z0-9_\\]*]. A numeric string is not a datatype name.
   Tagged literal values are canonical strings, including numeric values; an AES
   boundary never converts them to host numeric types.
+
+  This is a shared syntax constraint, not a profile or datatype-interpretation
+  rule. Enabling custom datatypes does not permit literal generic arguments.
+  Telex and Film MUST reject such records rather than exposing a language
+  feature that AEON cannot express. A provisional physical decode is not
+  acceptance of a logical AES record. Numeric parameters belong in clarifiers,
+  including clarifiers on nested generic types: [$ custom<number>\\[1.0\\]] and
+  [$ list<custom\\[1.0\\]>] are structurally valid; [$ custom<1.0>] is not.
 
   ~~~$ text
   datatype = "tuple"
   generics = [
     { datatype = "int", generics = [], clarifiers = [] },
-    { kind = "NumberLiteral", value = "9007199254740993" }
+    { datatype = "custom", generics = [], clarifiers = [{ kind = "NumberLiteral", value = "9007199254740993" }] }
   ]
   clarifiers = [
     { kind = "StringLiteral", value = "x" },
