@@ -3,7 +3,7 @@ id:string = "appendix-canonical-form-v1"
 title:string = "Appendix — Canonical AEON Form"
 description:string = "Canonicalization conventions and normalization outputs for stable interchange."
 created:date = 2026-03-25
-modified:date = 2026-09-30
+modified:date = 2026-10-16
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
@@ -47,12 +47,12 @@ body:prose = >`
   }
   ~~~$
 
-  Header fields sorted lexicographically.
+  Header fields use the reference-safe key ordering defined below. The header remains before every body binding; sorting MUST NOT move a binding across the header/body boundary.
 
   ### Top-Level Order [# top-level-order]
 
   1. [$ aeon:header] first
-  2. All other bindings in lexicographic order
+  2. All body bindings in reference-safe key order
 
   This ordering is not formatter-only advice:
 
@@ -62,8 +62,8 @@ body:prose = >`
 
   ## Keys and Objects [# keys-and-objects]
 
-  - Object keys sorted lexicographically
-  - Attribute keys sorted lexicographically
+  - Object keys use reference-safe key order
+  - Attribute keys use reference-safe key order
   - One key per line in multi-line objects
 
   Canonical layout is structure-sensitive:
@@ -71,6 +71,48 @@ body:prose = >`
   - inline object forms may remain inline when the enclosing canonical layout is inline;
   - when an enclosing object or list is rendered as multiline canonical layout, nested object values also canonically expand to multiline object blocks rather than remaining inline;
   - key sorting still applies at every level regardless of whether the object is rendered inline or multiline.
+
+  ### Reference Safe Key Ordering [# reference-safe-key-ordering]
+
+  At each sortable scope, emit the smallest decoded key whose reference dependencies are already available. Reconsider the eligible keys after every emission. This is dependency ordering with a lexical tie-break, not a pairwise key comparison that sometimes ignores a reference.
+
+  Sortable scopes are the body root, header fields, every object's members, and every attribute head's entries. This includes objects and attributes nested inside lists, tuples, node children, or other metadata. Lists, tuples, and node children retain their positions and never become sortable scopes.
+
+  Lexical key comparison uses the decoded sequence of Unicode scalar values, not locale collation, encoded escape spelling, or UTF-16 code units. Compare at the first differing scalar value; if one sequence is a prefix of another, the shorter key comes first. Do not normalize case or Unicode composition. Reference-free scopes therefore remain lexically sorted under this comparator.
+
+  Reference dependencies come only from actual clone and pointer occurrences. A reference inside a descendant value or node-head attribute can constrain the order of its containing binding. Reference-shaped strings, symbols, separator payloads, and SANSA literals do not create dependencies.
+
+  For every reference, use Core's exact decoded target and availability rules. At each sortable scope containing both occurrences in distinct entry subtrees, the entry containing the target's availability point precedes the entry containing the reference. Apply this constraint to containing scopes as well as directly referenced members. Do not infer containment by testing textual path prefixes.
+
+  A container's availability point precedes its children; it is not the end of its subtree. An ancestor-container target therefore does not make a child depend on its own enclosing entry. Attached metadata precedes its payload, so a payload may reference its already-declared metadata without acquiring an artificial cycle. Binding/key attributes and implicit node-head attributes remain distinct; sorting does not add a source-path spelling for an implicit node head.
+
+  For example, this valid authored order:
+
+  ~~~$ aeon
+  d = 3
+  c = 2
+  b = ~c
+  a = 1
+  ~~~$
+
+  has this canonical body order:
+
+  ~~~$ aeon
+  a = 1
+  c = 2
+  b = ~c
+  d = 3
+  ~~~$
+
+  After emitting [$ c], [$ b] becomes eligible and precedes the still-eligible [$ d]. The same rule applies within attribute heads: [$ a@{z = 1, b = ~a.@.z} = 0] retains [$ z] before [$ b], rather than introducing a forward reference by sorting [$ b] first.
+
+  Canonicalization MUST validate references in the original authored order before adding a default header or sorting any scope. Missing, forward, and self references remain errors even if reordering or default-header insertion could make them valid. This is Core reference validation, not reference evaluation, profile approval, or schema validation.
+
+  Emitters MUST preserve reference kind, exact decoded target, datatype, structural identity, source plane, and indexed positions. The result MUST remain legal under the same Core reference rules. If validation fails or ordering cannot satisfy the constraints, return a diagnostic and no successful or partial canonical text. Resource-limit failure must not fall back to alphabetical or authored-order output presented as canonical success.
+
+  ### Ordering Compatibility [# ordering-compatibility]
+
+  Reference-safe ordering changes canonical bytes where lexical sorting alone would violate reference legality. The explicit scalar-value comparator can also change ordering in implementations that previously compared UTF-16 code units. Hashes, signatures, caches, and reproducible fixtures must use an explicitly identified canonical contract; historical released CTS snapshots retain their original expectations and are not rewritten to adopt this ordering.
 
 
   ## Lists [# lists]
