@@ -74,7 +74,7 @@ body:prose = >`
 
   ### Reference Safe Key Ordering [# reference-safe-key-ordering]
 
-  At each sortable scope, emit the smallest decoded key whose reference dependencies are already available. Reconsider the eligible keys after every emission. This is dependency ordering with a lexical tie-break, not a pairwise key comparison that sometimes ignores a reference.
+  At each sortable scope, emit the smallest decoded key whose local predecessor entries have already been emitted. Local predecessors are obtained by projecting Core reference dependencies into that scope as described below. Targets already available on entry to the scope are satisfied dependencies, not additional local predecessor entries. Reconsider the eligible keys after every emission. This is dependency ordering with a lexical tie-break, not a pairwise key comparison that sometimes ignores a reference.
 
   Sortable scopes are the body root, header fields, every object's members, and every attribute head's entries. This includes objects and attributes nested inside lists, tuples, node children, or other metadata. Lists, tuples, and node children retain their positions and never become sortable scopes.
 
@@ -83,6 +83,8 @@ body:prose = >`
   Reference dependencies come only from actual clone and pointer occurrences. A reference inside a descendant value or node-head attribute can constrain the order of its containing binding. Reference-shaped strings, symbols, separator payloads, and SANSA literals do not create dependencies.
 
   For every reference, use Core's exact decoded target and availability rules. At each sortable scope containing both occurrences in distinct entry subtrees, the entry containing the target's availability point precedes the entry containing the reference. Apply this constraint to containing scopes as well as directly referenced members. Do not infer containment by testing textual path prefixes.
+
+  Within a nested scope, a reference to an external target already made available by an enclosing scope does not wait for an entry in the nested scope. An unrelated local entry with the same decoded key as an external target is not its predecessor. If an external target is not yet available, its dependency must be enforced at the containing sortable scope that orders the target and reference subtrees; it must not be dropped merely because it is external to the nested scope.
 
   A container's availability point precedes its children; it is not the end of its subtree. An ancestor-container target therefore does not make a child depend on its own enclosing entry. Attached metadata precedes its payload, so a payload may reference its already-declared metadata without acquiring an artificial cycle. Binding/key attributes and implicit node-head attributes remain distinct; sorting does not add a source-path spelling for an implicit node head.
 
@@ -109,6 +111,12 @@ body:prose = >`
   Canonicalization MUST validate references in the original authored order before adding a default header or sorting any scope. Missing, forward, and self references remain errors even if reordering or default-header insertion could make them valid. This is Core reference validation, not reference evaluation, profile approval, or schema validation.
 
   Emitters MUST preserve reference kind, exact decoded target, datatype, structural identity, source plane, and indexed positions. The result MUST remain legal under the same Core reference rules. If validation fails or ordering cannot satisfy the constraints, return a diagnostic and no successful or partial canonical text. Resource-limit failure must not fall back to alphabetical or authored-order output presented as canonical success.
+
+  Successful canonicalization satisfies three ordering invariants:
+
+  - legality: the emitted document passes the same Core reference validation;
+  - idempotence: canonicalizing the emitted canonical text produces the same canonical text;
+  - minimality: at every emission step, the selected entry has the smallest decoded key among the currently eligible entries. A legal but non-minimal topological ordering is not canonical.
 
   ### Ordering Compatibility [# ordering-compatibility]
 
