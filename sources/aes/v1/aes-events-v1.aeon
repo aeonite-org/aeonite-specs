@@ -182,10 +182,27 @@ body:prose = >`
 
   AES v1 implementations guard recursive generic descriptors. Generic depth is
   the number of nested generic arguments that themselves contain generics:
-  [$ list<int>] has depth [$ 1], [$ list<list<int>>] has depth [$ 1], and
+  [$ list<int>] has depth [$ 0], [$ list<list<int>>] has depth [$ 1], and
   [$ list<list<list<int>>>] has depth [$ 2]. The consumer selects the active
   maximum as processing policy. Exceeding it rejects the record; it never
   truncates the generic tree.
+
+  More precisely, assign nesting level [$ 0] to the outer descriptor and add
+  [$ 1] when entering a datatype argument. A descriptor contributes its level
+  to the generic-depth observation only when its own [$ generics] array is
+  nonempty. The observation is the maximum contribution over the tree, or
+  [$ 0] when there are none. A leaf descriptor does not contribute an extra
+  level merely because it is an argument. Sibling arguments take the maximum,
+  not a sum. Clarifier arrays do not add generic depth, including clarifiers
+  on a leaf argument such as [$ list<custom\\[2\\]>]. Their own count and
+  datatype-component limits still apply.
+
+  This measurement is shared by logical record validation, Telex and Film;
+  it is not an encoding-specific recursion or byte-length counter. Thus a
+  consumer-selected maximum of [$ 0] permits [$ list<int>] but rejects
+  [$ list<list<int>>], and a maximum of [$ 1] permits [$ list<list<int>>]
+  but rejects [$ list<list<list<int>>>]. This does not make literal generic
+  arguments valid or change the consumer's selected maximum.
 
   Generic depth is an event-local resource counter, not a completeness rule or
   a semantic-profile setting. This contract defines how it is measured but does

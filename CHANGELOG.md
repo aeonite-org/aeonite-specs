@@ -17,6 +17,18 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Clarified shared logical generic-depth accounting for AES, Telex and Film.
+  A descriptor contributes its nesting level only when it contains generic
+  arguments; leaves and clarifiers do not add a level, and sibling branches
+  take the maximum. Corrected the AES example for `list<int>` from depth 1 to
+  depth 0, matching the existing definition and logical validators. Film readers
+  check the logical level after reading the bounded name/count and before
+  generic-array allocation or recursive descent; writers use the same counter.
+  Byte framing, tags, consumer-selected maxima and literal-generic rejection
+  are unchanged. Film implementation corrections and new boundary CTS remain
+  separate adoption work; historical snapshots are not rewritten or newly
+  claimed by this clarification.
+
 - Required type-descriptor generic arguments consistently in AEON, logical
   AES, Telex, Film, and integrity validation. Bare numeric and string arguments
   are invalid even for custom datatypes; numeric parameters remain expressible
