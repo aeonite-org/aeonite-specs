@@ -3,7 +3,7 @@ id:string = "aeonic-semantic-language-v1"
 title:string = "Aeonic Semantic Language"
 description:string = "Architectural proposal for deterministic value behavior shared across AES consumers, including equality, comparison, ordering, conversion, measurement, and future arithmetic."
 created:date = 2026-07-21
-modified:date = 2026-09-30
+modified:date = 2026-11-09
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
@@ -1311,6 +1311,236 @@ body:prose = >`
   Consumers apply that behavior to their own domains.
 
   This keeps representation, validation, evaluation, materialization, and future computation separated while preserving one semantic contract for every value family.
+
+  ## 14. Aeonic Operations Comparison v1 — Working Contract [# operations-comparison-v1]
+
+  Status: proposal-stage working contract, added 2026-11-09. This section defines a new profile family and typed comparison boundary. It does not redefine the legacy aeon.value profiles, release a snapshot, or promote this document's lifecycle.
+
+  The first working surface supports finite numbers, strings, Booleans and symbols. Equality returns the symbols |equal| or |notEqual|; ordering returns |less|, |equal| or |greater|. Boolean false precedes true without numeric coercion. Ordinary strings and default symbols compare decoded Unicode scalar sequences without normalization; symbols and strings remain distinct domains. Declared symbol ordering is a separately selectable capability. Failed or unavailable operations return one diagnostic and no value. Arithmetic, sorting, locale-sensitive collation and temporal operations remain outside this surface.
+
+  The operation request/result schema is the repository resource [@ ../assets/aeonic-operations/v1/comparison-contract.schema.json | comparison v1 working schema]. The associated mutable conformance target is aeonic-operations-cts.v1.next.json in aeonite-cts. Its CTS input/output binding is owned by that repository. Logical request text uses strict JSON: duplicate member names and non-JSON constants are rejected; admission byte/depth guards precede decoding failures. Reusable context, operation policy, profile selections and declaration objects reject unknown configuration fields. Operation results are also closed. Diagnostics may include an optional human-readable message.
+
+  Only the supplied declared-order registry is available. No implicit file, network, database or process-locale resolution is permitted. Native adapters may expose idiomatic APIs while preserving the typed logical boundary and observable contract.
+
+  ### 14.1 Numerical values and representation [# operations-comparison-5]
+
+  The first snapshot must explicitly test numerical value equality separately from representation distinctions. Under baseline finite-number comparison, every pair drawn from [$ 1], [$ 1.0], and [$ 1e0] yields [$ |equal|] from both primitives. Likewise, positive and negative zero compare equal, including across their admitted integer, decimal, and exponent spellings. Distinct finite values retain exact numerical ordering, including beyond host floating-point precision.
+
+  The typed operand boundary preserves representation distinctions such as the integer, decimal, and exponent families and signed-zero information. A comparison may use a normalized internal numeric representation without making the supplied operand forms indistinguishable at that boundary. The snapshot does not introduce a representation-identity operation or require representation equality for numerical equality. Canonical textual equality is not a valid substitute for the numerical comparison contract.
+
+  Conformance vectors must include all pairwise numerical comparisons among the three forms above, signed-zero variants, equivalent values with differing exponent/decimal forms, and unequal large values that a host floating-point conversion could collapse. The separately selected scalar string-coercion mode may distinguish canonical textual forms, but remains outside this snapshot's stable coverage.
+
+  ### 14.2 Ordering laws [# operations-comparison-6]
+
+  For each initially supported comparable domain under one fixed effective policy, the first snapshot must establish a total preorder: representations may be comparison-equivalent, and those equivalence classes have a consistent total order. This is not an order across incompatible domains. All quantified operands below must be valid, admitted, and within the operation's declared supported resource bounds.
+
+  Let [$ C(a,b)] denote the symbolic ordering result and [$ E(a,b)] the equality-relation result:
+
+  - **Reflexivity:** [$ C(a,a)] and [$ E(a,a)] are [$ |equal|].
+  - **Reversal:** [$ |less|] reverses to [$ |greater|], [$ |greater|] to [$ |less|], and [$ |equal|] to [$ |equal|] when operands are exchanged.
+  - **Strict transitivity:** if [$ C(a,b)] and [$ C(b,c)] are [$ |less|], then [$ C(a,c)] is [$ |less|]; the corresponding greater-than rule also holds.
+  - **Equivalence consistency:** comparison equivalence is symmetric and transitive. If [$ C(a,b)] is [$ |equal|], comparing either operand with a third admitted operand gives the same relation, in both operand positions.
+  - **Primitive agreement:** [$ E(a,b)] is [$ |equal|] exactly when [$ C(a,b)] is [$ |equal|]; otherwise [$ E(a,b)] is [$ |notEqual|].
+  - **Definiteness:** the initial supported profiles return one of the three ordering symbols for every admitted pair; they do not substitute diagnostics or [$ |indeterminate|] for a required comparison.
+
+  Fixed pair/triple vectors and appropriate generative/differential checks can exercise these properties without implementing sorting. A finite test suite is evidence of conformance, not a proof for every input. Later profiles claiming sorting support must establish their applicable ordering laws; temporal partial relations require their own contract and are not silently forced into this total-preorder model.
+
+  ### 14.3 Diagnostic precedence [# operations-comparison-7]
+
+  The following validation-stage order was agreed on 2026-11-09. Identify the operation and its effective comparison contract before interpreting operand payloads under it. The working schema and traversal below define the concrete field checks.
+
+  | Stage | Check | Failure category |
+  | <-- | <-- | <-- |
+  | 1 | Deterministic admission guards, such as request-size or nesting limits, before deeper inspection. | [$ resource_limit] |
+  | 2 | Required request-envelope shape, then operation availability. Operand payloads are not validated at this stage. | [$ invalid_operand], then [$ unsupported_operation] as applicable |
+  | 3 | Configuration shape and conflicts; named profile/declaration resolution; validity of resolved policy definitions. | [$ invalid_policy] or [$ unsupported_profile], according to the failing substep; [$ resource_limit] for a guard reached at this stage |
+  | 4 | Typed operand descriptor/payload validity, left before right. | [$ invalid_operand]; [$ resource_limit] for a guard reached while validating that operand |
+  | 5 | Operand-domain support, left before right; then compatibility of the supported pair. | [$ unsupported_domain], then [$ incompatible_comparison] as applicable |
+  | 6 | Membership in the selected declared symbol domain, left before right. | [$ undeclared_symbol] |
+  | 7 | Perform the comparison; enforce any explicitly configured deterministic implementation-specific execution budget. | [$ resource_limit] if that optional budget is exhausted; no standardized work-unit test is required by the first snapshot |
+
+  Stop at the first failed stage/substep and return one diagnostic with no value. In the red-team example, an unsupported profile plus malformed numerical text therefore yields [$ unsupported_profile], assuming the request passed admission and envelope checks and its policy configuration was otherwise well-formed. With a valid profile, malformed left numerical text precedes malformed right numerical text or later domain/membership checks.
+
+  Resource guards may stop processing as soon as the configured deterministic limit is reached; implementations are not required to exceed a limit to discover a hypothetical later semantic error. Precedence assertions must use the same declared limits and check the first reached failure; machine-dependent wall-clock timing must not determine normative precedence. Earlier semantic failures must not be masked by speculatively evaluating later phases. Optimizations are acceptable only when they preserve the prescribed observable diagnostic.
+
+  Runtime map iteration order must not choose the result. Sections 14.7 and 14.8 define the deferred-family descriptor boundary and fixed within-policy traversal. A diagnostic path is null when a precise Unicode-scalar JSON Pointer cannot be represented, including an isolated surrogate in an unknown field name.
+
+  Working fixtures must include competing-failure vectors so independent runtimes verify precedence rather than merely accepting any legitimate error category:
+
+  | Competing conditions | Required result, assuming earlier stages pass |
+  | <-- | <-- |
+  | Unsupported profile and invalid numerical text | [$ unsupported_profile] |
+  | Valid policy; invalid left and right numerical text | [$ invalid_operand] for the left operand |
+  | Valid descriptors; unsupported operand domain and an otherwise incompatible pair | [$ unsupported_domain] |
+  | Valid finite-number operand and valid string operand under the baseline | [$ incompatible_comparison] |
+  | Valid declared-order policy; same undeclared symbol in both operands | [$ undeclared_symbol] for the left operand |
+  | Request breaches a configured admission limit and also names an unsupported profile | [$ resource_limit] at admission |
+
+  These are fixture requirements and examples, not published vectors. Tests must also confirm that each failure returns no comparison value.
+
+  ### 14.4 Working profile identities [# operations-comparison-8]
+
+  Use new semantic identifiers because the symbolic result contract and Boolean/symbol ordering extend historical SANSA behaviour:
+
+  | Identifier | Role |
+  | <-- | <-- |
+  | [$ aeonic.operations.comparison.baseline.v1] | Full four-domain baseline and its default selections. |
+  | [$ aeonic.operations.string.codepoint.v1] | Case-sensitive Unicode scalar comparison without normalization. Reusable for strings and symbol payloads. |
+  | [$ aeonic.operations.symbol.declared-order.v1] | Strict unique-rank symbol declaration contract; separately claimable. |
+
+  These are proposed identifiers, not registrations or released specifications. Existing [$ aeon.value.*] identifiers and released CTS targets keep their existing meanings. A custom profile identifier must resolve to an immutable versioned definition under the same operation contract; it cannot silently change result types or discard the required metadata.
+
+  The baseline defaults to exact finite-number comparison, [$ false < true], codepoint string comparison, and independently configured codepoint symbol comparison. The declared-order profile is selected through a symbol policy; it does not require a different outer baseline profile.
+
+  ### 14.5 Configuration and declarations [# operations-comparison-9]
+
+  The logical request has [$ operation] and [$ input]. [$ input] contains required [$ left] and [$ right] descriptors and optional [$ context] and [$ policy] objects. [$ context] is the supplied reusable comparison context; [$ policy] contains per-operation overrides. Native APIs may hold reusable context objects or handles, but their fixture adapter must expose equivalent declarative settings.
+
+  | Object | Allowed fields |
+  | <-- | <-- |
+  | [$ input.context] | [$ profile], [$ strings], [$ symbols], [$ declarations] |
+  | [$ input.policy] | [$ profile], [$ strings], [$ symbols] |
+  | [$ strings] | Required [$ profile]: a nonempty versioned profile identifier. |
+  | String-based [$ symbols] | [$ mode: "string-profile"], required [$ profile]. |
+  | Declared-order [$ symbols] | [$ mode: "declared-order"], required [$ declaration]. |
+  | Inline [$ declaration] | Required [$ order]: an array of typed symbol descriptors. |
+  | Referenced [$ declaration] | Required [$ reference]: an object with nonempty string [$ id] and [$ version]. |
+  | Entry in [$ context.declarations] | Nonempty string [$ id], nonempty string [$ version], and typed-symbol [$ order] array. |
+
+  An inline declaration and a reference are mutually exclusive. All these configuration objects are closed to unknown fields; unknown fields, malformed settings, or a configuration using both declaration forms yield [$ invalid_policy]. Rejection of unknown configuration fields was agreed on 2026-11-09. An order is nonempty, contains only valid typed symbols, and has unique decoded payloads. Empty orders and duplicate decoded entries are [$ invalid_policy]. Rejection of empty declarations was agreed on 2026-11-09; it applies equally to inline orders and named registry entries.
+
+  Named declarations are resolved only from the supplied context's declaration registry in this initial contract. The pair [$ (id, version)] identifies one immutable order; duplicate pairs in a registry are invalid even if their bodies agree. Match identifiers and version strings exactly, without locale rules, case folding, or normalization. A missing selected reference yields [$ unsupported_profile]. No implicit filesystem, process-global registry, network lookup, or document-datatype inference is required. Applications may prepare contexts through their own explicitly configured services before invoking the operation.
+
+  Resolution precedence is per setting:
+
+  1. Select the outer profile from [$ policy.profile], then [$ context.profile], then the baseline default.
+  2. Select [$ strings] from [$ policy.strings], then [$ context.strings], then the selected profile's default.
+  3. Select [$ symbols] independently from [$ policy.symbols], then [$ context.symbols], then the selected profile's default.
+
+  Each [$ strings] or [$ symbols] selection is replaced as a whole; do not deep-merge an old declared-order configuration into a new string-profile mode. Declared-order mode uses exact membership and ranking; it does not also apply string collation. A change to ordinary-string settings does not implicitly change symbol settings. Multiple conflicting settings in one selection are invalid, while a valid higher-precedence replacement is an intentional override.
+
+  Example named temperature declaration and independent ordinary-string settings:
+
+  ~~~$ json
+  {
+    "operation": "compare",
+    "input": {
+      "left": { "category": "symbol", "value": "low" },
+      "right": { "category": "symbol", "value": "high" },
+      "context": {
+        "profile": "aeonic.operations.comparison.baseline.v1",
+        "strings": { "profile": "aeonic.operations.string.codepoint.v1" },
+        "declarations": [
+          {
+            "id": "app.temperature",
+            "version": "1",
+            "order": [
+              { "category": "symbol", "value": "low" },
+              { "category": "symbol", "value": "high" }
+            ]
+          },
+          {
+            "id": "app.speed",
+            "version": "1",
+            "order": [
+              { "category": "symbol", "value": "slow" },
+              { "category": "symbol", "value": "fast" }
+            ]
+          }
+        ]
+      },
+      "policy": {
+        "symbols": {
+          "mode": "declared-order",
+          "declaration": {
+            "reference": { "id": "app.temperature", "version": "1" }
+          }
+        }
+      }
+    }
+  }
+  ~~~$
+
+  The same context can be reused with [$ app.speed] selected in another operation. Inline use replaces the [$ reference] object with an [$ order] array; no registry entry is needed. Neither declaration authorizes a symbol/string coercion.
+
+  ### 14.6 Effective policy metadata [# operations-comparison-10]
+
+  Every successful result has exactly [$ outcome], [$ value], and [$ metadata] at the operation-result level. [$ outcome] is [$ "value"]; [$ value] is a typed symbol from the selected primitive's vocabulary. [$ metadata.effectivePolicy] contains:
+
+  - [$ profile]: the resolved outer profile identifier.
+  - [$ domain]: the admitted operand category shared by both operands.
+  - [$ comparison]: [$ "exact-numeric"], [$ "boolean"], [$ "string-profile"], or [$ "declared-order"], as applicable.
+  - [$ strings]: the resolved ordinary-string selection.
+  - [$ symbols]: the resolved symbol selection, independently from [$ strings].
+
+  For string-profile symbols, metadata contains their profile identifier. For declared-order symbols, metadata contains [$ mode: "declared-order"], the semantic profile identifier [$ aeonic.operations.symbol.declared-order.v1], and the complete resolved typed-symbol [$ order]. If selected by reference, it also includes [$ reference: {"id": "...", "version": "..."}]. Thus an inline order can be reproduced and a named order can be audited without access to the caller's original registry. Complete selected-order metadata was agreed on 2026-11-09. An identifier or hash alone cannot replace the resolved order; sharing immutable objects internally is permitted.
+
+  Only the selected symbol declaration appears in effective metadata, not every unused registry entry. Complete settings are reported even when the current numeric/Boolean comparison does not use string/symbol comparison. These are validated configuration settings, not a claim that unused settings affected the outcome. Host-language metadata may share immutable structures instead of copying them, provided its observable contents satisfy the contract.
+
+  A diagnostic result has required [$ outcome: "diagnostic"], [$ reason], and [$ context], with optional human-readable [$ message]. It has no [$ value]. Proposed diagnostic context has integer [$ stage] (1–7) and [$ path] (an operation-request-local JSON Pointer, or null if a precise path is unavailable). For example:
+
+  ~~~$ json
+  {
+    "outcome": "diagnostic",
+    "reason": "invalid_operand",
+    "context": { "stage": 4, "path": "/input/left/value" },
+    "message": "Finite numerical text is invalid."
+  }
+  ~~~$
+
+  The operation-local stage and JSON Pointer do not redefine the existing CTS transport's diagnostic [$ phase], source [$ span], or canonical AEON document paths. The aeonic-operations lane binding specifies their separate mapping. A malformed CTS transport envelope remains a harness/protocol failure; an invalid logical operation request inside a valid fixture envelope is diagnosed by this operation contract. The transport's [$ ok] Boolean is protocol status, not a comparison result value.
+
+  ### 14.7 Operand grammar and deferred families [# operations-comparison-11]
+
+  The four admitted descriptors have exactly [$ category] and [$ value]. [$ finiteNumber.value] is a nonempty ASCII numerical string matching:
+
+  ~~~$ text
+  ^[+-]?(?:(?:0|[1-9][0-9]*)(?:\.[0-9]+)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?$
+  ~~~$
+
+  Require a full-string match; a regex engine's allowance for matching just before a final newline must not admit trailing whitespace. This accepts integer, decimal, exponent, leading-dot, and signed-zero forms already supported by the existing exact comparator. It excludes surrounding whitespace, underscores, trailing decimal points, redundant integer leading zeroes, NaN, and infinity. A source adapter handles AEON lexical normalization before this logical boundary; normalized exact text is not obtained through a host float. Exponents are compared exactly without expanding a huge power of ten into a dense number. A resource limit is reported separately from invalid text.
+
+  [$ string.value] and [$ symbol.value] are decoded sequences of Unicode scalar values: reject unpaired UTF-16 surrogate code units or equivalent invalid Unicode representations. Strings may be empty; symbolic payloads must be nonempty. No whitespace trimming, case folding, or Unicode normalization occurs at this boundary. [$ boolean.value] is a JSON Boolean; strings such as [$ "false"] and numbers such as [$ 0] are not Boolean descriptors.
+
+  For negative domain-support fixtures, recognize the existing logical category tags [$ positiveInfinity], [$ negativeInfinity], [$ nan], [$ explicitNull], [$ explicitAbsence], [$ toggle], [$ hex], [$ radix], [$ encoding], [$ separator], [$ sansaAddress], [$ referenceForm], [$ temporal], and [$ container] as deferred families. At stage 4 their descriptors require a nonempty recognized [$ category] and an object shape; family-specific payload fields remain opaque. Stage 5 reports [$ unsupported_domain] without parsing or claiming validity of their deferred lexical/structural payloads. This validates a family-tagged transport descriptor, not a claim that arbitrary opaque payload bytes are valid AEON. Tests of their actual value semantics remain outside this surface. An unknown/misspelled category or non-object descriptor is [$ invalid_operand]. This roster defines the first working support boundary.
+
+  ### 14.8 Staged validation and static capacities [# operations-comparison-12]
+
+  The agreed stages in this working comparison contract are retained. The following supplies a proposed fixed traversal within them:
+
+  1. **Admission:** check configured request-byte and structural-depth limits before inspecting semantic fields. These guards must not inspect numerical grammar or resolve a profile.
+  2. **Envelope/dispatch:** require an object request, a nonempty string [$ operation], an object [$ input], and present [$ left]/[$ right] fields, in that order. Reject unknown top-level/input fields in deterministic Unicode-scalar key order. Do not inspect descriptor payloads yet. Then check operation availability; only [$ equal] and [$ compare] are defined by this draft.
+  3. **Policy shape:** inspect [$ context], then [$ policy]; within either use [$ profile], [$ strings], [$ symbols], [$ declarations] in that order where allowed. Check object field names before their contents, array entries by index, and declaration fields as [$ id], [$ version], [$ order] (or [$ reference.id], [$ reference.version] for references). Reject duplicate declaration identities/symbols at their first repeated entry. Unknown keys are inspected in Unicode-scalar order, not host-map iteration order. All supplied shapes and inline/registry order definitions must be valid, including definitions later overridden. Shape/local-definition errors produce [$ invalid_policy].
+  4. **Effective policy resolution, still stage 3:** apply the precedence in this working comparison contract, then resolve the selected outer profile, ordinary-string profile, and symbol profile/declaration, in that order. Validate the selected definitions in the same order. Availability checks concern effective selections only: a well-formed but unavailable context profile superseded by an operation override is not resolved merely to generate an error. Definitions are supplied data, not executable callbacks or implicit external lookups.
+  5. **Operands, stage 4:** validate the left descriptor completely before the right; within a descriptor check [$ category], field names, payload type, then payload content. Apply the deferred-family boundary in this working comparison contract.
+  6. **Domains, stage 5:** check left domain support, then right, then pair compatibility. All four admitted families remain separate domains; no symbol/string or Boolean/number equivalence is inferred.
+  7. **Membership, stage 6:** if declared ordering applies, look up the left payload, then the right payload. Missing membership is [$ undeclared_symbol] even for an equality request over two matching undeclared payloads.
+  8. **Execution, stage 7:** perform the selected comparison and construct the typed-symbol result and complete effective-policy metadata.
+
+  Resource limits are trusted runtime/harness configuration, outside the operation's semantic [$ policy] object. Report supported deterministic budgets in implementation capability documentation/metadata. Static counters are request UTF-8 bytes, structural depth, numerical characters, decoded string/symbol scalars, declaration count, and entries per declaration. Their agreed capacity floors and counting boundaries are recorded below. Declared limits do not excuse failure on mandatory positive vectors inside an advertised baseline claim.
+
+  Algorithm-specific execution budgets are optional documented implementation capabilities outside the first snapshot's mandatory cross-runtime resource vectors. The first snapshot does not prescribe a universal work unit, algorithm, or hardware-dependent deadline. An implementation may enforce an explicitly configured deterministic budget and report [$ resource_limit] at stage 7, but must document that metric and must not claim its units are portable merely because the error category is shared. Such a budget cannot excuse failing required baseline cases in the implementation's claimed conformance configuration. Mandatory resource vectors exercise the portable static size/count guards, not arbitrary algorithm-specific execution counters. Defining shared execution metrics is deferred and is not a blocker for the initial comparison snapshot.
+
+  The agreed admission support floors are **4 MiB (4,194,304 bytes) of UTF-8 logical-request JSON** and **32 nested object/array levels**. Count only the encoded logical operation request, excluding the outer CTS transport envelope. Count its actual supplied bytes, including JSON escaping and whitespace; do not compact, re-encode, or normalize the text before deciding whether its submitted representation exceeds the byte budget. Byte-boundary fixtures must therefore supply exact logical JSON text rather than rely on a host serializer to reproduce a particular byte count. This is a JSON-ingress/adapter requirement; native APIs need not serialize every internal operation to JSON.
+
+  For depth, the root object is level 1. Each contained object or array adds one level; primitive leaves do not add a container level, and braces/brackets occurring inside a string do not count. A 32-level request must reach the appropriate later semantic stage; it need not produce a comparison value if its contents are invalid or belong to a deferred domain. A request exceeding a configured 32-level limit yields [$ resource_limit] at admission. Request-byte boundary vectors must likewise distinguish exactly 4,194,304 submitted bytes from one byte beyond a configured limit. These floors are minimum support capacities; implementations may advertise larger capacities, and explicitly configured smaller budgets remain permitted for restricted invocations.
+
+  The agreed numerical support floor is **65,536 characters per finite-number operand**, including the sign, decimal point, exponent marker, and exponent sign/digits where present. The admitted numerical grammar is ASCII, so numerical character count has no code-unit ambiguity. Both operands must be supported simultaneously at that length in a baseline-capable configuration, with other configured budgets sufficient for the request. This is a minimum capacity, not a universal maximum: implementations may support and advertise larger operands.
+
+  Deliberately restricted harness/application budgets may be smaller when explicitly configured; the existing small-limit negative examples test enforcement under those restrictions, not an implementation's maximum baseline capacity. Mandatory capacity vectors must run with adequate budgets. They must include two full-length coefficients, equivalence between a full-length integer and a short exponent spelling, and full-length exponent text without dense expansion. An additional limit-exceeded vector must set a known deterministic budget and exceed it; rejection solely for exceeding that budget is [$ resource_limit], not invalid numerical grammar.
+
+  The agreed string and symbol support floors are **65,536 decoded Unicode scalar values per operand** in each domain, with two operands supported simultaneously when the other configured budgets are adequate. These are minimum capacities, not universal maxima. Count decoded scalar values, not UTF-8 bytes, UTF-16 code units, or grapheme clusters. A valid supplementary-plane scalar counts once even when a host stores it as two UTF-16 code units. Unpaired surrogates remain invalid operands, not additional scalar values. Existing empty-string/nonempty-symbol rules remain unchanged.
+
+  String/symbol boundary vectors must include full-length equality, a difference at the final scalar, and a supplementary-plane versus BMP ordering difference that would expose an incorrect UTF-16 comparison. Explicitly restricted budgets must also test acceptance at the scalar boundary and [$ resource_limit] one scalar beyond it. A separate encoded-request budget must be adequate when exercising these decoded-value capacities.
+
+  For the separately claimable declared-order capability, the agreed minimum capacities are **1,024 unique symbols per declaration** and **64 named declarations per reusable context**. Inline and named declarations follow the same per-order capacity. These are support floors, not universal maxima. Total request size, per-symbol scalar capacity, and configured execution budgets remain separate constraints; individual capacity figures do not promise an unlimited product of all maxima.
+
+  Declared-order boundary requirements include an inline order of 1,024 symbols, selection of the final declaration in a 64-entry registry, and a combined registry of 64 orders with 1,024 short symbols each. Known-limit negative vectors must exceed the selected per-order or registry count by one and yield [$ resource_limit] in stage 3 before deeper inspection of that array. Adequate other budgets are required for capacity vectors. These requirements apply to a declared-order claim, not to a baseline-only implementation claiming no declared-order support.
+
+  Request bytes/depth are admission guards. Domain-specific guards are checked only when their stage reaches the relevant item: declaration counts in stage 3, operand text lengths in stage 4, and deterministic execution counters in stage 7. A reached resource limit yields [$ resource_limit] at that stage before deeper inspection of the same item. Do not pre-scan later operand payloads to let a later text limit mask an earlier profile error or malformed left operand. Conversely, an oversized request stopped at admission need not be parsed to discover any other fault. No wall-clock timing, allocation-failure accident, or host integer overflow selects the normative diagnostic.
+
+  This traversal and the accompanying schema define the proposal-stage working comparison contract. Operation results are closed, deferred-family payloads remain opaque, and the strict logical JSON binding rejects duplicate members. Algorithm-specific execution metrics remain outside this first mandatory surface. An unavailable effective declared-order comparator yields [$ unsupported_profile] at stage 3 with the selected symbols mode path; malformed local definitions precede that availability check, and a valid overridden comparator is not resolved.
+
 
   +++document/modules
   dependencies = {
