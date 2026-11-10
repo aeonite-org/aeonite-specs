@@ -1,0 +1,1551 @@
+schemaVersion:string = "1"
+id:string = "aeonic-semantic-language-v1-snapshot-0-1"
+title:string = "Aeonic Semantic Language — Comparison Snapshot 0.1"
+description:string = "Architectural proposal for deterministic value behavior shared across AES consumers, including equality, comparison, ordering, conversion, measurement, and future arithmetic."
+created:date = 2026-07-21
+modified:date = 2026-11-09
+family:string = "aes"
+group:string = "Semantic Language"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "mixed"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v1/aeonic-semantic-language/snapshot-0.1"
+order:number = 40
+publish:boolean = false
+keywords:list<string> = ["AEON", "value semantics", "comparison", "equality", "ordering", "proposal"]
+related:list<string> = ["aes-v1-index", "aes-events-v1", "aeon-core-v1-value-types", "aeos-v1", "sansa-v1-query"]
+specSnapshotId:string = "aeonic-operations-specs-v1-snapshot-0.1"
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Aeonic Semantic Language [# aeonic-semantic-language]
+
+  Scope: architectural ownership of deterministic value behavior across the AEON ecosystem.
+
+  ## 1. Purpose [# purpose]
+
+  Aeonic Semantic Language defines deterministic behavior for values after AEON Core has recognized their representation.
+
+  AEON Core answers:
+
+  > What was written?
+
+  The Aeonic Semantic Language answers:
+
+  > How do values relate to one another?
+
+  This proposal centralizes semantic contracts that would otherwise be duplicated across AEON-family consumers such as AEOS, SANSA, Tonics, and future runtime or storage layers.
+
+  ## 2. Motivation [# motivation]
+
+  Several ecosystem components need the same value behavior.
+
+  | Concept | AEOS | SANSA | Tonics |
+  | <-- | <-- | <-- | <-- |
+  | Numeric ordering | range validation | [$ <], [$ >], [$ order by] | runtime comparisons |
+  | String ordering | pattern and range validation | comparison, [$ order by] | sorting |
+  | Type conversion | coercion profiles | conversion functions | materialization |
+  | Cardinality | presence constraints | [$ exists], [$ count] candidates | collection handling |
+  | Length | string/list validation | [$ length] candidates | runtime APIs |
+  |~ Cross-system value-semantics responsibilities
+
+  These contracts describe values themselves. They do not belong exclusively to any one consumer.
+
+  If each consumer defines its own comparison, conversion, ordering, measurement, and arithmetic behavior, the ecosystem will drift. A query, a schema, and a runtime object may then disagree about the same value.
+
+  ## 3. Architectural Position [# architectural-position]
+
+  The AEON ecosystem separates representation, shared value behavior, and consumer-specific application:
+
+  +++graph
+  ["aeon-core", "AEON Core", 50, 10]
+  ["value-semantics", "Aeonic Semantic Language", 50, 35]
+  ["aeos", "AEOS", 15, 75]
+  ["sansa", "SANSA", 38, 75]
+  ["tonics", "Tonics", 62, 75]
+  ["future", "Future Ecosystem Components", 85, 75]
+  {"aeon-core", "CB", "value-semantics", "CT", "to", "solid"}
+  {"value-semantics", "CB", "aeos", "CT", "to", "solid"}
+  {"value-semantics", "CB", "sansa", "CT", "to", "solid"}
+  {"value-semantics", "CB", "tonics", "CT", "to", "solid"}
+  {"value-semantics", "CB", "future", "CT", "to", "solid"}
+  +++ (Figure 1: AEON shared value-semantics architecture)
+  +++fallback
+  ~~~$ text
+  AEON Core
+    |
+    v
+  Aeonic Semantic Language
+    |
+    +-- AEOS
+    +-- SANSA
+    +-- Tonics
+    +-- future ecosystem components
+  ~~~$
+  +++
+
+  ### 3.1 AEON Core [# aeon-core]
+
+  AEON Core defines:
+
+  - lexical grammar;
+  - value families;
+  - parsing;
+  - canonical representation.
+
+  AES defines the portable event representation and normative representation
+  kinds produced from recognized source values.
+
+  Core does not define broad semantic behavior such as ordering domains, conversion policy, locale-sensitive collation, or arithmetic.
+
+  ### 3.2 Aeonic Semantic Language [# shared-value-semantics]
+
+  Aeonic Semantic Language defines:
+
+  - equality domains;
+  - comparison domains;
+  - ordering contracts;
+  - string and collation profiles;
+  - conversion contracts;
+  - measurement contracts;
+  - future arithmetic domains.
+
+  Aeonic Semantic Language begins only after a valid value representation exists.
+
+  ### 3.3 Consumers [# consumers]
+
+  Consumers apply shared semantic contracts to their own domains:
+
+  - AEOS validates whether represented values satisfy schema/profile constraints.
+  - SANSA.Query evaluates query expressions over resolved semantic bindings.
+  - Tonics materialize validated values into runtime environments.
+  - Storage and transport layers may use shared semantics for indexing, sorting, and compatibility checks.
+
+  Consumers own their domain logic. They do not redefine the shared operation itself.
+
+  ## 4. Ownership [# ownership]
+
+  The following concepts belong to Aeonic Semantic Language.
+
+  ### 4.1 Equality Domains [# equality-domains]
+
+  Equality domains define:
+
+  - which value families may compare for equality;
+  - exact equality semantics within a family;
+  - cross-family equality rules, when any are allowed;
+  - behavior for explicit absence values, nulls, NaN, infinity, and other special values.
+
+  Consumers reference equality domains rather than defining local equality behavior.
+
+  ### 4.2 Comparison Domains [# comparison-domains]
+
+  Comparison domains define relational comparison for values such as:
+
+  - numbers;
+  - strings;
+  - dates;
+  - times;
+  - datetimes;
+  - instants;
+  - future domain-specific values.
+
+  Consumers use these domains for:
+
+  ~~~$ text
+  where .age > 18
+  order by .name
+  min(...)
+  max(...)
+  range validation
+  ~~~$
+
+  Where no comparison domain is defined, comparison must fail closed with a deterministic diagnostic.
+
+  ### 4.3 Ordering and Collation Contracts [# ordering-and-collation-contracts]
+
+  String ordering belongs to Aeonic Semantic Language, not to SANSA.Query alone.
+
+  Collation profiles define how text is compared for ordering. A profile must be:
+
+  - deterministic;
+  - platform independent;
+  - versionable;
+  - explicit;
+  - independent of host operating-system locale defaults.
+
+  A canonical locale-independent profile should provide a stable default. Locale-aware, natural-sort, and domain-specific ordering profiles may be defined later as named profiles.
+
+  Consumer syntax such as:
+
+  ~~~$ text
+  order by .name
+  ~~~$
+
+  uses the active value-semantics ordering profile. Future syntax may allow an explicit profile selection, but profile selection is separate from defining what the profile means.
+
+  ### 4.4 String Case Mapping [# string-case-mapping]
+
+  Case mapping belongs beside string ordering because it raises the same Unicode, locale, normalization, and profile-selection questions.
+
+  Functions such as:
+
+  ~~~$ text
+  lower(...)
+  upper(...)
+  ~~~$
+
+  must use a deterministic string case-mapping contract. An implementation slice may temporarily use host runtime Unicode case mapping, but normative behavior must not depend on process locale, operating-system locale, database collation, or host-language defaults.
+
+  ### 4.5 Conversion Contracts [# conversion-contracts]
+
+  Conversion contracts define deterministic conversion between value families.
+
+  Examples:
+
+  ~~~$ text
+  number("42")
+  string(42)
+  date("2026-07-21")
+  ~~~$
+
+  Each conversion must reuse the lexical contract already defined by AEON Core. Consumers must not define alternative parsing rules for the same conversion.
+
+  ### 4.6 Measurement Contracts [# measurement-contracts]
+
+  Measurement contracts define deterministic measurements such as:
+
+  ~~~$ text
+  length(...)
+  count(...)
+  ~~~$
+
+  Examples include string length, collection count, byte length, and domain-specific measurements.
+
+  The measurement unit must be explicit in the contract. For example, string length may mean Unicode scalar count, grapheme-cluster count, byte count, or another profile-defined measure; consumers must not silently choose different meanings.
+
+  ### 4.7 Arithmetic Domains [# arithmetic-domains]
+
+  Arithmetic is a future value-semantics area.
+
+  Potential operations include:
+
+  ~~~$ text
+  +
+  -
+  *
+  /
+  sum(...)
+  average(...)
+  median(...)
+  ~~~$
+
+  Arithmetic domains belong to Aeonic Semantic Language so that query evaluation, validation, materialization, and future computation layers do not invent incompatible numeric behavior.
+
+  ## 5. Reuse Principle [# reuse-principle]
+
+  Every semantic contract should exist exactly once.
+
+  For example:
+
+  +++graph
+  ["numeric-grammar", "AEON Numeric Grammar", 50, 10]
+  ["conversion-contract", "Number Conversion Contract", 50, 40]
+  ["aeos-coercion", "AEOS Coercion", 20, 80]
+  ["sansa-number", "SANSA number(...)", 50, 80]
+  ["tonics-materialization", "Tonics Materialization", 80, 80]
+  {"numeric-grammar", "CB", "conversion-contract", "CT", "to", "solid"}
+  {"conversion-contract", "CB", "aeos-coercion", "CT", "to", "solid"}
+  {"conversion-contract", "CB", "sansa-number", "CT", "to", "solid"}
+  {"conversion-contract", "CB", "tonics-materialization", "CT", "to", "solid"}
+  +++ (Figure 2: Shared number-conversion contract reuse)
+  +++fallback
+  ~~~$ text
+  AEON numeric grammar
+    |
+    v
+  Number Conversion Contract
+    |
+    +-- AEOS coercion
+    +-- SANSA number(...)
+    +-- Tonics materialization
+  ~~~$
+  +++
+
+  All consumers observe identical behavior.
+
+  Whenever a semantic operation derives, compares, orders, converts, measures, or combines values, it should reference the shared Value Semantics contract.
+
+  Consumers must not define equivalent behavior locally when a shared contract exists.
+
+  ## 6. Profiles [# profiles]
+
+  Profiles extend or select semantic behavior without changing the core contract.
+
+  Examples:
+
+  - canonical string ordering;
+  - locale-specific collation;
+  - natural numeric-region sorting;
+  - decimal precision policy;
+  - temporal comparison policy;
+  - domain-specific conversion surfaces.
+
+  Profiles must be deterministic and versionable. A profile must not introduce executable behavior into documents.
+
+  Consumers may restrict which profiles they accept.
+
+  ### 6.1 Profile Selection [# profile-selection]
+
+  The active value-semantics context is selected by the consumer, runtime, schema profile, or trusted host configuration.
+
+  Documents may carry values that become inputs to semantic operations, but a document must not grant itself a more permissive semantic profile. Profile selection is an authority-bearing consumer boundary, not a document-level escape hatch.
+
+  A consumer must make profile selection explicit when behavior would otherwise depend on:
+
+  - process locale;
+  - operating-system locale;
+  - database collation;
+  - host-language comparison defaults;
+  - installed Unicode, ICU, CLDR, or timezone database versions.
+
+  Implementations must not silently inherit those host defaults as normative AEON behavior unless the inherited behavior is identified as part of a named, versioned profile.
+
+  ### 6.2 Profile Advertisement [# profile-advertisement]
+
+  Consumers should advertise the value-semantics profiles they support.
+
+  Example profile identifiers:
+
+  ~~~$ text
+  aeon.value.default.v1
+  aeon.value.string.codepoint.v1
+  aeon.value.string.natural.ascii.v1
+  aeon.value.string.locale.fr.v1
+  aeon.value.temporal.iso8601.v1
+  aeon.value.radix.numeric.same-base.v1
+  aeon.value.radix.numeric.cross-base.v1
+  ~~~$
+
+  [$ aeon.value.default.v1] is the candidate minimum consumer profile. It composes the minimum equality, ordering, concrete-value, and provisional case-mapping behavior defined in this proposal with the portable codepoint string profile.
+
+  [$ aeon.value.string.codepoint.v1] is the portable locale-independent string-ordering floor. Natural-sort profiles, such as [$ aeon.value.string.natural.ascii.v1], and locale-aware profiles, such as a French collation profile, must be named explicitly and remain profile-selected behavior rather than host-locale defaults.
+
+  [$ aeon.value.radix.numeric.same-base.v1] gives [$ RadixLiteral] values exact numeric equality and ordering when both operands resolve to the same base. It is opt-in: the default profile continues to compare radix values by preserved representation identity and does not order them.
+
+  [$ aeon.value.radix.numeric.cross-base.v1] extends that exact numeric interpretation to operands with independently resolved bases. It remains opt-in and does not change either default representation identity or the fail-closed cross-base boundary of the same-base profile.
+
+  Profile identifiers remain proposal-stage until promoted by focused contract documents. Implementations may expose local profile identifiers, but local identifiers should be clearly marked as non-portable.
+
+  ### 6.3 Failure Without an Active Contract [# failure-without-an-active-contract]
+
+  Profile-dependent operations fail closed when no active contract defines their behavior.
+
+  This includes:
+
+  - string ordering;
+  - locale-aware string comparison;
+  - temporal comparison;
+  - case mapping;
+  - string-to-temporal conversion;
+  - numeric, decimal, or version-like natural sorting.
+
+  Consumers must report a deterministic diagnostic rather than falling back to host defaults.
+
+  ### 6.4 AEON-Shaped Configuration [# aeon-shaped-configuration]
+
+  Consumer configuration may be represented as ordinary AEON data.
+
+  For example:
+
+  ~~~$ aeon
+  valueSemantics:object = {
+    profiles:list<string> = [
+      "aeon.value.default.v1"
+      "aeon.value.string.codepoint.v1"
+      "aeon.value.string.natural.ascii.v1"
+      "aeon.value.string.locale.fr.v1"
+      "aeon.value.temporal.iso8601.v1"
+      "aeon.value.radix.numeric.same-base.v1"
+      "aeon.value.radix.numeric.cross-base.v1"
+    ]
+    stringOrder:object = {
+      profile:string = "aeon.value.string.codepoint.v1"
+    }
+    caseMapping:object = {
+      profile:string = "aeon.value.default.v1"
+    }
+    temporal:object = {
+      profile:string = "aeon.value.temporal.iso8601.v1"
+      timezoneAuthority:string = "iana"
+      tzdbVersion:string = "2026a"
+    }
+  }
+  ~~~$
+
+  This shape is illustrative until a profile-configuration contract is promoted. The important boundary is authority: a trusted consumer, schema profile, runtime, or host configuration may select this context; an arbitrary document being queried or mutated does not select its own value-semantics authority.
+
+  ### 6.5 Value Family Semantic Classification [# value-family-semantic-classification]
+
+  AEON Core value families do not all enter the same semantic domain.
+
+  Some families have intrinsic shared semantics. Some reuse a shared string, numeric, temporal, or structural contract. Others are only lexical carriers until a consumer, schema, convention, or profile selects a more specific interpretation.
+
+  A consumer must not treat every represented payload as a string merely because it has a textual source form. Textual transport and semantic string behavior are different contracts.
+
+  Initial classification:
+
+  | AEON family or label | Semantic basis | Minimum shared behavior | Profile or consumer surface |
+  | <-- | <-- | <-- | <-- |
+  | [$ string] | string | exact decoded string equality; string ordering only through active string profile | locale collation, natural sort, normalization, case mapping |
+  | [$ trimtick], [$ prose] | string plus formatting convention | string value after trimtick normalization | prose format semantics such as Markdown belong to conventions or applications |
+  | [$ number], [$ n] | numeric | finite numeric equality and ordering | precision, decimal policy, arithmetic |
+  | [$ int], [$ int8], [$ int16], [$ int32], [$ int64] | numeric plus integer/profile constraints | inherit finite numeric comparison after compatibility is established | integer-only validation, width, signed range, overflow policy |
+  | [$ uint], [$ uint8], [$ uint16], [$ uint32], [$ uint64] | numeric plus unsigned/profile constraints | inherit finite numeric comparison after compatibility is established | integer-only validation, unsigned range, width, overflow policy |
+  | [$ float], [$ float32], [$ float64] | numeric plus floating/profile constraints | inherit finite numeric comparison after compatibility is established | floating precision, rounding, signed zero, decimal/binary conversion policy |
+  | [$ infinity] | numeric special value | equality and ordering only where active numeric profile admits infinities | domain parameter such as [$ infinity<speedofmass>] is profile/schema-defined |
+  | [$ nan] | numeric special non-value | not equality-comparable or orderable in the minimum profile | explicit predicates and domain-specific missing/error semantics |
+  | [$ boolean], [$ bool] | Boolean | Boolean equality | Boolean ordering is not in the minimum profile |
+  | [$ toggle] | toggle | exact toggle-token equality when exposed as toggle | conversion or materialization to Boolean is profile-defined; no implicit Boolean comparison |
+  | [$ null], [$ !none], [$ !notSet], [$ !notApplicable], [$ !tombstone], [$ !"..."] | absence/null | explicit null identity and reason preservation | null equality, null ordering, and absence-domain meaning are profile/schema-defined |
+  | [$ hex] | hexadecimal lexical structured scalar | canonical hex-payload identity; source spelling remains representation metadata | color, byte sequence, identifier, numeric, or other interpretation is profile-defined |
+  | [$ radix], [$ decimal], [$ radix2], [$ radix6], [$ radix8], [$ radix12] | radix numeric representation | exact representation preservation; base metadata preservation | base-specific numeric validity, conversion, equality, and ordering are profile-defined |
+  | [$ encoding], [$ base64], [$ embed], [$ inline] | encoded lexical payload | exact payload-string identity; naïve payload order; no implicit decoding | byte identity, media type, text decoding, hashing, or decoded-content ordering are profile-defined |
+  | [$ date] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | precision, calendar, conversion, and richer compatibility are profile-defined |
+  | [$ time] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset handling, date-context rules, and richer compatibility are profile-defined |
+  | [$ datetime] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset normalization, precision, instant semantics, and richer compatibility are profile-defined |
+  | [$ wtc] | temporal with temporal-context data | literal recognition; exact preservation of unqualified, offset-qualified, or UTC-qualified temporal form and temporal-context payload; same-family canonical temporal comparison | context resolution, conflict authority, timescale interpretation and conversion, timezone database behavior, geographic resolution, and richer compatibility are consumer/profile-defined; named-place meaning is downstream domain-consumer-defined |
+  | [$ sep], [$ kadot] | separator-structured lexical scalar | canonical separator-payload identity; naïve separator order | IP address, semantic version, dimensions, product codes, delimited records, and similar meanings are profile-defined |
+  | [$ sansa] | structured address expression | canonical address-expression identity; naïve address-expression order | resolution, selector expansion, canonical target identity, selector equivalence, namespace/domain meaning, authorization, and qualifier meaning belong to SANSA consumers |
+  | [$ object], [$ obj], [$ o], [$ envelope] | structural container | member identity, Core object shape, and structural equality | ordering, envelope meaning, and member-value constraints are profile/schema-defined |
+  | [$ list] | structural collection | element order preservation, index-addressability, and ordered structural equality | whether order has domain meaning and element constraints are profile/schema-defined |
+  | [$ tuple] | positional structural collection | positional element preservation, arity preservation, and ordered structural equality | element constraints, positional meaning, and coercion from lists are profile/schema-defined |
+  | [$ node] | tagged structural value | tag, attributes, child order, child slots, and structural equality are preserved | tag vocabulary, child-content semantics, rendering, and mutation compatibility are profile/schema-defined |
+  | clone reference [$ ~...] | reference form plus follow operation | reference-kind identity, canonical target-path identity, and followed-value semantics when explicitly followed | reference-form ordering, clone materialization, and diagnostics belong to consumers/profiles |
+  | pointer reference [$ ~>...] | reference form plus follow operation | reference-kind identity, canonical target-path identity, and followed-value semantics when explicitly followed | aliasing, mutation authority, identity preservation, and dereference behavior belong to consumers/profiles |
+  | custom datatype labels | host/profile semantic claim over a Core-compatible value family | no shared meaning by label alone | consumer, schema, convention, or profile defines accepted semantics |
+  |~ AEON value-family semantic classification
+
+  Notes:
+
+  - [$ nan] is an operational Core compatibility label for [$ NaNLiteral]. It must be listed with the same audit weight as [$ infinity], even though NaN does not enter equality or ordering in the minimum profile.
+  - Null sentinel spellings such as [$ !none] are value forms, not datatype labels. They are included in this table because they define the accepted null-value surface that value semantics must preserve.
+  - Reserved aliases inherit their canonical family's semantic basis. They do not create a separate semantic domain unless a profile explicitly adds one.
+  - Generic parameters and bracket arguments refine claims. They do not by themselves create comparison, ordering, conversion, or mutation compatibility behavior.
+
+  Separator literals illustrate why this classification is necessary:
+
+  ~~~$ aeon
+  ip:kadot = ^192.3.3.222
+  dim:sep["x"] = ^300x250
+  semver:kadot = ^3.14.15
+  ~~~$
+
+  All three values share separator-literal mechanics. They do not share one ordering contract.
+
+  An IP profile might compare numeric address components. A dimensions profile might compare width, height, area, or aspect ratio. A semantic-version profile might compare major, minor, and patch segments with version-specific pre-release rules. A generic string collation profile is not a safe fallback for any of those meanings unless the consumer explicitly selects string treatment.
+
+  When no active shared or profile-defined semantic basis exists for an operation, the operation fails closed.
+
+  ### 6.6 Classification Edge Cases [# classification-edge-cases]
+
+  The following families need special care before their behavior is promoted beyond the minimum profile:
+
+  - [$ toggle] has Boolean-like materialization in some outputs, but it is not automatically the same semantic family as [$ boolean]. A profile may define conversion, but comparison must not silently collapse [$ yes], [$ on], [$ true], and [$ 1].
+  - [$ hex] has no single natural meaning. It may represent color, bytes, an identifier, a hash prefix, or a numeric value. It is distinct from every [$ radix] family, including any radix profile that uses base 16. Equality beyond canonical hex-payload identity and ordering require a profile.
+  - [$ radix] is number-like, but Core preserves representation and does not perform base-specific digit validation as a semantic operation. Numeric comparison requires base validation and conversion under a profile.
+  - [$ encoding] is payload-like. The encoded payload is surfaced as characters and may be ordered naïvely by that payload surface, but that does not make decoded bytes, decoded text, radix comparison, media type, or decoded-content ordering a default interpretation.
+  - [$ sep] and [$ kadot] intentionally defer meaning. They are useful exactly because profiles can define IP addresses, dimensions, semantic versions, delimited records, product codes, or other structured scalar domains without changing Core syntax.
+  - [$ sansa] may contain exact paths or selectors, and may target AEON or non-AEON semantic namespaces. Address-expression identity, canonical target identity, selector equivalence, and resolved Binding Set equality are distinct questions and must not be collapsed.
+  - [$ object], [$ list], [$ tuple], and [$ node] have preserved structure and minimum structural equality. Semantic ordering, coercion between structural families, and mutation compatibility are profile/schema responsibilities.
+  - References have two semantic surfaces: the reference form itself and the followed value. Consumers must be explicit about which surface an operation uses.
+
+  ### 6.7 Toggle Semantics [# toggle-semantics]
+
+  Toggle values have two separate semantic surfaces:
+
+  - toggle-token identity;
+  - Boolean conversion or materialization.
+
+  Toggle-token identity is exact:
+
+  | Expression | Result |
+  | <-- | <-- |
+  | [$ yes == yes] | true |
+  | [$ on == on] | true |
+  | [$ no == no] | true |
+  | [$ off == off] | true |
+  | [$ yes == on] | false |
+  | [$ no == off] | false |
+  |~ Toggle-token identity expressions
+
+  Boolean conversion is a distinct operation:
+
+  | Toggle token | Boolean conversion result |
+  | <-- | <-- |
+  | [$ yes] | true |
+  | [$ on] | true |
+  | [$ no] | false |
+  | [$ off] | false |
+  |~ Toggle-to-boolean conversion results
+
+  A consumer may materialize toggles as Booleans in an output format, such as finalized JSON, but materialization does not rewrite AEON value semantics. [$ yes == true], [$ on == true], [$ no == false], and [$ off == false] require explicit conversion or a profile-defined comparison domain.
+
+  Without explicit conversion or an active profile-defined compatibility rule, toggle and Boolean values are cross-type comparisons and fail closed.
+
+  ### 6.8 Radix Numeric Profiles [# radix-numeric-profiles]
+
+  #### 6.8.1 Same-Base Radix Numeric Profile [# same-base-radix-numeric-profile]
+
+  [$ aeon.value.radix.numeric.same-base.v1] is an explicit numeric interpretation of the radix family. It does not replace the preserved-representation behavior of [$ aeon.value.default.v1].
+
+  Under the default profile, [$ %19.9900] and [$ %19.99] are different representations. Under this numeric profile, when both values resolve to base 10, they are numerically equal. Source spelling, digit case, explicit plus signs, leading zeroes, fractional trailing zeroes, radix-point placement, and visual underscores remain available as representation metadata even when they do not change the numeric result.
+
+  The radix digit sequence is the Core [$ RadixLiteral] sequence, in order:
+
+  ~~~$ text
+  0-9 A-Z a-z & !
+  ~~~$
+
+  These characters have digit values [$ 0] through [$ 63]. Digit identity is case-sensitive. [$ A] has value 10 and [$ a] has value 36. [$ e] and [$ E] are ordinary radix digits whenever their values are admitted by the resolved base; radix payloads do not have exponent notation.
+
+  A numeric comparison under this profile MUST resolve one integral base from [$ 2] through [$ 64]:
+
+  - [$ decimal] resolves to base 10;
+  - the reserved aliases [$ radix2], [$ radix6], [$ radix8], and [$ radix12] resolve to their named bases;
+  - [$ radix\\[n\\]] resolves to [$ n] when [$ n] is an integral value from [$ 2] through [$ 64];
+  - a consumer MAY supply equivalent trusted base metadata from an AES adapter or schema;
+  - an untyped radix operand MAY inherit the base of its typed counterpart for that binary operation;
+  - if neither operand has a resolved base, the operation MUST fail closed with [$ radix_base_required];
+  - if both operands have resolved bases and the bases differ, the operation MUST fail closed with [$ mixed_radix_bases].
+
+  Cross-base conversion is not part of this profile. A consumer must not infer that payloads with different resolved bases are numerically equal, even when conversion would be mathematically possible.
+
+  Before comparison, an implementation MUST validate every non-separator digit against the resolved base. Invalid payloads MUST fail closed with [$ invalid_radix_value]. The optional sign, radix point, and underscore placement must satisfy the Core radix grammar. Underscores are visual separators only and do not contribute a digit.
+
+  Equality and ordering MUST be exact and MUST NOT pass through a host binary floating-point number. Implementations compare the mathematical values represented by sign, integer digits, and fractional digits. Leading integer zeroes and trailing fractional zeroes do not affect the numeric result. Positive and negative zero compare equal. For operands with the same sign, implementations compare integer magnitude first, then fractional digits with implicit trailing zero digits. Negative ordering reverses the resulting magnitude relation.
+
+  Examples under [$ aeon.value.radix.numeric.same-base.v1]:
+
+  | Operands | Resolved base | Result |
+  | <-- | <-- | <-- |
+  | [$ %19.9900] and [$ %19.99] | 10 | equal |
+  | [$ %0010] and [$ %10] | 2 | equal |
+  | [$ %-0.0] and [$ %+0.000] | 10 | equal |
+  | [$ %A] and [$ %a] | 64 | less |
+  | [$ %10] and [$ %2] | 2 and 10 | [$ mixed_radix_bases] |
+  |~ Same-base radix numeric examples
+
+  This profile defines numeric value semantics, not decimal scale semantics. It does not decide whether [$ %19.9900] carries a business scale of four places, whether scale participates in schema validation, or how arithmetic rounds. Those remain separate schema, measurement, or arithmetic contracts.
+
+  Consumers MUST apply their normal bounded-input policy to radix payloads. Implementations SHOULD support at least 65,536 payload characters or advertise a smaller deterministic limit. Exceeding the active limit MUST fail closed rather than fall back to an imprecise host representation.
+
+  #### 6.8.2 Cross-Base Radix Numeric Profile [# cross-base-radix-numeric-profile]
+
+  [$ aeon.value.radix.numeric.cross-base.v1] includes every same-base rule above and additionally permits exact numeric equality and ordering when both operands have independently resolved bases.
+
+  Both bases MUST resolve through the same trusted datatype or adapter metadata rules used by the same-base profile. An untyped operand MAY inherit its typed counterpart's base for that binary operation; this is same-base interpretation, not guessed cross-base conversion. If neither operand supplies a base, the operation MUST fail closed with [$ radix_base_required].
+
+  Each payload MUST be validated against its own resolved base before comparison. An invalid digit, sign, point, or separator placement MUST fail closed with [$ invalid_radix_value].
+
+  Cross-base comparison MUST be exact. For a parsed finite radix value, let [$ M] be the unsigned integer formed by concatenating its integer and fractional digits, let [$ b] be its base, and let [$ f] be its fractional digit count. Its unsigned mathematical value is:
+
+  ~~~$ text
+  M / b^f
+  ~~~$
+
+  Implementations MUST compare two such values by exact rational arithmetic. They MAY compare [$ M_left * b_right^f_right] with [$ M_right * b_left^f_left] or use an equivalent exact algorithm. They MUST NOT convert through binary floating point, a bounded host integer, or a rounded decimal approximation. Sign comparison and negative-order reversal follow the same-base rules.
+
+  Examples under [$ aeon.value.radix.numeric.cross-base.v1]:
+
+  | Left | Right | Result |
+  | <-- | <-- | <-- |
+  | base 2 [$ %10] | base 10 [$ %2] | equal |
+  | base 2 [$ %.1] | base 10 [$ %.5] | equal |
+  | base 3 [$ %.1] | base 10 [$ %.333] | greater |
+  | base 64 [$ %!] | base 10 [$ %63] | equal |
+  |~ Cross-base radix numeric examples
+
+  The cross-base profile does not normalize or rewrite either representation. It supplies a comparison result while preserving both original bases, payloads, and datatype claims.
+
+  Cross-base arithmetic may require more work than same-base digit comparison. Consumers MUST apply deterministic input bounds before constructing exact intermediate values, and implementations MUST fail closed when an active resource limit is exceeded. Implementations SHOULD support the same advertised payload limit as their same-base profile when their exact arithmetic strategy can do so safely.
+
+  #### 6.8.3 Radix Fractional Scale [# radix-fractional-scale]
+
+  Radix fractional scale is representation metadata. The [$ radixScale(...)] operation returns the number of represented radix digits after the radix point, excluding visual [$ _] separators. It applies to the complete radix family and does not require a numeric comparison profile.
+
+  Examples:
+
+  | Value | [$ radixScale(...)] |
+  | <-- | <-- |
+  | [$ %19.9900] | 4 |
+  | [$ %19.99] | 2 |
+  | [$ %101] | 0 |
+  | [$ %-.0_0] | 2 |
+  |~ Radix fractional scale examples
+
+  The operation MUST preserve trailing fractional zeroes when counting. Leading integer zeroes, signs, and the radix point itself do not contribute to scale. The payload MUST satisfy the Core radix grammar, and, when a trusted base is available, every digit MUST be valid for that base. Invalid payloads fail closed with [$ invalid_radix_value]. Applying the operation to a non-radix value fails closed with [$ radix_required].
+
+  Fractional scale does not alter equality or ordering. Therefore [$ %19.9900] and [$ %19.99] remain representation-distinct under [$ aeon.value.default.v1], compare numerically equal under an applicable radix numeric profile, and report different fractional scales under [$ radixScale(...)].
+
+  Scale is counted in digits of the value's own base. Equal scale counts across different bases do not imply equal numeric quantum: base-2 [$ %.01] and base-10 [$ %.01] both have scale 2, but their least represented places are [$ 2^-2] and [$ 10^-2] respectively. Decimal business rules MAY use base-10 radix scale as an input, but schema constraints, arithmetic precision, rounding, and significant digits remain separate contracts.
+
+  ### 6.9 Hex Semantics [# hex-semantics]
+
+  Hex values are their own AEON value family.
+
+  They are not radix literals, even when a radix profile uses base 16.
+
+  Examples:
+
+  ~~~$ aeon
+  color:hex = #ff00aa
+  mask:radix[16] = %ff00aa
+  octal:radix8 = %70
+  ~~~$
+
+  These values differ in:
+
+  - literal family: [$ HexLiteral] versus [$ RadixLiteral];
+  - source sigil: [$ #] versus [$ %];
+  - accepted payload grammar;
+  - datatype compatibility;
+  - canonicalization behavior;
+  - profile surface.
+
+  Core hex canonicalization removes [$ _] visual separators and lowercases hex digits. Therefore canonical hex-payload identity treats these as the same hex payload:
+
+  ~~~$ aeon
+  #Ff_00_Aa
+  #ff00aa
+  ~~~$
+
+  That does not imply numeric comparison, byte comparison, color comparison, or radix comparison.
+
+  A consumer that wants to compare hex values as numbers, bytes, colors, hashes, or identifiers must select an explicit profile for that interpretation. A consumer must not compare [$ hex:hex = #10] and [$ mask:radix\\[16\\] = %10] as equal merely because the payloads contain compatible base-16 digits.
+
+  Core v1 does not reserve [$ radix16] as a shorthand alias. Use [$ radix\\[16\\]] when a value is intended to remain in the radix-family numeric-representation surface. This keeps base-16 radix values explicit and avoids implying that [$ hex] and base-16 radix are interchangeable.
+
+  ### 6.10 Encoding Semantics [# encoding-semantics]
+
+  Encoding values are encoded lexical payloads.
+
+  The Core v1 encoding-family labels are:
+
+  - [$ encoding];
+  - [$ base64];
+  - [$ embed];
+  - [$ inline].
+
+  All four labels bind to [$ EncodingLiteral]. The labels reserve compatibility surface, but they do not create four independent Core value families.
+
+  The accepted payload alphabet is Base64URL-shaped:
+
+  ~~~$ text
+  A-Z a-z 0-9 - _ =
+  ~~~$
+
+  This is a lexical transport alphabet. It is not a radix alphabet, and it is not a guarantee that the payload has been decoded, interpreted, or validated as bytes by Core.
+
+  Examples:
+
+  ~~~$ aeon
+  payload:encoding = &QmFzZTY0IQ==
+  blob:base64 = &QmFzZTY0IQ==
+  asset:embed = &QmFzZTY0IQ==
+  snippet:inline = &QmFzZTY0IQ==
+  base64ish:radix[64] = %QmFzZTY0IQ
+  ~~~$
+
+  [$ base64] and [$ radix\\[64\\]] are different semantic surfaces:
+
+  - [$ base64] is an encoding-family compatibility label over [$ EncodingLiteral];
+  - [$ radix\\[64\\]] is a radix-family numeric-representation claim over [$ RadixLiteral];
+  - encoding payloads may use [$ -], [$ _], and trailing [$ =] padding;
+  - radix payloads use the radix digit sequence defined for [$ RadixLiteral];
+  - decoding bytes and converting a radix number are different operations.
+
+  By default, value semantics may compare encoding values by exact payload-string identity and naïve payload order.
+
+  Naïve payload order compares the preserved encoded payload characters using the active canonical codepoint string profile. It does not decode bytes, decode text, compare media content, compare hashes, or apply radix interpretation.
+
+  A profile may define richer behavior, such as:
+
+  - Base64URL decode validity;
+  - byte equality after decoding;
+  - MIME or media-type interpretation;
+  - embedded AEON or text decoding;
+  - hash or digest comparison;
+  - ordering by payload length, decoded byte length, decoded text, media content, or domain-specific metadata.
+
+  Those meanings require an explicit profile. A consumer must not treat [$ base64] as [$ radix\\[64\\]], must not apply generic string collation as byte ordering, and must not assume that [$ encoding], [$ embed], or [$ inline] always means Base64 data with a particular media type.
+
+  ### 6.11 Separator Semantics [# separator-semantics]
+
+  Separator literals are compact structured lexical scalars.
+
+  They are powerful because the same literal family can carry many domain shapes:
+
+  ~~~$ aeon
+  version:kadot = ^0.11.0
+  ip1:sep = ^127.0.0.1
+  ip2:sep["."] = ^127.0.0.1
+  dim:sep["w","h","d"] = ^300w400h200d
+  psv:sep["|"] = ^"id"|"name"|"phone"
+  ~~~$
+
+  Core preserves the literal family, payload, and datatype separator specs. Core does not assign domain meaning to the separator characters. A separator spec such as [$ \\[.\\]] is preserved metadata and may be a useful claim, but it is not trusted parsing authority by itself.
+
+  The minimum shared behavior for separator literals is:
+
+  - canonical separator-payload identity;
+  - naïve separator order.
+
+  Canonical separator-payload identity compares the canonical separator payload as preserved separator-literal content. It does not compare decoded records, numeric parts, dimensions, versions, IP octets, or table columns.
+
+  Naïve separator order compares canonical separator payloads by the active canonical codepoint string profile. This is a deterministic fallback order over the preserved payload surface. It is not a domain order.
+
+  Naïve separator order does not split the payload, even when the datatype includes enough separator specs to make splitting possible.
+
+  For example:
+
+  ~~~$ aeon
+  ip1:sep = ^192.0.0.255
+  ip2:sep["."] = ^192.0.0.255
+  ~~~$
+
+  Both values are ordered by their whole canonical payload. The [$ \\["."\\]] clarifier on [$ ip2] does not cause naïve order to split the payload into [$ \\["192", "0", "0", "255"\\]], compare numeric octets, or infer an IP address.
+
+  For example, naïve separator order may produce a different result from semantic-version ordering:
+
+  ~~~$ aeon
+  a:kadot = ^0.11.0
+  b:kadot = ^0.9.9
+  ~~~$
+
+  Under naïve separator order, the payload characters are compared directly. Under a semantic-version profile, the payload would be tokenized into numeric version components before comparison.
+
+  Profiles may define separator-domain behavior such as:
+
+  - semantic-version comparison;
+  - IPv4 or IPv6 parsing and address comparison;
+  - dimensions parsed into width, height, depth, area, volume, or aspect ratio;
+  - delimited-record parsing such as pipe-separated values;
+  - product-code segmentation;
+  - numeric segment validation;
+  - trailing-delimiter policy;
+  - duplicate or repeated separator handling.
+
+  Datatype separator specs and labels such as [$ kadot] may help a profile select or validate a domain, but they do not create domain order by themselves. A consumer that needs dimensions sorted by aspect ratio, IP addresses sorted by numeric address, or versions sorted by numeric components must select an explicit profile.
+
+  Profile-defined separator ordering must also account for trust. A profile may use separator specs only when the consumer trusts the source of the claim, validates the claim against the payload, or supplies the separator structure from trusted configuration. Untrusted document-local separator specs should be treated as data claims, not as authority to choose parsing or ordering behavior.
+
+  ### 6.11 Symbol Semantics [# symbol-semantics]
+
+  A symbol is an atomic symbolic scalar. Minimum-profile identity compares decoded symbol payloads exactly. A symbol and a string with the same Unicode characters are different value categories and are not equal without an explicit conversion.
+
+  Core assigns no enumeration, identifier, variable, reference, executable, or constant behavior to symbols. The minimum profile defines no symbol ordering; a profile may define a closed domain and ordering only when that contract is explicit.
+
+  ### 6.12 SANSA Address Semantics [# sansa-address-semantics]
+
+  SANSA address literals are structured address expressions carried as AEON values.
+
+  SANSA is namespace- and domain-neutral. It defines how semantic locations are expressed, not what those locations represent.
+
+  The same [$ :sansa] value family can carry:
+
+  - exact address paths;
+  - selector expressions that may resolve to zero, one, or many bindings;
+  - contextual-root expressions;
+  - qualified address literals;
+  - address expressions targeting AEON namespaces;
+  - address expressions targeting non-AEON semantic namespaces.
+
+  Examples:
+
+  ~~~$ aeon
+  exact:sansa = $.contact.name
+  selector:sansa = $.inventory.items.*.sku
+  contextual:sansa = ?.name
+  qualified:sansa = $.result:number|nan
+  rdfLike:sansa = $.["john"].isLocatedAt.["Brussels"]
+  ~~~$
+
+  AEON Core validates and preserves the SANSA literal. It does not decide whether the literal targets AEON bindings, an RDF-like graph, a database, a service resource tree, a filesystem namespace, a runtime object graph, or another semantic namespace.
+
+  The minimum shared behavior for SANSA address literals is:
+
+  - canonical address-expression identity;
+  - naïve address-expression order.
+
+  Canonical address-expression identity compares the canonical parsed address expression, including root kind, selector sequence, quoted payloads, and qualifier structure. It is syntactic identity of the address expression as data.
+
+  Naïve address-expression order compares canonical address-expression renderings by the active canonical codepoint string profile. It is a deterministic fallback order over address expressions as preserved values. It does not resolve the addresses.
+
+  These are separate questions:
+
+  | Question | Default owner |
+  | <-- | <-- |
+  | Do two address literals have the same canonical expression? | Aeonic Semantic Language |
+  | Does an exact address identify the same target in a namespace? | SANSA.Resolve consumer and namespace |
+  | Are two selector expressions equivalent? | Consumer/profile, usually requiring resolver semantics |
+  | Do two selector expressions resolve to the same Binding Set now? | SANSA.Resolve or SANSA.Query evaluation |
+  | Does [$ $.contact.name] mean an AEON binding path? | AEON-backed namespace adapter |
+  | Does [$ $.\\["john"\\].isLocatedAt.\\["Brussels"\\]] mean an RDF-like relation path? | Non-AEON namespace adapter/profile |
+  | What does a qualifier such as [$ :number\\|nan] mean? | Consumer/profile |
+  |~ SANSA address-semantics ownership
+
+  Exact addresses and selectors must not be collapsed merely because a selector happens to resolve to one binding in a particular namespace snapshot.
+
+  A consumer must not assume that SANSA member selectors are AEON binding keys or object traversal unless the active namespace is an AEON-backed namespace or another trusted adapter defines that mapping. SANSA member selectors describe semantic traversal; the addressed domain belongs to the namespace.
+
+  ### 6.13 Structural Container Semantics [# structural-container-semantics]
+
+  AEON structural values have two separate surfaces:
+
+  - preserved representation;
+  - shared structural semantics.
+
+  Core preserves object members, list elements, tuple elements, node tags, node attributes, node children, lexical order, and index-addressable child slots where applicable.
+
+  Aeonic Semantic Language may then define structural equality over the preserved values.
+
+  The minimum structural equality surface is:
+
+  | Family | Equality basis |
+  | <-- | <-- |
+  | [$ object] | same object family, same member keys, and equal member values; object member order is not significant |
+  | [$ list] | same list family, same length, and equal element values at each index |
+  | [$ tuple] | same tuple family, same arity, and equal element values at each position |
+  | [$ node] | same node family, same tag, same attribute keys with equal attribute values, same child count, and equal child values at each child position |
+  |~ Structural container equality bases
+
+  Structural equality is recursive and uses the active Aeonic Semantic Language equality rule for each contained value. If a contained value cannot be compared under the active equality profile, the structural comparison fails closed.
+
+  List and tuple values do not compare equal by default, even when they contain equal values in the same order. A profile may define an explicit coercion or compatibility operation, but the minimum profile does not silently collapse structural families.
+
+  Object member order is not significant for structural equality in the GP profile. Core may still preserve object member order for diagnostics, AES emission, canonicalization inputs, or source fidelity.
+
+  Node child order is significant for structural equality. Attribute order is not significant when attributes are represented as keyed attributes; duplicate-attribute rejection remains a Core representation guarantee.
+
+  Datatype base names, recursive generic descriptors, and tagged clarifier
+  arrays are preserved claims. They do not by themselves make two otherwise
+  equal structural values unequal unless an active profile or schema declares
+  annotation-sensitive equality.
+
+  Structural ordering is intentionally absent from the minimum profile. There is no portable default order for objects, lists, tuples, or nodes. Consumers that need sorted containers must provide an explicit order key, schema rule, or profile-defined container ordering.
+
+  Structural mutation compatibility is also profile/schema-owned. Mutation rules must define replace versus merge behavior, list insertion and reindexing, tuple arity compatibility, object member creation and deletion, node child mutation, attribute mutation, and conflict handling. A document-local datatype claim such as [$ node<node>] is an input to validation; it does not authorize the document to choose schema behavior for itself.
+
+  ### 6.14 Reference Semantics [# reference-semantics]
+
+  AEON references have two distinct semantic surfaces:
+
+  - the reference form;
+  - the followed value.
+
+  The reference form is the represented reference value. It includes:
+
+  - reference kind: clone reference [$ ~] or pointer reference [$ ~>];
+  - canonical exact AEON target path;
+  - source/provenance metadata, when retained by a consumer.
+
+  Reference-form identity compares the reference kind and canonical target path. For example, [$ ~a] and [$ ~$.a] identify the same clone-reference form after canonical path normalization, while [$ ~a] and [$ ~>a] do not identify the same reference form because clone intent and pointer intent are distinct.
+
+  Reference-form identity does not inspect the target value. It uses the canonical exact-path subset of AEON/SANSA addressing used by reference legality; selectors such as [$ .*], [$ .**], patterns, filters, and contextual roots are not part of AEON reference targets.
+
+  The followed value is the value reached by explicitly walking a legal reference path and evaluating the target value under the active consumer policy.
+
+  Conceptual operation:
+
+  ~~~$ text
+  follow(reference) -> value
+  ~~~$
+
+  [$ follow(...)] is not a Core parse operation and not a materialization operation. It is a read-only consumer operation used by schemas, queries, tonics, storage adapters, or runtime APIs when they intentionally want to inspect target-value semantics instead of reference-form semantics.
+
+  Following a reference:
+
+  - requires a legal reference target;
+  - must respect Core missing, forward-reference, and self-reference failures;
+  - must be bounded by consumer recursion/depth policy;
+  - must preserve diagnostics that identify both the reference source and the target path;
+  - must not rewrite, substitute, inline, alias, or erase the original reference form.
+
+  After [$ follow(...)], the active Aeonic Semantic Language applies to the resulting target value. For example, a followed reference to a number compares as a number, and a followed reference to a list participates in structural list equality.
+
+  Without an explicit follow operation or consumer-declared followed-value mode, constraints and comparisons apply to the reference form itself. This allows schemas to ask either:
+
+  - "is this value a reference to the expected target?"; or
+  - "does the referenced value satisfy this constraint?"
+
+  Those are different operations and should produce different diagnostics.
+
+  Reference resolution is a separate operation. In reference-resolution or materialization mode, the value carrying the reference may be replaced, inlined, cloned, aliased, or represented as an explicit runtime reference according to clone/pointer policy. That operation belongs to Tonics, runtime materializers, storage adapters, or explicit consumer profiles. It must not be confused with [$ follow(...)].
+
+  Pointer references may carry aliasing, identity, or mutation-authority semantics during reference resolution. Those meanings belong to the consuming layer. Aeonic Semantic Language can define target-value comparison after following, but it does not decide whether a pointer may be mutated, aliased, inlined, or materialized as host identity.
+
+  ## 7. Minimum v1 Consumer Contract [# minimum-v1-consumer-contract]
+
+  The first shared contract should cover the behavior already exercised by SANSA.Query and expected by AEOS-style validation.
+
+  This section is the candidate [$ aeon.value.default.v1] profile. It is intentionally small and should become the first shared CTS surface when promoted.
+
+  ### 7.1 Value Categories [# value-categories]
+
+  The minimum profile recognizes these value and evaluation categories:
+
+  - finite number;
+  - positive infinity;
+  - negative infinity;
+  - NaN;
+  - string;
+  - symbol;
+  - Boolean;
+  - toggle;
+  - temporal value;
+  - lexical structured scalar;
+  - SANSA address literal;
+  - structural container;
+  - reference form;
+  - explicit null;
+  - explicit absence value, when exposed by a consumer;
+  - missing binding, when resolution produces no binding.
+
+  Missing binding is not a value. It is an evaluation state produced by a consumer such as SANSA.Resolve or AEOS path selection.
+
+  Explicit null and explicit absence values are values. They must not be collapsed into missing, false, an empty string, or zero.
+
+  For minimum-profile consumer predicates, a [* concrete value] means a present value that is not part of the non-value group.
+
+  The minimum non-value group is:
+
+  - Missing;
+  - explicit null;
+  - explicit absence values;
+  - NaN.
+
+  Finite numbers, infinities, strings, symbols, Booleans, toggles, temporal values, lexical structured scalars, SANSA address literals, container values, and legal reference forms are concrete values for [$ isValue(...)] purposes.
+
+  ### 7.2 Equality [# equality]
+
+  The minimum equality surface is:
+
+  | Operands | Equality | Notes |
+  | <-- | <-- | <-- |
+  | finite number and finite number | allowed | Numeric value equality. |
+  | infinity and finite number | allowed | Positive and negative infinity are not equal to finite numeric values. |
+  | infinity and infinity | allowed | Positive infinity equals positive infinity; negative infinity equals negative infinity; opposite infinities are not equal. |
+  | string and string | allowed | Exact decoded string equality under the active string equality profile. |
+  | symbol and symbol | allowed | Exact decoded symbol-payload identity. |
+  | symbol and string | error | No implicit conversion between symbolic and textual values. |
+  | Boolean and Boolean | allowed | [$ true] equals [$ true]; [$ false] equals [$ false]. |
+  | toggle and toggle | allowed | Exact toggle-token equality; [$ yes] does not equal [$ on], and [$ no] does not equal [$ off]. |
+  | toggle and Boolean | error | Boolean compatibility requires explicit conversion or a profile-defined comparison domain. |
+  | encoding and encoding | allowed | Exact payload-string identity; no decoding. |
+  | separator and separator | allowed | Canonical separator-payload identity; no domain tokenization. |
+  | SANSA address and SANSA address | allowed | Canonical address-expression identity; no resolution or selector equivalence. |
+  | object and object | allowed | Structural member equality; object member order is not significant. |
+  | list and list | allowed | Ordered structural equality by index. |
+  | tuple and tuple | allowed | Ordered structural equality by position and arity. |
+  | node and node | allowed | Structural equality by tag, attributes, and ordered child slots. |
+  | list and tuple | error | Requires explicit coercion or a profile-defined compatibility domain. |
+  | reference form and reference form | allowed | Reference-kind identity and canonical target-path identity; no implicit follow. |
+  | followed reference value | as target value | Requires explicit [$ follow(...)] or consumer-declared followed-value mode. |
+  | explicit null | profile-defined or error | Consumers must use an explicit contract such as [$ isNull(...)] when no equality contract is active. |
+  | explicit absence value | profile-defined or error | Absence-value equality belongs to the applicable absence-value contract. |
+  | NaN | error | NaN is not equality-comparable in the minimum profile; equality and inequality tests over NaN fail closed. |
+  | mixed categories | error | No implicit coercion. |
+  |~ Minimum equality behavior by operand family
+
+  Consumers must not coerce strings, numbers, Booleans, toggles, nulls, absence values, structural families, or reference forms to make equality succeed. For example, a list and tuple with the same contained values require explicit coercion or a profile-defined compatibility domain before equality can be considered. A reference form and its followed target value are also distinct unless an explicit [$ follow(...)] operation or followed-value mode is active.
+
+  ### 7.3 Ordering [# ordering]
+
+  The minimum ordering surface is:
+
+  | Operands | Ordering | Notes |
+  | <-- | <-- | <-- |
+  | finite number and finite number | allowed | Numeric order. |
+  | infinity and finite number | allowed | Negative infinity sorts before finite numbers; positive infinity sorts after finite numbers. |
+  | infinity and infinity | allowed | Equal infinities compare equal; negative infinity sorts before positive infinity. |
+  | string and string | allowed | Uses the active string ordering profile. |
+  | symbol and symbol | error | Symbol ordering requires an explicit profile-defined domain. |
+  | Boolean and Boolean | error | Boolean ordering is not part of the minimum profile. |
+  | toggle and toggle | error | Toggle ordering is not part of the minimum profile. |
+  | encoding and encoding | allowed | Naïve payload order over preserved encoded payload characters. |
+  | separator and separator | allowed | Naïve separator order over canonical separator payloads. |
+  | SANSA address and SANSA address | allowed | Naïve address-expression order over canonical address expression renderings. |
+  | object, list, tuple, or node | error | Structural containers have no portable default total order. |
+  | reference form | error | Reference-form ordering is not part of the minimum profile. Use explicit target-path ordering or [$ follow(...)] plus target-value ordering where authorized. |
+  | explicit null | error | Use explicit null predicates or profile-defined null ordering. |
+  | explicit absence value | error | Use explicit absence predicates or profile-defined absence ordering. |
+  | NaN | error | NaN is not orderable. |
+  | mixed categories | error | No implicit coercion. |
+  |~ Minimum ordering behavior by operand family
+
+  Ordering must fail closed when the active profile does not define the compared category pair.
+
+  ### 7.4 Value Predicate Basis [# value-predicate-basis]
+
+  Consumers may expose predicates that classify evaluation results. Those predicates should be defined in terms of the shared value categories rather than by host-language truthiness.
+
+  For example, a minimum-profile [$ isValue(...)] predicate should return true when its operand evaluates to exactly one concrete value and false for Missing, explicit null, explicit absence values, and NaN. If the operand resolves more than one binding, the predicate should produce a cardinality diagnostic rather than choosing one binding.
+
+  [$ isValue(...)] is not a comparison guard. A query or validator that needs a number, string, temporal value, structural value, or other specific comparable domain should combine [$ isValue(...)] with semantic filters or profile-defined predicates for that domain.
+
+  ### 7.5 Canonical String Profile Placeholder [# canonical-string-profile-placeholder]
+
+  The minimum/default profile requires a deterministic string equality and ordering profile, but this proposal does not yet define the final collation algorithm beyond the codepoint candidate.
+
+  Until that algorithm is promoted, consumers should treat string ordering as a named value-semantics dependency rather than redefining it locally.
+
+  The canonical string profile must eventually define:
+
+  - Unicode unit of comparison;
+  - normalization policy;
+  - case sensitivity;
+  - accent and combining-mark behavior;
+  - total-order tie breakers;
+  - behavior for invalid or unpaired Unicode representations, if exposed by a host.
+
+  Locale-aware, natural-sort, and domain-specific profiles remain explicit extensions.
+
+  ### 7.6 Canonical Codepoint String Profile Candidate [# canonical-codepoint-string-profile-candidate]
+
+  The first portable string ordering candidate is a codepoint profile.
+
+  Candidate identifier:
+
+  ~~~$ text
+  aeon.value.string.codepoint.v1
+  ~~~$
+
+  The candidate profile orders strings by decoded Unicode scalar values from left to right.
+
+  The candidate profile:
+
+  - performs no normalization;
+  - performs no case folding;
+  - does not ignore accents, combining marks, punctuation, or whitespace;
+  - compares each decoded scalar value numerically;
+  - sorts the shorter string first when every shared scalar compares equal.
+
+  Exact string equality compares the decoded scalar sequence exactly.
+
+  This profile is a stable portability floor. It is not intended to model human-language collation.
+
+  [$ aeon.value.default.v1] uses this codepoint profile for string ordering unless a consumer explicitly selects another string profile.
+
+  ### 7.7 String Collation Profile Framework [# string-collation-profile-framework]
+
+  Richer string ordering profiles must define the full ordering contract they apply.
+
+  A string profile defines the complete string comparison and mapping contract, including normalization, case mapping, locale or domain rules, numeric-region handling, and tie-breaker behavior. Partial profile definitions are not permitted; a consumer must not combine unrelated normalization, collation, case-mapping, natural-sort, or host-default behaviors into one implicit algorithm.
+
+  A string collation profile should define:
+
+  - normalization behavior before comparison;
+  - case-sensitive or case-insensitive behavior;
+  - accent and combining-mark behavior;
+  - ignored characters, if any;
+  - punctuation grouping;
+  - contraction and expansion rules;
+  - numeric-region recognition;
+  - decimal, version-like, or segmented-number behavior;
+  - tie-breaker behavior when primary comparison keys match.
+
+  Numeric-looking regions must not require fixed-width machine-number conversion. Profiles that support natural sorting should compare numeric regions by a deterministic arbitrary-precision or digit-sequence algorithm.
+
+  For example, a natural-sort profile must explicitly define whether:
+
+  ~~~$ text
+  job-2 < job-10
+  1.10 < 1.2
+  ~~~$
+
+  and why.
+
+  An exploratory ASCII numeric-region profile may be identified as:
+
+  ~~~$ text
+  aeon.value.string.natural.ascii.v1
+  ~~~$
+
+  Under that profile, non-numeric regions are compared by decoded Unicode scalar value, while consecutive ASCII digit regions are compared as arbitrary-precision digit sequences. For example:
+
+  ~~~$ text
+  part-2 < part-10
+  ~~~$
+
+  This profile is useful for testing human-oriented numeric ordering without making natural sort the default string behavior.
+
+  For example, a French locale profile such as [$ aeon.value.string.locale.fr.v1] may order [$ éclair] before [$ zebre], while the codepoint profile orders by scalar value and therefore produces a different result. Both behaviors are valid only when selected through their named profiles; neither may be silently inherited from the host process locale.
+
+  ### 7.8 Case Mapping [# case-mapping]
+
+  The minimum case-mapping surface is:
+
+  ~~~$ text
+  lower(string) -> string
+  upper(string) -> string
+  ~~~$
+
+  Case mapping is deterministic and profile-defined. It must not depend on process locale, operating-system locale, database collation, or host-language defaults.
+
+  The canonical case-mapping profile must eventually define:
+
+  - Unicode case-mapping table or referenced version;
+  - locale-sensitive exceptions, if any;
+  - normalization behavior before and after mapping;
+  - whether one input scalar may expand to multiple output scalars.
+
+  Until the canonical case-mapping profile is locked, consumer implementations may expose [$ lower(...)] or [$ upper(...)] as implementation-slice behavior, but should document that normative behavior is still owned by Aeonic Semantic Language.
+
+  ### 7.9 Temporal Profile Candidate [# temporal-profile-candidate]
+
+  AEON Core recognizes temporal datatype names such as:
+
+  - [$ date];
+  - [$ time];
+  - [$ datetime];
+  - [$ wtc].
+
+  Aeonic Semantic Language defines a conservative same-family temporal comparison surface for canonical AEON temporal payloads. Richer temporal ordering, validation, conversion, temporal-context behavior, and mutation compatibility remain profile-defined.
+
+  Candidate identifier:
+
+  ~~~$ text
+  aeon.value.temporal.iso8601.v1
+  ~~~$
+
+  A temporal profile should define:
+
+  - recognized temporal categories;
+  - equality and ordering domains for each category;
+  - whether cross-category comparison is allowed;
+  - normalization before comparison;
+  - relationship to applicable temporal conventions such as [$ aeon.gp.temporal.v1];
+  - timezone offset behavior;
+  - temporal-context authority and timezone database version, when applicable;
+  - precision and fractional-second behavior;
+  - reduced-precision completion-set behavior and the relations [$ contains], [$ containedBy], [$ overlaps], and [$ incomparable];
+  - any total sort policy separately from temporal chronology;
+  - diagnostics for unsupported or ambiguous temporal values.
+
+  Core WTC representation supplies three temporal-value forms: unqualified values without an offset designator, offset-qualified values with an explicit numeric UTC offset, and UTC-qualified values with uppercase [$ Z]. The temporal context is independent of that form and may be exact lowercase [$ local], a named timezone, a convention-defined named place beginning with [$ +/], a timescale, or a geographic [$ latitude/longitude] or [$ latitude/longitude/height] position. [$ &local] selects resolver-local rules while a named timezone selects an explicit ruleset; either may supply context for zoned civil time. Only successful resolution under an ambiguity policy produces a zoned instant. Strings such as [$ UTC], [$ TAI], [$ UT1], [$ TT], and [$ GPS] receive timescale meaning under an adopted convention such as [$ aeon.gp.temporal.v1], not Core or minimum Aeonic Semantic Language. The same convention assigns exact leading [$ +/] to the named-place namespace while Core preserves it as an ordinary context payload. Case variants of the reserved [$ local] spelling are invalid; authored case in other named contexts is preserved.
+
+  The [$ +/] classification does not authorize AEON Core, Aeonic Semantic Language, AEOS, a profile, or a schema to validate place identity or infer place-to-timezone meaning. A downstream domain consumer owns that resolution when it is required.
+
+  The offset spellings [$ Z], [$ +00:00], and [$ -00:00] remain representation-distinct. Under [$ aeon.gp.temporal.v1], [$ -00:00] records an unknown or unspecified local offset rather than a known zero offset and MUST NOT be normalized to either of the other forms.
+
+  Under that convention, a named timezone does not replace [$ -00:00] with an inferred known offset. Numeric-offset agreement with a named timezone is evaluated downstream against the selected timezone-database data. A [$ Z] or known numeric offset combined with a recognized non-UTC timescale such as [$ &TAI] is a preserved Core conflict rejected by the general-purpose temporal schema or convention-aware validator.
+
+  The default geographic interpretation is WGS 84 latitude and longitude in decimal degrees with optional ellipsoidal height in metres. Core and minimum Aeonic Semantic Language preserve that representation without validating coordinate ranges, resolving a jurisdiction, or performing geodetic transformation.
+
+  [$ conflictAuthority] is consumer-owned resolution policy, not document-owned authority. An authoritative resolver defaults to rejection when intrinsic temporal inputs and reference or convention metadata conflict, unless trusted host, profile, schema, or runtime configuration selects another policy. Preservation-only operations may retain the conflict without resolving it.
+
+  The minimum temporal comparison surface is:
+
+  | Operands | Equality | Ordering | Notes |
+  | <-- | <-- | <-- | <-- |
+  | date and date | allowed | allowed | Canonical date payload comparison. |
+  | time and time | allowed | allowed | Canonical time payload comparison; richer profiles may define offset/date-context behavior. |
+  | datetime and datetime | allowed | allowed | Canonical datetime payload comparison; richer profiles may define instant normalization. |
+  | wtc and wtc | allowed | allowed | Canonical preserved WTC payload comparison; resolution requires consumer-owned temporal-context and conflict policy. |
+  | temporal and string | error | error | No implicit string comparison. |
+  | mixed temporal categories | error | error | Allowed only when a profile explicitly defines cross-category comparison. |
+  |~ Temporal comparison behavior
+
+  Temporal transport as text does not imply string comparison. Temporal values are compared through the active temporal value-semantics profile. The default minimum profile uses canonical payload order only within the same temporal family.
+
+  Canonical payload order is deterministic representation order, not temporal chronology. In a precision-aware temporal profile, omitted minute or second fields define completion sets rather than implicit zeroes. [$ 10:Z] contains [$ 10:30Z]; the operands are not temporally equal and neither is temporally before or after the other. Comparing a time-only value with a dated value fails for insufficient context unless trusted policy supplies the date and explicitly admits the comparison.
+
+  ### 7.10 Mutation Compatibility [# mutation-compatibility]
+
+  Future mutation operations should consume the same Aeonic Semantic Language contracts used by query and validation.
+
+  Mutation compatibility includes:
+
+  - whether a write value is compatible with a target datatype;
+  - whether conversion is allowed;
+  - which normalization, if any, is applied before storage;
+  - how null, absence values, and Missing interact with a write target;
+  - how temporal precision, unqualified/offset/UTC WTC forms, temporal contexts, timescales, and named zones are preserved, resolved, converted, or normalized;
+  - whether structural writes replace, merge, insert, delete, or reindex;
+  - how tuple arity, object member constraints, list element constraints, node child constraints, and node attribute constraints are enforced.
+
+  SANSA.Mutate, AEOS, Tonics, and storage adapters should not define separate compatibility behavior for the same AEON value family.
+
+  For example:
+
+  ~~~$ text
+  set $.invoice.dueDate:date = 2026-07-24
+  ~~~$
+
+  SANSA.Mutate identifies the target and operation. AEON Core parses the represented value. Aeonic Semantic Language decides whether the represented value is compatible with [$ date] and what normalization, if any, is required. The host or schema authority decides whether the mutation is authorized.
+
+  For structural values, Aeonic Semantic Language supplies compatibility concepts and equality behavior, while schema/profile authority decides the permitted mutation shape. For example, a tuple mutation may require exact arity compatibility, a list mutation may permit insertion and reindexing, an object mutation may permit member creation, and a node mutation may restrict child tags or attribute sets. Those policies must not be inferred from a document-local datatype claim alone.
+
+  ### 7.11 Consumer Handoff [# consumer-handoff]
+
+  Consumers own where an operation appears and what diagnostic context is produced.
+
+  Aeonic Semantic Language owns what the operation means.
+
+  For example:
+
+  ~~~$ text
+  where .age > 18
+  ~~~$
+
+  SANSA.Query owns [$ where], candidate filtering, Binding Set handling, and query diagnostics. Aeonic Semantic Language owns numeric comparison.
+
+  For example:
+
+  ~~~$ text
+  age minimum 18
+  ~~~$
+
+  AEOS owns the schema rule and validation diagnostic. Aeonic Semantic Language owns numeric comparison.
+
+  ## 8. CTS Ownership [# cts-ownership]
+
+  Aeonic Semantic Language should have its own conformance coverage once individual contracts become normative.
+
+  The proposal-stage CTS scaffold is:
+
+  ~~~$ text
+  aeonite-cts/cts/value-semantics/v1/value-semantics-cts.v1.json
+  aeonite-cts/cts/value-semantics/v1/value-semantics-cts.v1.next.json
+  aeonite-cts/cts/value-semantics/v1/suites/01-minimum-consumer-contract.json
+  aeonite-cts/cts/value-semantics/v1/suites/02-radix-numeric-same-base.json
+  aeonite-cts/cts/value-semantics/v1/suites/03-radix-numeric-cross-base.json
+  ~~~$
+
+  Shared CTS cases can then be reused by consumers:
+
+  +++graph
+  ["literal-fixture", "AEON Literal Fixture", 50, 10]
+  ["semantics-contract", "Value Semantics Contract", 50, 40]
+  ["aeos-case", "AEOS Validation Case", 20, 80]
+  ["sansa-case", "SANSA Query Case", 50, 80]
+  ["tonics-case", "Tonics Materialization Case", 80, 80]
+  {"literal-fixture", "CB", "semantics-contract", "CT", "to", "solid"}
+  {"semantics-contract", "CB", "aeos-case", "CT", "to", "solid"}
+  {"semantics-contract", "CB", "sansa-case", "CT", "to", "solid"}
+  {"semantics-contract", "CB", "tonics-case", "CT", "to", "solid"}
+  +++ (Figure 3: Shared value-semantics CTS reuse)
+  +++fallback
+  ~~~$ text
+  AEON literal fixture
+    |
+    v
+  Value Semantics contract
+    |
+    +-- AEOS validation case
+    +-- SANSA query case
+    +-- Tonics materialization case
+  ~~~$
+  +++
+
+  This keeps conformance behavior aligned across implementations without duplicating normative definitions.
+
+  ## 9. Non-Goals [# non-goals]
+
+  This proposal does not yet define:
+
+  - the complete numeric comparison contract;
+  - the final canonical string collation algorithm beyond the codepoint candidate;
+  - final locale profile identifiers;
+  - final temporal profile identifiers or timezone database authority;
+  - conversion syntax in any consumer;
+  - arithmetic operators;
+  - consumer-specific authorization;
+  - runtime APIs.
+
+  Those belong in focused follow-up proposals or contract documents.
+
+  ## 10. Relationship to SANSA.Query [# relationship-to-sansa-query]
+
+  SANSA.Query is the first AEON-family consumer that exercises a broad portion of shared value behavior.
+
+  SANSA.Query should reference Aeonic Semantic Language for:
+
+  - scalar equality;
+  - relational comparison;
+  - string ordering;
+  - case mapping;
+  - conversion functions;
+  - measurement functions;
+  - future arithmetic or aggregation.
+
+  SANSA.Query still owns query syntax, Binding Set evaluation, candidate filtering, projection, result construction, diagnostics, and resolver integration.
+
+  ## 11. Relationship to AEOS [# relationship-to-aeos]
+
+  AEOS consumes Aeonic Semantic Language when validating value relationships.
+
+  For example, an AEOS rule may require:
+
+  ~~~$ text
+  age > 18
+  ~~~$
+
+  AEOS owns the validation rule and diagnostic context. Aeonic Semantic Language owns what numeric comparison means.
+
+  ## 12. Relationship to Tonics [# relationship-to-tonics]
+
+  Tonics consume Aeonic Semantic Language when materializing values into runtime environments.
+
+  Tonics may expose runtime-specific APIs, but the behavior of shared conversions, comparisons, measurements, and ordering must remain aligned with the shared contracts unless a profile explicitly defines a different accepted surface.
+
+  ## 13. Design Philosophy [# design-philosophy]
+
+  AEON Core defines source representation and AES defines portable event representation.
+
+  Aeonic Semantic Language defines deterministic behavior.
+
+  Consumers apply that behavior to their own domains.
+
+  This keeps representation, validation, evaluation, materialization, and future computation separated while preserving one semantic contract for every value family.
+
+  ## 14. Aeonic Operations Comparison v1 — Working Contract [# operations-comparison-v1]
+
+  Status: proposal-stage working contract, added 2026-11-09. This section defines a new profile family and typed comparison boundary. It does not redefine the legacy aeon.value profiles, release a snapshot, or promote this document's lifecycle.
+
+  The first working surface supports finite numbers, strings, Booleans and symbols. Equality returns the symbols |equal| or |notEqual|; ordering returns |less|, |equal| or |greater|. Boolean false precedes true without numeric coercion. Ordinary strings and default symbols compare decoded Unicode scalar sequences without normalization; symbols and strings remain distinct domains. Declared symbol ordering is a separately selectable capability. Failed or unavailable operations return one diagnostic and no value. Arithmetic, sorting, locale-sensitive collation and temporal operations remain outside this surface.
+
+  The operation request/result schema is the repository resource [@ ../assets/aeonic-operations/v1/snapshots/0.1/comparison-contract.schema.json | comparison v1 working schema]. The associated mutable conformance target is aeonic-operations-cts.v1.next.json in aeonite-cts. Its CTS input/output binding is owned by that repository. Logical request text uses strict JSON: duplicate member names and non-JSON constants are rejected; admission byte/depth guards precede decoding failures. Reusable context, operation policy, profile selections and declaration objects reject unknown configuration fields. Operation results are also closed. Diagnostics may include an optional human-readable message.
+
+  Only the supplied declared-order registry is available. No implicit file, network, database or process-locale resolution is permitted. Native adapters may expose idiomatic APIs while preserving the typed logical boundary and observable contract.
+
+  ### 14.1 Numerical values and representation [# operations-comparison-5]
+
+  The first snapshot must explicitly test numerical value equality separately from representation distinctions. Under baseline finite-number comparison, every pair drawn from [$ 1], [$ 1.0], and [$ 1e0] yields [$ |equal|] from both primitives. Likewise, positive and negative zero compare equal, including across their admitted integer, decimal, and exponent spellings. Distinct finite values retain exact numerical ordering, including beyond host floating-point precision.
+
+  The typed operand boundary preserves representation distinctions such as the integer, decimal, and exponent families and signed-zero information. A comparison may use a normalized internal numeric representation without making the supplied operand forms indistinguishable at that boundary. The snapshot does not introduce a representation-identity operation or require representation equality for numerical equality. Canonical textual equality is not a valid substitute for the numerical comparison contract.
+
+  Conformance vectors must include all pairwise numerical comparisons among the three forms above, signed-zero variants, equivalent values with differing exponent/decimal forms, and unequal large values that a host floating-point conversion could collapse. The separately selected scalar string-coercion mode may distinguish canonical textual forms, but remains outside this snapshot's stable coverage.
+
+  ### 14.2 Ordering laws [# operations-comparison-6]
+
+  For each initially supported comparable domain under one fixed effective policy, the first snapshot must establish a total preorder: representations may be comparison-equivalent, and those equivalence classes have a consistent total order. This is not an order across incompatible domains. All quantified operands below must be valid, admitted, and within the operation's declared supported resource bounds.
+
+  Let [$ C(a,b)] denote the symbolic ordering result and [$ E(a,b)] the equality-relation result:
+
+  - **Reflexivity:** [$ C(a,a)] and [$ E(a,a)] are [$ |equal|].
+  - **Reversal:** [$ |less|] reverses to [$ |greater|], [$ |greater|] to [$ |less|], and [$ |equal|] to [$ |equal|] when operands are exchanged.
+  - **Strict transitivity:** if [$ C(a,b)] and [$ C(b,c)] are [$ |less|], then [$ C(a,c)] is [$ |less|]; the corresponding greater-than rule also holds.
+  - **Equivalence consistency:** comparison equivalence is symmetric and transitive. If [$ C(a,b)] is [$ |equal|], comparing either operand with a third admitted operand gives the same relation, in both operand positions.
+  - **Primitive agreement:** [$ E(a,b)] is [$ |equal|] exactly when [$ C(a,b)] is [$ |equal|]; otherwise [$ E(a,b)] is [$ |notEqual|].
+  - **Definiteness:** the initial supported profiles return one of the three ordering symbols for every admitted pair; they do not substitute diagnostics or [$ |indeterminate|] for a required comparison.
+
+  Fixed pair/triple vectors and appropriate generative/differential checks can exercise these properties without implementing sorting. A finite test suite is evidence of conformance, not a proof for every input. Later profiles claiming sorting support must establish their applicable ordering laws; temporal partial relations require their own contract and are not silently forced into this total-preorder model.
+
+  ### 14.3 Diagnostic precedence [# operations-comparison-7]
+
+  The following validation-stage order was agreed on 2026-11-09. Identify the operation and its effective comparison contract before interpreting operand payloads under it. The working schema and traversal below define the concrete field checks.
+
+  | Stage | Check | Failure category |
+  | <-- | <-- | <-- |
+  | 1 | Deterministic admission guards, such as request-size or nesting limits, before deeper inspection. | [$ resource_limit] |
+  | 2 | Required request-envelope shape, then operation availability. Operand payloads are not validated at this stage. | [$ invalid_operand], then [$ unsupported_operation] as applicable |
+  | 3 | Configuration shape and conflicts; named profile/declaration resolution; validity of resolved policy definitions. | [$ invalid_policy] or [$ unsupported_profile], according to the failing substep; [$ resource_limit] for a guard reached at this stage |
+  | 4 | Typed operand descriptor/payload validity, left before right. | [$ invalid_operand]; [$ resource_limit] for a guard reached while validating that operand |
+  | 5 | Operand-domain support, left before right; then compatibility of the supported pair. | [$ unsupported_domain], then [$ incompatible_comparison] as applicable |
+  | 6 | Membership in the selected declared symbol domain, left before right. | [$ undeclared_symbol] |
+  | 7 | Perform the comparison; enforce any explicitly configured deterministic implementation-specific execution budget. | [$ resource_limit] if that optional budget is exhausted; no standardized work-unit test is required by the first snapshot |
+
+  Stop at the first failed stage/substep and return one diagnostic with no value. In the red-team example, an unsupported profile plus malformed numerical text therefore yields [$ unsupported_profile], assuming the request passed admission and envelope checks and its policy configuration was otherwise well-formed. With a valid profile, malformed left numerical text precedes malformed right numerical text or later domain/membership checks.
+
+  Resource guards may stop processing as soon as the configured deterministic limit is reached; implementations are not required to exceed a limit to discover a hypothetical later semantic error. Precedence assertions must use the same declared limits and check the first reached failure; machine-dependent wall-clock timing must not determine normative precedence. Earlier semantic failures must not be masked by speculatively evaluating later phases. Optimizations are acceptable only when they preserve the prescribed observable diagnostic.
+
+  Runtime map iteration order must not choose the result. Sections 14.7 and 14.8 define the deferred-family descriptor boundary and fixed within-policy traversal. A diagnostic path is null when a precise Unicode-scalar JSON Pointer cannot be represented, including an isolated surrogate in an unknown field name.
+
+  Working fixtures must include competing-failure vectors so independent runtimes verify precedence rather than merely accepting any legitimate error category:
+
+  | Competing conditions | Required result, assuming earlier stages pass |
+  | <-- | <-- |
+  | Unsupported profile and invalid numerical text | [$ unsupported_profile] |
+  | Valid policy; invalid left and right numerical text | [$ invalid_operand] for the left operand |
+  | Valid descriptors; unsupported operand domain and an otherwise incompatible pair | [$ unsupported_domain] |
+  | Valid finite-number operand and valid string operand under the baseline | [$ incompatible_comparison] |
+  | Valid declared-order policy; same undeclared symbol in both operands | [$ undeclared_symbol] for the left operand |
+  | Request breaches a configured admission limit and also names an unsupported profile | [$ resource_limit] at admission |
+
+  These are fixture requirements and examples, not published vectors. Tests must also confirm that each failure returns no comparison value.
+
+  ### 14.4 Working profile identities [# operations-comparison-8]
+
+  Use new semantic identifiers because the symbolic result contract and Boolean/symbol ordering extend historical SANSA behaviour:
+
+  | Identifier | Role |
+  | <-- | <-- |
+  | [$ aeonic.operations.comparison.baseline.v1] | Full four-domain baseline and its default selections. |
+  | [$ aeonic.operations.string.codepoint.v1] | Case-sensitive Unicode scalar comparison without normalization. Reusable for strings and symbol payloads. |
+  | [$ aeonic.operations.symbol.declared-order.v1] | Strict unique-rank symbol declaration contract; separately claimable. |
+
+  These are proposed identifiers, not registrations or released specifications. Existing [$ aeon.value.*] identifiers and released CTS targets keep their existing meanings. A custom profile identifier must resolve to an immutable versioned definition under the same operation contract; it cannot silently change result types or discard the required metadata.
+
+  The baseline defaults to exact finite-number comparison, [$ false < true], codepoint string comparison, and independently configured codepoint symbol comparison. The declared-order profile is selected through a symbol policy; it does not require a different outer baseline profile.
+
+  ### 14.5 Configuration and declarations [# operations-comparison-9]
+
+  The logical request has [$ operation] and [$ input]. [$ input] contains required [$ left] and [$ right] descriptors and optional [$ context] and [$ policy] objects. [$ context] is the supplied reusable comparison context; [$ policy] contains per-operation overrides. Native APIs may hold reusable context objects or handles, but their fixture adapter must expose equivalent declarative settings.
+
+  | Object | Allowed fields |
+  | <-- | <-- |
+  | [$ input.context] | [$ profile], [$ strings], [$ symbols], [$ declarations] |
+  | [$ input.policy] | [$ profile], [$ strings], [$ symbols] |
+  | [$ strings] | Required [$ profile]: a nonempty versioned profile identifier. |
+  | String-based [$ symbols] | [$ mode: "string-profile"], required [$ profile]. |
+  | Declared-order [$ symbols] | [$ mode: "declared-order"], required [$ declaration]. |
+  | Inline [$ declaration] | Required [$ order]: an array of typed symbol descriptors. |
+  | Referenced [$ declaration] | Required [$ reference]: an object with nonempty string [$ id] and [$ version]. |
+  | Entry in [$ context.declarations] | Nonempty string [$ id], nonempty string [$ version], and typed-symbol [$ order] array. |
+
+  An inline declaration and a reference are mutually exclusive. All these configuration objects are closed to unknown fields; unknown fields, malformed settings, or a configuration using both declaration forms yield [$ invalid_policy]. Rejection of unknown configuration fields was agreed on 2026-11-09. An order is nonempty, contains only valid typed symbols, and has unique decoded payloads. Empty orders and duplicate decoded entries are [$ invalid_policy]. Rejection of empty declarations was agreed on 2026-11-09; it applies equally to inline orders and named registry entries.
+
+  Named declarations are resolved only from the supplied context's declaration registry in this initial contract. The pair [$ (id, version)] identifies one immutable order; duplicate pairs in a registry are invalid even if their bodies agree. Match identifiers and version strings exactly, without locale rules, case folding, or normalization. A missing selected reference yields [$ unsupported_profile]. No implicit filesystem, process-global registry, network lookup, or document-datatype inference is required. Applications may prepare contexts through their own explicitly configured services before invoking the operation.
+
+  Resolution precedence is per setting:
+
+  1. Select the outer profile from [$ policy.profile], then [$ context.profile], then the baseline default.
+  2. Select [$ strings] from [$ policy.strings], then [$ context.strings], then the selected profile's default.
+  3. Select [$ symbols] independently from [$ policy.symbols], then [$ context.symbols], then the selected profile's default.
+
+  Each [$ strings] or [$ symbols] selection is replaced as a whole; do not deep-merge an old declared-order configuration into a new string-profile mode. Declared-order mode uses exact membership and ranking; it does not also apply string collation. A change to ordinary-string settings does not implicitly change symbol settings. Multiple conflicting settings in one selection are invalid, while a valid higher-precedence replacement is an intentional override.
+
+  Example named temperature declaration and independent ordinary-string settings:
+
+  ~~~$ json
+  {
+    "operation": "compare",
+    "input": {
+      "left": { "category": "symbol", "value": "low" },
+      "right": { "category": "symbol", "value": "high" },
+      "context": {
+        "profile": "aeonic.operations.comparison.baseline.v1",
+        "strings": { "profile": "aeonic.operations.string.codepoint.v1" },
+        "declarations": [
+          {
+            "id": "app.temperature",
+            "version": "1",
+            "order": [
+              { "category": "symbol", "value": "low" },
+              { "category": "symbol", "value": "high" }
+            ]
+          },
+          {
+            "id": "app.speed",
+            "version": "1",
+            "order": [
+              { "category": "symbol", "value": "slow" },
+              { "category": "symbol", "value": "fast" }
+            ]
+          }
+        ]
+      },
+      "policy": {
+        "symbols": {
+          "mode": "declared-order",
+          "declaration": {
+            "reference": { "id": "app.temperature", "version": "1" }
+          }
+        }
+      }
+    }
+  }
+  ~~~$ 
+
+  The same context can be reused with [$ app.speed] selected in another operation. Inline use replaces the [$ reference] object with an [$ order] array; no registry entry is needed. Neither declaration authorizes a symbol/string coercion.
+
+  ### 14.6 Effective policy metadata [# operations-comparison-10]
+
+  Every successful result has exactly [$ outcome], [$ value], and [$ metadata] at the operation-result level. [$ outcome] is [$ "value"]; [$ value] is a typed symbol from the selected primitive's vocabulary. [$ metadata.effectivePolicy] contains:
+
+  - [$ profile]: the resolved outer profile identifier.
+  - [$ domain]: the admitted operand category shared by both operands.
+  - [$ comparison]: [$ "exact-numeric"], [$ "boolean"], [$ "string-profile"], or [$ "declared-order"], as applicable.
+  - [$ strings]: the resolved ordinary-string selection.
+  - [$ symbols]: the resolved symbol selection, independently from [$ strings].
+
+  For string-profile symbols, metadata contains their profile identifier. For declared-order symbols, metadata contains [$ mode: "declared-order"], the semantic profile identifier [$ aeonic.operations.symbol.declared-order.v1], and the complete resolved typed-symbol [$ order]. If selected by reference, it also includes [$ reference: {"id": "...", "version": "..."}]. Thus an inline order can be reproduced and a named order can be audited without access to the caller's original registry. Complete selected-order metadata was agreed on 2026-11-09. An identifier or hash alone cannot replace the resolved order; sharing immutable objects internally is permitted.
+
+  Only the selected symbol declaration appears in effective metadata, not every unused registry entry. Complete settings are reported even when the current numeric/Boolean comparison does not use string/symbol comparison. These are validated configuration settings, not a claim that unused settings affected the outcome. Host-language metadata may share immutable structures instead of copying them, provided its observable contents satisfy the contract.
+
+  A diagnostic result has required [$ outcome: "diagnostic"], [$ reason], and [$ context], with optional human-readable [$ message]. It has no [$ value]. Proposed diagnostic context has integer [$ stage] (1–7) and [$ path] (an operation-request-local JSON Pointer, or null if a precise path is unavailable). For example:
+
+  ~~~$ json
+  {
+    "outcome": "diagnostic",
+    "reason": "invalid_operand",
+    "context": { "stage": 4, "path": "/input/left/value" },
+    "message": "Finite numerical text is invalid."
+  }
+  ~~~$ 
+
+  The operation-local stage and JSON Pointer do not redefine the existing CTS transport's diagnostic [$ phase], source [$ span], or canonical AEON document paths. The aeonic-operations lane binding specifies their separate mapping. A malformed CTS transport envelope remains a harness/protocol failure; an invalid logical operation request inside a valid fixture envelope is diagnosed by this operation contract. The transport's [$ ok] Boolean is protocol status, not a comparison result value.
+
+  ### 14.7 Operand grammar and deferred families [# operations-comparison-11]
+
+  The four admitted descriptors have exactly [$ category] and [$ value]. [$ finiteNumber.value] is a nonempty ASCII numerical string matching:
+
+  ~~~$ text
+  ^[+-]?(?:(?:0|[1-9][0-9]*)(?:\.[0-9]+)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?$
+  ~~~$ 
+
+  Require a full-string match; a regex engine's allowance for matching just before a final newline must not admit trailing whitespace. This accepts integer, decimal, exponent, leading-dot, and signed-zero forms already supported by the existing exact comparator. It excludes surrounding whitespace, underscores, trailing decimal points, redundant integer leading zeroes, NaN, and infinity. A source adapter handles AEON lexical normalization before this logical boundary; normalized exact text is not obtained through a host float. Exponents are compared exactly without expanding a huge power of ten into a dense number. A resource limit is reported separately from invalid text.
+
+  [$ string.value] and [$ symbol.value] are decoded sequences of Unicode scalar values: reject unpaired UTF-16 surrogate code units or equivalent invalid Unicode representations. Strings may be empty; symbolic payloads must be nonempty. No whitespace trimming, case folding, or Unicode normalization occurs at this boundary. [$ boolean.value] is a JSON Boolean; strings such as [$ "false"] and numbers such as [$ 0] are not Boolean descriptors.
+
+  For negative domain-support fixtures, recognize the existing logical category tags [$ positiveInfinity], [$ negativeInfinity], [$ nan], [$ explicitNull], [$ explicitAbsence], [$ toggle], [$ hex], [$ radix], [$ encoding], [$ separator], [$ sansaAddress], [$ referenceForm], [$ temporal], and [$ container] as deferred families. At stage 4 their descriptors require a nonempty recognized [$ category] and an object shape; family-specific payload fields remain opaque. Stage 5 reports [$ unsupported_domain] without parsing or claiming validity of their deferred lexical/structural payloads. This validates a family-tagged transport descriptor, not a claim that arbitrary opaque payload bytes are valid AEON. Tests of their actual value semantics remain outside this surface. An unknown/misspelled category or non-object descriptor is [$ invalid_operand]. This roster defines the first working support boundary.
+
+  ### 14.8 Staged validation and static capacities [# operations-comparison-12]
+
+  The agreed stages in this working comparison contract are retained. The following supplies a proposed fixed traversal within them:
+
+  1. **Admission:** check configured request-byte and structural-depth limits before inspecting semantic fields. These guards must not inspect numerical grammar or resolve a profile.
+  2. **Envelope/dispatch:** require an object request, a nonempty string [$ operation], an object [$ input], and present [$ left]/[$ right] fields, in that order. Reject unknown top-level/input fields in deterministic Unicode-scalar key order. Do not inspect descriptor payloads yet. Then check operation availability; only [$ equal] and [$ compare] are defined by this draft.
+  3. **Policy shape:** inspect [$ context], then [$ policy]; within either use [$ profile], [$ strings], [$ symbols], [$ declarations] in that order where allowed. Check object field names before their contents, array entries by index, and declaration fields as [$ id], [$ version], [$ order] (or [$ reference.id], [$ reference.version] for references). Reject duplicate declaration identities/symbols at their first repeated entry. Unknown keys are inspected in Unicode-scalar order, not host-map iteration order. All supplied shapes and inline/registry order definitions must be valid, including definitions later overridden. Shape/local-definition errors produce [$ invalid_policy].
+  4. **Effective policy resolution, still stage 3:** apply the precedence in this working comparison contract, then resolve the selected outer profile, ordinary-string profile, and symbol profile/declaration, in that order. Validate the selected definitions in the same order. Availability checks concern effective selections only: a well-formed but unavailable context profile superseded by an operation override is not resolved merely to generate an error. Definitions are supplied data, not executable callbacks or implicit external lookups.
+  5. **Operands, stage 4:** validate the left descriptor completely before the right; within a descriptor check [$ category], field names, payload type, then payload content. Apply the deferred-family boundary in this working comparison contract.
+  6. **Domains, stage 5:** check left domain support, then right, then pair compatibility. All four admitted families remain separate domains; no symbol/string or Boolean/number equivalence is inferred.
+  7. **Membership, stage 6:** if declared ordering applies, look up the left payload, then the right payload. Missing membership is [$ undeclared_symbol] even for an equality request over two matching undeclared payloads.
+  8. **Execution, stage 7:** perform the selected comparison and construct the typed-symbol result and complete effective-policy metadata.
+
+  Resource limits are trusted runtime/harness configuration, outside the operation's semantic [$ policy] object. Report supported deterministic budgets in implementation capability documentation/metadata. Static counters are request UTF-8 bytes, structural depth, numerical characters, decoded string/symbol scalars, declaration count, and entries per declaration. Their agreed capacity floors and counting boundaries are recorded below. Declared limits do not excuse failure on mandatory positive vectors inside an advertised baseline claim.
+
+  Algorithm-specific execution budgets are optional documented implementation capabilities outside the first snapshot's mandatory cross-runtime resource vectors. The first snapshot does not prescribe a universal work unit, algorithm, or hardware-dependent deadline. An implementation may enforce an explicitly configured deterministic budget and report [$ resource_limit] at stage 7, but must document that metric and must not claim its units are portable merely because the error category is shared. Such a budget cannot excuse failing required baseline cases in the implementation's claimed conformance configuration. Mandatory resource vectors exercise the portable static size/count guards, not arbitrary algorithm-specific execution counters. Defining shared execution metrics is deferred and is not a blocker for the initial comparison snapshot.
+
+  The agreed admission support floors are **4 MiB (4,194,304 bytes) of UTF-8 logical-request JSON** and **32 nested object/array levels**. Count only the encoded logical operation request, excluding the outer CTS transport envelope. Count its actual supplied bytes, including JSON escaping and whitespace; do not compact, re-encode, or normalize the text before deciding whether its submitted representation exceeds the byte budget. Byte-boundary fixtures must therefore supply exact logical JSON text rather than rely on a host serializer to reproduce a particular byte count. This is a JSON-ingress/adapter requirement; native APIs need not serialize every internal operation to JSON.
+
+  For depth, the root object is level 1. Each contained object or array adds one level; primitive leaves do not add a container level, and braces/brackets occurring inside a string do not count. A 32-level request must reach the appropriate later semantic stage; it need not produce a comparison value if its contents are invalid or belong to a deferred domain. A request exceeding a configured 32-level limit yields [$ resource_limit] at admission. Request-byte boundary vectors must likewise distinguish exactly 4,194,304 submitted bytes from one byte beyond a configured limit. These floors are minimum support capacities; implementations may advertise larger capacities, and explicitly configured smaller budgets remain permitted for restricted invocations.
+
+  The agreed numerical support floor is **65,536 characters per finite-number operand**, including the sign, decimal point, exponent marker, and exponent sign/digits where present. The admitted numerical grammar is ASCII, so numerical character count has no code-unit ambiguity. Both operands must be supported simultaneously at that length in a baseline-capable configuration, with other configured budgets sufficient for the request. This is a minimum capacity, not a universal maximum: implementations may support and advertise larger operands.
+
+  Deliberately restricted harness/application budgets may be smaller when explicitly configured; the existing small-limit negative examples test enforcement under those restrictions, not an implementation's maximum baseline capacity. Mandatory capacity vectors must run with adequate budgets. They must include two full-length coefficients, equivalence between a full-length integer and a short exponent spelling, and full-length exponent text without dense expansion. An additional limit-exceeded vector must set a known deterministic budget and exceed it; rejection solely for exceeding that budget is [$ resource_limit], not invalid numerical grammar.
+
+  The agreed string and symbol support floors are **65,536 decoded Unicode scalar values per operand** in each domain, with two operands supported simultaneously when the other configured budgets are adequate. These are minimum capacities, not universal maxima. Count decoded scalar values, not UTF-8 bytes, UTF-16 code units, or grapheme clusters. A valid supplementary-plane scalar counts once even when a host stores it as two UTF-16 code units. Unpaired surrogates remain invalid operands, not additional scalar values. Existing empty-string/nonempty-symbol rules remain unchanged.
+
+  String/symbol boundary vectors must include full-length equality, a difference at the final scalar, and a supplementary-plane versus BMP ordering difference that would expose an incorrect UTF-16 comparison. Explicitly restricted budgets must also test acceptance at the scalar boundary and [$ resource_limit] one scalar beyond it. A separate encoded-request budget must be adequate when exercising these decoded-value capacities.
+
+  For the separately claimable declared-order capability, the agreed minimum capacities are **1,024 unique symbols per declaration** and **64 named declarations per reusable context**. Inline and named declarations follow the same per-order capacity. These are support floors, not universal maxima. Total request size, per-symbol scalar capacity, and configured execution budgets remain separate constraints; individual capacity figures do not promise an unlimited product of all maxima.
+
+  Declared-order boundary requirements include an inline order of 1,024 symbols, selection of the final declaration in a 64-entry registry, and a combined registry of 64 orders with 1,024 short symbols each. Known-limit negative vectors must exceed the selected per-order or registry count by one and yield [$ resource_limit] in stage 3 before deeper inspection of that array. Adequate other budgets are required for capacity vectors. These requirements apply to a declared-order claim, not to a baseline-only implementation claiming no declared-order support.
+
+  Request bytes/depth are admission guards. Domain-specific guards are checked only when their stage reaches the relevant item: declaration counts in stage 3, operand text lengths in stage 4, and deterministic execution counters in stage 7. A reached resource limit yields [$ resource_limit] at that stage before deeper inspection of the same item. Do not pre-scan later operand payloads to let a later text limit mask an earlier profile error or malformed left operand. Conversely, an oversized request stopped at admission need not be parsed to discover any other fault. No wall-clock timing, allocation-failure accident, or host integer overflow selects the normative diagnostic.
+
+  This traversal and the accompanying schema define the proposal-stage working comparison contract. Operation results are closed, deferred-family payloads remain opaque, and the strict logical JSON binding rejects duplicate members. Algorithm-specific execution metrics remain outside this first mandatory surface. An unavailable effective declared-order comparator yields [$ unsupported_profile] at stage 3 with the selected symbols mode path; malformed local definitions precede that availability check, and a valid overridden comparator is not resolved.
+
+
+  +++document/modules
+  dependencies = {
+    graph = "org.aeonite.gp.graph.v1"
+  }
+  +++
+`

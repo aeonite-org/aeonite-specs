@@ -1,0 +1,629 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aeonic-operations:comparison-contract:v1:snapshot-0.1",
+  "title": "Aeonic Operations comparison v1 snapshot 0.1",
+  "description": "Frozen comparison shapes aligned with aeonic-operations-specs-v1-snapshot-0.1. Proposal lifecycle is preserved. Staged rules belong to the accompanying frozen specification source.",
+  "$ref": "#/$defs/request",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*(?![\\s\\S])",
+      "minLength": 1
+    },
+    "scalarString": {
+      "type": "string",
+      "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*(?![\\s\\S])"
+    },
+    "finiteNumber": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "finiteNumber"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[+-]?(?:(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "string": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/scalarString"
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "boolean": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "boolean"
+        },
+        "value": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "symbol": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "symbol"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*(?![\\s\\S])",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "deferredOperand": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "enum": [
+            "positiveInfinity",
+            "negativeInfinity",
+            "nan",
+            "explicitNull",
+            "explicitAbsence",
+            "toggle",
+            "hex",
+            "radix",
+            "encoding",
+            "separator",
+            "sansaAddress",
+            "referenceForm",
+            "temporal",
+            "container"
+          ]
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "additionalProperties": true
+    },
+    "operand": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/finiteNumber"
+        },
+        {
+          "$ref": "#/$defs/string"
+        },
+        {
+          "$ref": "#/$defs/boolean"
+        },
+        {
+          "$ref": "#/$defs/symbol"
+        },
+        {
+          "$ref": "#/$defs/deferredOperand"
+        }
+      ]
+    },
+    "order": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/symbol"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "reference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/identifier"
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "declaration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "order": {
+              "$ref": "#/$defs/order"
+            }
+          },
+          "required": [
+            "order"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "reference": {
+              "$ref": "#/$defs/reference"
+            }
+          },
+          "required": [
+            "reference"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "declarationRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/identifier"
+        },
+        "order": {
+          "$ref": "#/$defs/order"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "order"
+      ],
+      "additionalProperties": false
+    },
+    "stringSelection": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "$ref": "#/$defs/identifier"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "symbolSelection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "string-profile"
+            },
+            "profile": {
+              "$ref": "#/$defs/identifier"
+            }
+          },
+          "required": [
+            "mode",
+            "profile"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "declared-order"
+            },
+            "declaration": {
+              "$ref": "#/$defs/declaration"
+            }
+          },
+          "required": [
+            "mode",
+            "declaration"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "$ref": "#/$defs/identifier"
+        },
+        "strings": {
+          "$ref": "#/$defs/stringSelection"
+        },
+        "symbols": {
+          "$ref": "#/$defs/symbolSelection"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "$ref": "#/$defs/identifier"
+        },
+        "strings": {
+          "$ref": "#/$defs/stringSelection"
+        },
+        "symbols": {
+          "$ref": "#/$defs/symbolSelection"
+        },
+        "declarations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/declarationRecord"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "enum": [
+            "equal",
+            "compare"
+          ]
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/operand"
+            },
+            "right": {
+              "$ref": "#/$defs/operand"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/policy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "effectiveSymbols": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "string-profile"
+            },
+            "profile": {
+              "$ref": "#/$defs/identifier"
+            }
+          },
+          "required": [
+            "mode",
+            "profile"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "declared-order"
+            },
+            "profile": {
+              "const": "aeonic.operations.symbol.declared-order.v1"
+            },
+            "order": {
+              "$ref": "#/$defs/order"
+            },
+            "reference": {
+              "$ref": "#/$defs/reference"
+            }
+          },
+          "required": [
+            "mode",
+            "profile",
+            "order"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "effectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "$ref": "#/$defs/identifier"
+        },
+        "domain": {
+          "enum": [
+            "finiteNumber",
+            "string",
+            "boolean",
+            "symbol"
+          ]
+        },
+        "comparison": {
+          "enum": [
+            "exact-numeric",
+            "boolean",
+            "string-profile",
+            "declared-order"
+          ]
+        },
+        "strings": {
+          "$ref": "#/$defs/stringSelection"
+        },
+        "symbols": {
+          "$ref": "#/$defs/effectiveSymbols"
+        }
+      },
+      "required": [
+        "profile",
+        "domain",
+        "comparison",
+        "strings",
+        "symbols"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "domain": {
+                "const": "finiteNumber"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "comparison": {
+                "const": "exact-numeric"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "domain": {
+                "const": "boolean"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "comparison": {
+                "const": "boolean"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "domain": {
+                "const": "string"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "comparison": {
+                "const": "string-profile"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "domain": {
+                "const": "symbol"
+              },
+              "symbols": {
+                "properties": {
+                  "mode": {
+                    "const": "string-profile"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "comparison": {
+                "const": "string-profile"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "domain": {
+                "const": "symbol"
+              },
+              "symbols": {
+                "properties": {
+                  "mode": {
+                    "const": "declared-order"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "comparison": {
+                "const": "declared-order"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "comparisonResult": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "symbol"
+        },
+        "value": {
+          "enum": [
+            "equal",
+            "notEqual",
+            "less",
+            "greater"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "success": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/comparisonResult"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "effectivePolicy": {
+              "$ref": "#/$defs/effectivePolicy"
+            }
+          },
+          "required": [
+            "effectivePolicy"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "diagnosticContext": {
+      "type": "object",
+      "properties": {
+        "stage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~0|~1)*)*(?![\\s\\S])",
+              "allOf": [
+                {
+                  "$ref": "#/$defs/scalarString"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "stage",
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "diagnostic"
+        },
+        "reason": {
+          "enum": [
+            "invalid_operand",
+            "unsupported_domain",
+            "incompatible_comparison",
+            "unsupported_operation",
+            "unsupported_profile",
+            "invalid_policy",
+            "undeclared_symbol",
+            "resource_limit"
+          ]
+        },
+        "context": {
+          "$ref": "#/$defs/diagnosticContext"
+        },
+        "message": {
+          "$ref": "#/$defs/scalarString"
+        }
+      },
+      "required": [
+        "outcome",
+        "reason",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "result": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/success"
+        },
+        {
+          "$ref": "#/$defs/diagnostic"
+        }
+      ]
+    }
+  }
+}
