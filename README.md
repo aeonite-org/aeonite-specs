@@ -76,3 +76,15 @@ website checks run in the consuming publication build.
 This repository uses artifact-specific licenses. Normative specifications and appendices use
 `CC-BY-4.0`, conventions and reusable examples use `CC0-1.0`, and repository maintenance scripts use
 `MIT`, unless an AEON envelope or file declares otherwise. See `LICENSE.md` and `LICENSES/`.
+
+
+## Exact arithmetic snapshot 0.1
+
+`resources/aeonic-operations/v1/snapshots/0.1/aeonic-arithmetic-v1.aeon`
+and its `arithmetic-contract.schema.json` freeze
+`aeonic-arithmetic-specs-v1-snapshot-0.1`. They cover exact addition,
+subtraction, multiplication, chaining, history and explicit materialization.
+The parallel CTS target is `aeonic-arithmetic-cts-v1-snapshot-0.1`.
+Snapshot source/schema bytes are immutable; working source and schema retain
+separate paths for future changes. The proposal remains unpublished and
+comparison snapshots retain their existing scope.

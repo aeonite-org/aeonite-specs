@@ -1,0 +1,483 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aeonic-operations:arithmetic-contract:v1:snapshot-0.1",
+  "title": "Aeonic exact arithmetic v1 snapshot 0.1",
+  "description": "Frozen shapes aligned with aeonic-arithmetic-specs-v1-snapshot-0.1. Proposal lifecycle remains unchanged; staged semantics and capacity rules belong to the accompanying frozen source.",
+  "$ref": "#/$defs/request",
+  "$defs": {
+    "context": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*(?![\\s\\S])",
+          "minLength": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*(?![\\s\\S])",
+          "minLength": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "materialPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*(?![\\s\\S])",
+          "minLength": 1
+        },
+        "family": {
+          "enum": [
+            "integer",
+            "decimal",
+            "exponent"
+          ]
+        },
+        "zeroSign": {
+          "enum": [
+            "positive",
+            "negative"
+          ]
+        }
+      },
+      "required": [
+        "family"
+      ],
+      "additionalProperties": false
+    },
+    "finiteNumber": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "finiteNumber"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[+-]?(?:(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "exactNumber": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "category": {
+              "const": "exactNumber"
+            },
+            "coefficient": {
+              "const": "0"
+            },
+            "exponent": {
+              "const": "0"
+            }
+          },
+          "required": [
+            "category",
+            "coefficient",
+            "exponent"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "category": {
+              "const": "exactNumber"
+            },
+            "coefficient": {
+              "type": "string",
+              "pattern": "^-?[1-9](?:[0-9]*[1-9])?(?![\\s\\S])"
+            },
+            "exponent": {
+              "type": "string",
+              "pattern": "^(?:0|-?[1-9][0-9]*)(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "category",
+            "coefficient",
+            "exponent"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "history": {
+      "enum": [
+        "none-declared",
+        "approximation-declared"
+      ]
+    },
+    "operand": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "number": {
+              "$ref": "#/$defs/finiteNumber"
+            },
+            "history": {
+              "enum": [
+                "none-declared",
+                "approximation-declared"
+              ]
+            }
+          },
+          "required": [
+            "number"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "number": {
+              "$ref": "#/$defs/exactNumber"
+            },
+            "history": {
+              "enum": [
+                "none-declared",
+                "approximation-declared"
+              ]
+            }
+          },
+          "required": [
+            "number",
+            "history"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "enum": [
+                    "string",
+                    "boolean",
+                    "symbol",
+                    "positiveInfinity",
+                    "negativeInfinity",
+                    "nan",
+                    "explicitNull",
+                    "explicitAbsence",
+                    "toggle",
+                    "hex",
+                    "radix",
+                    "encoding",
+                    "separator",
+                    "sansaAddress",
+                    "referenceForm",
+                    "temporal",
+                    "container"
+                  ]
+                }
+              },
+              "required": [
+                "category"
+              ],
+              "additionalProperties": true
+            },
+            "history": {
+              "enum": [
+                "none-declared",
+                "approximation-declared"
+              ]
+            }
+          },
+          "required": [
+            "number"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "request": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "enum": [
+                "add",
+                "subtract",
+                "multiply"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "left": {
+                  "$ref": "#/$defs/operand"
+                },
+                "right": {
+                  "$ref": "#/$defs/operand"
+                },
+                "context": {
+                  "$ref": "#/$defs/context"
+                },
+                "policy": {
+                  "$ref": "#/$defs/policy"
+                }
+              },
+              "required": [
+                "left",
+                "right"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "operation",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "materialize"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "$ref": "#/$defs/operand"
+                },
+                "context": {
+                  "$ref": "#/$defs/context"
+                },
+                "policy": {
+                  "$ref": "#/$defs/materialPolicy"
+                }
+              },
+              "required": [
+                "value",
+                "policy"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "operation",
+            "input"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "diagnostic"
+        },
+        "reason": {
+          "enum": [
+            "resource_limit",
+            "invalid_operand",
+            "unsupported_operation",
+            "invalid_policy",
+            "unsupported_profile",
+            "unsupported_domain",
+            "unrepresentable_result"
+          ]
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "stage": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
+            },
+            "path": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*(?![\\s\\S])"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "stage",
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        "message": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "outcome",
+        "reason",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "outcome": {
+              "const": "value"
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "$ref": "#/$defs/exactNumber"
+                },
+                "history": {
+                  "enum": [
+                    "none-declared",
+                    "approximation-declared"
+                  ]
+                }
+              },
+              "required": [
+                "number",
+                "history"
+              ],
+              "additionalProperties": false
+            },
+            "metadata": {
+              "type": "object",
+              "properties": {
+                "evaluation": {
+                  "const": "exact-for-operands"
+                },
+                "effectivePolicy": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "const": "aeonic.operations.arithmetic.exact.v1"
+                    }
+                  },
+                  "required": [
+                    "profile"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "evaluation",
+                "effectivePolicy"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "outcome",
+            "value",
+            "metadata"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "outcome": {
+              "const": "value"
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "$ref": "#/$defs/finiteNumber"
+                },
+                "history": {
+                  "enum": [
+                    "none-declared",
+                    "approximation-declared"
+                  ]
+                }
+              },
+              "required": [
+                "number",
+                "history"
+              ],
+              "additionalProperties": false
+            },
+            "metadata": {
+              "type": "object",
+              "properties": {
+                "evaluation": {
+                  "const": "exact-for-operands"
+                },
+                "effectivePolicy": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "const": "aeonic.operations.arithmetic.exact.v1"
+                    },
+                    "family": {
+                      "enum": [
+                        "integer",
+                        "decimal",
+                        "exponent"
+                      ]
+                    },
+                    "zeroSign": {
+                      "enum": [
+                        "positive",
+                        "negative"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "family",
+                    "zeroSign"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "evaluation",
+                "effectivePolicy"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "outcome",
+            "value",
+            "metadata"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "$ref": "#/$defs/diagnostic"
+        }
+      ]
+    }
+  }
+}
