@@ -3,7 +3,7 @@ id:string = "aeonic-arithmetic-v1"
 title:string = "Aeonic Exact Arithmetic v1 Working Contract"
 description:string = "Exact finite-Number addition, subtraction, multiplication, chaining, history preservation and explicit materialization."
 created:date = 2026-11-11
-modified:date = 2026-11-11
+modified:date = 2026-11-12
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
@@ -260,7 +260,18 @@ body:prose = >`
   Logical JSON rejects duplicate member names at every depth and non-JSON numeric
   constants. Native adapters must reject cycles, guard depth before recursive
   serialization and avoid exponential traversal of shared acyclic subgraphs.
-  Machine-dependent timeout is a harness failure, not a portable diagnostic.
+  The portable stage ordering above applies to logical JSON requests, including
+  malformed requests expressible as JSON. Native graphs containing cycles are
+  outside that representation. A native adapter must fail closed: it reports
+  [$ invalid_operand] for a detected cycle, or [$ resource_limit] if a byte/depth
+  guard is reached first. No cross-adapter traversal order or tie-break is claimed
+  for competing failures in such non-JSON graphs. Finite acyclic shared graphs
+  remain subject to per-path depth and, at structured JSON ingress, expanded JSON
+  byte limits; a completed shallow visit cannot waive a deeper path's guard.
+  Passing the logical CTS does not establish native graph hardening or any bound
+  on host getters, proxies or user-defined iterators. Those require separate
+  implementation evidence. Machine-dependent timeout is a harness failure, not a
+  portable diagnostic.
 
   ## 7. Resource model [# 7-resource-model]
 
@@ -333,5 +344,15 @@ body:prose = >`
   The separate aeonic-arithmetic working CTS lane owns executable operation,
   chaining, law and generated-boundary cases. A passing mutable target is
   development evidence, not a frozen compatibility claim.
+
+  A named snapshot must pin its own source, schema, binding and suite bytes.
+  Its complete trusted resource-limit map is supplied explicitly for each CTS
+  invocation; individual boundary cases may select documented companion limits.
+  This configuration is part of the claim, not an inference about native defaults
+  or every Cartesian combination of maxima. All four operations, both operand
+  kinds and the history/materialization rules remain required; a capacity setting
+  cannot be presented as a semantic opt-out. Native-adapter checks and optional
+  implementation work budgets must be reported separately. A passing snapshot
+  does not publish this proposal or release an implementation package.
 
 `
