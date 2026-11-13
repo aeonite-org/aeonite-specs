@@ -237,8 +237,37 @@ body:prose = >`
   Escape JSON Pointer tokens normally; if a pointer cannot be represented as a
   Unicode-scalar string, use null. Diagnostic message text is not normative.
 
-  For supported payloads first check all required text types in listed order.
-  Then check summed numeric-character allowance at the first payload field. Check
+  For authored [$ finiteNumber.value], after descriptor shape checks, use this
+  separate stage-4 sequence. Every failure below uses the operand's
+  [$ /input/left/number/value], [$ /input/right/number/value] or
+  [$ /input/value/number/value] path, according to its position:
+
+  1. Require text, otherwise [$ invalid_operand].
+  2. Check the complete supplied text length against [$ maxNumericCharacters],
+     including sign, point and exponent syntax; excess is [$ resource_limit].
+  3. Validate the complete authored-number grammar from section 1; malformed text
+     is [$ invalid_operand], before inspecting numerical exponent magnitude.
+  4. Check the original authored exponent's absolute magnitude against
+     [$ maxExponentMagnitude], treating an omitted exponent as zero. Ignore only
+     exponent leading zeros for this magnitude comparison; do not convert an
+     arbitrarily long exponent to a host integer. Excess is [$ resource_limit],
+     even when the coefficient denotes zero.
+  5. Determine the exact canonical coefficient/exponent pair without expanding
+     decimal powers. Remove insignificant leading/trailing coefficient zeros and
+     account for fractional digits in the normalized exponent. Mathematical zero
+     becomes [$ (0,0)]. Check normalized coefficient digits first, then normalized
+     exponent magnitude; either excess is [$ resource_limit]. Zero counts as one
+     coefficient digit. Admit the normalized coefficient before converting it to
+     an integer representation for calculation.
+
+  Thus [$ 1.0] fits a coefficient allowance of one digit, while [$ 0e100] fails an
+  authored-exponent allowance of two despite normalizing to zero. Authored [$ 1000]
+  has one normalized coefficient digit but normalized exponent three, checked
+  separately after its original omitted exponent zero. The text-length guard
+  still applies to every authored character, including insignificant zeros.
+
+  For derived payloads first check all required text types in listed order.
+  Then check summed numeric-character allowance at the coefficient field. Check
   coefficient magnitude-text length (excluding one initial minus), then coefficient
   grammar. Check exponent grammar, then absolute magnitude without unbounded host
   conversion. For rational denominator check its text-length guard, then positive
