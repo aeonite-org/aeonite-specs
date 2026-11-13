@@ -3,7 +3,7 @@ id:string = "aeon-v1-value-semantics"
 title:string = "Proposal: Shared AEON Value Semantics"
 description:string = "Architectural proposal for shared deterministic value behavior across AEON, AEOS, SANSA, Tonics, and future ecosystem components."
 created:date = 2026-07-21
-modified:date = 2026-09-30
+modified:date = 2026-11-08
 family:string = "aeon"
 group:string = "Proposals"
 standing:string = "official"
@@ -546,7 +546,7 @@ body:prose = >`
   A-Z a-z 0-9 - _ =
   ~~~$
 
-  This is a lexical transport alphabet. It is not a radix alphabet, and it is not a guarantee that the payload has been decoded, interpreted, or validated as bytes by Core.
+  This is a lexical transport alphabet, not a radix alphabet. The explicit reserved [$ :base64] datatype additionally requires decodable Base64URL spelling with valid padding and zero unused tail bits, as specified in the value-types reference. This validity constraint does not decode or materialize bytes, and opaque [$ encoding], [$ inline], and [$ embed] claims do not acquire that constraint.
 
   Examples:
 
@@ -572,14 +572,14 @@ body:prose = >`
 
   A profile may define richer behavior, such as:
 
-  - Base64URL decode validity;
+  - an explicit Base64URL decode-validity constraint for an otherwise opaque encoding label;
   - byte equality after decoding;
   - MIME or media-type interpretation;
   - embedded AEON or text decoding;
   - hash or digest comparison;
   - ordering by payload length, decoded byte length, decoded text, media content, or domain-specific metadata.
 
-  Those meanings require an explicit profile. A consumer must not treat [$ base64] as [$ radix\\[64\\]], must not apply generic string collation as byte ordering, and must not assume that [$ encoding], [$ embed], or [$ inline] always means Base64 data with a particular media type.
+  Those richer meanings require an explicit profile. The reserved [$ :base64] literal-validity constraint alone does not establish any of them. A consumer must not treat [$ base64] as [$ radix\\[64\\]], must not apply generic string collation as byte ordering, and must not assume that [$ encoding], [$ embed], or [$ inline] always means Base64 data with a particular media type.
 
   ### 6.10 Separator Semantics [# separator-semantics]
 

@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-compliance"
 title:string = "AEON Core v1 Compliance Specification"
 description:string = "Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules."
 created:date = 2026-03-25
-modified:date = 2026-09-30
+modified:date = 2026-11-08
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -219,7 +219,9 @@ body:prose = >`
   9. accept [$ encoding]-family payloads ([$ encoding], [$ base64], [$ embed], [$ inline]) only in Base64URL alphabet form ([$ A-Za-z0-9-_]) with optional trailing [$ =] padding;
   10. reject standard base64 alphabet characters [$ +] and [$ /] in [$ encoding]-family payloads;
   11. canonicalize [$ encoding]-family payloads by preserving accepted Base64URL spelling, including trailing [$ =] padding and rendering the [$ &] prefix;
-  12. continue to treat lexical acceptance as distinct from downstream base-specific radix or base64 semantic validity.
+  12. enforce decodable Base64URL spelling for an [$ EncodingLiteral] with an explicit reserved [$ :base64] claim, including attributes and explicitly typed anonymous values: nonempty data, valid final quantum and padding width, and zero unused tail bits. Reject invalid claims with [$ DATATYPE_LITERAL_MISMATCH];
+  13. retain opaque lexical validation for [$ encoding], [$ inline], [$ embed], and custom datatype labels; the reserved [$ :base64] rule does not implicitly decode or validate those aliases as Base64;
+  14. continue to treat the reserved [$ :base64] validity check as distinct from decoded-byte materialization, equality, ordering, media semantics, or text interpretation. Base-specific radix semantics and richer encoding meanings remain profile- or consumer-defined.
 
   ## 9. Separator-Literal Requirements [# separator-literal-requirements]
 

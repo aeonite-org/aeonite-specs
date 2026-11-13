@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-value-types"
 title:string = "AEON v1 Value Types Reference"
 description:string = "Reference for AEON value kinds, reserved datatype names, literal families, container forms, and reference-bearing values."
 created:date = 2026-03-25
-modified:date = 2026-09-30
+modified:date = 2026-11-08
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -729,8 +729,12 @@ body:prose = >`
   - encoding/base64 payload accepts the Base64URL alphabet ([$ A-Za-z0-9-_]) with optional trailing [$ =] padding;
   - standard base64 alphabet characters [$ +] and [$ /] are invalid in AEON encoding/base64 payloads;
   - canonical encoding/base64 rendering preserves the accepted Base64URL payload spelling, including trailing [$ =] padding;
-  - lexical acceptance is not encoding-family validity;
-  - [$ encoding] does not always mean decoded Base64 data. Core preserves an encoded lexical payload; decoding, byte identity, media type, and text interpretation belong to profiles, schemas, or consumers;
+  - lexical acceptance is not sufficient for the reserved [$ base64] datatype: when an [$ EncodingLiteral] carries an explicit [$ :base64] claim, Core MUST validate decodable Base64URL spelling;
+  - reserved [$ :base64] requires a nonempty data payload, data length not congruent to one modulo four, at most two trailing padding characters, padding width consistent with the final data quantum, and zero unused tail bits. Padded total length MUST be a multiple of four. Unpadded spellings remain valid when these data-length and tail-bit rules hold;
+  - reserved [$ :base64] claims apply equally to named bindings, attributes, and explicitly typed anonymous values in lists, tuples, and node children. Invalid literal claims report [$ DATATYPE_LITERAL_MISMATCH];
+  - these checks do not apply to opaque [$ encoding], [$ inline], or [$ embed] claims, nor to custom datatype labels. Their existing lexical payload rules remain independent;
+  - this validity check preserves accepted payload spelling and does not materialize decoded bytes, normalize padding, or assign decoded-byte equality or ordering;
+  - [$ encoding] does not always mean decoded Base64 data. Core preserves an encoded lexical payload. Apart from the reserved [$ :base64] validity check above, decoding, byte identity, media type, and text interpretation belong to profiles, schemas, or consumers;
   - [$ aeon.gp.profile.v1] allows [$ encoding], [$ inline], and [$ embed] to carry exactly one string clarifier as an encoding-name claim, for example [$ encoding\\["base58"\\]];
   - [$ base64] is an encoding-family compatibility label, not a radix-family label. [$ base64] is not equivalent to [$ radix\\[64\\]];
   - [$ embed] and [$ inline] are reserved compatibility labels over the same [$ EncodingLiteral] family; Core does not assign media, resource-loading, or inline-expansion behavior to them;
