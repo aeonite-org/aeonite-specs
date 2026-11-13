@@ -88,3 +88,15 @@ The parallel CTS target is `aeonic-arithmetic-cts-v1-snapshot-0.1`.
 Snapshot source/schema bytes are immutable; working source and schema retain
 separate paths for future changes. The proposal remains unpublished and
 comparison snapshots retain their existing scope.
+
+## Rational arithmetic working draft
+
+`sources/aes/v1/aeonic-rational-arithmetic-v1.aeon` and
+`resources/aeonic-operations/v1/rational-arithmetic-contract.schema.json` define
+the separate, explicitly selected `aeonic.operations.arithmetic.rational.v1`
+proposal. It covers exact rational chaining, seven explicit grid-rounding modes,
+history, deterministic diagnostics and portable workspace admission. Its CTS
+lane is `aeonic-rational-arithmetic`; the working target remains mutable.
+Publication is disabled. Existing finite/comparison snapshots and defaults retain
+their contracts. No implementation conformance or capacity is established by
+this draft; independent-runtime calibration is required before a snapshot.

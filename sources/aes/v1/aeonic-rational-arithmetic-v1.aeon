@@ -1,0 +1,406 @@
+schemaVersion:string = "1"
+id:string = "aeonic-rational-arithmetic-v1"
+title:string = "Aeonic Rational Arithmetic v1 Working Contract"
+description:string = "Exact rational chaining, explicit decimal-grid quantization, portable admission and fail-closed Number materialization."
+created:date = 2026-11-13
+modified:date = 2026-11-13
+family:string = "aes"
+group:string = "Semantic Language"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v1/proposals/aeonic-rational-arithmetic"
+order:number = 42
+publish:boolean = false
+keywords:list<string> = ["AEON", "arithmetic", "rational", "quantization", "rounding", "proposal"]
+related:list<string> = ["aeonic-arithmetic-v1", "aeonic-semantic-language-v1", "aeon-core-v1-value-types"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Aeonic Rational Arithmetic v1 Working Contract [# aeonic-rational-arithmetic-v1]
+
+  Status: normative proposal-stage working contract, 2026-11-13. Publication is
+  disabled. The separate extended profile is [$ aeonic.operations.arithmetic.rational.v1].
+  It must be explicitly selected through context or operation policy. The existing
+  finite profile/default and immutable comparison/arithmetic snapshots are unchanged.
+  This document introduces no AEON fraction literal, syntax extension or release.
+
+  The [@ /artifacts/assets/aeonic-operations/v1/rational-arithmetic-contract.schema.json | rational arithmetic schema]
+  describes closed shapes. Arithmetic coprimality, staged errors and resource rules
+  below are additional normative requirements that JSON Schema cannot fully express.
+
+  ## 1. Domain and portable values [# 1-domain]
+
+  Required binary operations are [$ add], [$ subtract], [$ multiply], [$ divide].
+  Required unary operations are [$ quantize] and [$ materialize]. Every pairing of
+  supported finite and derived operands is required. All calculation is exact for
+  the supplied numerical operands; only explicit quantization changes a value by
+  rounding. No host float, implicit coercion, NaN, infinity, aggregate, radix or
+  temporal operation is introduced. One mathematical zero has no arithmetic sign.
+
+  Requests contain exactly [$ operation] and [$ input]. Binary inputs require
+  [$ left], then [$ right], and permit [$ context], [$ policy]. Unary inputs require
+  [$ value] and permit [$ context], [$ policy]; their policy is required at stage 3.
+  Operand bundles contain [$ number] and optional or required [$ history] as below.
+  Request, input, supported descriptor, bundle, context, policy, metadata and result
+  objects are closed. Error messages and CTS transport extensions are the only
+  separately specified extensibility here. Applications may explicitly capture a
+  diagnostic elsewhere; this contract never automatically turns an error into a value.
+
+  Authored [$ finiteNumber] has exactly [$ category], [$ value]. Value is ASCII
+  numerical text: optional sign; integer without leading zeros, optionally followed
+  by a decimal point and one or more digits, or a leading point and digits; optional
+  [$ e] or [$ E], optional exponent sign, and exponent digits. Examples are [$ 1],
+  [$ 1.0], [$ 1e0], [$ .5], [$ -0]. Underscores are removed by a source adapter before
+  this boundary, retaining original spelling separately. Native numbers are not text.
+  Input representation distinctions are not mathematical distinctions.
+
+  Derived [$ exactNumber] has [$ category], [$ coefficient], [$ exponent] and denotes
+  [$ coefficient * 10^exponent]. Both integer fields are text. A nonzero coefficient
+  has an optional minus sign, no plus sign, no leading zeros and no trailing zero.
+  Exponent is [$ 0] or a signed-negative/unsigned-positive nonzero decimal integer,
+  without leading zeros or plus sign. Zero is exactly coefficient [$ 0], exponent [$ 0].
+
+  Derived [$ exactRational] additionally has [$ denominator] and denotes
+  [$ coefficient * 10^exponent / denominator]. Coefficient is nonzero and follows
+  the same rules. Denominator is unsigned positive decimal text, greater than one,
+  without leading zeros, and relatively prime to ten. Coefficient and denominator
+  are relatively prime. These conditions select exactly one triple per non-terminating
+  rational value. For example, one sixth is coefficient [$ 5], exponent [$ -1],
+  denominator [$ 3]. A finite decimal or zero uses [$ exactNumber], never a rational
+  descriptor with denominator one or zero coefficient. Incoming derived descriptors
+  must already be canonical: no silent admission normalization.
+
+  Results whose exact value has a finite decimal expansion use [$ exactNumber].
+  Other calculated results use [$ exactRational]. Normalization changes no value,
+  chooses no Number output family, preserves history, and is subject to resource
+  admission. Implementations may use different private representations.
+
+  Recognized deferred categories are [$ string], [$ boolean], [$ symbol],
+  [$ positiveInfinity], [$ negativeInfinity], [$ nan], [$ explicitNull], [$ explicitAbsence],
+  [$ toggle], [$ hex], [$ radix], [$ encoding], [$ separator], [$ sansaAddress],
+  [$ referenceForm], [$ temporal], [$ container]. Their descriptor payload is opaque
+  beyond category. Their containing bundle/history remains validated. Unknown
+  categories are malformed, not optional capabilities. All three supported kinds
+  are compatible. Comparison support is independent and is not extended implicitly.
+
+  ## 2. History, results and exactness [# 2-history]
+
+  History has exactly [$ none-declared] and [$ approximation-declared]. It is optional
+  for authored/deferred values, defaulting to [$ none-declared], and required for
+  both derived kinds. Every success includes it. The marker is a declaration,
+  not an error bound, provenance log, correlation model or accuracy certificate.
+  Authored spelling never implies history. No declaration is a claim of no history.
+
+  Binary arithmetic unions the two markers: any declared approximation propagates.
+  Cancellation, multiplication by zero and later exact calculations never clear it.
+  Quantization that changes a value sets [$ approximation-declared]; unchanged
+  quantization and exact materialization preserve history. Bare Number export loses
+  history unless the application explicitly maps it. No document annotation is added.
+
+  Success contains exactly [$ outcome: "value"], [$ value], [$ metadata]. Value is a
+  number/history bundle. Arithmetic/quantization produces a derived descriptor;
+  materialization produces a [$ finiteNumber] descriptor. The actual returned bundle
+  can feed a subsequent operation, without materializing, changing history or adding
+  metadata fields to the operand bundle. Metadata has [$ evaluation], [$ effectivePolicy].
+  Evaluation is [$ exact-for-operands] except value-changing quantization, which is
+  [$ rounded-for-operands]. Thus one third rounded to [$ 0.33] is rounded, but its later
+  multiplication by three is exact [$ 0.99] with declared approximation still present.
+
+  ## 3. Explicit policies [# 3-policies]
+
+  Context permits only optional nonempty Unicode-scalar [$ profile]. Binary policy
+  permits only the same field. Quantization policy additionally requires [$ increment],
+  then [$ rounding]. Increment is a positive canonical [$ exactNumber] descriptor:
+  it has no history of its own and defines exact grid spacing. Authored text,
+  zero/negative values, noncanonical pairs and rational increments are invalid policy.
+  Rounding is one of the seven names in section 4, with no default or aliases.
+  Materialization policy requires [$ family] in [$ integer], [$ decimal], [$ exponent],
+  and permits [$ zeroSign] in [$ positive], [$ negative], default [$ positive]. It does
+  not permit rounding/increment; quantization does not permit family/zeroSign.
+
+  Validate all supplied context/policy shapes and field values before resolving
+  availability of the effective profile. Policy profile overrides context profile.
+  Only the effective valid profile is resolved; malformed overridden configuration
+  still fails. With neither selection the effective identifier is the existing
+  [$ aeonic.operations.arithmetic.exact.v1], not the extended identifier.
+
+  The separate rational capability evaluates only its explicitly selected profile.
+  Other effective identifiers yield [$ unsupported_profile]. An integrating facade
+  dispatches the existing finite profile/default to the existing finite contract;
+  it must preserve that contract's validation/diagnostics and claim separately.
+  This lane does not reinterpret old requests under a widened default. A facade
+  must not try a second profile after a failed evaluation. No implicit locale,
+  environment, file, network, database, callback or policy lookup is performed.
+
+  Effective policy metadata always includes the extended profile. Quantization
+  includes the actual canonical increment and rounding name. Materialization includes
+  the selected family and effective zeroSign. Binary metadata has no other fields.
+
+  ## 4. Exact quantization [# 4-quantization]
+
+  The grid is all integer multiples of positive finite decimal increment [$ h],
+  with origin zero. Significant-digit rounding, nonzero offsets, fixed output scale
+  and spelling preservation are deferred. Let [$ u = abs(x) / h = n + r], with
+  nonnegative integer [$ n] and [$ 0 <= r < 1]. Choose nonnegative multiplier [$ k],
+  restore the sign of [$ x], and multiply by [$ h]. All comparisons are exact.
+
+  - On-grid [$ r = 0]: every mode selects [$ n].
+  - [$ toward-zero]: select [$ n]. [$ away-from-zero]: select [$ n + 1] off-grid.
+  - [$ floor]: off-grid, select [$ n] for positive input, [$ n + 1] for negative.
+  - [$ ceiling]: off-grid, select [$ n + 1] for positive input, [$ n] for negative.
+  - The three nearest modes select [$ n] for [$ 2r < 1], [$ n + 1] for [$ 2r > 1].
+    At a tie, [$ half-even] selects the even multiplier, [$ half-away-from-zero]
+    selects [$ n + 1], and [$ half-toward-zero] selects [$ n].
+
+  At increment [$ 0.1], [$ -1.25] becomes [$ -1.2], [$ -1.3], [$ -1.2] under the three
+  nearest tie modes respectively. Half-even maps [$ -1.35] to [$ -1.4]. At increment
+  [$ 0.05], half-even maps [$ 0.125] to [$ 0.10], and [$ 0.175] to [$ 0.20]: parity
+  concerns the grid multiplier, not an input's last digit. Every result is finite
+  decimal and uses a normalized derived pair, not an already materialized Number.
+  Rounding to zero produces mathematical zero, never an inherited negative zero.
+
+  For fixed increment/mode, quantization is monotone and idempotent in value.
+  Nearest error is at most half an increment; directed off-grid error is less than
+  an increment. Floor/ceiling bracket the input. The nearest modes, toward-zero
+  and away-from-zero respect sign symmetry; floor/ceiling are sign duals. History
+  remains declared after re-quantization. These are semantic laws, not sorting APIs.
+
+  ## 5. Exact materialization [# 5-materialization]
+
+  Materialization is separate and never rounds. A rational descriptor cannot
+  materialize as any finite Number family: return [$ unrepresentable_result] with
+  no value. The original rational bundle remains usable by the application.
+  For a canonical finite nonzero pair [$ (c, e)], let [$ a] be absolute coefficient
+  text and [$ s] its sign. Render as follows after representability/length checks:
+
+  - [$ integer]: require [$ e >= 0], otherwise [$ unrepresentable_result]. Append
+    [$ e] zeros to [$ a] and restore sign.
+  - [$ decimal]: for [$ e >= 0], append [$ e] zeros and [$ .0]. Otherwise put the
+    point at position [$ len(a) + e], adding a leading [$ 0.] and fractional zeros
+    where needed. Never emit exponent notation or redundant trailing zeros.
+  - [$ exponent]: emit one leading coefficient digit and remaining digits after
+    a point if present, then [$ e] and exponent [$ e + len(a) - 1] in canonical
+    integer text. A one-digit coefficient has no point.
+
+  Zero renders [$ 0], [$ 0.0], [$ 0e0] respectively. Explicit negative zeroSign
+  prefixes minus on these zero renderings only. Nonzero signs never change.
+  Destination schema admission is separate from exact rendering; this contract
+  does not invent bounded integer storage or silently coerce a rejected Number.
+
+  ## 6. Deterministic validation [# 6-validation]
+
+  Fail at the first failed stage/substep. A diagnostic has exactly [$ outcome],
+  [$ reason], [$ context], with optional scalar [$ message]. Context has [$ stage]
+  and operation-local JSON Pointer [$ path], or null. No diagnostic has a value,
+  partial result, warning success, automatic null or fallback profile.
+
+  1. Request UTF-8 byte/depth guards precede deeper processing: [$ resource_limit],
+     null path. Root container depth is one; logical JSON text uses its actual bytes.
+  2. Strict JSON decoding, duplicate keys at every depth, request/input shapes,
+     required operation/input and generic input vocabulary; then operation
+     availability in this six-operation capability; then known-operation arity.
+     Use [$ invalid_operand] or [$ unsupported_operation]. Generic input vocabulary
+     is left, right, value, context, policy. A nonempty unknown operation precedes
+     known-operation arity; unary policy is checked at stage 3, not arity.
+     Operation names must be nonempty Unicode-scalar strings; malformed names
+     are [$ invalid_operand] at [$ /operation].
+  3. Context shape, policy shape/required fields, configuration values, then effective
+     profile availability. Use [$ invalid_policy] or [$ unsupported_profile]. Validate
+     context profile, policy profile, increment, rounding (or family, zeroSign) in
+     that order. A reached numeric guard on increment is [$ resource_limit] at this
+     stage. An absent explicit profile is unsupported here, with null profile path.
+  4. Validate bundles/recognized categories/history and descriptors, left before
+     right, or unary value. Required number/category and bundle fields precede history.
+     Derived history is mandatory. Descriptor required/unknown fields precede payload
+     values. Payload order is value for authored; coefficient, exponent for exact;
+     coefficient, exponent, denominator for rational. Errors are [$ invalid_operand],
+     or [$ resource_limit] for reached numeric guards. Deferred payload stays opaque.
+  5. Recognized deferred domains fail [$ unsupported_domain], in operand order at
+     their number/category path. A malformed right supported operand at stage 4
+     precedes an unsupported left domain at stage 5.
+  6. Division by mathematical zero is [$ division_by_zero] at [$ /input/right/number],
+     before workspace. This applies to both [$ 0 / 0] and nonzero divided by zero,
+     including authored negative zero. Next run the fixed workspace recipe, exact
+     evaluation and canonical normalization. Check final coefficient, exponent,
+     denominator limits in that order; resource failures here have null path.
+     Materialization skips arithmetic evaluation and uses already admitted operands.
+  7. Materialization checks representability, then emitted text-length allowance,
+     then renders. [$ unrepresentable_result] precedes output [$ resource_limit];
+     both have null path. No output-size guard substitutes for a pre-render check.
+
+  Within each closed object check required fields in listed order before unknown
+  fields. Unknown fields use decoded Unicode-scalar order, not host map order.
+  Escape JSON Pointer tokens normally; if a pointer cannot be represented as a
+  Unicode-scalar string, use null. Diagnostic message text is not normative.
+
+  For supported payloads first check all required text types in listed order.
+  Then check summed numeric-character allowance at the first payload field. Check
+  coefficient magnitude-text length (excluding one initial minus), then coefficient
+  grammar. Check exponent grammar, then absolute magnitude without unbounded host
+  conversion. For rational denominator check its text-length guard, then positive
+  integer grammar, greater-than-one/no-two-or-five rule, then coprimality. Its last
+  checks use the denominator path. Exact zero's nonzero exponent is an exponent-path
+  error. These rules also apply to policy increment, using [$ invalid_policy] for
+  invalid shapes/grammar/canonicality; a nonpositive increment fails coefficient.
+  A wrong increment category fails its category path. Byte/numeric guards precede
+  any expensive numerical conversion they protect.
+
+  Examples: missing quantization mode precedes unsupported profile; invalid increment
+  precedes malformed value; malformed left operand precedes a zero right divisor;
+  valid zero divisor precedes insufficient arithmetic workspace; rational Number
+  materialization fails representability even with zero rendering allowance.
+
+  The portable contract is logical JSON. Native cycles fail closed with a detected
+  [$ invalid_operand], or a reached admission [$ resource_limit] first. No cross-host
+  traversal precedence is claimed for non-JSON cyclic graphs. Finite acyclic aliases
+  remain subject to expanded structured-JSON bytes and per-path depth. Logical CTS
+  does not establish bounded native getters/proxies, graph traversal or iterators.
+  Native hardening needs separate evidence. Crashes/timeouts are harness failures.
+
+  ## 7. Trusted limits [# 7-limits]
+
+  Trusted host/adapter limits are outside the logical request. Invalid settings
+  are harness/API failures, not operation diagnostics. Reject non-objects, null,
+  unknown fields, Booleans and non-integer/negative values. The JSON binding admits
+  exact integers through [$ 9007199254740991]. Omitted settings use configured defaults;
+  every CTS execution supplies a complete explicit map. No native defaults or
+  advertised capacities are standardized by this working contract.
+
+  - [$ maxRequestBytes]: UTF-8 logical JSON bytes, excluding the CTS envelope.
+  - [$ maxRequestDepth]: nested container levels, root level one.
+  - [$ maxNumericCharacters]: per operand or policy increment, authored value text
+    or sum of supplied coefficient/exponent/denominator text lengths, including signs.
+  - [$ maxCoefficientDigits]: decoded operand, increment and normalized result
+    coefficient digits excluding minus. Zero counts as one.
+  - [$ maxExponentMagnitude]: absolute authored exponent (even for zero), decoded
+    normalized operand/increment exponent and normalized result exponent.
+  - [$ maxDenominatorDigits]: admitted rational operand and normalized rational
+    result denominator digits. Finite descriptors do not have synthetic denominators.
+  - [$ maxWorkspaceDigits]: per-operation deterministic expanded-width admission
+    from section 8; not total live memory, GCD iterations or elapsed time.
+  - [$ maxOutputCharacters]: emitted Number literal text, including signs/point/
+    exponent, excluding bundle/metadata. Derived results do not consume this allowance.
+
+  Limits apply per operation; applications manage chain budgets. Final compactness
+  does not waive required work guards. Positive CTS limits are explicit test settings,
+  not promised Cartesian products of maxima or native support floors. Additional
+  implementation execution budgets may be advertised separately and must not change
+  the shared digit counts, silently round, omit required operations, or establish
+  semantic conformance just by rejecting work. Positive cases require adequate declared
+  execution allowances; execution-budget rejections are tested separately.
+
+  ## 8. Portable workspace recipe [# 8-workspace]
+
+  Let [$ L] be maxWorkspaceDigits. A required width [$ W] is admitted exactly when
+  [$ W <= L]. For a nonzero operand write [$ (c, e, d)], with positive absolute
+  coefficient [$ c], and [$ d = 1] for finite values. Signs are separate. [$ D(n)] is
+  positive integer decimal digit count, including [$ D(1) = 1]. These conservative
+  bounds need not equal actual private allocations. A product bound counts
+  [$ D(a) + D(b)] even when a factor is one.
+
+  After all input/domain checks, named shortcuts are addition/subtraction with zero,
+  exact additive cancellation, multiplication by zero, zero numerator after division's
+  zero-divisor check, and quantization of zero. They need no expanded workspace;
+  final result/history rules still apply. Other identities do not waive admission.
+  Bounded-factor GCD, factor extraction and input validation work on admitted integers
+  before product guards. The width limit does not promise a generic GCD work bound.
+
+  Multiplication requires cross-cancellation before its estimate:
+
+  ~~~$ text
+  g1 = gcd(cL, dR); g2 = gcd(cR, dL)
+  A = cL/g1; B = cR/g2; C = dL/g2; D = dR/g1
+  W = max(digits(A)+digits(B), digits(C)+digits(D))
+  ~~~$
+
+  Guard before forming numerator [$ A*B] and denominator [$ C*D]. They are relatively
+  prime and denominator has no factors two/five. Strip numerator trailing zeros
+  into exponent [$ eL+eR]. Final limits apply afterward. Thus [$ (1/999)*999] has
+  required width two, not an uncancelled width four and not an identity width zero.
+
+  Division checks zero first, then requires:
+
+  ~~~$ text
+  g1 = gcd(cL, cR); g2 = gcd(dR, dL)
+  A = cL/g1; B = dR/g2; C = cR/g1; D = dL/g2
+  a = v2(C); b = v5(C); C0 = C / (2^a * 5^b); t = max(a,b)
+  P2(k) = floor(302*k/1000)+1; P5(k) = floor(699*k/1000)+1
+  F = (P2(t-a) if t>a else 0) + (P5(t-b) if t>b else 0)
+  W = max(digits(A)+digits(B)+F, digits(C0)+digits(D))
+  ~~~$
+
+  Here [$ v2], [$ v5] count exact factors; canonical [$ C] cannot have both. Guard
+  before powers/products. Form numerator [$ A*B*2^(t-a)*5^(t-b)], denominator
+  [$ C0*D], exponent [$ eL-eR-t], restoring sign. It is canonical. The power bounds
+  are integer-only consequences of [$ 2^1000 < 10^302] and [$ 5^1000 < 10^699].
+  For example, required widths are five for [$ 1/8], three for [$ 1/6], two for
+  [$ 1e1000000/3]. The coefficients/results remain exact even with conservative bounds.
+
+  Addition/subtraction requires least-common-denominator reduction first:
+
+  ~~~$ text
+  g = gcd(dL,dR); sL = dR/g; sR = dL/g; m = min(eL,eR)
+  XL = digits(cL)+digits(sL)+eL-m
+  XR = digits(cR)+digits(sR)+eR-m
+  W = max(max(XL,XR)+1, digits(dL)+digits(sL))
+  ~~~$
+
+  Guard before products or exponent alignment. With operand signs [$ sigmaL],
+  [$ sigmaR], form numerator
+  [$ sigmaL*cL*sL*10^(eL-m) +/- sigmaR*cR*sR*10^(eR-m)], where the middle sign
+  selects addition/subtraction; denominator is [$ dL*sL], exponent [$ m].
+  Reduce and strip numerator trailing zeros. The extra digit reserves carry.
+  [$ 1/999+2/999] has required width four, not the full-product estimate six.
+
+  Quantization retains the same [$ L] throughout all reached phases:
+
+  1. Form the compact exact internal ratio [$ abs(x)/h] with the division recipe.
+     Its intermediates are not separately returned results: final coefficient,
+     exponent and denominator limits do not apply to them as a separate operation.
+     The operation's workspace guards do. Let its canonical triple be [$ (cQ,eQ,dQ)].
+  2. Required on-grid shortcut: [$ dQ=1] and [$ eQ>=0] implies an integer ratio.
+     Return the original normalized value, unchanged history and exact evaluation,
+     without expanding an integer multiplier. Configuration/result checks still apply.
+  3. Compare the ratio with one without decimal expansion. For positive scaled
+     integers, compare adjusted digit counts [$ digits(a)+ea] and [$ digits(b)+eb].
+     If equal, compare coefficient digits with virtual trailing zeros through only
+     the longer coefficient text. Do not allocate exponent-proportional padding.
+  4. Required sub-unit shortcut for [$ 0<abs(x)/h<1]: guard width
+     [$ max(digits(cQ)+1,digits(dQ))] before doubling the coefficient. Compare
+     [$ 2*cQ*10^eQ] with [$ dQ] using that virtual rule. Select multiplier zero/one
+     with mode/sign, return zero or signed increment, and mark rounded/history.
+     This comparison width is already covered by the finite-increment ratio bound.
+  5. Otherwise guard [$ max(digits(cQ)+max(eQ,0),digits(dQ)+max(-eQ,0))] before
+     expanding numerator [$ N] or denominator [$ D] by the corresponding power ten.
+     Compute [$ n,r=divmod(N,D)]. For nearest modes compare [$ r] with [$ D-r], not
+     an unnecessarily expanded doubled remainder. Select multiplier [$ k<=N].
+  6. For nonzero [$ k], guard [$ digits(k)+digits(increment.coefficient)] before
+     the grid product. Zero needs no grid-product expansion. Restore sign, normalize
+     and apply final result/history/metadata rules. No independent budget reset occurs.
+
+  All configured limits apply where reached. A transient internal ratio exponent is
+  not a normalized output exponent and is controlled by the relevant work checks.
+  Required compact shortcuts admit huge authored decimal powers without expanding
+  them solely to recover an unchanged value, zero or one increment. They do not
+  promise every small final result has small required workspace.
+
+  ## 9. Working conformance boundary [# 9-conformance]
+
+  The full six-operation profile is one semantic capability, not optional per-operation
+  flags. Separate CTS binding, suites and runner exercise authored/derived pairings,
+  actual-result chains, all rounding modes/signs/ties, canonical descriptors, policy
+  composition, staged diagnostics and resource boundary companions. A declared
+  capacity cannot masquerade as excluding rational operands or an operation.
+
+  The mutable working target cannot establish immutable/stable conformance. Source,
+  schema, binding, suites and shared runner dependencies are content-pinned and
+  rechecked after execution. Artifact-only validation runs no SUT and must not be
+  reported as a semantic pass. Before any snapshot, calibrate explicit positive
+  settings on independent implementations and retain exact revisions and limits.
+  Existing finite/comparison claims need their own unchanged frozen regressions.
+  No package publication or implementation capacity is implied by this proposal.
+`
