@@ -1,0 +1,78 @@
+schemaVersion:string = "1"
+id:string = "sansa-v1-child-identity-selectors"
+title:string = "SANSA Child Identity Selectors v1 Candidate"
+description:string = "Proposal-stage direct-child identity selection and bounded read-only resolution contract."
+created:date = 2026-11-08
+modified:date = 2026-11-08
+family:string = "sansa"
+group:string = "SANSA"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/sansa/v1/proposals/child-identity-selectors"
+order:number = 135
+publish:boolean = false
+keywords:list<string> = ["SANSA", "identity", "selectors", "resolve", "proposal"]
+related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "aeon-core-v1-structure-syntax"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # SANSA Child Identity Selectors v1 Candidate [# child-identity-selectors]
+
+  This proposal adds a non-exact child selector to Addressing and an opt-in namespace capability to Resolve. It does not modify an already claimed specification or CTS snapshot. Publication is disabled while the candidate is evaluated.
+
+  ## 1. Syntax and structural identity [# syntax]
+
+  A child identity segment is a dot followed by an AEON structural identity marker: [$ .\\\\id\\\\]. Its name uses the existing StructuralIdentityName definition in AEON Structure Syntax v1: one or more ASCII letters, digits, underscores or hyphens. A digit may be first. There is no escaping, quoted alternative, normalization, wildcard interpretation or case folding.
+
+  Empty, unterminated or invalid names are parse failures. Chaining applies successive direct-child steps. A quoted member containing backslashes remains a member name. No new address root or recursive operator is introduced.
+
+  The expression-model variant is childIdentity with an identity string. Rendering preserves this selector rather than replacing it with a position. Any expression containing this selector is non-exact, regardless of observed cardinality or an untrusted AST's claimed isExact value. Selected bindings retain their actual canonical structural paths.
+
+  ## 2. Namespace support and preflight [# support]
+
+  An adapter must explicitly expose structural identity inspection. In JavaScript the optional namespace accessor is identity(binding) returning a string or undefined. Accessor presence advertises support; undefined denotes a supported occurrence without identity. Binding identity fields, handles, paths and metadata must not be guessed as capability declarations. Equivalent native interfaces must distinguish unsupported capability from absent per-occurrence identity.
+
+  Resolve preflights every childIdentity step before traversal, even when an earlier step would yield an empty Binding Set. The first such step fails with SANSA_RESOLVE_UNSUPPORTED_IDENTITY if the accessor is absent. Resolve does not enumerate children or inspect identities during this preflight. Existing root and contextual-root validity checks precede capability preflight.
+
+  Valid string and pre-parsed input have equivalent semantics. Validate root, selector payloads and identity alphabet before namespace access. Reject malformed identity AST input with SANSA_RESOLVE_INVALID_ADDRESS. Do not trust canonical text or isExact fields as authority. This proposal does not require unrelated legacy AST variants to acquire new semantics.
+
+  ## 3. Direct-child evaluation [# evaluation]
+
+  Process input branches in existing Binding Set order. For each parent, examine only its exposed direct children in namespace order. No match contributes no result. One match returns the original binding. Two distinct matching child occurrences fail the entire resolution with SANSA_RESOLVE_AMBIGUOUS_IDENTITY and no partial bindings. Scan to completion to establish uniqueness; do not return the first match early.
+
+  Repeated parent visits through separate branches retain existing multiplicity. An adapter must not enumerate the same child occurrence twice as separate children. AEON document-wide identity uniqueness is not assumed for composed SANSA namespaces. No global identity index or uniqueness guarantee is admitted by this candidate.
+
+  The scope root is not its own child. Attributes and local spaces require explicit transitions. Node occurrences follow existing exposed topology; no node-head flattening is introduced. Moving an occurrence out of its parent makes the former expression miss. Deletion and identity reuse do not imply occurrence continuity.
+
+  An identity accessor result other than string or undefined, or a string outside StructuralIdentityName, fails with SANSA_RESOLVE_INVALID_IDENTITY. Host callback exceptions follow the existing host error boundary; the core must not reinterpret them as misses.
+
+  ## 4. Work limits [# work-limits]
+
+  maxIdentityInspections is a non-negative safe integer in JavaScript, defaulting to 10000 per Resolve call. Native profiles must support the default and zero; native numeric bounds must be explicit rather than silently truncating. Reject invalid configured values with SANSA_RESOLVE_INVALID_IDENTITY_LIMIT before namespace access, including expressions without identity steps. Zero disables inspection, not parsing or capability support.
+
+  Share one counter across all identity steps and branches in a call. One inspection examines one exposed child candidate, including a child without identity. Repeated visits charge again. Charge before calling the identity accessor. If N inspections are allowed, fail before inspecting candidate N+1 with SANSA_RESOLVE_IDENTITY_LIMIT_EXCEEDED. Include limit, observed=N+1 and selectorIndex. Finishing enumeration at N succeeds; empty enumeration under zero succeeds. No partial Binding Set is returned on exhaustion.
+
+  Identity enumeration must consume iterable children incrementally. Materializing the entire iterable before budget enforcement does not satisfy this contract. Fetching the next iterator item can incur host work; logical candidate inspection limits do not bound that work, CPU, allocation, I/O or wall time. Iterator cleanup must follow the host language's normal early-exit semantics. Indexed lookup is outside this candidate.
+
+  Validate maxBindings using existing rules. Complete a parent's ambiguity scan before appending its unique match and applying the binding-retention bound. If the inspection budget expires first, report it; if a second match is encountered first, report ambiguity. Diagnostic ordering follows traversal order and fails immediately at the first established failure.
+
+  Unsupported and ambiguity diagnostics include selectorIndex and identity. Invalid metadata includes selectorIndex; do not expose unrelated binding contents in diagnostics. Misses remain successful empty results.
+
+  The default 10000 is an initial finite candidate ceiling, not a latency promise. Evaluate representative wide successful, unsuccessful, ambiguous and repeated-branch workloads before release; a changed default requires a new candidate fixture/contract revision.
+
+  ## 5. Admission and compatibility [# admission]
+
+  This candidate initially admits standalone Addressing and read-only Resolve only. Query, address activation, AEOS selectors, Instruction, Mutate and SO require consumer-specific admission and authorization evidence. Parser acceptance must not implicitly activate them. Existing exact-path profiles, AEOS path values, canonical event/storage paths and clone/pointer references remain closed to childIdentity. Explicit identity inspection never grants broader namespace authorization.
+
+  Preserve existing stage-one structural-path compatibility, target-preservation and performance gates. Reference implementations are Rust, TypeScript/JavaScript and Python. PHP and Go are independent implementation tracks. An intermediate official release is not a prerequisite for evaluation; a combined release requires explicit advertised-surface coverage.
+
+  ## 6. Diagnostics and candidate ownership [# diagnostics]
+
+  Parser diagnostics are SANSA_EXPECTED_IDENTITY for an empty or malformed name and SANSA_UNTERMINATED_IDENTITY for end of input before its closing marker. The parser index identifies the invalid code unit, or end of input for an unfinished marker. JavaScript indexes retain existing UTF-16 code-unit conventions; native spans retain their host conventions.
+
+  Resolve diagnostic names and option/accessor spellings above are the candidate cross-runtime semantic contract. Diagnostic messages are informative. Existing SANSA.Addressing and SANSA.Resolve capability families remain the owners; no new published registry identifier or implementation version is allocated here. The CTS development lane must be explicitly experimental and excluded from default released claims until promoted with versioned manifests.
+`
