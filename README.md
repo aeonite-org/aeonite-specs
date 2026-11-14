@@ -61,7 +61,7 @@ Before committing, run:
 bash ./scripts/pre-commit-check.sh
 ```
 
-This checks portable paths, the 91-document source inventory, required envelope declarations,
+This checks portable paths, the 95-document source inventory, required envelope declarations,
 identifier uniqueness, date ordering, related-document IDs, publication links and anchors, referenced
 publication assets, and the contract-resource bundle. Full AEON and &ND parsing, projection tests, and
 website checks run in the consuming publication build.
@@ -100,3 +100,14 @@ lane is `aeonic-rational-arithmetic`; the working target remains mutable.
 Publication is disabled. Existing finite/comparison snapshots and defaults retain
 their contracts. No implementation conformance or capacity is established by
 this draft; independent-runtime calibration is required before a snapshot.
+
+## Deferred value semantics guidance
+
+The informative, unpublished proposals
+[`aeonic-value-types-risk-analysis-v1.aeon`](sources/aes/v1/aeonic-value-types-risk-analysis-v1.aeon)
+and [`aeonic-deferred-value-guidance-v1.aeon`](sources/aes/v1/aeonic-deferred-value-guidance-v1.aeon)
+retain the exploratory value-type risk report and guidance for future operations.
+They distinguish value identity from interpretation, infinity from indeterminate
+outcomes, and explicit skip/stop processing policies from arithmetic values.
+Scores remain provisional; unresolved behavior requires a future contract.
+These documents introduce no implementation, CTS capability or snapshot changes.
