@@ -53,6 +53,17 @@ repository. The private `aeonite-website` publisher consumes a reviewed revision
 source tree and produces those artifacts for [`aeonite.org`](https://aeonite.org/). Published
 document pages provide downloadable Markdown, &ND, and original AEON-source projections.
 
+## Coordinated implementation releases
+
+The [shared AEON 0.17.0 checklist](https://github.com/AltoPelago/roadmap/blob/main/aeon/work-in-progress/release-0.17.0-checklist.md)
+uses implementation betas while work lands and RCs once declared scope is complete.
+Record exact reviewed specification revisions and any required immutable resource
+snapshots before implementation RC acceptance. Keep normative review, snapshot
+identifiers and language versions under this repository's existing authority;
+an implementation beta/RC does not publish or rename a specification snapshot.
+Retain historical snapshot bytes and distinguish proposed contracts from adopted
+ones. Run this repository's validation and consuming publisher checks for changes.
+
 ## Validation
 
 Before committing, run:
