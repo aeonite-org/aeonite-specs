@@ -72,7 +72,7 @@ Before committing, run:
 bash ./scripts/pre-commit-check.sh
 ```
 
-This checks portable paths, the 95-document source inventory, required envelope declarations,
+This checks portable paths, the 96-document source inventory, required envelope declarations,
 identifier uniqueness, date ordering, related-document IDs, publication links and anchors, referenced
 publication assets, and the contract-resource bundle. Full AEON and &ND parsing, projection tests, and
 website checks run in the consuming publication build.
@@ -121,6 +121,18 @@ parallel CTS snapshot. The six-operation profile, exact chaining, explicit
 rounding, history and fail-closed diagnostics retain the tested working semantics.
 The mutable source remains separate; lifecycle, publication and existing defaults
 are unchanged. Snapshot preparation is separate from an implementation's claim.
+
+## Civil-date temporal working contract
+
+[`aeonic-temporal-civil-date-v1.aeon`](sources/aes/v1/aeonic-temporal-civil-date-v1.aeon)
+and its [closed schema](resources/aeonic-operations/v1/civil-date-contract.schema.json)
+define the explicitly selected `aeonic.operations.temporal.civil-date.v1`
+proposal. Relations and calendar arithmetic are independently claimable complete
+capabilities sharing exact canonical date ranges, declared origin/clamping
+history, fail-closed diagnostics and portable calendar-work admission. ISO civil
+dates stay within years 0001–9999. Clock, WTC, timezone and non-ISO resolution
+remain outside this profile. The source is unpublished and mutable; no temporal
+implementation, frozen snapshot or capacity claim is established here.
 
 ## Deferred value semantics guidance
 
