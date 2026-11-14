@@ -132,3 +132,7 @@ They distinguish value identity from interpretation, infinity from indeterminate
 outcomes, and explicit skip/stop processing policies from arithmetic values.
 Scores remain provisional; unresolved behavior requires a future contract.
 These documents introduce no implementation, CTS capability or snapshot changes.
+
+## Unicode hardening regression data
+
+The [candidate regression contract and capability inventory](docs/unicode-hardening-regression-contract.md) records existing identity, casing, wildcard, UTF-16 length and search responsibilities. This implementation-test work does not promote an immutable snapshot or add a released profile/CTS claim.
