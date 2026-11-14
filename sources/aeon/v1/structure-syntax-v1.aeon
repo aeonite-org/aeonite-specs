@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-structure-syntax"
 title:string = "AEON v1 Structure Syntax Reference"
 description:string = "Reference for binding shape, keys, attributes, datatype clarifiers, newline rules, and structural grammar decisions in AEON Core v1."
 created:date = 2026-03-25
-modified:date = 2026-10-17
+modified:date = 2026-11-15
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -124,7 +124,11 @@ body:prose = >`
   - boolean and toggle literal words ([$ true], [$ false], [$ yes], [$ no], [$ on], [$ off]) are valid bare keys in key, attribute-key, tag, and path-segment contexts; they are literals only in value contexts;
   - quoted keys are required for spaces, dots-as-data, and other non-bare characters;
   - single and double quotes are both valid key delimiters;
-  - quoted keys must not be empty;
+  - quoted keys may decode to the empty string, including both single-quoted and double-quoted empty spellings;
+  - an empty-string key is an ordinary property key in document bindings, object members and attribute entries, with ordinary value, type and attribute rules;
+  - duplicate empty keys in the same containing scope are invalid, including differently quoted spellings that decode to the same empty string; separate scopes remain independent;
+  - an empty key is distinct from an absent key, a whitespace key, a document root and an anonymous structural element; it has no append semantics;
+  - node tags, structural identities, datatype names and other identifier roles retain their existing nonempty grammar;
   - backtick-quoted keys are not part of AEON Core v1 key syntax.
   - asterisk-delimited placeholder forms such as [$ *secret-key*] are reserved for preprocessors and remain invalid as Core keys or Core values until replaced before parsing.
 
@@ -235,7 +239,8 @@ body:prose = >`
   - data namespace and attribute namespace remain distinct.
   - quoted bracket member segments may follow ordinary member or attribute traversal using [$ .\\[\\\\"...\\\\"\\]].
   - quoted attribute selectors may be followed by ordinary member, quoted member, or index traversal.
-  - empty quoted member segments, empty quoted attribute selectors, and incomplete forms such as [$ ~a.@] or [$ ~$.a.@.\\[] are invalid.
+  - empty quoted member and attribute selectors select ordinary properties whose decoded key is the empty string;
+  - incomplete forms such as [$ ~a.@] or [$ ~$.a.@.\\[] are invalid.
 
   Examples:
 

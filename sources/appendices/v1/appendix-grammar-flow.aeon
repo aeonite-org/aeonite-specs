@@ -3,7 +3,7 @@ id:string = "appendix-grammar-flow-v1"
 title:string = "Appendix — Grammar Flow Cards"
 description:string = "Informative parser-context flow cards for AEON Core v1 keys, attributes, types, values, containers, references, and comments."
 created:date = 2026-05-04
-modified:date = 2026-09-30
+modified:date = 2026-11-15
 family:string = "appendices"
 group:string = "Core Appendices"
 standing:string = "official"
@@ -200,7 +200,8 @@ body:prose = >`
   - [$ $] is the explicit root;
   - dot traversal and bracket traversal address data namespace segments;
   - [$ .@.key] and [$ .@.\\["key"\\]] address attribute namespace segments;
-  - empty quoted member segments and empty quoted attribute segments are invalid.
+  - empty quoted member and attribute segments are valid ordinary property selectors;
+  - empty payloads do not remove a path segment, and malformed or incomplete delimiters remain invalid.
 
   ## 9. Comments And Trivia Flow [# comments-and-trivia-flow]
 

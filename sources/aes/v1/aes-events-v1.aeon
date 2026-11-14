@@ -3,7 +3,7 @@ id:string = "aes-events-v1"
 title:string = "Portable AES Event Contract v1"
 description:string = "Transport-neutral v1 contract for portable AES records, paths, kinds, profiles, projections, ordering, provenance, fidelity, and diagnostics."
 created:date = 2026-09-05
-modified:date = 2026-10-17
+modified:date = 2026-11-15
 family:string = "aes"
 group:string = "AES v1"
 standing:string = "official"
@@ -424,7 +424,18 @@ body:prose = >`
   ## 6. Paths and AEON projection [# 6-paths-and-aeon-projection]
   
   Portable AES paths are canonical SANSA data addresses. The document root [$ $]
-  is not itself an event.
+  is not itself an event. A quoted member or attribute payload may be the empty
+  string. An empty member is a present path segment and does not collapse to the
+  root or its parent. Empty members and attributes use ordinary parentage,
+  duplicate-address and resource-limit rules; each contributes zero decoded key
+  code points while retaining its segment and address bytes. Other names, such
+  as node tags and the required leading header-field name, retain their existing
+  validity rules.
+
+  ~~~$ text
+  $.[""]
+  $.[""].@.[""]
+  ~~~$
   
   AEON source paths address values in the source-language structure. AES event
   paths address records in the expanded flat structure. Translation is

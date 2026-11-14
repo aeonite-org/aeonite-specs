@@ -3,7 +3,7 @@ id:string = "aeon-core-v1"
 title:string = "AEON Specification v1"
 description:string = "Start here for the overall AEON Core v1 model, scope, behavior modes, and the companion documents that define the rest of the specification surface."
 created:date = 2026-03-25
-modified:date = 2026-09-30
+modified:date = 2026-11-15
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -97,7 +97,19 @@ body:prose = >`
   - comma/newline element separation rules
   - comma/newline binding rules
 
-  Quoted keys are part of Core v1 syntax, but empty quoted keys are invalid.
+  Quoted keys are part of Core v1 syntax, including the empty string. An empty
+  string is an ordinary property key at document, object-member and attribute-entry
+  positions. It may hold any valid value and carry ordinary typing and attributes.
+  It remains unique within its containing scope; repeated empty keys do not append
+  or create an implicit list.
+
+  ~~~$ aeon
+  "" = ""
+  ~~~$
+
+  Empty property keys do not make empty node tags, structural identities, datatype
+  names or other identifier roles valid. Older specification and CTS snapshots
+  that required rejection remain historical compatibility targets.
 
   Normative detailed reference:
 

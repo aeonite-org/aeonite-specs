@@ -3,7 +3,7 @@ id:string = "sansa-v1-mutate"
 title:string = "SANSA.Mutate v1"
 description:string = "Proposal-stage boundary and conservative core model for deterministic semantic mutation intent."
 created:date = 2026-07-22
-modified:date = 2026-09-30
+modified:date = 2026-11-15
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -309,6 +309,11 @@ body:prose = >`
   datatype? = <semantic type hint>
   kind? = <representation or literal-family hint>
   ~~~$
+
+  The requested name must be a present string. The empty string is a valid member
+  name wherever the target exposes ordinary property keys; it is not an absent
+  name, a positional insertion or an append instruction. AEON target values may
+  contain empty object-property and attribute-entry keys under the same rule.
 
   The parent must resolve exactly once. The requested name must not already exist
   in that parent under the adapter's exposed member-name rules. [$ create] is not
