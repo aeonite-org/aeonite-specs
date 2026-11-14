@@ -72,7 +72,7 @@ Before committing, run:
 bash ./scripts/pre-commit-check.sh
 ```
 
-This checks portable paths, the 91-document source inventory, required envelope declarations,
+This checks portable paths, the 95-document source inventory, required envelope declarations,
 identifier uniqueness, date ordering, related-document IDs, publication links and anchors, referenced
 publication assets, and the contract-resource bundle. Full AEON and &ND parsing, projection tests, and
 website checks run in the consuming publication build.
@@ -87,3 +87,52 @@ website checks run in the consuming publication build.
 This repository uses artifact-specific licenses. Normative specifications and appendices use
 `CC-BY-4.0`, conventions and reusable examples use `CC0-1.0`, and repository maintenance scripts use
 `MIT`, unless an AEON envelope or file declares otherwise. See `LICENSE.md` and `LICENSES/`.
+
+
+## Exact arithmetic snapshot 0.1
+
+`resources/aeonic-operations/v1/snapshots/0.1/aeonic-arithmetic-v1.aeon`
+and its `arithmetic-contract.schema.json` freeze
+`aeonic-arithmetic-specs-v1-snapshot-0.1`. They cover exact addition,
+subtraction, multiplication, chaining, history and explicit materialization.
+The parallel CTS target is `aeonic-arithmetic-cts-v1-snapshot-0.1`.
+Snapshot source/schema bytes are immutable; working source and schema retain
+separate paths for future changes. The proposal remains unpublished and
+comparison snapshots retain their existing scope.
+
+## Rational arithmetic working draft
+
+`sources/aes/v1/aeonic-rational-arithmetic-v1.aeon` and
+`resources/aeonic-operations/v1/rational-arithmetic-contract.schema.json` define
+the separate, explicitly selected `aeonic.operations.arithmetic.rational.v1`
+proposal. It covers exact rational chaining, seven explicit grid-rounding modes,
+history, deterministic diagnostics and portable workspace admission. Its CTS
+lane is `aeonic-rational-arithmetic`; the working target remains mutable.
+Publication is disabled. Existing finite/comparison snapshots and defaults retain
+their contracts. No implementation conformance or capacity is established by
+this draft; independent-runtime calibration is required before a snapshot.
+
+## Rational arithmetic snapshot 0.2
+
+The [snapshot record](docs/aeonic-rational-arithmetic-snapshot-0.2.md) identifies
+`aeonic-rational-arithmetic-specs-v1-snapshot-0.2`. Its source and closed schema
+are under `resources/aeonic-operations/v1/snapshots/0.2/`, aligned with the
+parallel CTS snapshot. The six-operation profile, exact chaining, explicit
+rounding, history and fail-closed diagnostics retain the tested working semantics.
+The mutable source remains separate; lifecycle, publication and existing defaults
+are unchanged. Snapshot preparation is separate from an implementation's claim.
+
+## Deferred value semantics guidance
+
+The informative, unpublished proposals
+[`aeonic-value-types-risk-analysis-v1.aeon`](sources/aes/v1/aeonic-value-types-risk-analysis-v1.aeon)
+and [`aeonic-deferred-value-guidance-v1.aeon`](sources/aes/v1/aeonic-deferred-value-guidance-v1.aeon)
+retain the exploratory value-type risk report and guidance for future operations.
+They distinguish value identity from interpretation, infinity from indeterminate
+outcomes, and explicit skip/stop processing policies from arithmetic values.
+Scores remain provisional; unresolved behavior requires a future contract.
+These documents introduce no implementation, CTS capability or snapshot changes.
+
+## Unicode hardening regression data
+
+The [candidate regression contract and capability inventory](docs/unicode-hardening-regression-contract.md) records existing identity, casing, wildcard, UTF-16 length and search responsibilities. This implementation-test work does not promote an immutable snapshot or add a released profile/CTS claim.

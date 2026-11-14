@@ -1,0 +1,1306 @@
+schemaVersion:string = "1"
+id:string = "aeonic-value-types-risk-analysis-v1"
+title:string = "Aeonic Value Types — Complexity and Semantic Risk Report"
+description:string = "Exploratory assessment of representation, operational, adequacy and portability risks across AEON value families."
+created:date = 2026-11-14
+modified:date = 2026-11-14
+family:string = "aes"
+group:string = "Semantic Language"
+standing:string = "supplemental"
+lifecycle:string = "proposal"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v1/proposals/aeonic-value-types-risk-analysis"
+order:number = 43
+publish:boolean = false
+keywords:list<string> = ["Aeonic operations", "value identity", "semantic risk", "deferred guidance"]
+related:list<string> = ["aeonic-semantic-language-v1", "aeonic-arithmetic-v1", "aeonic-rational-arithmetic-v1", "aeonic-deferred-value-guidance-v1", "aeon-core-v1-value-types"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Aeonic Value Types — Complexity and Semantic Risk Report [# aeonic-value-types-complexity-and-semantic-risk-report]
+
+  ## Editorial status and authority [# editorial-status]
+
+  This document retains the user-supplied revised exploratory report dated 14 November 2026, adapted from Markdown to &ND for the specification corpus. Formatting, heading levels and mathematical notation have been adapted; the qualitative assessment remains exploratory.
+
+  This is informative guidance, not a conformance contract or an implementation support matrix. Its recommendations do not override Core, AEOS, or a selected versioned Aeonic operation contract. The scores are provisional judgments, not measurements, confirmed defects, required priorities or admission rules.
+
+  All code blocks in this report are explanatory notation, including bare literals and contextual equality examples. They do not introduce AEON grammar, callable APIs or Boolean comparison results for Aeonic operations. In particular, IEEE-style equality is an illustrative interpretation, not the current Aeonic NaN policy. The report's Exact/Custom terminology describes an architectural idea; a consumer must select an actual supported profile rather than infer one from these labels.
+
+  Number representation, decoded value identity and mathematical equality have different boundaries. The current finite comparison contract treats authored [$ 1], [$ 1.0] and [$ 1e0] as numerically equal while retaining their operand spellings. No blanket textual equality or source-spelling identity rule is established here.
+
+  The companion deferred guidance records the integration boundaries and open policy decisions for future work. This report does not establish skip/stop behavior or extend arithmetic capabilities.
+
+
+  **Status:** Revised exploratory analysis
+  **Date:** 14 November 2026
+  **Scope:** AEON value types, representations, composite structures and comparison semantics
+  **Purpose:** Identify sources of complexity, semantic ambiguity, implementation risk and specification requirements.
+
+  ---
+
+  ## 1. Executive summary [# 1-executive-summary]
+
+  The Aeonic value system supports a diverse range of values, from simple Boolean literals to complex temporal representations and recursive structures.
+
+  The complexity of these types cannot be assessed solely by their syntax, the number of values they support or the difficulty of implementing them.
+
+  A type may be technically simple but inadequate for a particular application. Conversely, a type may deliberately preserve distinctions that another system would discard.
+
+  Three examples illustrate this:
+
+  - **Boolean** has exceptionally simple intrinsic semantics, but real-world conditions are frequently more complicated than true or false.
+  - **Radix** deliberately preserves numeric representation, including leading zeros and trailing fractional zeros, even when different representations have the same mathematical magnitude.
+  - **NaN** is identical to itself under AEOS representation equality, but does not compare equal to itself under IEEE-style numerical equality.
+
+  These are not contradictions or necessarily design defects. They demonstrate that identity, interpretation and comparison belong to different semantic layers.
+
+  The report therefore distinguishes five sources of complexity:
+
+  1. **Representation complexity:** Parsing, serialization, canonicalization and round-tripping.
+  2. **Operational complexity:** Equality, ordering, arithmetic, transformation and other operations.
+  3. **Semantic adequacy risk:** The possibility that a type is used to represent a domain requiring distinctions it cannot express.
+  4. **Portability complexity:** Consistency across runtimes, platforms, languages and external dependencies.
+  5. **Composition complexity:** Additional difficulty introduced by containment, relationships and interaction with other types.
+
+  The central conclusion is:
+
+  **A data type should preserve the distinctions defined by its value model. Consumers may deliberately disregard or reinterpret those distinctions through explicit operations, but must not silently redefine the underlying value.**
+
+  ## 2. Fundamental distinction: identity, projection and comparison [# 2-fundamental-distinction-identity-projection-and-comparison]
+
+  A central finding of this investigation is that equality is not a single universal operation.
+
+  Different semantic domains can legitimately define different relationships between the same values.
+
+  ### 2.1 Value identity [# 2-1-value-identity]
+
+  Value identity determines whether two Aeonic values are identical according to their defined representation or structural identity rules.
+
+  For example:
+
+  ~~~$ text
+  !none == !notSet       // false
+  NaN == NaN             // true, AEOS identity
+  #0f == #000f           // false
+  ~~~$
+
+  These comparisons preserve distinctions established by the Aeonic value model.
+
+  The equality operator shown here represents the AEOS identity context, not a universal requirement that every mathematical or application-level comparison use identical semantics.
+
+  ### 2.2 Projection and interpretation [# 2-2-projection-and-interpretation]
+
+  A projection derives a property or interpreted value from an existing Aeonic value.
+
+  For example:
+
+  ~~~$ text
+  isNull(!none) == isNull(!notSet)
+  // true
+  ~~~$
+
+  The original Null values remain distinct.
+
+  However, the [$ isNull] operation projects both values into the same Boolean classification.
+
+  Likewise, two Radix values may preserve different representations while resolving to the same mathematical magnitude.
+
+  Conceptually:
+
+  ~~~$ text
+  numericValue(radix("12.50", 10))
+      == numericValue(radix("12.5", 10))
+  // true
+  ~~~$
+
+  The Radix expressions are illustrative rather than proposed AEON syntax.
+
+  Projection may discard distinctions, but does so explicitly.
+
+  ### 2.3 Domain-specific comparison [# 2-3-domain-specific-comparison]
+
+  Domain-specific comparison applies the rules of a particular semantic domain.
+
+  For example:
+
+  | Values | AEOS identity | Domain-specific interpretation |
+  |<--|<--|<--|
+  | [$ NaN], [$ NaN] | Equal | IEEE numerical equality: unequal |
+  | [$ !none], [$ !notSet] | Unequal | Both classified as Null |
+  | [$ #0f], [$ #000f] | Unequal | May represent the same integer if explicitly interpreted |
+  | Radix [$ 12.50], [$ 12.5] | Unequal | Same magnitude in base 10 |
+  | [$ é], [$ e\\\\u0301] | Unequal | Equivalent under Unicode canonical normalization |
+
+  The rightmost column does not always represent an equality operation. It may describe classification, conversion or another domain-specific relationship.
+
+  This distinction is important.
+
+  ### 2.4 General model [# 2-4-general-model]
+
+  For two Aeonic values [$ a] and [$ b]:
+
+  [$ a != b]
+
+  does not prevent a projection [$ f] from producing:
+
+  [$ f(a) = f(b)]
+
+  For example:
+
+  [$ isNull(!none) = isNull(!notSet)]
+
+  The projection selects which distinctions are relevant.
+
+  Not every comparison requires a projection, but the model provides a consistent way to understand many otherwise surprising behaviours.
+
+  ### 2.5 Exact and Custom comparison [# 2-5-exact-and-custom-comparison]
+
+  The proposed Exact/Custom comparison architecture remains applicable.
+
+  **Exact** uses the identity or comparison semantics explicitly defined for the relevant operation.
+
+  **Custom** delegates comparison to an explicitly selected policy.
+
+  However, value identity must remain a stable concept.
+
+  A custom comparison policy may treat distinct values as equivalent without changing their AEON identity.
+
+  Similarly, a numeric comparison operation may use mathematical semantics without changing the representation identity required by AEOS.
+
+  This avoids forcing every operation into one interpretation of equality.
+
+  ---
+
+  ## Part I — Complexity assessment [# part-i-complexity-assessment]
+
+  ### 3. Assessment methodology [# 3-assessment-methodology]
+
+  Each type is evaluated across four scored dimensions.
+
+  | Dimension | Meaning |
+  |<--|<--|
+  | R — Representation | Parsing, serialization, canonicalization and round-tripping |
+  | O — Operations | Equality, ordering, arithmetic and transformations |
+  | A — Adequacy risk | Likelihood of being used to represent an insufficiently expressive domain |
+  | P — Portability | Cross-runtime consistency and external dependencies |
+
+  Scores range from 1 to 10.
+
+  The overall score is the arithmetic mean of the four dimensions, rounded to one decimal.
+
+  These are provisional qualitative estimates, not measured defect rates.
+
+  Semantic adequacy is retained as a separate dimension because it captures an important class of risk. However, it should not be interpreted as an intrinsic defect in the type.
+
+  For example, Boolean receives a high adequacy-risk score because it is frequently used to model non-binary conditions, not because Boolean itself is poorly specified.
+
+  ### 4. Revised complexity ranking [# 4-revised-complexity-ranking]
+
+  | Rank | Type | R | O | A | P | Overall |
+  |-->|<--|-->|-->|-->|-->|-->|
+  | 1 | Temporal/WTC | 9 | 10 | 10 | 10 | **9.8** |
+  | 2 | Number | 7 | 10 | 7 | 9 | **8.3** |
+  | 3 | String/Symbol | 6 | 9 | 9 | 9 | **8.3** |
+  | 4 | Node | 8 | 8 | 8 | 7 | **7.8** |
+  | 5 | Object | 6 | 8 | 8 | 7 | **7.3** |
+  | 6 | Encoding/Base64 | 8 | 5 | 7 | 8 | **7.0** |
+  | 7 | Null | 3 | 6 | 10 | 5 | **6.0** |
+  | 8 | NaN | 3 | 9 | 6 | 6 | **6.0** |
+  | 9 | Trimtick/Prose | 9 | 4 | 6 | 5 | **6.0** |
+  | 10 | List | 4 | 7 | 7 | 5 | **5.8** |
+  | 11 | Separator | 6 | 4 | 6 | 5 | **5.3** |
+  | 12 | Tuple | 4 | 6 | 6 | 5 | **5.3** |
+  | 13 | Radix | 5 | 5 | 5 | 5 | **5.0** |
+  | 14 | Infinity | 2 | 7 | 5 | 5 | **4.8** |
+  | 15 | Toggles | 2 | 3 | 7 | 3 | **3.8** |
+  | 16 | Boolean | 1 | 2 | 10 | 1 | **3.5** |
+  | 17 | Hex | 2 | 2 | 3 | 4 | **2.8** |
+
+  Hex's revised score reflects its deliberately narrow, non-numeric semantics.
+
+  Radix remains more complicated because it preserves numeric representation while permitting mathematical interpretation when sufficient information is available.
+
+  ---
+
+  ## Part II — Scalar and scalar-like values [# part-ii-scalar-and-scalar-like-values]
+
+  ### 5. Boolean — The simplicity of a binary answer [# 5-boolean-the-simplicity-of-a-binary-answer]
+
+  **Score:** 3.5/10
+  **Primary concern:** Semantic adequacy
+
+  Boolean supports:
+
+  ~~~$ text
+  true
+  false
+  ~~~$
+
+  Its representation and conventional operations are exceptionally simple.
+
+  However, many real-world questions cannot be answered adequately with only two states.
+
+  #### 5.1 The binary assumption [# 5-1-the-binary-assumption]
+
+  Consider:
+
+  ~~~$ text
+  approved = false
+  ~~~$
+
+  Possible interpretations include:
+
+  - Approval was explicitly rejected.
+  - Approval has not been requested.
+  - Approval is pending.
+  - Approval status is unknown.
+  - Approval is not applicable.
+
+  Boolean cannot independently distinguish these situations.
+
+  The problem is not ambiguity in Boolean itself. The problem is that the application has compressed a richer state space into two values.
+
+  #### 5.2 Closed-world and open-world assumptions [# 5-2-closed-world-and-open-world-assumptions]
+
+  A Boolean predicate is appropriate when the relevant question has been fully evaluated.
+
+  However, incomplete information introduces another distinction:
+
+  **Not knowing that something is true is not equivalent to knowing that it is false.**
+
+  Closed-world systems may interpret missing information as false.
+
+  Open-world systems may preserve uncertainty.
+
+  Boolean does not determine which assumption applies.
+
+  #### 5.3 Boolean versus Null [# 5-3-boolean-versus-null]
+
+  A nullable Boolean introduces a third state, but this does not necessarily solve the problem.
+
+  What does null mean?
+
+  Unknown, absent, not applicable and deliberately removed are different concepts.
+
+  AEON's differentiated Null literals demonstrate why a single generic null can be insufficient.
+
+  #### 5.4 Assessment [# 5-4-assessment]
+
+  Boolean is intrinsically simple and highly portable.
+
+  Its messiness arises primarily from application modelling.
+
+  **Finding:** Boolean is not a problematic type. The problem arises when consumers assume the world is binary.
+
+  **Recommendation:** Preserve Boolean's simplicity. Use richer types, schemas or explicit context when a domain requires additional states.
+
+  ### 6. Toggles — Binary semantics with contextual vocabulary [# 6-toggles-binary-semantics-with-contextual-vocabulary]
+
+  **Score:** 3.8/10
+  **Primary concern:** Semantic interpretation
+
+  AEON supports:
+
+  ~~~$ text
+  yes
+  no
+  on
+  off
+  ~~~$
+
+  These literals resemble Boolean values but carry different ordinary-language associations.
+
+  [$ yes/no] commonly represents affirmation.
+
+  [$ on/off] commonly represents an operational state.
+
+  #### 6.1 Representation versus meaning [# 6-1-representation-versus-meaning]
+
+  Consider:
+
+  ~~~$ text
+  approved = yes
+  enabled = on
+  ~~~$
+
+  Both may represent positive logical states, but their contextual meaning differs.
+
+  The type contract must distinguish literal identity from any Boolean interpretation.
+
+  #### 6.2 The binary limitation remains [# 6-2-the-binary-limitation-remains]
+
+  A device can be on, off, starting, stopping, faulted or unavailable.
+
+  An [$ on/off] toggle may represent the desired setting but not the complete operational state.
+
+  #### 6.3 Assessment [# 6-3-assessment]
+
+  Toggles are straightforward to implement.
+
+  Their primary risk is assuming that convenient binary vocabulary automatically captures a domain's full semantics.
+
+  **Recommendation:** Keep the relationship between Toggles, Boolean and schema-defined interpretations explicit.
+
+  ### 7. Null — Distinguishing different kinds of absence [# 7-null-distinguishing-different-kinds-of-absence]
+
+  **Score:** 6.0/10
+  **Primary concern:** Semantic adequacy and operational interpretation
+
+  AEON supports:
+
+  ~~~$ text
+  !none
+  !notSet
+  !tombstone
+  !notApplicable
+  !"custom"
+  ~~~$
+
+  These literals preserve different claims about absence.
+
+  #### 7.1 Identity versus classification [# 7-1-identity-versus-classification]
+
+  Consider:
+
+  ~~~$ text
+  !none == !notSet
+  // false
+  ~~~$
+
+  The values are distinct.
+
+  However:
+
+  ~~~$ text
+  isNull(!none) == isNull(!notSet)
+  // true
+  ~~~$
+
+  Both satisfy the same classification predicate.
+
+  This illustrates why value identity and property comparison must be separated.
+
+  #### 7.2 Missing fields versus explicit Null [# 7-2-missing-fields-versus-explicit-null]
+
+  An absent object field is not necessarily equivalent to a field explicitly containing a Null value.
+
+  For example:
+
+  ~~~$ text
+  person = {
+      name = "Alice"
+  }
+  ~~~$
+
+  differs structurally from:
+
+  ~~~$ text
+  person = {
+      name = "Alice"
+      middleName = !notSet
+  }
+  ~~~$
+
+  The distinction can matter for validation, migration, synchronization and partial updates.
+
+  #### 7.3 Propagation and fallback [# 7-3-propagation-and-fallback]
+
+  What happens when a Null value participates in an operation?
+
+  ~~~$ text
+  !notSet + 5
+  ~~~$
+
+  Possible behaviours include rejection, propagation or application-defined fallback.
+
+  These behaviours should not be inferred solely from the fact that the value belongs to the Null category.
+
+  #### 7.4 Custom Null labels [# 7-4-custom-null-labels]
+
+  Custom Null literals introduce string-related identity concerns.
+
+  For example:
+
+  ~~~$ text
+  !"custom"
+  ~~~$
+
+  The label must preserve the distinctions required by the applicable string identity rules.
+
+  Unicode normalization or linguistic equivalence must not silently merge distinct custom labels.
+
+  #### 7.5 Assessment [# 7-5-assessment]
+
+  Null is easy to represent but difficult to interpret universally.
+
+  **Finding:** Null demonstrates that two values can share a category without sharing identity or application meaning.
+
+  **Recommendation:** Preserve differentiated Null identities and make propagation and fallback rules explicit.
+
+  ### 8. NaN — Representation identity versus mathematical equality [# 8-nan-representation-identity-versus-mathematical-equality]
+
+  **Score:** 6.0/10
+  **Primary concern:** Equality semantics and numeric interoperability
+
+  AEON supports:
+
+  ~~~$ text
+  NaN
+  -NaN
+  ~~~$
+
+  NaN is a particularly important case because it demonstrates that representation equality and mathematical equality can produce different results.
+
+  #### 8.1 AEOS representation equality [# 8-1-aeos-representation-equality]
+
+  AEOS uses representation equality.
+
+  Consequently:
+
+  ~~~$ text
+  NaN == NaN
+  // true, in AEOS
+  ~~~$
+
+  This is appropriate for deterministic validation and value identity.
+
+  Two occurrences of the same represented NaN value can be identified as equal.
+
+  #### 8.2 Mathematical equality [# 8-2-mathematical-equality]
+
+  IEEE-style numeric comparison behaves differently:
+
+  ~~~$ text
+  NaN == NaN
+  // false, under IEEE numerical equality
+  ~~~$
+
+  NaN is unordered with respect to ordinary numerical comparison, including comparison with itself.
+
+  This behaviour is intentional.
+
+  #### 8.3 Why both are correct [# 8-3-why-both-are-correct]
+
+  The two operations answer different questions.
+
+  AEOS asks:
+
+  **Are these the same represented Aeonic value?**
+
+  IEEE numerical equality asks:
+
+  **Are these numerically equal under the arithmetic model?**
+
+  Neither operation is inherently incorrect.
+
+  The error would be treating the two operations as interchangeable.
+
+  #### 8.4 Signed NaN [# 8-4-signed-nan]
+
+  AEON also supports [$ -NaN].
+
+  Its representation identity must be distinguished from the behaviour of NaN signs in a particular arithmetic implementation.
+
+  The sign's role in identity, canonicalization and numeric operations should follow explicit Aeonic contracts.
+
+  #### 8.5 Ordering [# 8-5-ordering]
+
+  NaN does not participate in ordinary numerical ordering in the same way as finite numbers.
+
+  A deterministic collection-ordering operation may nevertheless need a defined placement for NaN.
+
+  That ordering must be specified separately from IEEE arithmetic comparison.
+
+  #### 8.6 Assessment [# 8-6-assessment]
+
+  NaN is one of the clearest demonstrations that equality is domain-dependent.
+
+  **Finding:** Representation identity and mathematical equality are separate relationships. NaN makes the distinction visible even when comparing a value with itself.
+
+  **Recommendation:** Preserve AEOS representation equality while defining numeric equality and ordering through their respective operation contracts.
+
+  ### 9. Hex — Structural fidelity versus consumer expectation [# 9-hex-structural-fidelity-versus-consumer-expectation]
+
+  **Score:** 2.8/10
+  **Primary concern:** Multi-domain interpretation and consumer expectations
+
+  AEON represents Hex using a leading [$ #]:
+
+  ~~~$ text
+  #ff
+  #000f
+  #ffffff
+  ~~~$
+
+  Canonical Hex uses lowercase hexadecimal letters.
+
+  Crucially, **Hex is not a Number**.
+
+  AEON provides Radix when a numeric value expressed in a particular base is required.
+
+  Hex instead preserves a sequence of hexadecimal digits without imposing a mathematical interpretation.
+
+  #### 9.1 Why Hex is non-numeric [# 9-1-why-hex-is-non-numeric]
+
+  The same hexadecimal sequence may be used in several unrelated domains.
+
+  For example:
+
+  ~~~$ text
+  color = #ffffff
+  mask = #ffffff
+  identifier = #ffffff
+  ~~~$
+
+  The values have identical Hex representations, but their applications may interpret them differently.
+
+  - A color schema may interpret the digits as RGB channels.
+  - A bitfield schema may interpret them as individual bits.
+  - An identifier schema may treat them as an opaque sequence.
+
+  AEON does not need to choose between these interpretations.
+
+  #### 9.2 Width and leading zeros [# 9-2-width-and-leading-zeros]
+
+  Hex preserves digit count.
+
+  Therefore:
+
+  ~~~$ text
+  #0f != #000f
+  #fff != #ffffff
+  ~~~$
+
+  Leading zeros are not discarded.
+
+  Likewise, CSS-style shorthand expansion does not belong to the core Hex type.
+
+  A color schema may interpret [$ #fff] as equivalent to [$ #ffffff], but this does not change Hex identity.
+
+  #### 9.3 Canonical lowercase [# 9-3-canonical-lowercase]
+
+  Hexadecimal letter case is normalized to lowercase.
+
+  For example:
+
+  ~~~$ text
+  #FF   → #ff
+  #0F   → #0f
+  #000F → #000f
+  ~~~$
+
+  Canonicalization preserves the digit sequence and its length while normalizing letter case.
+
+  Thus, uppercase and lowercase spellings do not create separate canonical Hex values.
+
+  #### 9.4 Digits versus bytes [# 9-4-digits-versus-bytes]
+
+  Hex preserves hexadecimal digits, not necessarily a sequence of complete bytes.
+
+  For example:
+
+  ~~~$ text
+  #f
+  #0f
+  #00f
+  ~~~$
+
+  These contain different numbers of digits.
+
+  Byte alignment, padding and bit-width interpretation belong to schemas or consumers.
+
+  #### 9.5 Consumer expectation mismatch [# 9-5-consumer-expectation-mismatch]
+
+  Users familiar with programming-language hexadecimal integers may assume:
+
+  ~~~$ text
+  #ff == 255
+  ~~~$
+
+  However, AEON does not implicitly treat Hex as a numeric value.
+
+  Similarly:
+
+  ~~~$ text
+  #ff + 1
+  ~~~$
+
+  is not valid ordinary numeric arithmetic without an explicit interpretation or conversion.
+
+  #### 9.6 Assessment [# 9-6-assessment]
+
+  Hex has deliberately narrow intrinsic semantics.
+
+  Most of its complexity arises when consumers import assumptions from other domains.
+
+  **Finding:** Hex preserves digit-sequence fidelity without imposing numeric meaning.
+
+  **Recommendation:** Maintain strict separation between Hex and Radix. Provide useful diagnostics for numeric misuse and require explicit schemas or conversions for domain-specific interpretation.
+
+  ### 10. Radix — Numeric interpretation with representation fidelity [# 10-radix-numeric-interpretation-with-representation-fidelity]
+
+  **Score:** 5.0/10
+  **Primary concern:** Representation identity versus mathematical magnitude
+
+  Radix preserves numeric representation, including leading zeros and trailing fractional zeros.
+
+  Unlike Number, Radix does not discard these distinctions through ordinary numeric canonicalization.
+
+  #### 10.1 Representation fidelity [# 10-1-representation-fidelity]
+
+  Consider decimal Radix values represented conceptually as:
+
+  ~~~$ text
+  0012.50
+  12.50
+  12.5
+  12.0
+  ~~~$
+
+  These preserve different written representations.
+
+  The distinctions may communicate width, scale, formatting or other application-relevant information.
+
+  #### 10.2 Representation equality [# 10-2-representation-equality]
+
+  Under representation identity:
+
+  ~~~$ text
+  12.50 != 12.5
+  12.50 != 12.0
+  ~~~$
+
+  The first pair has the same mathematical magnitude but different representations.
+
+  The second pair differs both in representation and mathematical magnitude.
+
+  This distinction matters because representation equality does not require numeric interpretation.
+
+  #### 10.3 Numeric interpretation requires a base [# 10-3-numeric-interpretation-requires-a-base]
+
+  A digit sequence does not necessarily determine a unique mathematical value without knowing its base.
+
+  For example:
+
+  ~~~$ text
+  radix("10", 2)  → 2
+  radix("10", 10) → 10
+  radix("10", 16) → 16
+  ~~~$
+
+  These are illustrative expressions.
+
+  The same digit sequence represents different magnitudes under different bases.
+
+  Therefore, numeric equivalence requires sufficient information about the base.
+
+  If the relevant bases are known, two Radix values may be compared mathematically.
+
+  If the base is unknown, numeric equivalence cannot reliably be established.
+
+  #### 10.4 Representation versus magnitude [# 10-4-representation-versus-magnitude]
+
+  Consider:
+
+  ~~~$ text
+  radix("12.50", 10)
+  radix("12.5", 10)
+  ~~~$
+
+  Representation identity distinguishes them.
+
+  A numeric projection may produce the same magnitude:
+
+  ~~~$ text
+  numericValue(radix("12.50", 10))
+      == numericValue(radix("12.5", 10))
+  // true
+  ~~~$
+
+  This does not alter the original Radix values.
+
+  #### 10.5 Precision and scale [# 10-5-precision-and-scale]
+
+  Trailing fractional zeros may communicate intended scale or formatting.
+
+  For example:
+
+  ~~~$ text
+  12.5
+  12.50
+  12.500
+  ~~~$
+
+  These have the same mathematical magnitude in base 10 but preserve different representational information.
+
+  The presence of trailing zeros does not automatically establish measurement accuracy, but consumers may assign significance to them.
+
+  #### 10.6 Assessment [# 10-6-assessment]
+
+  Radix is more complex than Hex because it combines representation fidelity with potential mathematical interpretation.
+
+  **Finding:** Radix preserves numeric representation while allowing mathematical comparison when sufficient contextual information is available.
+
+  **Recommendation:** Keep representation identity distinct from numeric interpretation. Never discard leading or trailing zeros merely because they do not affect mathematical magnitude.
+
+  ### 11. Infinity — Extended numeric values and arithmetic boundaries [# 11-infinity-extended-numeric-values-and-arithmetic-boundaries]
+
+  **Score:** 4.8/10
+  **Primary concern:** Operational semantics
+
+  AEON supports:
+
+  ~~~$ text
+  Infinity
+  -Infinity
+  ~~~$
+
+  The literals are straightforward to represent.
+
+  However, arithmetic involving infinity introduces special cases.
+
+  Examples include:
+
+  ~~~$ text
+  Infinity + 5
+  Infinity - Infinity
+  Infinity * 0
+  Infinity / Infinity
+  ~~~$
+
+  Different operations may produce infinity, NaN or another result depending on the defined arithmetic model.
+
+  Infinity also introduces interoperability problems because some formats, including standard JSON, do not support non-finite numeric literals.
+
+  **Finding:** Infinity is simple as a represented value but requires explicit arithmetic and conversion rules.
+
+  **Recommendation:** Define its operations through Aeonic numeric semantics rather than inheriting incidental runtime behaviour.
+
+  ### 12. Number — Mathematical values versus machine arithmetic [# 12-number-mathematical-values-versus-machine-arithmetic]
+
+  **Score:** 8.3/10
+  **Primary concern:** Operational semantics and portability
+
+  AEON supports integer, floating-point and exponent representations.
+
+  Number is difficult because mathematical values and machine representations do not always behave identically.
+
+  #### 12.1 Integer range and overflow [# 12-1-integer-range-and-overflow]
+
+  Mathematically:
+
+  ~~~$ text
+  127 + 1 = 128
+  ~~~$
+
+  A runtime using signed 8-bit arithmetic may overflow or wrap.
+
+  AEON's Number type can represent 128 independently of an [$ int8] schema constraint.
+
+  Validation can then reject the result if the schema requires [$ int8].
+
+  This separates mathematical operations from storage or schema restrictions.
+
+  #### 12.2 Floating-point precision [# 12-2-floating-point-precision]
+
+  Binary floating-point cannot represent every decimal fraction exactly.
+
+  For example:
+
+  ~~~$ text
+  0.1 + 0.2
+  ~~~$
+
+  may not produce an exact representation of 0.3 under common binary floating-point arithmetic.
+
+  The arithmetic model must specify precision and rounding behaviour.
+
+  #### 12.3 Exponent notation [# 12-3-exponent-notation]
+
+  Exponent notation can express the same mathematical value using a different representation.
+
+  For example:
+
+  ~~~$ text
+  1e3
+  1000
+  ~~~$
+
+  Number canonicalization may eliminate representational distinctions that Radix deliberately preserves.
+
+  #### 12.4 Signed zero [# 12-4-signed-zero]
+
+  Some numeric systems distinguish positive and negative zero.
+
+  Whether this distinction participates in value identity or arithmetic operations must be explicitly defined.
+
+  #### 12.5 Assessment [# 12-5-assessment]
+
+  Number is intrinsically complex because arithmetic semantics, finite machine representations and portability interact.
+
+  **Recommendation:** Define mathematical and arithmetic behaviour independently of host-runtime defaults, using explicit precision and rounding contracts where required.
+
+  ### 13. String/Symbol — Unicode and contextual equivalence [# 13-string-symbol-unicode-and-contextual-equivalence]
+
+  **Score:** 8.3/10
+  **Primary concern:** Linguistic interpretation and portability
+
+  Strings preserve sequences of Unicode scalar values.
+
+  Exact identity is straightforward in principle, but human-language operations introduce substantial complexity.
+
+  #### 13.1 Canonical equivalence [# 13-1-canonical-equivalence]
+
+  The strings:
+
+  ~~~$ text
+  é
+  e\\u0301
+  ~~~$
+
+  may appear identical while containing different scalar sequences.
+
+  Exact identity preserves the distinction.
+
+  A custom normalization policy may treat them as equivalent.
+
+  #### 13.2 Case conversion [# 13-2-case-conversion]
+
+  Turkish distinguishes:
+
+  ~~~$ text
+  I / ı
+  İ / i
+  ~~~$
+
+  Locale-independent lowercasing cannot universally reproduce language-specific equivalence.
+
+  Greek sigma, German sharp s and Lithuanian dotted-letter rules introduce additional complications.
+
+  #### 13.3 Ordering [# 13-3-ordering]
+
+  Unicode scalar ordering is deterministic but does not necessarily match human alphabetical order.
+
+  Locale-sensitive collation requires explicit rules and may depend on versioned Unicode or CLDR data.
+
+  #### 13.4 Search [# 13-4-search]
+
+  Search may deliberately ignore case, accents or other distinctions.
+
+  However, such behaviour must not alter structural identity.
+
+  A search operation may consider two strings equivalent even when Exact equality distinguishes them.
+
+  #### 13.5 String length [# 13-5-string-length]
+
+  String length may refer to:
+
+  - UTF-8 bytes.
+  - UTF-16 code units.
+  - Unicode scalar values.
+  - Grapheme clusters.
+
+  These are not interchangeable.
+
+  #### 13.6 Symbols [# 13-6-symbols]
+
+  Symbols may impose additional constraints or identity rules beyond ordinary strings.
+
+  Their relationship to String should be explicitly defined without assuming that human-language comparison applies automatically.
+
+  #### 13.7 Assessment [# 13-7-assessment]
+
+  String complexity arises primarily from the gap between exact text representation and human linguistic interpretation.
+
+  **Recommendation:** Preserve Exact identity and delegate contextual comparison to explicit Custom policies.
+
+  ### 14. Encoding/Base64 — Opaque representation boundaries [# 14-encoding-base64-opaque-representation-boundaries]
+
+  **Score:** 7.0/10
+  **Primary concern:** Representation and validation
+
+  Encoding introduces a distinction between encoded representation and decoded content.
+
+  Base64 itself is straightforward, but the surrounding architecture is more complex.
+
+  #### 14.1 Representation versus decoded value [# 14-1-representation-versus-decoded-value]
+
+  Different accepted encodings may represent equivalent decoded data.
+
+  A consumer must know whether equality concerns encoded text or decoded content.
+
+  #### 14.2 Validation [# 14-2-validation]
+
+  A syntactically valid encoded value may contain invalid decoded data.
+
+  For example, an encoded AEON subtree may require decoding followed by AEOS validation.
+
+  #### 14.3 Opaque boundaries [# 14-3-opaque-boundaries]
+
+  Opaque data introduces questions about references, nested encoding, access control and error handling.
+
+  These concerns become especially important when encoding is combined with encryption.
+
+  #### 14.4 Assessment [# 14-4-assessment]
+
+  Encoding complexity lies primarily at the boundary between representation and interpretation.
+
+  **Recommendation:** Keep encoding mechanics, decoded-value semantics and consumer-specific policies separate.
+
+  ### 15. Trimtick/Prose — Source layout versus string value [# 15-trimtick-prose-source-layout-versus-string-value]
+
+  **Score:** 6.0/10
+  **Primary concern:** Parsing and canonicalization
+
+  Trimtick and Prose representations introduce specialized handling of multiline text.
+
+  Their difficulty lies in distinguishing source formatting from meaningful content.
+
+  #### 15.1 Gutter normalization [# 15-1-gutter-normalization]
+
+  Indentation may be part of the document's layout rather than the represented string.
+
+  A parser must remove or preserve whitespace according to explicit rules.
+
+  #### 15.2 Round-tripping [# 15-2-round-tripping]
+
+  Different source layouts may decode to the same string value.
+
+  Canonicalization must produce deterministic output without changing the decoded content.
+
+  #### 15.3 Line endings [# 15-3-line-endings]
+
+  LF, CRLF and other line separators may require explicit treatment.
+
+  #### 15.4 Assessment [# 15-4-assessment]
+
+  Trimtick/Prose has high representation complexity but does not necessarily introduce a separate string equality model.
+
+  **Recommendation:** Define layout normalization precisely while preserving the semantics of the decoded string.
+
+  ### 16. Separator — Lexical structure and parsing boundaries [# 16-separator-lexical-structure-and-parsing-boundaries]
+
+  **Score:** 5.3/10
+  **Primary concern:** Grammar and context
+
+  Separator behaviour depends on the surrounding grammar.
+
+  A character or sequence may act as a separator in one context while being ordinary content in another.
+
+  This introduces potential ambiguity involving whitespace, comments, nesting and canonicalization.
+
+  Separator is therefore primarily a grammar-level concern rather than a difficult mathematical or linguistic value domain.
+
+  **Recommendation:** Evaluate Separator's lexical and canonicalization requirements separately from scalar value semantics.
+
+  ### 17. Temporal/WTC — Context-dependent time [# 17-temporal-wtc-context-dependent-time]
+
+  **Score:** 9.8/10
+  **Primary concern:** Representation, operations, adequacy and portability
+
+  Temporal values are the most complex category in this assessment.
+
+  They involve multiple concepts that are easily confused:
+
+  - Local dates and times.
+  - UTC instants.
+  - UTC offsets.
+  - Named time zones.
+  - Calendar-relative durations.
+  - Elapsed durations.
+  - Historical and future time-zone rules.
+
+  #### 17.1 Ambiguous local times [# 17-1-ambiguous-local-times]
+
+  During a daylight-saving transition, the same local clock time may occur twice.
+
+  A local datetime therefore does not always identify a unique instant.
+
+  #### 17.2 Nonexistent local times [# 17-2-nonexistent-local-times]
+
+  When clocks move forward, some local times never occur.
+
+  A temporal system must define how such values are handled.
+
+  #### 17.3 Offsets versus zones [# 17-3-offsets-versus-zones]
+
+  A UTC offset identifies a displacement from UTC.
+
+  A named time zone contains rules that may change over time.
+
+  These are not interchangeable.
+
+  #### 17.4 WTC and resolution policies [# 17-4-wtc-and-resolution-policies]
+
+  WTC introduces additional contextual information for temporal interpretation.
+
+  Where ambiguity exists, resolution policies may reject, select an occurrence or preserve unresolved information.
+
+  #### 17.5 External dependencies [# 17-5-external-dependencies]
+
+  Time-zone databases change as governments revise their rules.
+
+  Different runtime versions may therefore interpret the same local datetime differently.
+
+  #### 17.6 Calendar arithmetic [# 17-6-calendar-arithmetic]
+
+  Adding one calendar day is not always equivalent to adding 24 elapsed hours.
+
+  Adding one month may require a policy when the target month has fewer days.
+
+  #### 17.7 Assessment [# 17-7-assessment]
+
+  Temporal is intrinsically complex because correct interpretation can depend on external information and contextual policies.
+
+  **Recommendation:** Preserve distinct temporal concepts and make ambiguity resolution explicit.
+
+  ---
+
+  ## Part III — Composite values [# part-iii-composite-values]
+
+  ### 18. Object — Structural identity and containment [# 18-object-structural-identity-and-containment]
+
+  **Score:** 7.3/10
+  **Primary concern:** Identity, ordering and relationships
+
+  Objects associate keys with values.
+
+  Their complexity includes:
+
+  - Key identity.
+  - Duplicate-key rejection.
+  - Canonical ordering.
+  - Recursive containment.
+  - References and structural relationships.
+  - Interactions with contained value types.
+
+  Custom string comparison must not silently change object-key identity.
+
+  Similarly, canonical ordering must remain deterministic and independent of locale.
+
+  **Recommendation:** Keep structural identity and canonical ordering separate from comparison policies applied to contained values.
+
+  ### 19. Tuple — Position as meaning [# 19-tuple-position-as-meaning]
+
+  **Score:** 5.3/10
+  **Primary concern:** Positional semantics
+
+  Tuples are ordered structures in which position is significant.
+
+  For example, a pair representing latitude and longitude cannot be arbitrarily reordered.
+
+  Tuple equality must account for arity, element order and the applicable element identity rules.
+
+  Heterogeneous tuples introduce additional validation and comparison considerations.
+
+  **Recommendation:** Preserve positional identity and use schemas to establish element roles where required.
+
+  ### 20. List — Ordered collections and inherited complexity [# 20-list-ordered-collections-and-inherited-complexity]
+
+  **Score:** 5.8/10
+  **Primary concern:** Operations and composition
+
+  Lists are ordered collections.
+
+  Their principal difficulties include:
+
+  - Structural equality.
+  - Sorting.
+  - Heterogeneous elements.
+  - Nested comparison.
+  - Stability and deterministic ordering.
+  - Resource limits for recursive operations.
+
+  A custom sorting policy may treat distinct values as equivalent without changing list identity.
+
+  **Recommendation:** Keep list structure independent of optional element-comparison and sorting policies.
+
+  ### 21. Node — Mixed structure and content [# 21-node-mixed-structure-and-content]
+
+  **Score:** 7.8/10
+  **Primary concern:** Representation and structural semantics
+
+  Nodes may combine hierarchical structure, attributes and content.
+
+  This introduces distinctions between:
+
+  - Attributes and child nodes.
+  - Text content and structural content.
+  - Source ordering and canonical ordering.
+  - Meaningful whitespace and formatting whitespace.
+
+  Conversions to XML, JSON or simpler object models may require explicit mapping rules to preserve information.
+
+  **Recommendation:** Preserve node-specific structural semantics and avoid assuming that simpler container models can represent every node distinction losslessly.
+
+  ---
+
+  ## Part IV — Cross-cutting architectural findings [# part-iv-cross-cutting-architectural-findings]
+
+  ### 22. Identity is not mathematical equality [# 22-identity-is-not-mathematical-equality]
+
+  NaN demonstrates the distinction most clearly.
+
+  Under AEOS identity:
+
+  ~~~$ text
+  NaN == NaN
+  // true
+  ~~~$
+
+  Under IEEE numerical equality:
+
+  ~~~$ text
+  NaN == NaN
+  // false
+  ~~~$
+
+  Both results are valid within their respective semantic domains.
+
+  The specification must identify which operation is being performed.
+
+  This principle also applies to Radix, Hex, String and Temporal values.
+
+  ### 23. Classification is not identity [# 23-classification-is-not-identity]
+
+  Two values may belong to the same category without being identical.
+
+  For example:
+
+  ~~~$ text
+  !none != !notSet
+  ~~~$
+
+  but:
+
+  ~~~$ text
+  isNull(!none) == isNull(!notSet)
+  ~~~$
+
+  Similarly, two Hex values may both satisfy [$ isHex()] without being identical.
+
+  Classification extracts a property. It does not redefine value identity.
+
+  ### 24. Representation may be semantically significant [# 24-representation-may-be-semantically-significant]
+
+  Number, Radix and Hex illustrate different approaches to representation.
+
+  | Type | Preserved distinctions | Interpretation |
+  |<--|<--|<--|
+  | Number | Defined numeric value | Mathematical/numeric |
+  | Radix | Numeric digits, leading zeros and fractional trailing zeros | Numeric when base is known |
+  | Hex | Canonical lowercase hexadecimal digit sequence and width | Non-numeric until interpreted |
+
+  The preservation of representational distinctions is not necessarily redundant.
+
+  It may be essential for domains involving scale, width, identifiers, bit patterns or other structured information.
+
+  Canonicalization must respect the distinctions defined by each type.
+
+  ### 25. Exact and Custom are comparison modes, not universal meanings [# 25-exact-and-custom-are-comparison-modes-not-universal-meanings]
+
+  The Exact/Custom proposal provides a useful common architecture.
+
+  However, it must not imply that every operation shares one universal definition of equality.
+
+  AEOS representation equality, numeric equality, structural equality and search matching serve different purposes.
+
+  The consuming operation must establish its semantic contract.
+
+  Custom policies may extend comparison behaviour without altering the underlying Aeonic values.
+
+  ### 26. Semantic adequacy is distinct from intrinsic complexity [# 26-semantic-adequacy-is-distinct-from-intrinsic-complexity]
+
+  Boolean demonstrates this distinction.
+
+  A Boolean value is not ambiguous merely because an application uses it to represent an insufficiently specified condition.
+
+  Likewise, differentiated Null values do not necessarily make the underlying domain more complicated. They may expose distinctions that were already present but previously hidden.
+
+  The messiness index should therefore distinguish:
+
+  - Complexity inherent in the type.
+  - Complexity introduced by operations.
+  - Complexity inherited from contained values.
+  - Risk arising from inadequate domain modelling.
+
+  This prevents the ranking from penalizing a type simply for preserving information faithfully.
+
+  ### 27. Portability requires explicit contracts [# 27-portability-requires-explicit-contracts]
+
+  Different runtimes may disagree because of:
+
+  - Numeric precision and overflow.
+  - Unicode versions and locale data.
+  - Time-zone databases.
+  - String length measurement.
+  - Serialization conventions.
+  - Unsupported value categories.
+  - Host-language equality behaviour.
+
+  Aeonic implementations must not silently inherit such differences where deterministic behaviour is required.
+
+  Explicit contracts and conformance tests are necessary.
+
+  ### 28. Proposed living risk register [# 28-proposed-living-risk-register]
+
+  The complexity ranking should evolve into a specification and conformance risk register.
+
+  For each type, the register should record:
+
+  | Field | Purpose |
+  |<--|<--|
+  | Type | Identifies the value category |
+  | Intrinsic complexity | Representation and fundamental semantics |
+  | Operational complexity | Equality, ordering and transformations |
+  | Semantic adequacy risk | Potential domain-modelling limitations |
+  | Portability risk | Runtime and external dependencies |
+  | Specification maturity | Completeness of defined behaviour |
+  | Conformance coverage | Tested requirements |
+  | Known defects | Confirmed implementation problems |
+  | Open decisions | Unresolved architectural questions |
+
+  Scores should be reviewed as specifications and implementations evolve.
+
+  A high score does not automatically imply a design defect or high implementation priority.
+
+  ---
+
+  ### 29. Conclusions [# 29-conclusions]
+
+  The Aeonic value system demonstrates that data-type complexity is multidimensional.
+
+  Boolean is technically simple but frequently used to represent domains requiring more than two states.
+
+  Null preserves distinctions between different kinds of absence.
+
+  NaN demonstrates that representation identity and mathematical equality can legitimately disagree.
+
+  Hex preserves non-numeric digit sequences without imposing domain meaning.
+
+  Radix preserves numeric representation while allowing mathematical interpretation when sufficient information is available.
+
+  Number must reconcile mathematical semantics with machine arithmetic.
+
+  String must separate exact identity from linguistic interpretation.
+
+  Temporal must handle contextual ambiguity and changing external rules.
+
+  Composite types introduce additional structural and inherited complexity.
+
+  The overarching architectural principle is:
+
+  **Preserve distinctions at the value level. Make interpretation explicit. Define comparison according to the semantic domain of the operation.**
+
+  This approach allows AEON to retain information faithfully while SANSA, AEOS and Aeonic value operations provide the interpretations needed by consumers.
+
+  The objective is not to eliminate complexity, but to prevent complexity from becoming implicit, inconsistent or destructive.
+
+  ---
+
+  **Report status:** Revised exploratory assessment. The scores remain provisional and should be validated against authoritative specifications and implementation evidence before being treated as a formal conformance or risk assessment.
+`

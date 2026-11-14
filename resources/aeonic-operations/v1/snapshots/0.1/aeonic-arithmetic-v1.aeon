@@ -1,0 +1,361 @@
+schemaVersion:string = "1"
+id:string = "aeonic-arithmetic-v1-snapshot-0-1"
+title:string = "Aeonic Exact Arithmetic v1 Snapshot 0.1"
+description:string = "Exact finite-Number addition, subtraction, multiplication, chaining, history preservation and explicit materialization."
+created:date = 2026-11-11
+modified:date = 2026-11-12
+family:string = "aes"
+group:string = "Semantic Language"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v1/aeonic-arithmetic/snapshot-0.1"
+order:number = 41
+publish:boolean = false
+keywords:list<string> = ["AEON", "arithmetic", "exact", "materialization", "history", "proposal"]
+related:list<string> = ["aeonic-semantic-language-v1", "aeon-core-v1-value-types", "aeos-v1"]
+specSnapshotId:string = "aeonic-arithmetic-specs-v1-snapshot-0.1"
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Aeonic Exact Arithmetic v1 Snapshot 0.1 [# aeonic-exact-arithmetic-v1-snapshot-0-1]
+
+  Status: immutable compatibility snapshot aeonic-arithmetic-specs-v1-snapshot-0.1,
+  frozen 2026-11-12. Proposal lifecycle and disabled publication are preserved.
+  This pins the finite exact arithmetic/materialization contract; comparison
+  claims and deferred operations retain their existing scope. The explicit
+  snapshot test allowances do not prescribe host defaults or machine guarantees.
+
+  The operation schema is [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/arithmetic-contract.schema.json | arithmetic snapshot 0.1 schema].
+
+  ## 1. Scope and numerical meaning [# 1-scope-and-numerical-meaning]
+
+  The required surface consists of binary [$ add], [$ subtract], [$ multiply], and
+  unary [$ materialize]. Arithmetic is exact for finite AEON Number operands and
+  exact derived results. Number integer, decimal and exponent representations
+  share this numerical domain. All four authored/derived binary pairings are
+  admitted; no operand-family promotion or output family is selected by arithmetic.
+
+  Division, quantization, rounding, aggregates, radix arithmetic, infinity, NaN,
+  temporal operations, implicit coercion and expression syntax are deferred.
+  An unsupported operation or domain returns a diagnostic. No automatic string,
+  Boolean, symbol, null or container conversion is performed.
+
+  The exact value is a normalized coefficient/exponent pair denoting
+  [$ coefficient * 10^exponent]. Both integers use ASCII decimal text. Nonzero
+  coefficients have an optional minus sign, no leading or trailing zeros, and no
+  plus sign. Exponents have an optional minus sign, no leading zeros or plus
+  sign, and encode zero as [$ 0]. Mathematical zero is exactly [$ (0, 0)].
+  Incoming derived pairs must already be normalized. Authored Number spellings
+  remain preserved at their boundary and are decoded without host floating point.
+
+  All calculated zeros have one mathematical value and no arithmetic sign.
+  Arithmetic does not recover a source spelling, source scale or source accuracy
+  for a derived result. A finite decimal result is closed under the three required
+  arithmetic operations, subject to resource limits; rational intermediates are
+  not needed for this scope.
+
+  ## 2. Candidate portable boundary [# 2-candidate-portable-boundary]
+
+  Requests contain exactly [$ operation] and [$ input]. Binary inputs contain required
+  [$ left] and [$ right], with optional [$ context] and [$ policy]. Materialization inputs
+  contain required [$ value], with optional [$ context] and required [$ policy].
+  All these objects are closed. Native APIs may use immutable value objects or
+  handles while exposing equivalent logical data through their adapters.
+  Successful result bundles, number descriptors, metadata and effective-policy
+  objects are also closed to fields outside their defined shapes.
+
+  An operand is a closed bundle containing [$ number] and [$ history]. [$ number] is
+  one of the following closed descriptors:
+
+  ~~~$ json
+  {"category":"finiteNumber","value":"1.0"}
+  ~~~$
+
+  ~~~$ json
+  {"category":"exactNumber","coefficient":"1","exponent":"0"}
+  ~~~$
+
+  The finite-Number payload grammar is the existing comparison boundary's exact
+  numerical text grammar: optional sign; integer, decimal or leading-dot decimal;
+  optional signed decimal exponent. It admits [$ 1], [$ 1.0], [$ 1e0] and [$ .5];
+  underscores belong to source parsing and must be removed by the source adapter
+  before this boundary, preserving the source separately. Native numeric payloads
+  are not accepted in place of text.
+
+  [$ history] has the symbolic wire labels [$ none-declared] and
+  [$ approximation-declared]. It is required for derived inputs. For authored
+  finite-Number inputs it may be omitted, meaning [$ none-declared]. Every successful
+  result includes it explicitly. This prevents directly chaining a derived result
+  while silently defaulting its missing history.
+
+  A complete successful arithmetic result has exactly these outer fields:
+
+  ~~~$ json
+  {
+    "outcome":"value",
+    "value":{
+      "number":{"category":"exactNumber","coefficient":"2","exponent":"0"},
+      "history":"none-declared"
+    },
+    "metadata":{
+      "evaluation":"exact-for-operands",
+      "effectivePolicy":{"profile":"aeonic.operations.arithmetic.exact.v1"}
+    }
+  }
+  ~~~$
+
+  The complete [$ value] bundle can be supplied as the next operation's operand.
+  Materialization returns the same envelope and bundle shape, with a [$ finiteNumber]
+  descriptor instead of an [$ exactNumber] descriptor and complete materialization
+  settings in [$ metadata.effectivePolicy]. Thus history travels with the number
+  without introducing an AEON literal or attribute.
+
+  Recognized deferred categories are [$ string], [$ boolean], [$ symbol],
+  [$ positiveInfinity], [$ negativeInfinity], [$ nan], [$ explicitNull], [$ explicitAbsence],
+  [$ toggle], [$ hex], [$ radix], [$ encoding], [$ separator], [$ sansaAddress], [$ referenceForm],
+  [$ temporal] and [$ container]. Their [$ number] descriptor payload is opaque beyond
+  the category, matching the comparison contract's deferred-domain approach.
+  The containing bundle and its history are still validated. An unknown category
+  is malformed input, not a new optional capability.
+
+  ## 3. Approximation history [# 3-approximation-history]
+
+  History records a declaration about the supplied values or their processing
+  path. It does not claim a numerical error bound, identify a rounding mode,
+  track correlation, certify measurement accuracy or reconstruct an earlier value.
+  [$ none-declared] means that no history was declared; it does not certify that
+  the original quantity was exact.
+
+  If either operand carries [$ approximation-declared], the result does too.
+  Otherwise it carries [$ none-declared]. Materialization copies the status without
+  clearing it. These rules apply to zero, multiplication by zero and cancellation.
+  The calculation remains exact for its numerical operands. For example, a marked
+  [$ 0.33] multiplied by [$ 3] yields exact [$ 0.99] with the marker retained.
+
+  Detailed provenance is deferred. A standard AEON document annotation is also
+  deferred: applications must retain the bundle or explicitly map its history
+  when storing AEON. Exporting only the bare Number loses that metadata; a later
+  import must not invent a missing declaration.
+
+  ## 4. Policies and composition [# 4-policies-and-composition]
+
+  The proposed arithmetic profile identifier is
+  [$ aeonic.operations.arithmetic.exact.v1]. It is the operation contract's baseline
+  selection, not a registered profile or a general-purpose rounding policy.
+
+  [$ context] permits only an optional nonempty string [$ profile]. Binary [$ policy]
+  permits only that same field. Materialization [$ policy] permits optional
+  [$ profile], required [$ family] ([$ integer], [$ decimal] or [$ exponent]), and optional
+  [$ zeroSign] ([$ positive] or [$ negative], default [$ positive]). There is no implicit
+  family default and no fallback between families. Negative zero is requested
+  explicitly; the setting affects only zero, never the sign of a nonzero result.
+
+  Validate all supplied configuration shapes before resolving the effective
+  profile. Per-operation [$ policy.profile] overrides [$ context.profile]; absent both,
+  use the baseline identifier. Resolve only the effective profile, so a syntactically
+  valid overridden profile does not require an unavailable resolver. Malformed
+  overridden configuration still fails. No file, network, database, callback,
+  locale or process-environment lookup is implicit.
+
+  Resource limits are trusted host/adapter settings, outside the logical request.
+  An input cannot enlarge its own resource allowance. Invalid trusted settings
+  are API/harness failures, not operation diagnostics. Unknown limit names,
+  non-object settings including explicit null, and values other than nonnegative
+  integers are invalid. An omitted limit uses its configured default. Limits may
+  be explicitly lowered for a test; that does not establish advertised capacity.
+  Host Booleans are not integers for this configuration contract. Profile IDs and
+  operation names must be nonempty Unicode-scalar strings; malformed strings
+  fail configuration or envelope validation before availability is considered.
+
+  Comparison policies do not automatically apply to arithmetic or materialization.
+  Arithmetic settings do not alter comparison semantics. Passing a materialized
+  Number to the frozen comparison API requires its existing descriptor shape;
+  that comparison does not assess or propagate arithmetic history. Consumers
+  retain history separately rather than attributing new behavior to snapshot 0.1.
+
+  ## 5. Exact materialization [# 5-exact-materialization]
+
+  Materialization accepts either supported operand kind and preserves its exact
+  value and history. It does not apply schema constraints, round, truncate, pad to
+  a requested business scale, or infer an output family from an operand.
+
+  For normalized coefficient [$ c] and exponent [$ e]:
+
+  | Family | Rule |
+  | <-- | <-- |
+  | [$ integer] | Zero emits [$ 0]. A nonzero value requires [$ e >= 0]; append [$ e] zeros to [$ c]. A negative exponent is [$ unrepresentable_result]. |
+  | [$ decimal] | Expand the exact decimal point position. Include at least one digit on each side of the point; integral values end in [$ .0]. No redundant fractional trailing zeros are added. |
+  | [$ exponent] | Emit the normalized coefficient, lowercase [$ e], and the normalized exponent, including [$ e0]. For example [$ (123, -2)] emits [$ 123e-2]. |
+
+  For zero, explicit [$ zeroSign: "negative"] produces [$ -0], [$ -0.0] or [$ -0e0] in
+  the selected family. Otherwise the corresponding positive representation is
+  used. These renderings follow existing AEON canonical family rules; the
+  calculation's coefficient/exponent normalization is a separate operation.
+
+  Determine representability and output length before allocating expanded text.
+  If an exact fractional result cannot be represented as an integer, return
+  [$ unrepresentable_result] with no value. If a valid rendering exceeds its output
+  budget, return [$ resource_limit], with no truncated or alternative rendering.
+  The effective family and zero-sign setting are included in successful metadata.
+
+  Schema validation belongs to the consumer/AEOS after successful calculation
+  and materialization. For example, [$ 127 + 1] may materialize as [$ 128], which an
+  [$ int8] destination rejects separately. A failed materialization does not return
+  its candidate Number; a previously completed exact result remains available
+  only if the caller already retained that separate successful result.
+
+  ## 6. Deterministic validation and diagnostics [# 6-deterministic-validation-and-diagnostics]
+
+  Stop at the first failed stage/substep. Return exactly [$ outcome: "diagnostic"],
+  [$ reason] and [$ context], with optional human-readable [$ message]. Context has
+  [$ stage] and an operation-local JSON Pointer [$ path], or null when unavailable.
+  There is no [$ value], partial value, automatic null, warning-based success or
+  fallback profile on failure. Message text is non-normative.
+
+  | Stage | Fixed checks and failure |
+  | <-- | <-- |
+  | 1 | Request byte/depth guards before deeper processing: [$ resource_limit], null path. |
+  | 2 | Strict JSON decoding, duplicate keys, request/input object shapes, required [$ operation]/[$ input], closed generic input fields; then operation availability; then known-operation arity fields. [$ invalid_operand] or [$ unsupported_operation]. |
+  | 3 | Context shape, then policy shape and required materialization family; validate configuration field values; resolve effective profile. [$ invalid_policy], then [$ unsupported_profile] as applicable. |
+  | 4 | Validate operand bundles and supported descriptor payloads, left before right, or the materialization value. [$ invalid_operand]; a reached operand-size/exponent guard is [$ resource_limit]. |
+  | 5 | Domain support, left before right. Recognized deferred categories yield [$ unsupported_domain]. Every pairing of the two supported kinds is compatible. |
+  | 6 | Arithmetic workspace guard; exact evaluation; normalized result coefficient limit, then result exponent limit. Reached limits yield [$ resource_limit], null path. Materialization skips arithmetic evaluation. |
+  | 7 | Materialization representability, then emitted text-length guard, then rendering. [$ unrepresentable_result], then [$ resource_limit], both with null path. |
+
+  Within a closed object, check required fields in their listed order before
+  unknown fields. Select unknown fields in decoded Unicode-scalar order rather
+  than host map order. An unrepresentable pointer, including an isolated surrogate
+  in an unknown field name, yields null. All malformed JSON values are admitted
+  only as failure inputs, never as numbers through a host decoder.
+
+  At stage 2 the generic input field vocabulary is [$ left], [$ right], [$ value],
+  [$ context], [$ policy]. A nonempty unknown operation is rejected before applying a
+  known operation's arity. Known binary operations require [$ left], then [$ right],
+  and reject [$ value]; [$ materialize] requires [$ value] and rejects [$ left]/[$ right].
+  Its missing or malformed policy is diagnosed at stage 3, not as operand arity.
+
+  For each stage-4 bundle, require a [$ number] object and recognized string
+  category, check bundle fields, validate history, then validate the supported
+  descriptor. Finite payload order is [$ value]; derived order is [$ coefficient],
+  then [$ exponent], then pair normalization, including zero's exponent. Size guards
+  on supplied text precede its detailed grammar checks. Required derived history
+  and unknown descriptor fields are shape failures before payload parsing.
+  An unsupported descriptor's payload remains opaque, but a malformed right
+  supported operand at stage 4 still precedes a left unsupported domain at stage 5.
+
+  Diagnostic precedence examples:
+
+  | Competing failures | Required diagnostic |
+  | <-- | <-- |
+  | Unsupported profile and malformed numerical payload | [$ unsupported_profile], stage 3, [$ /input/policy/profile] when selected there |
+  | Missing materialization family and unsupported profile | [$ invalid_policy], stage 3, [$ /input/policy/family] |
+  | Malformed left and right operands | Left [$ invalid_operand], stage 4 |
+  | Recognized unsupported left domain and malformed right finite payload | Right [$ invalid_operand], stage 4 |
+  | Two recognized unsupported domains | Left [$ unsupported_domain], stage 5 |
+  | Fractional value requested as integer and zero output allowance | [$ unrepresentable_result], stage 7 |
+  | Admission limit reached and unsupported operation/profile | Admission [$ resource_limit], stage 1 |
+
+  Logical JSON rejects duplicate member names at every depth and non-JSON numeric
+  constants. Native adapters must reject cycles, guard depth before recursive
+  serialization and avoid exponential traversal of shared acyclic subgraphs.
+  The portable stage ordering above applies to logical JSON requests, including
+  malformed requests expressible as JSON. Native graphs containing cycles are
+  outside that representation. A native adapter must fail closed: it reports
+  [$ invalid_operand] for a detected cycle, or [$ resource_limit] if a byte/depth
+  guard is reached first. No cross-adapter traversal order or tie-break is claimed
+  for competing failures in such non-JSON graphs. Finite acyclic shared graphs
+  remain subject to per-path depth and, at structured JSON ingress, expanded JSON
+  byte limits; a completed shallow visit cannot waive a deeper path's guard.
+  Passing the logical CTS does not establish native graph hardening or any bound
+  on host getters, proxies or user-defined iterators. Those require separate
+  implementation evidence. Machine-dependent timeout is a harness failure, not a
+  portable diagnostic.
+
+  ## 7. Resource model [# 7-resource-model]
+
+  Limits apply per operation; applications own whole-chain limits. Compact exact
+  results and materialized text have separate limits. Subject to other applicable
+  bounds, [$ (1, 1000000)] can remain compact even when integer materialization
+  would require 1,000,001 digits and fail its output budget. Exponent rendering
+  can still succeed in a separate operation with a suitable output allowance.
+
+  The snapshot CTS selects the following explicit test configuration; these are
+  not required native defaults or a machine-time/memory guarantee:
+
+  | Trusted limit | Candidate default | Counting rule |
+  | <-- | <-- | <-- |
+  | [$ maxRequestBytes] | 4,194,304 | Actual UTF-8 logical JSON bytes, excluding the CTS envelope; no reserialization for text input. |
+  | [$ maxRequestDepth] | 32 | Nested object/array levels; root container is level one. |
+  | [$ maxNumericCharacters] | 65,536 | Per operand: authored numeric text, or coefficient plus exponent text, including signs. |
+  | [$ maxCoefficientDigits] | 65,536 | Per decoded operand and normalized result, excluding a minus sign; zero counts as one digit. |
+  | [$ maxExponentMagnitude] | 1,000,000 | Absolute authored exponent, normalized operand exponent and normalized result exponent. Check authored exponent even for zero. |
+  | [$ maxWorkspaceDigits] | 131,072 | Deterministic arithmetic workspace admission described below. |
+  | [$ maxOutputCharacters] | 65,536 | Emitted Number literal text, including signs, point, [$ e] and exponent. Bundle/metadata bytes are excluded. |
+
+  These numbers are provisional engineering recommendations, not advertised
+  implementation capacities or frozen support floors. Calibrate on both runtimes
+  before a conformance claim or snapshot. A maximum for each dimension does not
+  promise every Cartesian product of all maxima. Smaller explicit limits are
+  valid negative-test settings and must not silently enable approximation.
+
+  Workspace admission is independent of an implementation's private allocation
+  strategy. Addition/subtraction with zero, multiplication by zero, and exact
+  additive cancellation are recognized first using normalized operands. They
+  need no expanded workspace. Multiplication by one does not bypass the declared
+  workspace admission bound merely because an implementation can optimize it.
+  For remaining addition/subtraction, let [$ m] be the smaller exponent; required
+  workspace is the larger of [$ digits(c_left) + e_left - m] and
+  [$ digits(c_right) + e_right - m]. For nonzero multiplication it is
+  [$ digits(c_left) + digits(c_right)]. Reject if this exceeds
+  [$ maxWorkspaceDigits] before constructing aligned integers or their product.
+  This is an explicit conservative admission bound, not a claim about actual
+  machine work or memory. Result limits still apply after normalization, including
+  carry and trailing-zero removal. Identity/zero shortcuts do not skip operand
+  validation, domain checks or final result limits.
+
+  Additional deterministic implementation-specific execution budgets may be
+  advertised separately. They do not redefine standardized digit counts, justify
+  silently omitting a required operation or establish semantic conformance merely
+  by returning [$ resource_limit]. Positive conformance cases run with adequate
+  declared allowances; work-budget rejection is tested separately. Unexpected
+  allocation failures and crashes remain harness failures.
+
+  ## 8. Capability and conformance boundary [# 8-capability-and-conformance-boundary]
+
+  The initial capability is the complete finite exact arithmetic/materialization
+  surface; it does not have per-operation semantic opt-outs. Implementations
+  declare their supported limits and any optional work budget separately from
+  this capability. No arithmetic capability follows from comparison conformance.
+
+  Shared conformance must check exact normalized values, history, complete
+  effective policy, selected output family, diagnostics and precedence. It must
+  include all authored/derived operand pairings, equivalent numerical spellings,
+  signed-zero inputs, very large exact values, non-normalized derived inputs,
+  chaining, malformed/unknown fields, competing failures and independently
+  generated resource boundaries.
+
+  Arithmetic law tests cover commutativity of add/multiply, subtraction sign
+  relations, identities and distributivity only where all participating operations
+  are admitted within their applicable budgets. History follows its own union
+  rule even when an algebraic identity eliminates numerical dependence. A finite
+  test suite is evidence, not a proof over all input magnitudes.
+
+  The separate aeonic-arithmetic CTS snapshot 0.1 owns executable operation,
+  chaining, law and generated-boundary cases. Its immutable manifest is the
+  compatibility target; the separate mutable next target is development evidence.
+
+  A named snapshot must pin its own source, schema, binding and suite bytes.
+  Its complete trusted resource-limit map is supplied explicitly for each CTS
+  invocation; individual boundary cases may select documented companion limits.
+  This configuration is part of the claim, not an inference about native defaults
+  or every Cartesian combination of maxima. All four operations, both operand
+  kinds and the history/materialization rules remain required; a capacity setting
+  cannot be presented as a semantic opt-out. Native-adapter checks and optional
+  implementation work budgets must be reported separately. A passing snapshot
+  does not publish this proposal or release an implementation package.
+
+`

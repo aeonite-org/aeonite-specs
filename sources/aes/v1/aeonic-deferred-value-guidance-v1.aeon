@@ -1,0 +1,93 @@
+schemaVersion:string = "1"
+id:string = "aeonic-deferred-value-guidance-v1"
+title:string = "Aeonic Deferred Value Semantics Guidance"
+description:string = "Deferred informative guidance for explicit interpretation, extended arithmetic, skip/stop policies and future conformance boundaries."
+created:date = 2026-11-14
+modified:date = 2026-11-14
+family:string = "aes"
+group:string = "Semantic Language"
+standing:string = "supplemental"
+lifecycle:string = "proposal"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v1/proposals/aeonic-deferred-value-guidance"
+order:number = 44
+publish:boolean = false
+keywords:list<string> = ["Aeonic operations", "value identity", "semantic risk", "deferred guidance"]
+related:list<string> = ["aeonic-value-types-risk-analysis-v1", "aeonic-semantic-language-v1", "aeonic-arithmetic-v1", "aeonic-rational-arithmetic-v1", "aeon-core-v1-value-types"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Aeonic Deferred Value Semantics Guidance [# aeonic-deferred-value-semantics-guidance]
+
+  ## Status and scope [# status-and-scope]
+
+  This informative proposal records architectural guidance for future Aeonic operations. It does not implement a feature, define a new value literal, select a new default, or establish a conformance claim. The companion exploratory risk report motivates this guidance; its numerical rankings remain provisional rather than normative evidence.
+
+  The existing comparison and finite arithmetic snapshots retain their frozen meaning. The explicitly selected rational arithmetic working contract retains its existing scope. None of these contracts gains non-finite arithmetic, indeterminate recovery, skipping or stopping from this document. Unsupported categories and errors continue to follow the selected contract, including fail-closed behavior.
+
+  ## Preserve identity; interpret explicitly [# preserve-identity]
+
+  Representation identity, mathematical equality, classification and application matching are separate operations. An explicit projection can relate distinct values without changing the original values or the rules that preserve their identity.
+
+  Examples include differentiated Null reasons, Hex width, Radix digit representation and Unicode scalar sequences. A future operation must identify the semantic domain it uses. AEOS representation comparisons and IEEE-style numerical comparisons must not be silently substituted for each other. Aeonic comparison results remain governed by the selected symbolic-result contract; the report's illustrative Boolean notation does not replace it.
+
+  An exact calculated result is also distinct from an authored representation. Existing arithmetic separates exact calculation from Number materialization and schema acceptance. Source spelling alone does not establish measurement accuracy or approximation history.
+
+  ## Infinity and indeterminate outcomes [# infinity-and-indeterminate]
+
+  Infinity and indeterminate outcomes remain distinct concepts. A future extended arithmetic profile could admit positive and negative infinity while defining which operations yield a value, an indeterminate outcome or a diagnostic. It must specify such cases as infinity minus infinity, zero times infinity, division by zero and infinity divided by infinity. No outcome table is chosen here.
+
+  Representability of an Infinity or NaN literal does not imply arithmetic support. Nor does a host language's NaN behavior settle AEON representation identity or an Aeonic comparison rule. A future design must specify how any indeterminate outcome relates to an authored NaN value, explicit Null reasons, absence and operation diagnostics; these states must not be silently conflated.
+
+  Extended arithmetic concerns the admitted value domain, not unlimited precision or unlimited computation. Resource limits and fail-closed admission still require explicit contracts. An application that needs finite results can retain the finite profile.
+
+  Any future non-finite profile requires explicit versioned selection. Host-runtime overflow, coercion or division behavior cannot opt a request into it. Existing snapshots and default policies must remain stable.
+
+  ## Explicit skip and stop policies [# skip-and-stop]
+
+  Skip and stop are proposed processing actions rather than arithmetic values or numerical identities. They do not introduce a special neutral scalar. Ordinary numerical zero and the existing treatment of computed zero remain unchanged.
+
+  Skipping unavailable values and stopping evaluation require explicit application or profile policy. An error does not automatically become a Number, a Null, an infinity, an indeterminate value or a skipped operand. Substitution is a separate explicit recovery action: it produces an asserted replacement value under an applicable contract, rather than pretending that the failed operation succeeded.
+
+  The following questions must be resolved before a skip/stop profile can be normative:
+
+  - What can trigger each action: absence, explicit Null reasons, an indeterminate outcome, selected diagnostics, or another declared condition? Admission and policy failures must have specified handling rather than being indiscriminately suppressed.
+  - What is skipped: an aggregate member, a row, a whole expression, a branch, or a pipeline step? What happens when a required operand of subtraction or division is unavailable? Skipping cannot silently turn such a binary operation into a different calculation.
+  - What does stop terminate, and does it produce a diagnostic, an explicit incomplete-result envelope or no result? Is any previously accumulated value returned, and how is incompleteness made visible?
+  - What happens for empty input, all-skipped input, a single remaining input and nested aggregates? Which inputs contribute to counts, averages and denominators?
+  - What evaluation order is guaranteed? Can later steps run after a stop condition? Reassociation, parallel execution and short-circuiting require an explicit observational-equivalence rule.
+  - Which recovery, skip and stop information is preserved for callers and chained operations? Existing approximation-history markers are not a substitute for recording missing participation or recovery.
+
+  These questions remain open. This guidance does not prescribe the result of an incomplete binary operation or authorize an adapter to hide diagnostics. Future APIs should make the selected action and its scope explicit so applications can distinguish a complete result from a calculation over an admitted subset.
+
+  ## Further policy boundaries [# further-policy-boundaries]
+
+  Text and symbol interpretation requires explicit comparison profiles, with independent symbol settings where supported. Locale-sensitive operations need one resolved locale per operation. Applications may choose different locales for different fields or operations without changing structural key identity. Implementations must identify relevant external data versions when reproducibility depends on them.
+
+  Temporal operations must distinguish authored precision and containing periods from exact instants and resolved results. A widened result must not silently acquire the certainty of an originally authored period during chaining. Calendar-relative, fixed-duration, clamping, end-of-month and end-of-year behavior require explicit semantics rather than assumptions inherited from runtime date libraries.
+
+  Container and encoding operations must preserve their own structural or opaque boundaries. Decoding valid transport text does not establish validity of the decoded value. A contextual comparison policy must not silently redefine object keys, tuple positions or node structure.
+
+  ## Requirements before normative adoption [# before-normative-adoption]
+
+  A future contract should define:
+
+  1. Its supported domains, explicit profile selection, policy composition rules and compatibility boundary.
+  2. Operation outcome tables, identity and symbolic comparison rules, and deterministic diagnostic precedence.
+  3. Chaining behavior, participation and recovery metadata, including how information loss is made visible.
+  4. Portable request/result representations and lossless serialization. Bare non-finite host numbers cannot be assumed to be valid JSON transport.
+  5. Materialization and external schema validation, keeping internal calculation outcomes distinct from accepted external values.
+  6. Portable resource admission rules and finite limits, without implicit rounding or recovery on exhaustion.
+  7. Conformance cases that distinguish required semantics from optional implementation capabilities, including adversarial interactions between independently selected policies.
+
+  No runtime, CTS fixture, schema, new profile identifier or literal is introduced here. These topics should pass through explicit design decisions and independent implementation calibration before a new normative contract or immutable snapshot is published.
+
+  ## Maintaining the risk assessment [# maintaining-the-risk-assessment]
+
+  The companion report proposes a living risk register. Such a register should distinguish intrinsic representation complexity, operational complexity, domain-modelling adequacy and portability. Record specification maturity, actual conformance coverage, confirmed defects and unresolved decisions separately.
+
+  A high qualitative score does not by itself establish a defect, missing capability or implementation priority. Reassess claims against the exact authoritative specification and implementation revisions when using the report to plan normative work.
+`
