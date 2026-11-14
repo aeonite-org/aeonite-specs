@@ -3,7 +3,7 @@ id:string = "appendix-canonical-form-v1"
 title:string = "Appendix — Canonical AEON Form"
 description:string = "Canonicalization conventions and normalization outputs for stable interchange."
 created:date = 2026-03-25
-modified:date = 2026-10-16
+modified:date = 2026-11-15
 family:string = "appendices"
 group:string = "Core Semantics"
 standing:string = "official"
@@ -254,6 +254,11 @@ body:prose = >`
   - Change a clone-intent reference into a pointer-intent reference or vice versa
   - Inline or resolve references
   - Alter the logical value graph
+
+  Empty property and attribute keys MUST be retained and quoted canonically.
+  The empty string sorts before every nonempty string under the existing
+  Unicode-scalar key comparison, subject to reference dependency ordering.
+  An empty quoted selector cannot be replaced by a bare selector or omitted.
 
   Canonical reference rendering also applies these normalizations:
 

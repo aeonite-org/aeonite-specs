@@ -3,7 +3,7 @@ id:string = "sansa-v1-instruction"
 title:string = "SANSA Instruction v1"
 description:string = "Proposal-stage human-authored instruction surface combining SANSA Addressing, Query, and Mutate vocabulary."
 created:date = 2026-07-26
-modified:date = 2026-09-30
+modified:date = 2026-11-15
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -165,6 +165,8 @@ body:prose = >`
   Object value literals preserve field names as authoring intent. Field names may
   be bare AEON identifiers or AEON-style quoted names such as [$ "display name"] or
   [$ "bad.key"]; both forms still use [$ =] between the field name and value.
+  The empty quoted field name is valid and denotes an ordinary property key;
+  duplicate decoded empty field names remain invalid.
   Quoted field names use the same quoted-payload escape rules as quoted SANSA
   members, so [$ "quote\\\\"key"] names the decoded field [$ quote"key].
   Bracket-quoted selectors such as [$ \\["bad.key"\\]] remain SANSA address/member
@@ -412,8 +414,21 @@ body:prose = >`
   a missing position address is not part of [$ create]; ordered insertion uses
   [$ insert].
 
-  [$ create] is not [$ upsert]. The named member must not already exist under the
-  resolved parent.
+  An empty quoted member name is valid in either the contextual or destination
+  address form. Both lower to a present empty-string [$ name] with the exact
+  parent preserved:
+
+  ~~~$ sansa
+  from $.inventory
+  create "" with ""
+  ~~~$
+
+  ~~~$ sansa
+  create $.inventory.[""] with ""
+  ~~~$
+
+  [$ create] is not [$ upsert]. The named member, including an empty-string member,
+  must not already exist under the resolved parent.
 
   ### 7.2 Replace [# replace]
 
@@ -931,6 +946,7 @@ body:prose = >`
   | [$ replace $.inventory.selector with :sansa, $.inventory.items.*:number] | one [$ replace] operation, datatype [$ sansa], kind [$ sansa] |
   | [$ create $.inventory.settings with :object, { enabled = true, status = false }] | one [$ create] operation, datatype [$ object], kind [$ object], value containing [$ enabled] and [$ status] fields |
   | [$ create $.inventory.settings with :object, { "display name" = "Adapter" }] | one [$ create] operation, datatype [$ object], kind [$ object], value containing decoded field name [$ display name] |
+  | [$ create $.inventory.emptyField with :object, { "" = "x" }] | one [$ create] operation, datatype [$ object], kind [$ object], value containing an ordinary empty-string field name; an AEON target accepts this value |
   | [$ create $.inventory.aliases with :list<string>, \\["adapter", "driver"\\]] | one [$ create] operation, datatype [$ list<string>], kind [$ list] |
   | [$ create $.inventory.pair with :tuple<string>, ("sku", "A-100")] | one [$ create] operation, datatype [$ tuple<string>], kind [$ tuple] |
   | [$ create $.inventory.badge with :node, <badge("new", 3)>] | one [$ create] operation, datatype [$ node], kind [$ node] |
@@ -1033,7 +1049,6 @@ body:prose = >`
   | [$ create $.inventory.copy with :number, ~target] against a JSON target | target surface rejects reference-family payload |
   | [$ create $.inventory.nestedPair with :object, { pair = :tuple, ("sku", 7) }] against a JSON target | lowering warns that nested tuple intent was flattened; target surface sees a plain nested list |
   | [$ create $.inventory.payload with :object, { "bad.key" = :node, <badge("new")> }] against a JSON target | target surface reports quoted nested value path [$ value\\["bad.key"\\]] |
-  | [$ create $.inventory.badEmptyField with :object, { "" = "x" }] against an AEON target | target surface rejects an empty decoded object field name even though the Instruction object literal is syntactically valid |
   | [$ create $.inventory.payload with :object, { "quote\\\\"key" = :node, <badge("new")> }] against a JSON target | target surface escapes the decoded quoted field name in the nested value path [$ value\\["quote\\\\"key"\\]] |
   | [$ create $.inventory.nestedRelationship with :object, { sibling = :relationship<sibling>\\["brother"\\], "Bob" }] against an AEON target | lowering warns that nested custom datatype intent was flattened; target surface sees a plain nested string |
   |~ Negative SANSA target-surface seeds

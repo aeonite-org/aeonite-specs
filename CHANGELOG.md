@@ -17,6 +17,21 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Fixed the AEON source escaping of literal periods in the comparison numerical
+  grammar, preserving the decoded regular expression. Added four required table
+  captions and separated two intentional forward-reference rejection examples,
+  recording their classifications for the publication audit.
+
+- Amended the working AEON/SANSA/AES contract to permit empty quoted property
+  and attribute-entry keys, including reference and portable path segments.
+  Empty names remain ordinary unique properties, distinct from root, missing
+  names and whitespace names; no append semantics are introduced. Canonical
+  ordering, SANSA creation and instruction lowering preserve empty names.
+  Node tags, structural identities, datatype names and local address-space names
+  retain their existing rules. This updates draft sources, not historical
+  specification snapshots or an implementation release. Coordinated CTS coverage
+  starts in development targets; immutable promotion remains separate.
+
 - Clarified shared logical generic-depth accounting for AES, Telex and Film.
   A descriptor contributes its nesting level only when it contains generic
   arguments; leaves and clarifiers do not add a level, and sibling branches

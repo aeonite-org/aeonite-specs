@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-addressing-references"
 title:string = "AEON v1 Addressing, SANSA Literals, and References Reference"
 description:string = "Reference for AEON canonical paths, SANSA address literal adoption, reference forms, and reference legality in AEON Core v1."
 created:date = 2026-03-25
-modified:date = 2026-08-23
+modified:date = 2026-11-15
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -167,7 +167,8 @@ body:prose = >`
 
   - [$ .@.key] addresses a bare attribute key;
   - [$ .@.\\["key with spaces"\\]] addresses a quoted attribute key;
-  - quoted member and attribute-key segments must not be empty;
+  - quoted member and attribute-key segments may decode to the empty string and address that exact property in the selected namespace;
+  - an empty quoted member is one path segment, not an omitted segment or the root; missing targets, forward references and self-references still use their ordinary validation rules;
   - quoted bracket member segments may follow attribute selectors using [$ .\\[\\\\"...\\\\"\\]];
   - quoted attribute selectors may be followed by ordinary member traversal, quoted member traversal, or index traversal;
   - mixed traversal such as [$ ~a.@.\\["x.y"\\].z], [$ ~a.@.meta.\\["x.y"\\]], and [$ ~$.a.@.\\["profile.name"\\]\\[0\\]] is valid when each traversed segment exists and is otherwise legal;
@@ -331,6 +332,9 @@ body:prose = >`
 
   ~~~$ aeon
   a = { b = ~a.z, z = 1 }
+  ~~~$
+
+  ~~~$ aeon
   a@{b = ~a.@.z, z = 1} = 0
   ~~~$
 

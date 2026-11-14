@@ -3,7 +3,7 @@ id:string = "sansa-v1-addressing"
 title:string = "SANSA v1 Addressing"
 description:string = "Draft-stage address model and selector vocabulary for SANSA."
 created:date = 2026-07-14
-modified:date = 2026-09-05
+modified:date = 2026-11-15
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -275,6 +275,19 @@ body:prose = >`
   ~~~$ text
   .["member.with.dots"]
   .["spaced name"]
+  .[""]
+  ~~~$
+
+  An empty quoted member name is valid and selects the direct child whose name is
+  the empty string. It is distinct from the current binding, a missing name and a
+  whitespace name. The same rule applies after an attribute-space transition.
+  Local address-space names and structural identities retain their own nonempty
+  rules.
+
+  ~~~$ text
+  $.[""]
+  $.settings.[""]
+  $.settings.@.[""]
   ~~~$
 
   ### 5.2 Positional Binding [# positional-binding]
@@ -584,7 +597,6 @@ body:prose = >`
 
   - whitespace outside quoted payloads
   - invalid bare identifiers
-  - empty quoted member names
   - empty local address-space names
   - position indexes with leading zeroes
   - invalid quoted payload escapes

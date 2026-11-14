@@ -3,7 +3,7 @@ id:string = "aeonic-semantic-language-v1"
 title:string = "Aeonic Semantic Language"
 description:string = "Architectural proposal for deterministic value behavior shared across AES consumers, including equality, comparison, ordering, conversion, measurement, and future arithmetic."
 created:date = 2026-07-21
-modified:date = 2026-11-09
+modified:date = 2026-11-15
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
@@ -1358,6 +1358,7 @@ body:prose = >`
   | 5 | Operand-domain support, left before right; then compatibility of the supported pair. | [$ unsupported_domain], then [$ incompatible_comparison] as applicable |
   | 6 | Membership in the selected declared symbol domain, left before right. | [$ undeclared_symbol] |
   | 7 | Perform the comparison; enforce any explicitly configured deterministic implementation-specific execution budget. | [$ resource_limit] if that optional budget is exhausted; no standardized work-unit test is required by the first snapshot |
+  |~ Comparison diagnostic validation stages
 
   Stop at the first failed stage/substep and return one diagnostic with no value. In the red-team example, an unsupported profile plus malformed numerical text therefore yields [$ unsupported_profile], assuming the request passed admission and envelope checks and its policy configuration was otherwise well-formed. With a valid profile, malformed left numerical text precedes malformed right numerical text or later domain/membership checks.
 
@@ -1375,6 +1376,7 @@ body:prose = >`
   | Valid finite-number operand and valid string operand under the baseline | [$ incompatible_comparison] |
   | Valid declared-order policy; same undeclared symbol in both operands | [$ undeclared_symbol] for the left operand |
   | Request breaches a configured admission limit and also names an unsupported profile | [$ resource_limit] at admission |
+  |~ Required diagnostic precedence for competing failures
 
   These are fixture requirements and examples, not published vectors. Tests must also confirm that each failure returns no comparison value.
 
@@ -1387,6 +1389,7 @@ body:prose = >`
   | [$ aeonic.operations.comparison.baseline.v1] | Full four-domain baseline and its default selections. |
   | [$ aeonic.operations.string.codepoint.v1] | Case-sensitive Unicode scalar comparison without normalization. Reusable for strings and symbol payloads. |
   | [$ aeonic.operations.symbol.declared-order.v1] | Strict unique-rank symbol declaration contract; separately claimable. |
+  |~ Working comparison profile identifiers
 
   These are proposed identifiers, not registrations or released specifications. Existing [$ aeon.value.*] identifiers and released CTS targets keep their existing meanings. A custom profile identifier must resolve to an immutable versioned definition under the same operation contract; it cannot silently change result types or discard the required metadata.
 
@@ -1406,6 +1409,7 @@ body:prose = >`
   | Inline [$ declaration] | Required [$ order]: an array of typed symbol descriptors. |
   | Referenced [$ declaration] | Required [$ reference]: an object with nonempty string [$ id] and [$ version]. |
   | Entry in [$ context.declarations] | Nonempty string [$ id], nonempty string [$ version], and typed-symbol [$ order] array. |
+  |~ Comparison configuration objects and allowed fields
 
   An inline declaration and a reference are mutually exclusive. All these configuration objects are closed to unknown fields; unknown fields, malformed settings, or a configuration using both declaration forms yield [$ invalid_policy]. Rejection of unknown configuration fields was agreed on 2026-11-09. An order is nonempty, contains only valid typed symbols, and has unique decoded payloads. Empty orders and duplicate decoded entries are [$ invalid_policy]. Rejection of empty declarations was agreed on 2026-11-09; it applies equally to inline orders and named registry entries.
 
@@ -1495,7 +1499,7 @@ body:prose = >`
   The four admitted descriptors have exactly [$ category] and [$ value]. [$ finiteNumber.value] is a nonempty ASCII numerical string matching:
 
   ~~~$ text
-  ^[+-]?(?:(?:0|[1-9][0-9]*)(?:\.[0-9]+)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?$
+  ^[+-]?(?:(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$
   ~~~$
 
   Require a full-string match; a regex engine's allowance for matching just before a final newline must not admit trailing whitespace. This accepts integer, decimal, exponent, leading-dot, and signed-zero forms already supported by the existing exact comparator. It excludes surrounding whitespace, underscores, trailing decimal points, redundant integer leading zeroes, NaN, and infinity. A source adapter handles AEON lexical normalization before this logical boundary; normalized exact text is not obtained through a host float. Exponents are compared exactly without expanding a huge power of ten into a dense number. A resource limit is reported separately from invalid text.

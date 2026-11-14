@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-compliance"
 title:string = "AEON Core v1 Compliance Specification"
 description:string = "Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules."
 created:date = 2026-03-25
-modified:date = 2026-09-30
+modified:date = 2026-11-15
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -87,7 +87,7 @@ body:prose = >`
   1. accept bare, single-quoted, and double-quoted keys in all key positions;
   2. accept boolean and toggle literal words ([$ true], [$ false], [$ yes], [$ no], [$ on], [$ off]) as bare keys in key, attribute-key, tag, and path-segment contexts;
   3. reject backtick-quoted keys as keys;
-  4. reject empty quoted keys;
+  4. accept empty quoted property keys in document, object-member and attribute-entry bindings, while enforcing ordinary decoded-key uniqueness within each scope;
   5. reject malformed quoted-key escape sequences;
   6. preserve key/path disambiguation between dotted traversal ([$ a.b]) and quoted single-key ([$ \\["a.b"\\]]);
   7. recognize the document header only at the start of the document;
@@ -101,7 +101,7 @@ body:prose = >`
   2. support quoted member segments and quoted attribute selectors in addressing expressions;
   3. support attribute reference forms through the attribute address-space transition (for example [$ ~a.@.b]);
   4. support mixed member traversal with quoted bracket member segments after [$ .] (for example [$ ~a.\\[\\\\"b.c\\\\"\\]], [$ ~a.@.meta.\\[\\\\"x.y\\\\"\\]], [$ ~a.@.\\[\\\\"x.y\\\\"\\].z]);
-  5. reject empty quoted path or attribute segments deterministically;
+  5. accept empty quoted member and attribute-key segments and preserve them as present path segments distinct from root;
   6. reject malformed or incomplete addressing forms deterministically, including examples such as [$ ~a.@], [$ ~$.a.@.\\[], and [$ ~.\\[\\\\"a\\\\"\\]];
   7. reject missing reference targets deterministically;
   8. reject forward references deterministically;
