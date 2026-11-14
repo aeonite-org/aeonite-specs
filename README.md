@@ -101,6 +101,16 @@ Publication is disabled. Existing finite/comparison snapshots and defaults retai
 their contracts. No implementation conformance or capacity is established by
 this draft; independent-runtime calibration is required before a snapshot.
 
+## Rational arithmetic snapshot 0.2
+
+The [snapshot record](docs/aeonic-rational-arithmetic-snapshot-0.2.md) identifies
+`aeonic-rational-arithmetic-specs-v1-snapshot-0.2`. Its source and closed schema
+are under `resources/aeonic-operations/v1/snapshots/0.2/`, aligned with the
+parallel CTS snapshot. The six-operation profile, exact chaining, explicit
+rounding, history and fail-closed diagnostics retain the tested working semantics.
+The mutable source remains separate; lifecycle, publication and existing defaults
+are unchanged. Snapshot preparation is separate from an implementation's claim.
+
 ## Deferred value semantics guidance
 
 The informative, unpublished proposals
