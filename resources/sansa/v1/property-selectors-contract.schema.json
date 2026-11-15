@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aeonite:sansa:properties:contract-candidate:0.1",
+  "type": "object",
+  "properties": {
+    "id": {
+      "const": "sansa.property-selectors.candidate.0.1"
+    },
+    "status": {
+      "const": "proposal-unpublished-unimplemented"
+    },
+    "document": {
+      "const": "sansa-v1-property-selectors"
+    },
+    "profile": {
+      "const": "sansa-properties-read-only-candidate-0.1"
+    },
+    "publishedRegistryIdentifier": {
+      "const": false
+    },
+    "defaultSelection": {
+      "const": "exclude"
+    },
+    "properties": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "scopeContext": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "facet": {
+      "const": "properties"
+    },
+    "scopeRoles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "nodeKinds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "keyCallbacks": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "tagCallbacks": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "parseDiagnostics": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "resolveDiagnostics": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "intendedProfileAdmission": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "notAdmitted": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "positionals": {
+      "const": "separate-deferred"
+    },
+    "implementationClaimsChanged": {
+      "const": false
+    },
+    "release": {
+      "const": false
+    },
+    "deployment": {
+      "const": false
+    },
+    "integrationEvidencePending": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "optionEncoding": {
+      "const": "Finite integer-valued built-in/JSON numbers; bool/string/non-finite/fractional rejected; integral 1.0 and -0 normalize before native u32"
+    },
+    "selector": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "propertyFilter"
+        },
+        "property": {
+          "const": [
+            "key",
+            "tag"
+          ]
+        },
+        "value": {
+          "const": "Unicode scalar string"
+        },
+        "isExact": {
+          "const": false
+        }
+      },
+      "required": [
+        "type",
+        "property",
+        "value",
+        "isExact"
+      ],
+      "additionalProperties": false
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "maxPropertyInspections": {
+          "type": "object",
+          "properties": {
+            "default": {
+              "const": 10000
+            },
+            "minimum": {
+              "const": 0
+            },
+            "maximum": {
+              "const": 1000000
+            },
+            "queryShared": {
+              "const": true
+            }
+          },
+          "required": [
+            "default",
+            "minimum",
+            "maximum",
+            "queryShared"
+          ],
+          "additionalProperties": false
+        },
+        "propertyAddress": {
+          "type": "object",
+          "properties": {
+            "maxSelectors": {
+              "const": 256
+            },
+            "maxPayloadScalars": {
+              "const": 4096
+            },
+            "maxCanonicalScalars": {
+              "const": 65536
+            },
+            "propertyFreeInputsUnchanged": {
+              "const": true
+            }
+          },
+          "required": [
+            "maxSelectors",
+            "maxPayloadScalars",
+            "maxCanonicalScalars",
+            "propertyFreeInputsUnchanged"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "maxPropertyInspections",
+        "propertyAddress"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "status",
+    "document",
+    "profile",
+    "publishedRegistryIdentifier",
+    "defaultSelection",
+    "properties",
+    "scopeContext",
+    "facet",
+    "scopeRoles",
+    "nodeKinds",
+    "keyCallbacks",
+    "tagCallbacks",
+    "parseDiagnostics",
+    "resolveDiagnostics",
+    "intendedProfileAdmission",
+    "notAdmitted",
+    "positionals",
+    "implementationClaimsChanged",
+    "release",
+    "deployment",
+    "integrationEvidencePending",
+    "optionEncoding",
+    "selector",
+    "limits"
+  ],
+  "additionalProperties": false
+}
