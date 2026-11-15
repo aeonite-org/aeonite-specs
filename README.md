@@ -72,7 +72,7 @@ Before committing, run:
 bash ./scripts/pre-commit-check.sh
 ```
 
-This checks portable paths, the 96-document source inventory, required envelope declarations,
+This checks portable paths, the 97-document source inventory, required envelope declarations,
 identifier uniqueness, date ordering, related-document IDs, publication links and anchors, referenced
 publication assets, and the contract-resource bundle. Full AEON and &ND parsing, projection tests, and
 website checks run in the consuming publication build.
@@ -158,3 +158,12 @@ the parallel CTS snapshot. Relations and Calendar remain independent complete
 capabilities. Working source/schema retain separate mutable paths; publication,
 profile selection and all earlier snapshots remain unchanged. Implementation
 claims must retain actual frozen-target executions and separate capacity evidence.
+
+## Property-selector candidate
+
+The unpublished [property-selector proposal](sources/sansa/v1/property-selectors-v1.aeon)
+and [0.1 contract resource](resources/sansa/v1/property-selectors-candidate.json)
+prepare exact key/tag predicates, authorized property scope, additive adapter APIs
+and bounded experimental verification. They add no runtime support or released
+conformance claim. Positions and broader consumer admission remain separate;
+publication, implementation adoption and release/deployment are not implied.
