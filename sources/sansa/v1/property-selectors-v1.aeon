@@ -1,0 +1,98 @@
+schemaVersion:string = "1"
+id:string = "sansa-v1-property-selectors"
+title:string = "SANSA Property Selectors v1 Candidate"
+description:string = "Unpublished property-only addressing, authorized adapter and experimental verification contract."
+created:date = 2026-11-16
+modified:date = 2026-11-16
+family:string = "sansa"
+group:string = "SANSA"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/sansa/v1/proposals/property-selectors"
+order:number = 136
+publish:boolean = false
+keywords:list<string> = ["SANSA", "property", "key", "tag", "scope", "candidate"]
+related:list<string> = ["sansa-v1-addressing", "sansa-v1-resolve", "sansa-v1-query", "sansa-v1-conformance"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # SANSA Property Selectors v1 Candidate [# property-selectors]
+
+  This is the unpublished 0.1 candidate for exact key and node-tag predicates. It prepares owning semantics, an additive adapter contract and an explicitly experimental CTS selection. It is not implemented support, a released profile, a registry promotion or an authorization grant. Local positions, new recursive selectors and identity-based references are outside this candidate.
+
+  ## 1. Grammar and model [# grammar]
+
+  The only new address suffixes are [$ &key("text")] and [$ &tag("text")]. They filter the current Binding Set; they do not navigate. They may follow either existing root or any existing selector, and may repeat or precede later navigation. There is no preceding dot. Names are case-sensitive. Exactly one existing SANSA double-quoted payload is required, with no layout outside that payload. Spaces inside a payload remain ordinary data. Unknown names, extra arguments and general expressions fail. Positional names remain unsupported.
+
+  Reuse Addressing's quoted-payload and Unicode-scalar rules, including its escape diagnostics and canonical rendering. Compare decoded scalar sequences exactly: no normalization, case folding, locale, wildcard, namespace-prefix or qualifier interpretation. The empty argument is legal. It neither creates an absent key nor legalizes an empty tag in a source format that forbids one.
+
+  The new selector model is propertyFilter with property equal to key or tag and value equal to the decoded string. Any address containing it has isExact false, even if resolution returns one binding. Render from validated fields; caller canonical and isExact claims are not authority. Result handles, identities, structural paths, order and repeated occurrences remain unchanged.
+
+  Candidate addresses containing properties are bounded to 256 total selectors, 4096 decoded scalars per property argument and 65536 scalars in canonical rendering. These fixed 0.1 preparation bounds apply to text and caller ASTs; property-free inputs keep their existing rules. Detect the feature with a linear, bounded-scratch scan; reject excess before building canonical strings or calling the namespace. These are not a constant-time bound independent of supplied input length. AST normalization is iterative, bounded and non-mutating, accepts plain data nodes, rejects accessor fields/cycles/unknown variants, and does not stringify an unchecked graph. Host Proxy behavior is outside the portable plain-data model. Forward existing parse options, including an increased maxPositionIndex; do not silently reparse with defaults.
+
+  ## 2. Key and tag meaning [# meaning]
+
+  A key is the authorized ordinary object-member or attribute key of an occurrence, including the empty string. Anonymous positions, synthetic heads, namespace roots and space roots have no incoming key. Missing differs from empty. Do not infer a key from a structural path, identity, index, tag, legacy name callback or display name.
+
+  For tag matching, a NodeHead tests its own exposed tag. A NodeLiteral tests whether any directly owned, exposed NodeHead has the tag, returning the original container once per input occurrence. Other kinds miss, including ordinary objects with tag fields. Cached outer tags are ignored. Stop on the first matching head, without reading later heads. A match does not retarget later navigation to that head. Several matches do not multiply one occurrence; repeated input occurrences still repeat the result and charges.
+
+  The adapter must expose the complete direct-head sequence in its deterministic structural order. Do not flatten content children, search descendants, sort, deduplicate or synthesize head bindings. Native AEON's source-validation rules remain separate from the generic SANSA namespace contract.
+
+  ## 3. Authorized scope versus evaluation anchor [# scope]
+
+  Every in-flight occurrence carries an internal property frame with an authorized scope root and an evaluation root. Frames are not public bindings, result paths, serialized plans or caller-supplied authority options. A canonical path never proves scope membership.
+
+  Standalone absolute resolution starts with namespace.root as both roots. Standalone contextual resolution starts a boundary at the resolved contextual root, regardless of allowParentFromEffectiveRoot. A rebased namespace root hides its incoming key. Query current-row evaluation changes only the evaluation root and retains the originating occurrence's authorized scope. Explicit Query contextual evaluation starts a boundary at that row. Attribute-space and local-space transitions establish a boundary at the returned space root; preserve that frame through later Query rows. Ordinary child/head navigation retains the frame. Existing parent traversal is unchanged, but a new property inspection outside the frame fails rather than reading metadata.
+
+  Thus a scoped node root can match [$ $&tag("catalog")] but not its former incoming key. Query [$ .&key("document")] retains an authorized document key; [$ ?&key("document")] hides it at the contextual boundary. The current-row spelling belongs only to Query; it is not a new standalone root or a rewrite into an authorization-granting option. Repeated handles with different originating frames remain separate occurrences.
+
+  The runtime constructs read-only contexts containing scopeRoot, evaluationRoot and, while validating a yielded head, directHeadOf. Hosts cannot supply or reset these through address AST fields or public Resolve options. Read-only means callbacks may not mutate the frame; it does not sandbox a hostile host adapter.
+
+  ## 4. Optional property facet [# adapter]
+
+  The additive namespace facet is properties. Existing namespace adapters omit it and retain their old behavior. Its scope callback is mandatory. Key support requires its key callback; tag support requires all of nodeKind, nodeTag and nodeHeads. JavaScript/Python advertise those supports through callable presence. Rust adds a default-None Namespace.properties method and a PropertyAccess trait with explicit supports_key and supports_nodes flags; false is the default. This candidate defines the interface but does not export it from an implementation yet.
+
+  The scope callback receives the binding and runtime context, returning root, inside or outside. Root must denote the actual scope-root occurrence. The engine verifies root-role agreement using existing opaque occurrence identity: a child falsely reported as root or a root reported as inside is invalid metadata. Inside proves authorized membership. When directHeadOf is present, it must also prove directly owned-head membership, not just presence somewhere in the same document. Outside produces a scope failure. A provider unable to prove these distinctions must leave the facet unsupported; it must not guess from names or addresses.
+
+  After a root role, key matching misses without calling key. Intrinsic tag access at an authorized root remains permitted. nodeKind returns exactly NodeLiteral, NodeHead or Other. key and nodeTag return a Unicode-scalar string or supported absence. nodeHeads is an incrementally consumed iterable of original handles. Wrong kinds, malformed strings and non-iterables fail; they are not misses. Every yielded head receives its own charged scope/ownership and kind validation before tag access.
+
+  The standalone TypeScript, Rust and Python declaration sketches in the SANSA implementation repository are the proposed ABI for review. They are documentation artefacts, not current package exports or conformance claims. Rust accessors/iterator items use checked PropertyAccessError variants; JavaScript/Python bridges map equivalent explicit faults or thrown callback/iterator errors to the diagnostics below. Preserve existing non-property callback behavior.
+
+  ## 5. Preflight and failures [# preflight]
+
+  Order checks as input/AST normalization, options, root validity, consumer policy, requested property capabilities, then traversal. Preflight capabilities left-to-right across the complete address, or Query from/where/order/select syntax, even if an earlier branch is empty or a condition would short-circuit. Presence checks perform no property reads, child enumeration or head iteration. Missing scope support precedes the missing key/tag support for that selector.
+
+  New diagnostics are SANSA_UNKNOWN_PROPERTY_SELECTOR, SANSA_EXPECTED_PROPERTY_ARGUMENT and SANSA_PROPERTY_LIMIT_EXCEEDED for grammar/bounds; existing quoted-payload, Unicode, token and whitespace diagnostics retain their meaning. Invalid caller property ASTs use SANSA_RESOLVE_INVALID_ADDRESS. A bound failure may retain the parse cause code. Indices follow existing host conventions; no new cross-language UTF-16/byte equivalence is implied.
+
+  Resolution diagnostics are SANSA_RESOLVE_INVALID_PROPERTY_LIMIT, SANSA_RESOLVE_UNSUPPORTED_PROPERTY_SCOPE, SANSA_RESOLVE_UNSUPPORTED_KEY, SANSA_RESOLVE_UNSUPPORTED_TAG, SANSA_RESOLVE_PROPERTY_SCOPE_VIOLATION, SANSA_RESOLVE_INVALID_PROPERTY_METADATA, SANSA_RESOLVE_PROPERTY_ADAPTER_ERROR and SANSA_RESOLVE_PROPERTY_LIMIT_EXCEEDED. A disallowed consumer retains its existing unsupported-selector/non-exact-target policy diagnostics. Existing errors from earlier normalization/root checks keep precedence.
+
+  Metadata/iterator failures are fail-closed, with no partial Binding Set or Query records. Rust checked faults distinguish invalid metadata, scope violation and adapter failure. Untyped callback/iterator exceptions map to adapter failure. Scope/metadata diagnostics identify property and selectorIndex, without disclosing hidden keys, tags, foreign addresses or host exception text. Limit diagnostics also include budget=maxPropertyInspections, limit and observed. Query adds its existing phase field: policy for preflight, or the consuming from/where/order/select clause. Messages are informative.
+
+  ## 6. Inspection and resource contract [# accounting]
+
+  maxPropertyInspections defaults to 10000 per Resolve invocation. The 0.1 portable option domain is finite integer-valued numbers from 0 through 1000000; booleans, negative, fractional and larger values fail before namespace access, even for a property-free expression. Integral numeric 1.0 and negative zero normalize to 1 and 0. JSON/native bridges perform this validation before the Rust u32 field; strings and arbitrary host objects are not coerced. Rust validates the same ceiling. Zero is valid. Existing identity, binding, Query and host resource limits are independent and unchanged.
+
+  Charge one unit before inspecting each candidate at each predicate, including Other, absent and root-hidden candidates. A NodeLiteral tag predicate additionally charges each yielded head before its scope/kind/tag access. An empty direct-head iterator costs only the container unit. Check before candidate N+1 with observed=N+1. At the exact allowance, one iterator next probe may establish completion; it may not inspect another yielded head. Iterator acquisition/next work is host work, not free metadata access or a portable CPU/allocation guarantee. Do not eagerly clone/materialize all heads before the guard. Adapter iterator failures precede a nonexistent next candidate's inspection.
+
+  One private allowance is shared across all actual Query clauses, rows, projections and repeated reads; nested internal Resolve calls cannot reset it. A new or reentrant public Query call has a fresh allowance. Do not expose a mutable counter/session in public options, contexts, ASTs or serialized data. Repeated branches retain their charges. Existing intermediate maxBindings failures occur before a later filter; predicates cannot rescue a prior overflow.
+
+  On the first matching head, on exhaustion or on error, release iterator resources. Early termination invokes the host's cleanup path when provided: JavaScript return, Python close/finally and Rust Drop. Do not read a later head merely to validate an unvisited suffix. Existing host cancellation remains a failure, never an empty success. A profile must not claim actual computational cost from logical counters alone. Resource/cost and actual provider evidence remain implementation/release gates.
+
+  ## 7. Admission and rollout [# admission]
+
+  The intended 0.1 experimental profile admits Addressing, standalone read-only Resolve and directly authored read-only Query properties. Query selection of an empty Binding Set retains its candidate result record; where existence can remove it. Neither parsing nor adapter support admits other consumers.
+
+  Address activation, Graph, Instruction, Mutate, SO, AEOS structural path fields, event/storage paths and AEON clone/pointer references remain closed. Property expressions are non-exact even when forged AST flags claim otherwise. Query-shaped mutation/Instruction paths must reject properties before traversal, including empty branches. All activation modes, including trusted, remain closed to property-containing addresses. AEOS selector and Type Transpiler admission requires a separate owning integration profile and fixtures; it is not granted here. AEON literal syntax reuses shared Addressing grammar; its lexical boundaries need owning integration evidence. No separate literal deny rule or advertised embedding support is introduced here.
+
+  Reference implementations are Rust, TypeScript/JavaScript and Python through their owning providers. Pure Python currently has no Query evaluator; this record does not invent one or imply new native/WASM entry points. Provider advertisements follow delivered/tested surfaces, never planned declarations. Historical spec/CTS snapshots, implementation capabilities and existing compatibility/target-preservation checks stay unchanged. Positional groups/resources and recursive/root-search extensions remain separate.
+
+  ## 8. Experimental verification ownership [# verification]
+
+  CTS owns an explicitly selected mutable property-only development manifest, fixtures, protocol and preparation checker. Its default selection is exclude. Preparation validates schema, references, digests and coverage; it executes no selector SUT and establishes no conformance. Every present expected field, including call counts and empty Query result records, must be asserted by a future lane adapter; unsupported instrumentation is a failure rather than a silent skip.
+
+  Promotion requires owning review/merge, cross-runtime text/AST and scope/provider parity, negative consumer admission, bounded iterator/work/cancellation evidence, actual installed/native/WASM/tooling consumers as advertised and a selected release combination. Existing 1.15x latency and 1.20x memory ceilings remain unchanged, including the separately recorded unqualified heap status. No benchmark, version allocation, official release or deployment is authorized by this candidate.
+`

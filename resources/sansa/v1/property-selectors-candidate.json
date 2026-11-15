@@ -1,0 +1,103 @@
+{
+  "id": "sansa.property-selectors.candidate.0.1",
+  "status": "proposal-unpublished-unimplemented",
+  "document": "sansa-v1-property-selectors",
+  "profile": "sansa-properties-read-only-candidate-0.1",
+  "publishedRegistryIdentifier": false,
+  "defaultSelection": "exclude",
+  "properties": [
+    "key",
+    "tag"
+  ],
+  "selector": {
+    "type": "propertyFilter",
+    "property": [
+      "key",
+      "tag"
+    ],
+    "value": "Unicode scalar string",
+    "isExact": false
+  },
+  "scopeContext": [
+    "scopeRoot",
+    "evaluationRoot",
+    "directHeadOf?"
+  ],
+  "facet": "properties",
+  "scopeRoles": [
+    "root",
+    "inside",
+    "outside"
+  ],
+  "nodeKinds": [
+    "NodeLiteral",
+    "NodeHead",
+    "Other"
+  ],
+  "keyCallbacks": [
+    "scope",
+    "key"
+  ],
+  "tagCallbacks": [
+    "scope",
+    "nodeKind",
+    "nodeTag",
+    "nodeHeads"
+  ],
+  "limits": {
+    "maxPropertyInspections": {
+      "default": 10000,
+      "minimum": 0,
+      "maximum": 1000000,
+      "queryShared": true
+    },
+    "propertyAddress": {
+      "maxSelectors": 256,
+      "maxPayloadScalars": 4096,
+      "maxCanonicalScalars": 65536,
+      "propertyFreeInputsUnchanged": true
+    }
+  },
+  "parseDiagnostics": [
+    "SANSA_UNKNOWN_PROPERTY_SELECTOR",
+    "SANSA_EXPECTED_PROPERTY_ARGUMENT",
+    "SANSA_PROPERTY_LIMIT_EXCEEDED"
+  ],
+  "resolveDiagnostics": [
+    "SANSA_RESOLVE_INVALID_PROPERTY_LIMIT",
+    "SANSA_RESOLVE_UNSUPPORTED_PROPERTY_SCOPE",
+    "SANSA_RESOLVE_UNSUPPORTED_KEY",
+    "SANSA_RESOLVE_UNSUPPORTED_TAG",
+    "SANSA_RESOLVE_PROPERTY_SCOPE_VIOLATION",
+    "SANSA_RESOLVE_INVALID_PROPERTY_METADATA",
+    "SANSA_RESOLVE_PROPERTY_ADAPTER_ERROR",
+    "SANSA_RESOLVE_PROPERTY_LIMIT_EXCEEDED"
+  ],
+  "intendedProfileAdmission": [
+    "Addressing",
+    "Resolve",
+    "DirectReadOnlyQuery"
+  ],
+  "notAdmitted": [
+    "Activation",
+    "Graph",
+    "Instruction",
+    "Mutate",
+    "SO",
+    "AEOSPath",
+    "AEOSSelector",
+    "TypeTranspiler",
+    "EventPath",
+    "StoragePath",
+    "CloneReference",
+    "PointerReference"
+  ],
+  "positionals": "separate-deferred",
+  "implementationClaimsChanged": false,
+  "release": false,
+  "deployment": false,
+  "integrationEvidencePending": [
+    "AEONLiteralEmbedding"
+  ],
+  "optionEncoding": "Finite integer-valued built-in/JSON numbers; bool/string/non-finite/fractional rejected; integral 1.0 and -0 normalize before native u32"
+}
