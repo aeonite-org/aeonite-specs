@@ -1,0 +1,498 @@
+schemaVersion:string = "1"
+id:string = "aeonic-temporal-civil-date-v1-snapshot-0-1"
+title:string = "Aeonic Temporal Civil-Date v1 Snapshot 0.1"
+description:string = "Exact civil-date sets, independent relation/calendar capabilities, explicit profile selection and portable calendar-work admission."
+created:date = 2026-11-15
+modified:date = 2026-11-15
+family:string = "aes"
+group:string = "Semantic Language"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v1/aeonic-temporal-civil-date/snapshot-0.1"
+order:number = 45
+publish:boolean = false
+keywords:list<string> = ["AEON", "temporal", "civil dates", "calendar", "comparison", "proposal"]
+related:list<string> = ["aeonic-semantic-language-v1", "aeon-core-v1-value-types", "aeon-gp-temporal-v1", "appendix-temporal-ticks-resolution-extent-v1"]
+specSnapshotId:string = "aeonic-temporal-civil-date-specs-v1-snapshot-0.1"
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Aeonic Temporal Civil-Date v1 Snapshot 0.1 [# civil-date-section-1]
+
+  Status: immutable compatibility snapshot
+  aeonic-temporal-civil-date-specs-v1-snapshot-0.1, frozen 2026-11-15.
+  Proposal lifecycle and disabled publication are preserved. Implementation
+  conformance and capacity require separate evidence. Existing comparison and
+  numerical profiles, defaults and snapshots remain unchanged.
+
+  The [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/civil-date-contract.schema.json | civil-date schema]
+  defines closed successful-request/result shapes. Calendar validity, canonical
+  sets, fixed diagnostics, selection and work rules below additionally apply;
+  schema validity alone is not semantic conformance.
+
+  ## 1. Domain, capabilities and profile [# civil-date-section-2]
+
+  The profile is [$ aeonic.operations.temporal.civil-date.v1]. It MUST be selected
+  explicitly by operation policy or reusable context; there is no implicit profile.
+  Validate both supplied configurations before resolving policy over context.
+  Only the effective profile's availability is resolved. No host locale,
+  timezone, calendar, database or process-global resolver supplies missing input.
+
+  There are two independently claimable complete capabilities:
+
+  | Capability | Required operations |
+  | <-- | <-- |
+  | [$ Aeonic.Operations.Temporal.CivilDate.Relations] | [$ equal], [$ compare], [$ relate] |
+  | [$ Aeonic.Operations.Temporal.CivilDate.Calendar] | [$ shift], [$ step], [$ materialize] |
+
+  Each capability requires every admitted pairing/unit and all shared transport,
+  metadata, admission and failure semantics. There are no per-case semantic
+  opt-outs. A full implementation may claim either or both. Availability is
+  host-declared and cannot be enabled by an untrusted logical request. Claim
+  selection does not imply that unclaimed operations are unavailable in a provider.
+
+  Civil dates are ISO/proleptic Gregorian dates in years 0001–9999. [$ YYYY-],
+  [$ YYYY-MM], [$ YYYY-MM-DD] retain their existing AEON meaning and original spelling.
+  The year/month/day granularity defines its complete compatible date set; omitted
+  fields are unasserted, not filled with January/first day/midnight. There is no
+  clock, offset, geographic, timezone, WTC, non-ISO-calendar or instant resolution.
+  A year contains its months and dates without becoming equal to any one of them.
+
+  Derived sets are exact nonempty sets of civil dates on the day grid. They do
+  not express probability, an uncertain instant or a complete source history.
+  A containing-period display cannot replace their restrictions in a chain.
+  Errors never create values; applications may explicitly capture them elsewhere.
+
+  ## 2. Reusable operand bundles [# civil-date-section-3]
+
+  All temporal operands use a bundle. The following are JSON transport categories,
+  not new AEON literal kinds or document attributes.
+
+  ### Authored or materialized date [# civil-date-section-4]
+
+  ~~~$ json
+  {
+    "temporal": { "category": "civilDate", "value": "2024-03" },
+    "originGranularity": "month",
+    "history": "none-declared"
+  }
+  ~~~$
+
+  [$ temporal] is required. [$ value] is preserved date text with one of the existing
+  forms [$ YYYY-], [$ YYYY-MM], [$ YYYY-MM-DD], intrinsically validated under the ISO
+  calendar. No missing fields are filled in as a first day or clock time.
+
+  For a [$ civilDate] input, omitted history means [$ none-declared]; omitted
+  [$ originGranularity] is inferred from the current literal's year/month/day shape.
+  If the caller supplies those fields, validate and retain them. Declared origin
+  can differ from current literal granularity after materialization; it is
+  descriptive history, not authority for interpreting the literal.
+
+  ### Exact derived date set [# civil-date-section-5]
+
+  ~~~$ json
+  {
+    "temporal": {
+      "category": "civilDateSet",
+      "ranges": [{ "start": "2024-03-01", "end": "2024-03-29" }]
+    },
+    "originGranularity": "month",
+    "history": "none-declared"
+  }
+  ~~~$
+
+  Derived bundles require all three top-level fields. [$ ranges] is nonempty.
+  Every endpoint is a complete ISO date, inclusive; each start precedes or equals
+  its end. Ranges are sorted, disjoint and nonadjacent: overlap or adjacency must
+  already have been merged. Noncanonical input is [$ invalid_operand], rather than
+  an instruction for the adapter to repair it. Derived output is canonical.
+
+  origin values are [$ day], [$ month], [$ year], [$ undeclared]. This is a
+  small declared origin marker, not a source archive, trusted provenance proof
+  or current-operation selector. Shifting, stepping and materialization preserve
+  it. The current literal's granularity, exact set and explicit operation retain
+  their separate meanings. [$ undeclared] allows a caller to transport a derived
+  set without inventing an authored granularity.
+
+  history values are [$ none-declared] and [$ clamping-declared]. The first
+  means no clamping history was declared; it does not prove none occurred.
+  A shift that clamps any constituent date produces [$ clamping-declared].
+  Existing declared clamping is never cleared by a successful subsequent shift,
+  step, materialization or zero-count operation. A marker does not recover an
+  original day or request restoration of a pre-clamp anchor.
+
+  Bundle fields and descriptor fields are closed. A complete operation response
+  is not implicitly unwrapped when passed as an operand: pass its [$ value] bundle.
+  Unknown metadata cannot supply a profile, change date meaning or register code.
+
+  ## 3. Request shapes and configuration [# civil-date-section-6]
+
+  Requests have exactly [$ operation] and [$ input]. Input admits the generic field
+  vocabulary [$ left], [$ right], [$ value], [$ context], [$ policy]; known-operation arity
+  then narrows it. [$ context], if present, is an object with only optional [$ profile].
+  [$ policy] fields depend on the operation below.
+
+  | Operation | Required operand fields | policy fields |
+  | <-- | <-- | <-- |
+  | [$ equal], [$ compare], [$ relate] | [$ left], [$ right] | Optional [$ profile]. |
+  | [$ shift] | [$ value] | Required [$ unit], [$ count]; optional [$ profile]. |
+  | [$ step] | [$ value] | Required [$ granularity], [$ count]; optional [$ profile]. |
+  | [$ materialize] | [$ value] | Required [$ granularity]; optional [$ profile]. |
+
+  Binary operations reject [$ value]; unary operations reject [$ left]/[$ right].
+  Operation-specific settings must be explicitly supplied in policy; a context
+  cannot implicitly supply a count, shift unit or output granularity. Unknown
+  configuration fields are rejected, including in an overridden context.
+
+  count encoding is canonical signed integer text: [$ 0] or an optional
+  minus followed by a nonzero digit and further digits. [$ +1], [$ 01], [$ -0], [$ 1.0],
+  exponent spellings and native JSON numbers are not this configuration format.
+  This chooses an exact portable argument encoding, not new AEON Number syntax.
+  Apply a count-text allowance before conversion and compare large magnitudes
+  lexically against the bounded domain when possible; no host-float coercion.
+
+  Example shift:
+
+  ~~~$ json
+  {
+    "operation": "shift",
+    "input": {
+      "value": { "temporal": { "category": "civilDate", "value": "2024-02" } },
+      "policy": {
+        "profile": "aeonic.operations.temporal.civil-date.v1",
+        "unit": "month",
+        "count": "1"
+      }
+    }
+  }
+  ~~~$
+
+  ## 4. Operation meanings [# civil-date-section-7]
+
+  [$ equal] returns a symbol descriptor with value [$ equal] or [$ notEqual] from exact
+  date-set equality. [$ compare] returns [$ before], [$ after], [$ equal] or [$ indeterminate]
+  under the chronology rules below. [$ relate] returns [$ equal], [$ contains], [$ containedBy], [$ overlaps] or
+  [$ disjoint] under the set-relation rules below. Wire symbol descriptors store the label without vertical
+  delimiters, consistent with existing Aeonic comparison transport; AEON notation
+  for the symbol remains e.g. [$ |before|]. No operation returns a Boolean predicate.
+
+
+  ### Exact relation definitions [# civil-date-section-8]
+
+  Let A and B be the complete precise nonempty date sets. Date-set equality ignores
+  representation, origin granularity and clamping history. It does not redefine
+  tick identity or choose an operation from source granularity.
+
+  Chronology returns [$ equal] when A = B; otherwise [$ before] when every A date
+  precedes every B date; [$ after] for the reverse; [$ indeterminate] otherwise. Identical
+  multi-date sets use extent equality; this is not pointwise universal equality.
+  Indeterminate is a successful symbolic result, not false or an error. This
+  relation is not a total sorting comparator; overlapping/containing sets and
+  disjoint interleaved sets need not have a chronological order.
+
+  The five-way relation returns [$ equal] when A = B; [$ contains] when B is a proper
+  subset of A; [$ containedBy] for the reverse; [$ overlaps] when they intersect and
+  neither contains the other; [$ disjoint] when they do not intersect. Exactly one
+  holds for valid nonempty sets. Disjoint does not itself imply before or after.
+  No empty-set semantics, filtering or sorting operation is added here.
+
+  [$ shift] is date-wise over the complete precise set. Units are [$ day], [$ month],
+  [$ year], [$ eom], [$ eoy]. A multi-unit request computes a direct target and clamps
+  once. Month/year preserve the current day or month/day where possible; EOM/EOY
+  preserve current distance from the target period's end, clamping at its start
+  when necessary. Day is an ISO calendar-day displacement, not elapsed seconds.
+  The agreed calendar-piece recipe computes the exact union and current clamping.
+
+  [$ step] requires exactly one complete day, month or year at explicitly selected
+  [$ granularity]. Exact coverage controls admission, independently of source
+  granularity. Move that period by [$ count] units of its own granularity and return
+  the complete target period. This is not an implicit enclosing-period operation;
+  EOM/EOY are date-wise shift units, not aliases for period stepping.
+
+  [$ materialize] requires explicit [$ granularity] = [$ day], [$ month] or [$ year] and
+  exact coverage of one complete selected tick. Emit the corresponding existing
+  AEON date spelling inside a reusable bundle. March 1–29 cannot become month
+  [$ 2024-03]; a containing-period display remains an application presentation.
+
+  All successful transformations remain within years 0001–9999. Any out-of-domain
+  image fails the whole request. There is no dropped subset or year saturation.
+  Zero-count operations retain ordinary operand/policy/coverage/resource checks.
+
+  ## 5. Closed result envelopes [# civil-date-section-9]
+
+  successful shift result for the example above:
+
+  ~~~$ json
+  {
+    "outcome": "value",
+    "value": {
+      "temporal": {
+        "category": "civilDateSet",
+        "ranges": [{ "start": "2024-03-01", "end": "2024-03-29" }]
+      },
+      "originGranularity": "month",
+      "history": "none-declared"
+    },
+    "metadata": {
+      "evaluation": "exact-for-policy",
+      "clamping": "not-applied",
+      "effectivePolicy": {
+        "profile": "aeonic.operations.temporal.civil-date.v1",
+        "unit": "month",
+        "count": "1"
+      }
+    }
+  }
+  ~~~$
+
+  Shift/step return a [$ civilDateSet] bundle; materialization returns a [$ civilDate]
+  bundle with origin/history retained. Current [$ clamping] is [$ applied] or
+  [$ not-applied]; step/materialize do not introduce clamping. [$ exact-for-policy]
+  means exact evaluation of the declared calendar rule, not reversibility.
+  Effective policy contains the profile and that operation's supplied unit/count
+  or granularity/count, without unrelated settings.
+
+  Relation results have [$ value: {"category":"symbol","value":"..."}]. Their
+  metadata has the same evaluation/current-clamping/effective-profile fields,
+  plus [$ operandHistory: {"left":"...","right":"..."}]. Reporting both declared
+  histories preserves ownership rather than creating a new temporal value from a
+  symbol. Relational output cannot be reused as a date operand.
+
+  Diagnostics have exactly [$ outcome: "diagnostic"], [$ reason] and
+  [$ context: {"stage": n, "path": pointer-or-null}], with optional scalar [$ message].
+  They have no value, partial ranges, operation metadata, automatic null or
+  fallback policy. Messages are non-normative. Operation-specific convenience
+  composition, expression evaluation and error capture are separate surfaces.
+
+  Exporting only a bare materialized date drops origin/history. Applications must
+  handle that deliberately; this binding introduces no AEON annotation or automatic
+  document rewrite to preserve metadata that was not exported.
+
+  ## 6. deterministic validation order [# civil-date-section-10]
+
+  The seven-stage organization follows existing operation contracts, with temporal
+  preflight/work/output rules made explicit. Stop at the first failed substep.
+  Reason names, stage numbers and exact paths below are normative requirements.
+
+  | Stage | checks and precedence |
+  | <-- | <-- |
+  | 1 | Unicode-scalar text admission and actual logical JSON UTF-8 byte/depth guards before deeper decoding. [$ invalid_operand] for malformed scalar text; [$ resource_limit] for a reached allowance; null path. |
+  | 2 | Strict JSON and duplicate keys; closed request/input shapes; required operation/input and generic input vocabulary; operation/capability availability; known-operation arity. [$ invalid_operand] or [$ unsupported_operation]. |
+  | 3 | Context shape, policy shape/required settings, configuration values in context-profile/policy-profile/unit-or-granularity/count order; then effective profile availability. [$ invalid_policy], reached count-text [$ resource_limit], or [$ unsupported_profile]. |
+  | 4 | Supported/deferred category and bundle/descriptor/history/origin validation; left then right, or unary value. Canonical ranges checked in array order, start then end; intrinsic date validity before range ordering. Input-range allowance checked before iterating range contents. [$ invalid_operand] or reached [$ resource_limit]. |
+  | 5 | Deferred domains in operand order: [$ unsupported_domain] at the temporal/category path. A malformed supported right operand at stage 4 precedes an unsupported left operand here. |
+  | 6 | Step's exact-period eligibility ([$ incompatible_operand]); shift/step prospective target-domain failure ([$ unrepresentable_result]); then agreed work admission before construction. Exact image construction and incremental output-range checks. All reached work/range failures are [$ resource_limit]. Relations apply their agreed range-count work guard before returning a symbol. |
+  | 7 | Materialization's exact representability first ([$ unrepresentable_result]), emitted date-text allowance next ([$ resource_limit]), and successful-envelope byte preflight before rendering/serialization. All other successful responses also pass the envelope byte guard. |
+
+  At stage 4, require an object [$ temporal] and a recognized string category first.
+  For [$ civilDateSet], require [$ originGranularity] then [$ history]; reject unknown
+  bundle fields; validate history then origin. For [$ civilDate], validate supplied
+  metadata in the same order and apply the documented defaults when absent.
+  Check descriptor required fields then unknown fields before payload parsing.
+  [$ civilDate] checks its conceptual one-range allowance before detailed date text;
+  [$ civilDateSet] requires a nonempty array, applies its length allowance before
+  element traversal, then validates each range object's required [$ start], [$ end]
+  and unknown fields before parsing its endpoints. Deferred bundles validate any
+  supplied history/origin; missing origin is undeclared and their descriptor
+  payload is otherwise opaque.
+
+  paths are the reached field for operand/configuration failures;
+  input-range allowance uses the descriptor path for [$ civilDate] and the [$ ranges]
+  path for [$ civilDateSet]. Stage-6 stepping eligibility uses the operand's
+  [$ temporal] path. Target-domain, calendar-work, output-range, representability
+  and successful-output byte/character failures use null paths. Exact reason/path
+  expectations remain normative at this snapshot boundary.
+
+  Normative precedence examples (not implementation verification):
+
+  | Competing failures | first failure |
+  | <-- | <-- |
+  | Request bytes exceeded and unknown operation | Stage 1 [$ resource_limit], null path. |
+  | Operation unavailable in the declared capability and missing unary operand | Stage 2 [$ unsupported_operation], [$ /operation]. |
+  | Shift policy missing count and selecting an unknown profile | Stage 3 [$ invalid_policy], [$ /input/policy/count]. |
+  | Malformed overridden context profile and valid policy profile | Stage 3 [$ invalid_policy], [$ /input/context/profile]. |
+  | Valid unknown effective profile and malformed date | Stage 3 [$ unsupported_profile], selected profile path. |
+  | Count text allowance reached and invalid count grammar | Stage 3 [$ resource_limit], [$ /input/policy/count]. |
+  | Empty derived range array and zero input-range allowance | Stage 4 [$ invalid_operand], the [$ ranges] path. |
+  | Nonempty derived array over its range allowance and invalid first date | Stage 4 [$ resource_limit], the [$ ranges] path. |
+  | Deferred left domain and malformed supported right date | Stage 4 [$ invalid_operand], right date payload path. |
+  | Two valid deferred operands | Stage 5 [$ unsupported_domain], left category path. |
+  | Partial-month step and zero work allowance | Stage 6 [$ incompatible_operand], [$ /input/value/temporal]. |
+  | Shift outside 0001–9999 and zero work allowance | Stage 6 [$ unrepresentable_result], null path. |
+  | Valid target with calendar-work exceeded and small output-range allowance | Stage 6 work [$ resource_limit] before image construction. |
+  | Unrepresentable materialization and zero work allowance | Stage 6 work [$ resource_limit] before stage-7 representability. |
+  | Unrepresentable materialization and zero emitted-text allowance, with work admitted | Stage 7 [$ unrepresentable_result], null path. |
+
+  Materialization pays its one-unit work admission at stage 6 before stage 7. A
+  zero work allowance can therefore precede an unrepresentable materialization.
+  For shift/step, target-domain/eligibility preflight precedes work rejection under
+  the calendar-work recipe. Known input metadata/canonical failures precede either. No validation order
+  for non-JSON native graphs is claimed beyond fail-closed cycle/resource handling.
+
+  Within a closed object, check listed required fields before unknown fields;
+  unknown fields use decoded Unicode-scalar order. Escape JSON Pointer tokens
+  normally; use null if a pointer cannot be represented. For an invalid range
+  ordering/adjacency report its start field; for a reversed range report its end.
+  Current-clamping/history flags never override a malformed operand or config.
+
+  Proposed recognized deferred tags reuse existing operation vocabulary:
+  [$ finiteNumber], [$ exactNumber], [$ exactRational], [$ string], [$ boolean], [$ symbol],
+  [$ positiveInfinity], [$ negativeInfinity], [$ nan], [$ explicitNull], [$ explicitAbsence],
+  [$ toggle], [$ hex], [$ radix], [$ encoding], [$ separator], [$ sansaAddress], [$ referenceForm],
+  [$ temporal], [$ container]. Their payload is opaque at semantic validation; request
+  byte/depth admission still covers it. Unknown category names are malformed
+  operands. These tags do not require implementing deferred value families merely
+  to reject them.
+
+  ## 7. limits and capacity boundaries [# civil-date-section-11]
+
+  Values below are the initial explicit CTS baseline, not verified native defaults or machine capacity.
+  Shared semantic tests must supply an explicit complete map; native defaults and
+  their independent capacity checks remain separate evidence.
+
+  | setting | Initial | Scope |
+  | <-- | <-- | <-- |
+  | [$ maxRequestBytes] | 16384 | Actual logical JSON UTF-8, excluding outer CTS transport. |
+  | [$ maxRequestDepth] | 32 | Per-path logical container depth; root container is one. |
+  | [$ maxInputRanges] | 128 | Each operand; an authored date expands conceptually to one range. |
+  | [$ maxCountCharacters] | 32 | Supplied count text before integer conversion/semantic domain checks. |
+  | [$ maxOutputRanges] | 128 | Canonical successful shift/step output, guarded before append. |
+  | [$ maxCalendarWork] | 4096 | Agreed logical work recipe; not actual iterations or elapsed time. |
+  | [$ maxOutputCharacters] | 10 | Emitted bare date text on materialization, after representability. |
+  | [$ maxResultBytes] | 16384 | Complete successful compact logical JSON envelope, preflighted before serialization. |
+
+  Trusted resource settings accept objects of known nonnegative safe-integer
+  limits; null/scalars/arrays/unknown keys are harness configuration errors, not
+  operation values. Outer STDIO/harness framing and provider configuration remain
+  outside the logical JSON operation budget. Bindings must preserve raw numerical
+  tokens in logical JSON and exact trusted numeric settings, even when malformed
+  operation input or opaque payload would overflow/underflow host floating point.
+
+  Successful responses contain only bounded ASCII date/enum/profile/count strings
+  and bounded ranges; their exact compact envelope size can be preflighted before
+  stringifying the whole response. Diagnostic context has its own bounded logical
+  input provenance; successful-output limits must not recursively suppress a
+  required no-value diagnostic. Native getters/proxies/custom subclasses and
+  complete key enumeration remain a separately documented host boundary.
+
+  All allowances are per operation. Applications manage chain budgets. A materialized
+  date output limit does not make a narrower derived set inexact or authorize
+  rounding; a successful previous bundle remains separately available to its caller.
+
+
+  ## 8. Normative calendar-work recipe [# civil-date-section-12]
+
+  Let [$ R] be the number of admitted canonical input ranges. For a complete source
+  date [$ d], define [$ monthIndex(d) = 12 * (year(d) - 1) + month(d) - 1].
+  Endpoints below are inclusive civil dates. All operand/policy/count validation
+  still occurs before any zero-count or other compact shortcut.
+
+  | Operation meaning | Required calendar-work count W |
+  | <-- | <-- |
+  | Date-wise day shift | [$ R] — one source-range piece per range. |
+  | Any date-wise zero-count shift | [$ R] — exact coverage reuse after normal admission. |
+  | Nonzero date-wise month or EOM shift | Sum [$ monthIndex(end) - monthIndex(start) + 1] over the source ranges. |
+  | Nonzero date-wise same-month/day year shift | The same source-month count; its preservation rule is equivalent to a direct [$ 12 * count] same-day month displacement. |
+  | Nonzero date-wise EOY shift | Sum [$ year(end) - year(start) + 1] over the source ranges. |
+  | Whole-period stepping | [$ 1], after exact one-period admission at the explicit granularity. The count is a direct period displacement. |
+  | Exact date materialization | [$ 1], after operand admission; exact representability and output checks remain separate. |
+  | Exact equality, chronology or five-way set relation | [$ R_left + R_right], even if a particular implementation could decide the answer earlier. |
+
+  Each source range may begin/end inside a month or year. Count only its nonempty
+  intersections with those periods. If two disjoint source ranges intersect the
+  same month, each contributes its own piece; no enclosing-range or cross-gap
+  coalescing is allowed. Canonical ranges already merge adjacent dates.
+
+  For nonzero year shifts, this recipe uses month pieces rather
+  than a faster year-only algorithm. That common decomposition captures leap-day
+  holes using the same preservation rule as month shifts. It is an admission
+  recipe, not a claim that every conforming implementation needs twelve iterations
+  per source year. A future change to these admission rules needs explicit
+  contract/version review rather than an implementation-specific optimization.
+
+  ### Calendar-image preflight [# civil-date-section-13]
+
+  The recipe's local preflight order for a calendar shift is:
+
+  1. Admit request size/depth, configuration and operands through the
+     deterministic validation stages. Validate nonempty sorted canonical ranges,
+     intrinsic dates, counts, metadata and the unit. Input-range limits bound this
+     preparation independently of calendar-work W.
+  2. Check the prospective target domain without producing the image. Under the year-domain rule,
+     any mapped date outside years 0001–9999 rejects the whole operation. For a
+     canonical set, the earliest/latest source coordinates and direct displacement
+     determine these bounds; do not scan each day to find a year overflow.
+  3. Compute W using source endpoint arithmetic and range counts. Stop a bounded
+     sum once it exceeds the configured allowance; an exact over-limit total need
+     not be materialized. Do not first construct all month/year pieces, mapped
+     dates or output ranges just to discover W is too large.
+  4. If W exceeds the allowance, return [$ resource_limit] with no result before
+     constructing the calendar image. Otherwise process the admitted pieces.
+  5. Normalize the image incrementally with an independent output-range guard.
+     Preserve clamping/history metadata. Check remaining result/output limits.
+
+  The stage order in section 6 applies: eligibility/domain preflight precedes
+  calendar-work rejection in stage 6. The corresponding reasons are
+  [$ incompatible_operand] and [$ unrepresentable_result]. Calendar-domain overflow is distinct from within-period day
+  clamping and must not return an in-range subset.
+
+  Zero-count reuse still pays W = R and all input/output checks. It cannot bypass
+  unsupported-unit, canonical-form, metadata or complete-period admission.
+
+  ### Exact image of a piece [# civil-date-section-14]
+
+  One piece maps to an inclusive interval. These formulas define the reference decomposition and exact ISO calendar image.
+
+  | Unit | Calendar-piece image |
+  | <-- | <-- |
+  | Day | Shift both source endpoints by the same number of ISO calendar days. |
+  | Month / same-day year | Within a source month, move directly to the target month. Map day [$ d] to [$ min(d, targetMonthLength)]. |
+  | EOM | Within a source month, let [$ offset = targetMonthLength - sourceMonthLength]. Map day [$ d] to [$ max(1, d + offset)], preserving distance from month-end. |
+  | EOY | Within a source year, let [$ offset = targetYearLength - sourceYearLength]. Map ordinal day [$ k] to [$ max(1, k + offset)] in the direct target year. |
+
+  The mappings are nondecreasing inside each piece and their images have no
+  internal date gaps. Same-day month/year clamping occurs if the source piece's
+  last day exceeds the target month's last day. EOM/EOY clamping occurs if the
+  unclamped first coordinate falls before the target period's first day. Endpoint
+  checks therefore detect whether any constituent date was clamped.
+
+  Across source pieces/ranges, target intervals are also nondecreasing under each
+  single selected shift rule. Stream them in source order, merge overlaps and
+  adjacency, and append only when a genuine gap remains. A newly appended gap
+  cannot be filled by a later piece, so output-range allowance can be checked
+  before each append without collecting the complete unnormalized image.
+
+  This preserves gaps and handles duplicate images created by clamping. It does
+  not enumerate every source day or retain an unbounded tree of calculation
+  expressions. An optimized implementation must preserve the same exact set,
+  clamping/history facts and logical admission verdict.
+
+
+
+  ## 9. Full conformance and delivery boundary [# civil-date-section-15]
+
+  The CTS MUST verify complete result metadata, diagnostics, canonical form and
+  actual-result chaining, not only endpoint values. Relations-only claims consume
+  derived sets/history without requiring a local arithmetic producer. Calendar
+  claims cover all five shift units, all three step/materialization granularities,
+  signed/zero counts, clamping/history, direct versus chained behavior and every
+  logical allowance. Combined claims additionally cover actual calendar-to-relation
+  transport. Input operands are not mutated.
+
+  Operation/chain/law results must use exact expected values and symbolic outcomes.
+  Required laws include equality reflexivity/symmetry/transitivity, converse
+  before/after, strict-before transitivity and five-way relation consistency.
+  Indeterminate pairs are not treated as equivalent sort keys. A malformed or
+  resource-rejected input is not a counterexample to a law over admitted values.
+
+  The parallel CTS target is aeonic-temporal-civil-date-cts-v1-snapshot-0.1.
+  Artifact checks execute no SUT, establish no semantic pass and cannot create a
+  stable implementation claim. Native defaults/capacity calibration and independent
+  implementations require separate evidence. Mutable development continues at
+  separate paths; no source, schema or runner update may silently modify frozen
+  artifacts or their recognized meaning.
+`

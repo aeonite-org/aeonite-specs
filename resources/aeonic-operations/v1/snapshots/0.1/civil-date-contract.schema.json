@@ -1,0 +1,1122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aeonic-operations:temporal-civil-date-contract:v1:snapshot-0.1",
+  "title": "Aeonic civil-date snapshot 0.1 operation shapes",
+  "description": "Unpublished normative proposal. Intrinsic ISO date validity, canonical range sets, capability scope, staged errors and exact calendar/work semantics are additionally required by the parallel snapshot aeonic-temporal-civil-date-v1.aeon. This is not a complete semantic validator.",
+  "$ref": "#/$defs/request",
+  "$defs": {
+    "context": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])",
+          "minLength": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "relationPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])",
+          "minLength": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "shiftPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])",
+          "minLength": 1
+        },
+        "unit": {
+          "enum": [
+            "day",
+            "month",
+            "year",
+            "eom",
+            "eoy"
+          ]
+        },
+        "count": {
+          "type": "string",
+          "pattern": "^(?:0|-?[1-9][0-9]*)$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "unit",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "stepPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])",
+          "minLength": 1
+        },
+        "granularity": {
+          "enum": [
+            "day",
+            "month",
+            "year"
+          ]
+        },
+        "count": {
+          "type": "string",
+          "pattern": "^(?:0|-?[1-9][0-9]*)$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "granularity",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "materialPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])",
+          "minLength": 1
+        },
+        "granularity": {
+          "enum": [
+            "day",
+            "month",
+            "year"
+          ]
+        }
+      },
+      "required": [
+        "granularity"
+      ],
+      "additionalProperties": false
+    },
+    "civilDate": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "civilDate"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(?:[0-9]{2}(?:-[0-9]{2})?)?$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "range": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$(?![\\s\\S])"
+        },
+        "end": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "civilDateSet": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "civilDateSet"
+        },
+        "ranges": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/range"
+          }
+        }
+      },
+      "required": [
+        "category",
+        "ranges"
+      ],
+      "additionalProperties": false
+    },
+    "deferred": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "enum": [
+            "finiteNumber",
+            "exactNumber",
+            "exactRational",
+            "string",
+            "boolean",
+            "symbol",
+            "positiveInfinity",
+            "negativeInfinity",
+            "nan",
+            "explicitNull",
+            "explicitAbsence",
+            "toggle",
+            "hex",
+            "radix",
+            "encoding",
+            "separator",
+            "sansaAddress",
+            "referenceForm",
+            "temporal",
+            "container"
+          ]
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "additionalProperties": true
+    },
+    "authoredBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/civilDate"
+        },
+        "originGranularity": {
+          "enum": [
+            "day",
+            "month",
+            "year",
+            "undeclared"
+          ]
+        },
+        "history": {
+          "enum": [
+            "none-declared",
+            "clamping-declared"
+          ]
+        }
+      },
+      "required": [
+        "temporal"
+      ],
+      "additionalProperties": false
+    },
+    "materializedBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/civilDate"
+        },
+        "originGranularity": {
+          "enum": [
+            "day",
+            "month",
+            "year",
+            "undeclared"
+          ]
+        },
+        "history": {
+          "enum": [
+            "none-declared",
+            "clamping-declared"
+          ]
+        }
+      },
+      "required": [
+        "temporal",
+        "originGranularity",
+        "history"
+      ],
+      "additionalProperties": false
+    },
+    "derivedBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/civilDateSet"
+        },
+        "originGranularity": {
+          "enum": [
+            "day",
+            "month",
+            "year",
+            "undeclared"
+          ]
+        },
+        "history": {
+          "enum": [
+            "none-declared",
+            "clamping-declared"
+          ]
+        }
+      },
+      "required": [
+        "temporal",
+        "originGranularity",
+        "history"
+      ],
+      "additionalProperties": false
+    },
+    "deferredBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/deferred"
+        },
+        "originGranularity": {
+          "enum": [
+            "day",
+            "month",
+            "year",
+            "undeclared"
+          ]
+        },
+        "history": {
+          "enum": [
+            "none-declared",
+            "clamping-declared"
+          ]
+        }
+      },
+      "required": [
+        "temporal"
+      ],
+      "additionalProperties": false
+    },
+    "bundle": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/authoredBundle"
+        },
+        {
+          "$ref": "#/$defs/derivedBundle"
+        },
+        {
+          "$ref": "#/$defs/deferredBundle"
+        }
+      ]
+    },
+    "symbol": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "symbol"
+        },
+        "value": {
+          "enum": [
+            "equal",
+            "notEqual",
+            "before",
+            "after",
+            "indeterminate",
+            "contains",
+            "containedBy",
+            "overlaps",
+            "disjoint"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "equalRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "equal"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/bundle"
+            },
+            "right": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/relationPolicy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "compareRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "compare"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/bundle"
+            },
+            "right": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/relationPolicy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "relateRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "relate"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/bundle"
+            },
+            "right": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/relationPolicy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "shiftRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "shift"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/shiftPolicy"
+            }
+          },
+          "required": [
+            "value",
+            "policy"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "stepRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "step"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/stepPolicy"
+            }
+          },
+          "required": [
+            "value",
+            "policy"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "materializeRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "materialize"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/materialPolicy"
+            }
+          },
+          "required": [
+            "value",
+            "policy"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/equalRequest"
+        },
+        {
+          "$ref": "#/$defs/compareRequest"
+        },
+        {
+          "$ref": "#/$defs/relateRequest"
+        },
+        {
+          "$ref": "#/$defs/shiftRequest"
+        },
+        {
+          "$ref": "#/$defs/stepRequest"
+        },
+        {
+          "$ref": "#/$defs/materializeRequest"
+        }
+      ]
+    },
+    "relationEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.civil-date.v1"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "relationMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "const": "not-applied"
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/relationEffectivePolicy"
+        },
+        "operandHistory": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "enum": [
+                "none-declared",
+                "clamping-declared"
+              ]
+            },
+            "right": {
+              "enum": [
+                "none-declared",
+                "clamping-declared"
+              ]
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy",
+        "operandHistory"
+      ],
+      "additionalProperties": false
+    },
+    "shiftEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.civil-date.v1"
+        },
+        "unit": {
+          "enum": [
+            "day",
+            "month",
+            "year",
+            "eom",
+            "eoy"
+          ]
+        },
+        "count": {
+          "type": "string",
+          "pattern": "^(?:0|-?[1-9][0-9]*)$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "profile",
+        "unit",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "shiftMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "enum": [
+            "not-applied",
+            "applied"
+          ]
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/shiftEffectivePolicy"
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy"
+      ],
+      "additionalProperties": false
+    },
+    "stepEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.civil-date.v1"
+        },
+        "granularity": {
+          "enum": [
+            "day",
+            "month",
+            "year"
+          ]
+        },
+        "count": {
+          "type": "string",
+          "pattern": "^(?:0|-?[1-9][0-9]*)$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "profile",
+        "granularity",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "stepMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "const": "not-applied"
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/stepEffectivePolicy"
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy"
+      ],
+      "additionalProperties": false
+    },
+    "materialEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.civil-date.v1"
+        },
+        "granularity": {
+          "enum": [
+            "day",
+            "month",
+            "year"
+          ]
+        }
+      },
+      "required": [
+        "profile",
+        "granularity"
+      ],
+      "additionalProperties": false
+    },
+    "materialMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "const": "not-applied"
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/materialEffectivePolicy"
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy"
+      ],
+      "additionalProperties": false
+    },
+    "relationSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/symbol"
+        },
+        "metadata": {
+          "$ref": "#/$defs/relationMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "shiftSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/derivedBundle"
+        },
+        "metadata": {
+          "$ref": "#/$defs/shiftMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "stepSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/derivedBundle"
+        },
+        "metadata": {
+          "$ref": "#/$defs/stepMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "materialSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/materializedBundle"
+        },
+        "metadata": {
+          "$ref": "#/$defs/materialMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "diagnostic"
+        },
+        "reason": {
+          "enum": [
+            "invalid_operand",
+            "unsupported_operation",
+            "invalid_policy",
+            "unsupported_profile",
+            "unsupported_domain",
+            "incompatible_operand",
+            "unrepresentable_result",
+            "resource_limit"
+          ]
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "stage": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
+            },
+            "path": {
+              "oneOf": [
+                {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+                    }
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "stage",
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        "message": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "outcome",
+        "reason",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "result": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/relationSuccess"
+        },
+        {
+          "$ref": "#/$defs/shiftSuccess"
+        },
+        {
+          "$ref": "#/$defs/stepSuccess"
+        },
+        {
+          "$ref": "#/$defs/materialSuccess"
+        },
+        {
+          "$ref": "#/$defs/diagnostic"
+        }
+      ]
+    },
+    "resourceLimits": {
+      "type": "object",
+      "properties": {
+        "maxRequestBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxRequestDepth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxInputRanges": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxCountCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxOutputRanges": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxCalendarWork": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxOutputCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxResultBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+}

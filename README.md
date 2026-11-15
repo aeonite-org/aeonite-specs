@@ -148,3 +148,13 @@ These documents introduce no implementation, CTS capability or snapshot changes.
 ## Unicode hardening regression data
 
 The [candidate regression contract and capability inventory](docs/unicode-hardening-regression-contract.md) records existing identity, casing, wildcard, UTF-16 length and search responsibilities. This implementation-test work does not promote an immutable snapshot or add a released profile/CTS claim.
+
+## Civil-date temporal snapshot 0.1
+
+The [snapshot record](docs/aeonic-temporal-civil-date-snapshot-0.1.md) identifies
+`aeonic-temporal-civil-date-specs-v1-snapshot-0.1`. Its source and closed schema
+are frozen under `resources/aeonic-operations/v1/snapshots/0.1/`, aligned with
+the parallel CTS snapshot. Relations and Calendar remain independent complete
+capabilities. Working source/schema retain separate mutable paths; publication,
+profile selection and all earlier snapshots remain unchanged. Implementation
+claims must retain actual frozen-target executions and separate capacity evidence.
