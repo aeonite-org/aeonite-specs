@@ -3,7 +3,7 @@ id:string = "aeonic-temporal-civil-date-v1"
 title:string = "Aeonic Temporal Civil-Date v1 Working Contract"
 description:string = "Exact civil-date sets, independent relation/calendar capabilities, explicit profile selection and portable calendar-work admission."
 created:date = 2026-11-15
-modified:date = 2026-11-15
+modified:date = 2026-11-16
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
@@ -46,6 +46,7 @@ body:prose = >`
   | <-- | <-- |
   | [$ Aeonic.Operations.Temporal.CivilDate.Relations] | [$ equal], [$ compare], [$ relate] |
   | [$ Aeonic.Operations.Temporal.CivilDate.Calendar] | [$ shift], [$ step], [$ materialize] |
+  |~ Independent civil-date capabilities and required operations
 
   Each capability requires every admitted pairing/unit and all shared transport,
   metadata, admission and failure semantics. There are no per-case semantic
@@ -140,6 +141,7 @@ body:prose = >`
   | [$ shift] | [$ value] | Required [$ unit], [$ count]; optional [$ profile]. |
   | [$ step] | [$ value] | Required [$ granularity], [$ count]; optional [$ profile]. |
   | [$ materialize] | [$ value] | Required [$ granularity]; optional [$ profile]. |
+  |~ Civil-date operation operands and policy fields
 
   Binary operations reject [$ value]; unary operations reject [$ left]/[$ right].
   Operation-specific settings must be explicitly supplied in policy; a context
@@ -285,6 +287,7 @@ body:prose = >`
   | 5 | Deferred domains in operand order: [$ unsupported_domain] at the temporal/category path. A malformed supported right operand at stage 4 precedes an unsupported left operand here. |
   | 6 | Step's exact-period eligibility ([$ incompatible_operand]); shift/step prospective target-domain failure ([$ unrepresentable_result]); then agreed work admission before construction. Exact image construction and incremental output-range checks. All reached work/range failures are [$ resource_limit]. Relations apply their agreed range-count work guard before returning a symbol. |
   | 7 | Materialization's exact representability first ([$ unrepresentable_result]), emitted date-text allowance next ([$ resource_limit]), and successful-envelope byte preflight before rendering/serialization. All other successful responses also pass the envelope byte guard. |
+  |~ Civil-date validation stages and diagnostic precedence
 
   At stage 4, require an object [$ temporal] and a recognized string category first.
   For [$ civilDateSet], require [$ originGranularity] then [$ history]; reject unknown
@@ -324,6 +327,7 @@ body:prose = >`
   | Valid target with calendar-work exceeded and small output-range allowance | Stage 6 work [$ resource_limit] before image construction. |
   | Unrepresentable materialization and zero work allowance | Stage 6 work [$ resource_limit] before stage-7 representability. |
   | Unrepresentable materialization and zero emitted-text allowance, with work admitted | Stage 7 [$ unrepresentable_result], null path. |
+  |~ Diagnostic precedence examples for competing civil-date failures
 
   Materialization pays its one-unit work admission at stage 6 before stage 7. A
   zero work allowance can therefore precede an unrepresentable materialization.
@@ -362,6 +366,7 @@ body:prose = >`
   | [$ maxCalendarWork] | 4096 | Agreed logical work recipe; not actual iterations or elapsed time. |
   | [$ maxOutputCharacters] | 10 | Emitted bare date text on materialization, after representability. |
   | [$ maxResultBytes] | 16384 | Complete successful compact logical JSON envelope, preflighted before serialization. |
+  |~ Civil-date resource limits and initial conformance baseline
 
   Trusted resource settings accept objects of known nonnegative safe-integer
   limits; null/scalars/arrays/unknown keys are harness configuration errors, not
@@ -399,6 +404,7 @@ body:prose = >`
   | Whole-period stepping | [$ 1], after exact one-period admission at the explicit granularity. The count is a direct period displacement. |
   | Exact date materialization | [$ 1], after operand admission; exact representability and output checks remain separate. |
   | Exact equality, chronology or five-way set relation | [$ R_left + R_right], even if a particular implementation could decide the answer earlier. |
+  |~ Portable calendar-work charges by civil-date operation
 
   Each source range may begin/end inside a month or year. Count only its nonempty
   intersections with those periods. If two disjoint source ranges intersect the
@@ -451,6 +457,7 @@ body:prose = >`
   | Month / same-day year | Within a source month, move directly to the target month. Map day [$ d] to [$ min(d, targetMonthLength)]. |
   | EOM | Within a source month, let [$ offset = targetMonthLength - sourceMonthLength]. Map day [$ d] to [$ max(1, d + offset)], preserving distance from month-end. |
   | EOY | Within a source year, let [$ offset = targetYearLength - sourceYearLength]. Map ordinal day [$ k] to [$ max(1, k + offset)] in the direct target year. |
+  |~ Exact calendar-piece images by shift unit
 
   The mappings are nondecreasing inside each piece and their images have no
   internal date gaps. Same-day month/year clamping occurs if the source piece's

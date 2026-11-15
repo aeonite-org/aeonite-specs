@@ -37,6 +37,7 @@ body:prose = >`
   | <-- | <-- |
   | [$ Aeonic.Operations.Temporal.CivilDateTime.Relations] | [$ equal], [$ compare], [$ relate] |
   | [$ Aeonic.Operations.Temporal.CivilDateTime.Arithmetic] | [$ shift], [$ shiftClock], [$ step], [$ materialize] |
+  |~ Independent civil date-time capabilities and required operations
 
   Each claim is independently complete, with every admitted pairing, unit,
   boundary, metadata and failure case required. Relations-only providers accept
@@ -206,6 +207,7 @@ body:prose = >`
   | [$ shiftClock] | [$ value], [$ amount] | Optional [$ profile] |
   | [$ step] | [$ value] | Required [$ dateGranularity], [$ clockForm], [$ count]; optional [$ profile] |
   | [$ materialize] | [$ value] | Required [$ dateGranularity], [$ clockForm]; optional [$ profile] |
+  |~ Civil date-time operation operands and policy fields
 
   Policy may be omitted only for relation/clock-shift operations with selection
   supplied by context. Context cannot supply counts, units or output selectors.
@@ -359,6 +361,7 @@ body:prose = >`
   | Relation | L + R | 0 | 0; result is a symbol |
   | Materialize | P + S | S | S, despite compact literal spelling |
   | Step | P + S + T | S + T | T |
+  |~ Portable work, intermediate candidates and final pieces by operation
 
   Input limits apply independently to each temporal operand's exact expansion.
   Intermediate limits count all recipe candidates for this operation, not peak
@@ -441,6 +444,7 @@ body:prose = >`
   | 5 | Recognized deferred domains in operand order: [$ unsupported_domain] at the relevant descriptor's category field. |
   | 6 | Apply the operation recipe below: compact preflight, workspace/work/candidate guards, exact construction/matching and domain checks. Failures are [$ resource_limit], [$ unrepresentable_result], or step's [$ incompatible_operand]. |
   | 7 | Materialization's exact representability, final canonical semantic-piece allowance, materialized text allowance, then successful compact-envelope byte guard before serialization. [$ unrepresentable_result] or [$ resource_limit]. Other successes also pay applicable final-piece/envelope guards. |
+  |~ Civil date-time validation stages and ordered checks
 
   Within a closed object, check required fields in their listed order before
   unknown fields; order unknown decoded keys by Unicode scalar value. Escape JSON
@@ -546,6 +550,7 @@ body:prose = >`
   | [$ maxWorkspaceDigits] | 4,096 | Expanded exact clock-shift workspace under section 8. |
   | [$ maxOutputCharacters] | 1,024 | Bare materialized date-time string, after exact representability. |
   | [$ maxResultBytes] | 131,072 | Complete successful compact logical JSON envelope before serialization. |
+  |~ Civil date-time resource limits and conformance baseline
 
   Use saturating counts/length arithmetic to reject above a selected allowance
   before allocation. Request budgets cover opaque deferred payloads as well.
