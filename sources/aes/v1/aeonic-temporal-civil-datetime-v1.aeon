@@ -1,0 +1,577 @@
+schemaVersion:string = "1"
+id:string = "aeonic-temporal-civil-datetime-v1"
+title:string = "Aeonic Unqualified Civil Date-Time v1 Working Contract"
+description:string = "Exact point/interval sets, complete independent Relations and Arithmetic capabilities, explicit selection, exact fractions and portable admission."
+created:date = 2026-11-16
+modified:date = 2026-11-16
+family:string = "aes"
+group:string = "Semantic Language"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v1/proposals/aeonic-temporal-civil-datetime"
+order:number = 46
+publish:boolean = false
+keywords:list<string> = ["AEON", "temporal", "civil date-times", "calendar", "exact fractions", "proposal"]
+related:list<string> = ["aeonic-semantic-language-v1", "aeonic-temporal-civil-date-v1", "aeonic-arithmetic-v1", "aeon-core-v1-value-types", "aeon-gp-temporal-v1", "appendix-temporal-ticks-resolution-extent-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Aeonic Unqualified Civil Date-Time v1 Working Contract [# civil-datetime-section-1]
+
+  Status: normative proposal-stage working contract, 2026-11-16. Publication is
+  disabled. This new mutable target establishes no immutable snapshot, release,
+  implementation or native capacity claim. Existing profiles and snapshots retain
+  their identities, defaults and bytes. Implementations MUST satisfy the closed
+  [@ /artifacts/assets/aeonic-operations/v1/civil-datetime-contract.schema.json | operation schema] and the semantic, resource and deterministic
+  failure requirements below; schema validity alone is insufficient.
+
+  ## 1. Domain, capabilities and selection [# civil-datetime-section-2]
+
+  The profile is [$ aeonic.operations.temporal.civil-datetime.v1].
+
+  | Capability | Required operations |
+  | <-- | <-- |
+  | [$ Aeonic.Operations.Temporal.CivilDateTime.Relations] | [$ equal], [$ compare], [$ relate] |
+  | [$ Aeonic.Operations.Temporal.CivilDateTime.Arithmetic] | [$ shift], [$ shiftClock], [$ step], [$ materialize] |
+
+  Each claim is independently complete, with every admitted pairing, unit,
+  boundary, metadata and failure case required. Relations-only providers accept
+  derived bundles without implementing a local producer. Arithmetic accepts the
+  specified numerical amount bundles without claiming numerical arithmetic.
+  Availability is host-declared; a logical request cannot enable an operation.
+  Combined claims additionally verify actual-result arithmetic-to-relation chains.
+
+  Require explicit selection in [$ input.policy.profile] or [$ input.context.profile].
+  Validate both supplied configurations, then let policy override context and
+  resolve only the effective identifier. Missing selection is [$ invalid_policy] at
+  [$ /input/policy/profile]; a syntactically valid unavailable effective identifier is
+  [$ unsupported_profile] at its selected field. An overridden well-formed unavailable
+  identifier need not resolve. No existing API default changes.
+
+  All set members are unqualified ISO/proleptic Gregorian civil coordinates in
+  years 0001–9999 with ordinary seconds 00–59. Reduced calendar fields and clocks
+  retain all compatible coordinates. This is an ordinary civil-coordinate chart,
+  not a UTC/atomic/timezone timeline or an elapsed-time assertion. No host timezone,
+  locale, current date, resolver or database supplies missing information.
+  Standalone clocks, date-only bundles, qualified date-times, leap handling,
+  non-ISO calendars, general durations and clock-axis stepping remain outside scope.
+
+  ## 2. Closed reusable bundles [# civil-datetime-section-3]
+
+  ### Authored or materialized date-time [# civil-datetime-section-4]
+
+  ~~~$ json
+  {
+    "temporal": { "category": "civilDateTime", "value": "2024-03T09:30" },
+    "originDateGranularity": "month",
+    "originClockForm": "minute",
+    "history": {
+      "clamping": "none-declared",
+      "approximation": "none-declared"
+    }
+  }
+  ~~~$
+
+  Only [$ temporal] is required on this authored/materialized input. When absent,
+  infer each origin independently from its current literal shape and default both
+  history statuses to [$ none-declared]. If [$ history] is supplied, require both
+  members. Retain valid explicit origins even if they differ from the current form.
+
+  Date portions are exactly [$ YYYY-], [$ YYYY-MM], or [$ YYYY-MM-DD], followed by [$ T].
+  Clock portions are [$ HH], [$ HH:MM], or [$ HH:MM:SS] optionally followed by [$ .] and one
+  or more ASCII decimal digits. Fields have their stated widths; hours are 00–23,
+  minutes/ordinary seconds 00–59. Validate actual Gregorian dates. There is no
+  whitespace, [$ 24:00], decimal comma, suffix, offset, [$ Z] or [$ &] in this category.
+  These restrictions do not change Core preservation of forms outside the profile.
+
+  An hour/minute denotes a half-open hour/minute on each compatible date; explicit
+  seconds denote one coordinate per date, with omitted fraction exactly zero.
+  Fractions are exact, not measurement bins. Preserve the complete authored string
+  at admission, including fractional trailing zeroes; operations emit separate
+  derived canonical coordinates. A reduced year can therefore expand into 365 or
+  366 separate points/intervals, never a continuous year-spanning hull.
+
+  ### Exact derived set [# civil-datetime-section-5]
+
+  ~~~$ json
+  {
+    "temporal": {
+      "category": "civilDateTimeSet",
+      "pieces": [
+        { "kind": "point", "at": "2024-03-01T09:30:00.1" },
+        {
+          "kind": "interval",
+          "start": "2024-03-02T09:30:00",
+          "end": "2024-03-02T09:31:00",
+          "includeStart": true,
+          "includeEnd": false
+        }
+      ]
+    },
+    "originDateGranularity": "undeclared",
+    "originClockForm": "undeclared",
+    "history": { "clamping": "none-declared", "approximation": "none-declared" }
+  }
+  ~~~$
+
+  All four bundle fields are required for derived sets. [$ pieces] is nonempty.
+  Point/interval fields are exactly those shown for their kind. Booleans here are
+  endpoint membership flags, not operation predicate results. An interval requires
+  [$ start < end]; a closed zero-width interval is rejected rather than repaired.
+
+  Ordinary derived coordinates are complete [$ YYYY-MM-DDTHH:MM:SS] strings with an
+  optional nonzero fraction whose last digit is nonzero. Trim fractional trailing
+  zeroes and omit a zero fraction in produced coordinates; incoming derived text
+  must already satisfy this form. Fixed-width fields retain leading zeroes.
+  Chronological comparison is by exact coordinate value: authored [$ .1] and [$ .10]
+  denote the same coordinate. A comparator may exploit canonical text ordering
+  only after its grammar and normalization have been validated.
+
+  The only exceptional endpoint is the closed object [$ {"boundary":"endOfDomain"}].
+  It denotes the finite start-of-year-10000 boundary and is permitted only as an
+  interval's [$ end] with [$ includeEnd: false]. It is greater than every ordinary
+  coordinate. It cannot be a point, start, included end, infinity or authored
+  literal. Thus the last minute of 9999 remains exactly expressible.
+
+  Origins are [$ year]/[$ month]/[$ day]/[$ undeclared] and
+  [$ hour]/[$ minute]/[$ second]/[$ undeclared] respectively. They describe declared origin,
+  not current extent, fractional scale, uncertainty or selectors. Required origins
+  can independently be undeclared; do not infer them from derived endpoints.
+
+  ### Numeric clock-shift amount [# civil-datetime-section-6]
+
+  Reuse these closed numerical bundle forms directly:
+
+  ~~~$ json
+  { "number": { "category": "finiteNumber", "value": "0.2" }, "history": "none-declared" }
+  ~~~$
+
+  ~~~$ json
+  { "number": { "category": "exactNumber", "coefficient": "2", "exponent": "-1" }, "history": "approximation-declared" }
+  ~~~$
+
+  Use the existing exact finite-Number grammar and coefficient/exponent
+  normalization. No host numeric payload is substituted for text. Finite inputs
+  may omit history; derived inputs require it. Coefficients have no leading or
+  trailing zeroes except canonical zero [$ 0], which requires exponent [$ 0].
+  Exponents are canonical signed integer text. These describe [$ c × 10^e] exactly.
+  Non-terminating [$ exactRational] is a recognized deferred domain, not implicitly
+  quantized. An explicitly quantized finite result can feed this API with history.
+
+  All supported bundle and descriptor objects are closed. Pass an operation's
+  [$ value] bundle into a subsequent call, not its full response envelope. No new
+  AEON literal, fraction syntax or standard document annotation is introduced.
+
+  ## 3. Exact canonical sets [# civil-datetime-section-7]
+
+  Order ordinary coordinates by Gregorian date, clock fields and exact fractional
+  value; compare fractional digits with virtual zero padding without expanding a
+  fixed precision grid. The boundary marker is greatest.
+
+  For internal image candidates, sort by lower coordinate ascending, included lower
+  boundary before excluded, upper coordinate descending, then included upper
+  boundary before excluded. Treat a point as equal included lower/upper bounds
+  for this internal algorithm, while retaining its dedicated transport form.
+
+  Scan sorted candidates and merge when the next lower bound is below the current
+  upper bound, or is equal and at least one of those touching bounds is included.
+  On equal outer bounds, membership is the logical union of their inclusion flags.
+  Remove covered points and pieces as part of this union. Emit each singleton as a
+  point and each positive-width component as an interval. A missing boundary point
+  is never filled: [$ \\[a,b)] and [$ (b,c\\]] remain separate; supplying [$ {b}] permits union
+  to [$ \\[a,c\\]]. Two pieces with a gap remain distinct regardless of its small size.
+
+  Incoming derived arrays must already be in this canonical order with no overlap,
+  redundancy or mergeable touching pieces. Reject at the offending piece's lower
+  coordinate field ([$ at] or [$ start]); reject a reversed/zero-width interval at [$ end].
+  Validate each piece's coordinates and membership flags before cross-piece checks.
+  Never silently sort or repair external input. Operation producers normalize their
+  own internal candidates and emit the exact union.
+
+  ## 4. Requests and settings [# civil-datetime-section-8]
+
+  Requests have exactly [$ operation] and [$ input]. The generic input vocabulary is
+  [$ left], [$ right], [$ value], [$ amount], [$ context], [$ policy]; known-operation arity
+  narrows it. Context is an object with only optional nonempty scalar-string
+  [$ profile]. Policy is an object with the fields below, closed per operation.
+
+  | Operation | Required operands | Policy fields |
+  | <-- | <-- | <-- |
+  | [$ equal], [$ compare], [$ relate] | [$ left], [$ right] | Optional [$ profile] |
+  | [$ shift] | [$ value] | Required [$ unit], [$ count]; optional [$ profile] |
+  | [$ shiftClock] | [$ value], [$ amount] | Optional [$ profile] |
+  | [$ step] | [$ value] | Required [$ dateGranularity], [$ clockForm], [$ count]; optional [$ profile] |
+  | [$ materialize] | [$ value] | Required [$ dateGranularity], [$ clockForm]; optional [$ profile] |
+
+  Policy may be omitted only for relation/clock-shift operations with selection
+  supplied by context. Context cannot supply counts, units or output selectors.
+  Date selectors are [$ year], [$ month], [$ day]; clock selectors are [$ hour], [$ minute],
+  [$ second]. Shift units are [$ day], [$ month], [$ year], [$ eom], [$ eoy].
+
+  Count is canonical signed whole-number text: [$ 0], or optional minus followed by a
+  nonzero digit and further digits. Native JSON numbers, [$ +1], [$ -0], [$ 01], [$ 1.0]
+  and exponential counts are not this portable setting. Count-text guards precede
+  conversion; compare large magnitudes against the bounded domain without host
+  floating point or unbounded expansion.
+
+  ## 5. Relations and arithmetic [# civil-datetime-section-9]
+
+  All relation outputs are [$ {"category":"symbol","value":"label"}]. AEON notation
+  remains e.g. [$ |contains|]; there are no Boolean result predicates.
+
+  - [$ equal]: [$ equal] or [$ notEqual] from exact covered-set equality, independent of
+    representation, origin and history.
+  - [$ compare]: identical sets give [$ equal]; all left coordinates strictly before
+    all right coordinates give [$ before]; reverse gives [$ after]; otherwise
+    [$ indeterminate]. At coincident extreme bounds, strict whole-set precedence
+    holds if at least one touching bound is excluded. This is not a total order.
+  - [$ relate]: [$ equal], strict [$ contains], strict [$ containedBy], [$ overlaps] when
+    intersection is nonempty with neither containment, or [$ disjoint]. A shared
+    boundary is in the intersection only if both sets include it. Disjoint sets
+    may interleave and compare as indeterminate.
+
+  Use endpoint-aware linear sweeps for containment/intersection, not enumeration
+  of all coordinates or a Cartesian product of input pieces.
+
+  [$ shift] maps every source date under the existing civil-date rule and preserves
+  each clock subset. Month/year shifts preserve day or month/day where possible;
+  EOM/EOY preserve calendar-day distance from period end and clamp at target start
+  when necessary. Multi-unit shifts compute the direct target and clamp once.
+  Clamping can reorder clock images, so map the agreed day fragments and normalize
+  all candidates; never map only the original interval's outer endpoints.
+
+  [$ shiftClock] translates the exact complete set by a signed finite-decimal number
+  of ordinary civil-coordinate seconds. Preserve gaps and endpoint inclusion while
+  carrying across dates. A minute shifted by [$ 0.5] seconds remains a minute-width
+  interval starting at that fractional coordinate, not a complete minute tick.
+  This does not describe elapsed seconds under a timezone/leap authority.
+
+  [$ step] requires exact coverage of one complete form at both explicit selectors.
+  Move the selected calendar period by count units of its own date granularity and
+  reconstruct every compatible date with the same exact clock constraint. A month
+  step of [$ 2024-02T09:30] yields the complete March form; its pointwise one-month
+  shift covers March 1–29 instead. Partial coverage is [$ incompatible_operand].
+  There is no clock-axis/joint-grid stepping or restoration of a pre-clamp anchor.
+
+  [$ materialize] requires exact coverage of one selected existing date-time form.
+  Otherwise return [$ unrepresentable_result]; keep the separate input bundle usable.
+  Emit [$ YYYY-Tclock], [$ YYYY-MMTclock] or [$ YYYY-MM-DDTclock]. Hour emits [$ HH], minute
+  emits [$ HH:MM], and second emits [$ HH:MM:SS] plus the canonical nonzero fraction.
+  Generated spelling does not reconstruct an earlier authored fractional scale.
+
+  ### Deterministic complete-form candidate [# civil-datetime-section-10]
+
+  Take the first piece's lower coordinate, whether included or excluded. Its date
+  selects the one candidate day/month/year at the requested date granularity. Its
+  clock fields select the containing hour/minute for those clock forms; second
+  uses that exact lower clock coordinate, including its fraction. This merely
+  constructs a candidate, not a successful refinement or rounding of the operand.
+  Construct the same selected clock constraint on every compatible date. Compare
+  the complete candidate extent with the input. No alternative candidate or wider
+  containing period is searched. An excluded lower bound necessarily fails an
+  otherwise coincident complete-form match because complete forms include it.
+
+  Full date-times in second form are points. Reduced-date second forms are one
+  point per compatible date. Thus positive-width second intervals do not
+  materialize merely because their endpoints show seconds. Every candidate is
+  nonempty and has 1, 28–31, or 365–366 pieces according to its date period.
+
+  Any out-of-domain member rejects the whole transformation. An excluded upper
+  boundary exactly at end-of-domain is legal; a point or included upper boundary
+  there is not. An excluded bound beyond that boundary still implies out-of-domain
+  members. Do not clip, widen, drop subsets or return a partial value.
+
+  ## 6. Metadata and result envelopes [# civil-datetime-section-11]
+
+  Temporal successes have exactly [$ outcome], [$ value], [$ metadata]. Shift/clock-shift/
+  step return [$ civilDateTimeSet]; materialization returns [$ civilDateTime], always
+  with both origins and both history statuses explicit. Preserve both origins and
+  copy incoming histories; additionally:
+
+  - If any source coordinate clamps, set clamping history to [$ clamping-declared].
+  - If a clock amount has [$ approximation-declared], set approximation history to
+    that status. Otherwise preserve the temporal operand's declared status.
+  - Zero/reversing shifts, subsequent exact calculations, stepping and
+    materialization never clear either marker. Step/materialize/clock shifts do
+    not introduce clamping.
+
+  Metadata has [$ evaluation: "exact-for-policy"], [$ clamping: "applied"] or
+  [$ "not-applied"], and [$ effectivePolicy] containing precisely the resolved profile
+  and the operation's supplied settings. The clock amount is an operand, not an
+  effective-policy field. Exact current evaluation makes no source accuracy claim.
+
+  For example, shifting [$ 2024-03-01T23:59:59.9] by a numerical [$ 0.2] bundle carrying
+  [$ approximation-declared] returns:
+
+  ~~~$ json
+  {
+    "outcome": "value",
+    "value": {
+      "temporal": {
+        "category": "civilDateTimeSet",
+        "pieces": [{ "kind": "point", "at": "2024-03-02T00:00:00.1" }]
+      },
+      "originDateGranularity": "day",
+      "originClockForm": "second",
+      "history": { "clamping": "none-declared", "approximation": "approximation-declared" }
+    },
+    "metadata": {
+      "evaluation": "exact-for-policy",
+      "clamping": "not-applied",
+      "effectivePolicy": { "profile": "aeonic.operations.temporal.civil-datetime.v1" }
+    }
+  }
+  ~~~$
+
+  Relations use the same outer envelope and evaluation/clamping/effective-policy
+  metadata, plus [$ operandHistory] and [$ operandOrigin], each with explicit [$ left]
+  and [$ right] members. Each history member has the two temporal statuses; each
+  origin member has [$ dateGranularity] and [$ clockForm]. This preserves ownership
+  without manufacturing a new temporal value's history for a symbol.
+
+  History is a value-level declaration, not a point-specific source archive,
+  measurement interval, error bound or proof that no earlier approximation occurred.
+  Applications exporting only bare date-time text deliberately lose these markers.
+  No standard document annotation or automatic export/re-import recovery is added.
+
+  Diagnostics have exactly [$ outcome: "diagnostic"], [$ reason] and
+  [$ context: {"stage": n, "path": pointer-or-null}], optionally scalar [$ message].
+  They have no value, metadata, partial pieces, automatic null or fallback profile.
+  Messages are non-normative. Errors can only create application values through
+  separately explicit application error capture.
+
+  ## 7. Portable work and piece accounting [# civil-datetime-section-12]
+
+  P is the admitted canonical temporal input-piece count, L/R the relation operand
+  counts, D the sum of nonempty source-day intersections, S the complete source
+  candidate's piece count, T the step target's piece count. Counts are logical
+  admission units, independent of actual allocation, batching or early answers.
+
+  | Operation | Work units | Intermediate candidates | Final semantic pieces |
+  | <-- | <-- | <-- | <-- |
+  | Day shift or any zero-count calendar shift | P | P | Canonical image count |
+  | Nonzero month/year/EOM/EOY shift | D | D | Canonical image count |
+  | Clock shift, including zero | P | P | P |
+  | Relation | L + R | 0 | 0; result is a symbol |
+  | Materialize | P + S | S | S, despite compact literal spelling |
+  | Step | P + S + T | S + T | T |
+
+  Input limits apply independently to each temporal operand's exact expansion.
+  Intermediate limits count all recipe candidates for this operation, not peak
+  live memory; verification templates count even if never physically allocated.
+  Final limits apply after exact canonical union, not to an arbitrary unsorted
+  prefix. Relation outputs consume no temporal-piece allowance. Input byte/depth,
+  fractional/number and result-size limits still apply to every operation.
+
+  Civil days partition the coordinate chart as midnight-inclusive to next-midnight-
+  exclusive, with the boundary marker at the last day's end. Count only nonempty
+  piece/day intersections. Included midnight can add a singleton on the next day;
+  excluded midnight cannot. Several pieces on one day count separately. When
+  mapping a fragment, its excluded day end maps to the target day's excluded end,
+  not an independently shifted member of the next source day. A source interval
+  can therefore produce reordered disconnected clock subsets under clamping.
+
+  Compute D from complete date ordinals and endpoint flags without first listing
+  all intersected days. Guard work and intermediate counts before expanding them.
+  For stepping, guard P + S and S before checking source-template equality, then
+  guard the total P + S + T and S + T before constructing target pieces. A zero
+  step pays the full same recipe. Materialization similarly guards its template
+  before matching. Source-template budget admission precedes matching. Target-domain checks follow
+  a successful source match and precede total target-construction guards.
+
+  ## 8. Exact clock arithmetic and pre-construction guards [# civil-datetime-section-13]
+
+  An implementation may use exact decimal seconds since [$ 0001-01-01T00:00:00]
+  internally; this is an algorithm coordinate origin, not a portable instant or
+  new wire encoding. Let B = 315537897600 be the finite excluded upper boundary in
+  ordinary civil-coordinate seconds. Never use host binary floats or fixed ticks.
+
+  Admit the amount under the existing finite grammar/canonical decimal rules and
+  numeric text/coefficient/exponent guards, including authored exponent magnitude
+  even for zero. Normalize by bounded text operations, not powers of ten. A huge
+  exponent cannot cause expansion before a capacity/domain decision.
+
+  First preflight translation against [$ \\[0,B)] using the input's exact extreme
+  bounds and membership flags. Compare the compact amount with the exact permitted
+  lower/upper displacement bounds using decimal coefficient lengths, exponents
+  and virtual zeroes. Do not expand the amount merely to compare magnitudes.
+  Equality at lower zero is legal; equality at upper B is legal only for an
+  excluded upper bound. An amount with magnitude at least B cannot translate any
+  nonempty admitted set successfully and is rejected without expansion.
+
+  For a domain-admitted nonzero amount, let f be the largest normalized fractional
+  digit count of any ordinary input endpoint/point, a = max(0, -e) for the normalized
+  amount, and q = max(f,a). Numeric workspace admission is **13 + q decimal digits**:
+  12 whole-second digits suffice below B, and one additional digit covers a carry.
+  Reject before constructing a scale factor or aligned integers. A zero amount
+  needs zero expanded numeric-workspace digits, after all ordinary admission and
+  piece-work checks; it does not bypass those checks or result limits.
+
+  All admitted input coordinates have f within the fraction allowance. If a exceeds
+  that allowance for a nonzero normalized amount, a generated fractional digit at
+  that scale cannot cancel against the coarser input. Reject with [$ resource_limit]
+  before expansion. Otherwise q bounds every resulting canonical fraction. Use
+  exact aligned integer arithmetic only after workspace/fraction/work guards pass,
+  then normalize and render coordinates. Example: [$ 1e-1000000] can be rejected
+  without creating a million-digit denominator; [$ 1e1000000] fails domain preflight
+  without creating its integer expansion. Neither is rounded into an admissible
+  amount. Input numeric limits still take precedence over either operation check.
+
+  Calendar shifts and steps preserve clock fractions and require no decimal
+  alignment. Relations compare bounded fractional text without expanding a scale
+  factor. Their numeric-workspace charge is zero; their other text/piece/work
+  guards still apply. This recipe does not modify any numerical profile's own
+  workspace rules or claim its arithmetic capability.
+
+  ## 9. Deterministic validation and diagnostics [# civil-datetime-section-14]
+
+  Stop at the first reached failure. These seven stages extend existing
+  contracts with template/workspace guards required before expensive construction.
+
+  | Stage | Ordered checks |
+  | <-- | <-- |
+  | 1 | Scalar Unicode, actual logical JSON UTF-8 bytes and per-path container depth before deep decoding. [$ invalid_operand] for malformed scalar text; reached byte/depth [$ resource_limit]; null path. |
+  | 2 | Strict JSON/duplicate keys; closed request/input structure, operation availability, then operation-specific arity. [$ invalid_operand] or [$ unsupported_operation]. |
+  | 3 | Context structure, policy structure/required fields, context profile, policy profile, unit/selectors/count values, effective profile selection/availability. [$ invalid_policy], count-text [$ resource_limit], or [$ unsupported_profile]. |
+  | 4 | Supported/deferred category and closed bundle/descriptor/metadata validation. Binary temporal left then right; unary temporal value then clock amount. Input piece, temporal text, fraction and numeric guards are applied before their respective expansions/conversions. [$ invalid_operand] or [$ resource_limit]. |
+  | 5 | Recognized deferred domains in operand order: [$ unsupported_domain] at the relevant descriptor's category field. |
+  | 6 | Apply the operation recipe below: compact preflight, workspace/work/candidate guards, exact construction/matching and domain checks. Failures are [$ resource_limit], [$ unrepresentable_result], or step's [$ incompatible_operand]. |
+  | 7 | Materialization's exact representability, final canonical semantic-piece allowance, materialized text allowance, then successful compact-envelope byte guard before serialization. [$ unrepresentable_result] or [$ resource_limit]. Other successes also pay applicable final-piece/envelope guards. |
+
+  Within a closed object, check required fields in their listed order before
+  unknown fields; order unknown decoded keys by Unicode scalar value. Escape JSON
+  Pointer tokens normally. Shapes/defaults of overridden configuration are still
+  checked. Required count/selectors precede availability of a syntactically valid
+  unknown profile. Duplicate object keys fail at stage 2, null path.
+
+  At stage 4 require the descriptor's object/string category first. On supported
+  derived temporal bundles require origins then history, reject unknown bundle
+  fields, validate history then date origin then clock origin, and validate the
+  descriptor required/unknown fields before its payload. Authored bundles use the
+  same supplied-metadata order before their defaults. History fields are checked
+  clamping then approximation. Piece arrays must be nonempty before their length
+  allowance is tested; test that allowance before traversing contents. Validate
+  each piece's required/unknown fields, then start/at, end and inclusion flags,
+  then coordinate order and cross-piece canonicality. Boundary placement is
+  validated with its inclusion flag. Temporal text length precedes detailed text
+  parse; syntactic fraction length is guarded before derived fractional canonicality.
+  For authored forms, intrinsic date/clock validity precedes exact expansion count,
+  which is guarded before constructing any pieces.
+
+  Clock amounts follow existing numeric bundle defaults and canonicality, with
+  numeric-character checks before parse, authored exponent magnitude before
+  normalization, then normalized coefficient/exponent limits. A rational descriptor
+  is deferred/opaque after its containing history/shape is checked; malformed
+  supported temporal input still fails before a deferred amount/domain error.
+
+  The category [$ civilDateTime] specifically means the narrow profile literal
+  grammar: offset/WTC/second-60 text in it is [$ invalid_operand] at stage 4, without
+  rewriting the text. A recognized generic [$ temporal] category, civil-date tags,
+  numeric/rational tags and existing deferred comparison categories have opaque
+  payloads and receive stage-5 [$ unsupported_domain]. Unknown tags are malformed.
+  The complete recognized vocabulary is [$ civilDateTime], [$ civilDateTimeSet],
+  [$ civilDate], [$ civilDateSet], [$ finiteNumber], [$ exactNumber], [$ exactRational],
+  [$ string], [$ boolean], [$ symbol], [$ positiveInfinity], [$ negativeInfinity], [$ nan],
+  [$ explicitNull], [$ explicitAbsence], [$ toggle], [$ hex], [$ radix], [$ encoding],
+  [$ separator], [$ sansaAddress], [$ referenceForm], [$ temporal], [$ container].
+  Only the first two tags are supported under a temporal descriptor; only
+  [$ finiteNumber] and [$ exactNumber] are supported under the amount's numerical
+  descriptor. Other recognized tags are deferred. Validate their containing
+  bundle and any supplied metadata, defaulting omitted deferred origins to
+  undeclared and histories to none-declared, while leaving descriptor payload
+  opaque. Schemas must enumerate this vocabulary; implementations cannot
+  invent tags to opt out of required civil date-time cases.
+
+  For amount guards, finite-text failures use [$ /input/amount/number/value].
+  A derived combined coefficient/exponent text allowance uses
+  [$ /input/amount/number]; normalized coefficient and exponent limits use their
+  respective fields. For finite text, both normalized limits use its value field.
+  Invalid boundary placement uses the point/start field, or the interval's
+  [$ includeEnd] when an end marker is incorrectly included. Unknown metadata
+  fields use the reached field's pointer under the containing bundle.
+
+  Stage-6 local order:
+
+  1. Calendar shift: work then intermediate-candidate guards, exact pointwise image
+     with whole-result domain validation, canonical union. A reached work failure
+     precedes a prospective domain error under this new date-time recipe.
+  2. Clock shift: compact extreme/domain preflight; numeric-workspace guard, then
+     generated fraction guard; work then intermediate guards; exact translation.
+  3. Relations: summed input-piece work guard, then exact symbolic relation.
+  4. Materialize: P + S work guard, then S candidate guard, then compare the one
+     complete-form template. A mismatch becomes stage-7 [$ unrepresentable_result].
+  5. Step: P + S work guard then S candidate guard, source-template equality
+     ([$ incompatible_operand] on mismatch), target-period domain preflight, total
+     P + S + T work and S + T candidate guards, then target construction.
+
+  Operand/configuration paths identify the failing field. Input-piece allowance
+  uses [$ .../temporal/pieces] for a derived set and [$ .../temporal] for an authored
+  form's expansion. A text/fraction allowance uses its payload/coordinate field.
+  Stage-6 step mismatch uses [$ /input/value/temporal]. Operation domain/workspace/
+  work/candidate/final-output failures use null paths. Missing explicit profile
+  uses the path in section 1. Whole-operation failures do not name an arbitrary
+  first image candidate, whose sort/normalization can differ internally.
+
+  Consequently a partial-month step with zero work allowance fails [$ resource_limit]
+  before eligibility, unlike the frozen civil-date contract's preflight order.
+  This source-matching precedence applies to this new contract and does not change
+  its predecessor. The local order also
+  makes a calendar shift exceeding both work and domain fail work first, while
+  a clock shift's compact domain failure precedes workspace/work. These orders are normative and are exercised by competing-failure CTS cases.
+
+  ## 10. Resource map and harness boundary [# civil-datetime-section-15]
+
+  The following values are the explicit CTS baseline, not verified native defaults
+  or machine capacity. CTS semantic vectors must supply complete
+  explicit maps with adequate capacity; native defaults need independent probes.
+
+  | Limit | CTS baseline | Counting scope |
+  | <-- | <-- | <-- |
+  | [$ maxRequestBytes] | 65,536 | Actual logical JSON UTF-8, excluding outer CTS framing. |
+  | [$ maxRequestDepth] | 32 | Per-path container depth, root object/array at one. |
+  | [$ maxTemporalCharacters] | 1,024 | Each supplied literal/ordinary coordinate, before detailed parsing. |
+  | [$ maxInputPieces] | 512 | Each temporal operand's full exact expansion or supplied array length. |
+  | [$ maxIntermediatePieces] | 4,096 | Recipe candidates/reference pieces, cumulative per operation. |
+  | [$ maxOutputPieces] | 512 | Final canonical extent, including compact materialized form expansion. |
+  | [$ maxWork] | 16,384 | The agreed piece/day/reference work recipe. |
+  | [$ maxFractionDigits] | 256 | Supplied fraction digits including trailing zeroes; canonical generated fraction digits. |
+  | [$ maxCountCharacters] | 32 | Count text including sign, before conversion. |
+  | [$ maxNumericCharacters] | 4,096 | Clock amount text, or coefficient plus exponent characters. |
+  | [$ maxCoefficientDigits] | 1,024 | Normalized amount coefficient digits, excluding sign; zero costs one. |
+  | [$ maxExponentMagnitude] | 1,000,000 | Authored and normalized amount exponent magnitude, even for zero. |
+  | [$ maxWorkspaceDigits] | 4,096 | Expanded exact clock-shift workspace under section 8. |
+  | [$ maxOutputCharacters] | 1,024 | Bare materialized date-time string, after exact representability. |
+  | [$ maxResultBytes] | 131,072 | Complete successful compact logical JSON envelope before serialization. |
+
+  Use saturating counts/length arithmetic to reject above a selected allowance
+  before allocation. Request budgets cover opaque deferred payloads as well.
+  Successful-envelope sizing uses compact JSON without optional whitespace; strings have bounded
+  ASCII content in successes. No optional diagnostic message belongs in a success.
+  The large result allowance intentionally permits ordinary reduced-year examples;
+  it does not promise every combination of all maxima. Coordinate fractions and
+  metadata still contribute their actual serialized bytes.
+
+  Trusted limits are outside logical policy/context. They must be an object of
+  known nonnegative safe integers; explicit null, arrays, scalars, unknown names,
+  fractional limits and unsafe numeric values are harness configuration errors,
+  never operation values or silent defaults. A default map can supply omitted
+  known settings; conformance vectors use explicit complete maps. Resource failure
+  cannot turn an error into a null, approximation or empty/partial set.
+
+  Logical raw JSON decoding must preserve numeric token spelling, duplicate-key
+  evidence and exact byte counts even inside opaque payloads, including [$ -0],
+  overflowing exponents and underflowing magnitudes. Native structured bindings
+  must not repeatedly expand shared subgraphs before admission; cycle/depth/size
+  handling must be bounded and fail closed. Unsupported getters/proxies/subclasses
+  belong in the documented host boundary, not semantic profile opt-outs.
+
+  All limits are per operation. Applications manage whole-chain budgets. Required
+  no-value diagnostics are not suppressed recursively by successful-output limits.
+  No machine-specific timeout or private allocation optimization changes the
+  portable admission rule or proves semantic conformance merely by rejecting work.
+
+`

@@ -72,7 +72,7 @@ Before committing, run:
 bash ./scripts/pre-commit-check.sh
 ```
 
-This checks portable paths, the 97-document source inventory, required envelope declarations,
+This checks portable paths, the 98-document source inventory, required envelope declarations,
 identifier uniqueness, date ordering, related-document IDs, publication links and anchors, referenced
 publication assets, and the contract-resource bundle. Full AEON and &ND parsing, projection tests, and
 website checks run in the consuming publication build.
@@ -158,6 +158,20 @@ the parallel CTS snapshot. Relations and Calendar remain independent complete
 capabilities. Working source/schema retain separate mutable paths; publication,
 profile selection and all earlier snapshots remain unchanged. Implementation
 claims must retain actual frozen-target executions and separate capacity evidence.
+
+## Unqualified civil date-time working contract
+
+[`aeonic-temporal-civil-datetime-v1.aeon`](sources/aes/v1/aeonic-temporal-civil-datetime-v1.aeon)
+and its [closed schema](resources/aeonic-operations/v1/civil-datetime-contract.schema.json)
+define a separate explicitly selected, unpublished working profile. Complete
+Relations and Arithmetic capabilities share exact canonical point/interval sets,
+independent origins and sticky clamping/approximation histories. Calendar shifts,
+finite-decimal clock-coordinate shifts, complete-period steps and exact
+materialization preserve gaps and endpoint membership. Portable admission guards
+expansion and exact fractional arithmetic before allocation. Timezone/WTC,
+elapsed-time authority and existing frozen snapshots remain separate. The
+mutable CTS lane is `aeonic-temporal-civil-datetime`; this working contract
+establishes no implementation conformance or native capacity.
 
 ## Property-selector candidate
 
