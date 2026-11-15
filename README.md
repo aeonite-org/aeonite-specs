@@ -75,7 +75,10 @@ bash ./scripts/pre-commit-check.sh
 This checks portable paths, the 98-document source inventory, required envelope declarations,
 identifier uniqueness, date ordering, related-document IDs, publication links and anchors, referenced
 publication assets, and the contract-resource bundle. Full AEON and &ND parsing, projection tests, and
-website checks run in the consuming publication build.
+website checks run in the consuming publication build. That build validates every
+canonical document, including those with `publish=false`: all tables require a
+nonempty `|~ Caption` immediately after their final row. Source inventory and
+parse-only checks do not replace the publisher's accessibility validation.
 
 ## Public repositories
 

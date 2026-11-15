@@ -3,7 +3,7 @@ id:string = "aeonic-arithmetic-v1"
 title:string = "Aeonic Exact Arithmetic v1 Working Contract"
 description:string = "Exact finite-Number addition, subtraction, multiplication, chaining, history preservation and explicit materialization."
 created:date = 2026-11-11
-modified:date = 2026-11-12
+modified:date = 2026-11-16
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
@@ -188,6 +188,7 @@ body:prose = >`
   | [$ integer] | Zero emits [$ 0]. A nonzero value requires [$ e >= 0]; append [$ e] zeros to [$ c]. A negative exponent is [$ unrepresentable_result]. |
   | [$ decimal] | Expand the exact decimal point position. Include at least one digit on each side of the point; integral values end in [$ .0]. No redundant fractional trailing zeros are added. |
   | [$ exponent] | Emit the normalized coefficient, lowercase [$ e], and the normalized exponent, including [$ e0]. For example [$ (123, -2)] emits [$ 123e-2]. |
+  |~ Exact materialization rules by Number family
 
   For zero, explicit [$ zeroSign: "negative"] produces [$ -0], [$ -0.0] or [$ -0e0] in
   the selected family. Otherwise the corresponding positive representation is
@@ -223,6 +224,7 @@ body:prose = >`
   | 5 | Domain support, left before right. Recognized deferred categories yield [$ unsupported_domain]. Every pairing of the two supported kinds is compatible. |
   | 6 | Arithmetic workspace guard; exact evaluation; normalized result coefficient limit, then result exponent limit. Reached limits yield [$ resource_limit], null path. Materialization skips arithmetic evaluation. |
   | 7 | Materialization representability, then emitted text-length guard, then rendering. [$ unrepresentable_result], then [$ resource_limit], both with null path. |
+  |~ Exact arithmetic validation stages and diagnostics
 
   Within a closed object, check required fields in their listed order before
   unknown fields. Select unknown fields in decoded Unicode-scalar order rather
@@ -256,6 +258,7 @@ body:prose = >`
   | Two recognized unsupported domains | Left [$ unsupported_domain], stage 5 |
   | Fractional value requested as integer and zero output allowance | [$ unrepresentable_result], stage 7 |
   | Admission limit reached and unsupported operation/profile | Admission [$ resource_limit], stage 1 |
+  |~ Diagnostic precedence for competing arithmetic failures
 
   Logical JSON rejects duplicate member names at every depth and non-JSON numeric
   constants. Native adapters must reject cycles, guard depth before recursive
@@ -292,6 +295,7 @@ body:prose = >`
   | [$ maxExponentMagnitude] | 1,000,000 | Absolute authored exponent, normalized operand exponent and normalized result exponent. Check authored exponent even for zero. |
   | [$ maxWorkspaceDigits] | 131,072 | Deterministic arithmetic workspace admission described below. |
   | [$ maxOutputCharacters] | 65,536 | Emitted Number literal text, including signs, point, [$ e] and exponent. Bundle/metadata bytes are excluded. |
+  |~ Exact arithmetic resource limits and prototype defaults
 
   These numbers are provisional engineering recommendations, not advertised
   implementation capacities or frozen support floors. Calibrate on both runtimes
