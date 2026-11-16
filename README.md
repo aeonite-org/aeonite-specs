@@ -184,3 +184,14 @@ prepare exact key/tag predicates, authorized property scope, additive adapter AP
 and bounded experimental verification. They add no runtime support or released
 conformance claim. Positions and broader consumer admission remain separate;
 publication, implementation adoption and release/deployment are not implied.
+
+## Civil date-time snapshot 0.1
+
+The [snapshot record](docs/aeonic-temporal-civil-datetime-snapshot-0.1.md) identifies
+`aeonic-temporal-civil-datetime-specs-v1-snapshot-0.1`, with frozen source/schema
+under `resources/aeonic-operations/v1/snapshots/0.1/`. The explicit profile and
+complete independent Relations/Arithmetic capabilities retain exact sets and
+metadata. Mutable source/schema paths remain separate; the mutable CTS target
+advances to0.2. Stable implementation claims require actual frozen-target runs
+and separate native-capacity evidence. Existing snapshots and publication stay
+unchanged; this is not timezone resolution or consumer/package adoption.

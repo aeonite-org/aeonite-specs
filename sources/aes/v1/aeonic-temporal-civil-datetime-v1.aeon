@@ -156,7 +156,10 @@ body:prose = >`
   ~~~$
 
   Use the existing exact finite-Number grammar and coefficient/exponent
-  normalization. No host numeric payload is substituted for text. Finite inputs
+  normalization. An integer mantissa part is exactly [$ 0] or begins with a
+  nonzero digit: [$ 01], [$ 00] and [$ -01.2] are invalid. Existing signed forms,
+  leading-point decimals such as [$ .1], signed zero, and exponent spellings
+  such as [$ 1E+0002] remain admitted. No host numeric payload is substituted for text. Finite inputs
   may omit history; derived inputs require it. Coefficients have no leading or
   trailing zeroes except canonical zero [$ 0], which requires exponent [$ 0].
   Exponents are canonical signed integer text. These describe [$ c × 10^e] exactly.
@@ -425,9 +428,13 @@ body:prose = >`
   amount. Input numeric limits still take precedence over either operation check.
 
   Calendar shifts and steps preserve clock fractions and require no decimal
-  alignment. Relations compare bounded fractional text without expanding a scale
-  factor. Their numeric-workspace charge is zero; their other text/piece/work
-  guards still apply. This recipe does not modify any numerical profile's own
+  alignment. Relations compare bounded exact fractional coordinates without
+  expanding a compact clock-shift amount. Their numeric-workspace charge is zero;
+  their other text/piece/work guards still apply. Internal representations remain
+  implementation choices: admitted coordinate text may be decoded into exact
+  rational coordinates after stage-4 text, fraction and piece guards. This bounded
+  input decoding is distinct from expanding a compact amount before its required
+  domain/workspace/fraction/work admission. No host rounding is permitted. This recipe does not modify any numerical profile's own
   workspace rules or claim its arithmetic capability.
 
   ## 9. Deterministic validation and diagnostics [# civil-datetime-section-14]
@@ -551,6 +558,11 @@ body:prose = >`
   | [$ maxOutputCharacters] | 1,024 | Bare materialized date-time string, after exact representability. |
   | [$ maxResultBytes] | 131,072 | Complete successful compact logical JSON envelope before serialization. |
   |~ Civil date-time resource limits and conformance baseline
+
+  Character allowances count decoded Unicode scalar values, including signs and
+  punctuation. This includes temporal text checked before detailed grammar, so
+  an astral scalar counts once even when the malformed text later fails grammar.
+  Byte allowances count actual UTF-8 bytes; fractional/coefficient digits are ASCII.
 
   Use saturating counts/length arithmetic to reject above a selected allowance
   before allocation. Request budgets cover opaque deferred payloads as well.

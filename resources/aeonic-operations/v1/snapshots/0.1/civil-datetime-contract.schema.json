@@ -1,0 +1,1588 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aeonic-operations:temporal-civil-datetime-contract:v1:snapshot-0.1",
+  "title": "Aeonic civil date-time contract v1 snapshot 0.1",
+  "description": "Closed successful requests and all results; intrinsic date validity, canonical exact sets, resource admission and deterministic diagnostics additionally require the normative source.",
+  "$ref": "#/$defs/request",
+  "$defs": {
+    "coordinate": {
+      "type": "string",
+      "pattern": "^(?!0000)[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]*[1-9])?$(?![\\s\\S])"
+    },
+    "endBoundary": {
+      "type": "object",
+      "properties": {
+        "boundary": {
+          "const": "endOfDomain"
+        }
+      },
+      "required": [
+        "boundary"
+      ],
+      "additionalProperties": false
+    },
+    "point": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "point"
+        },
+        "at": {
+          "$ref": "#/$defs/coordinate"
+        }
+      },
+      "required": [
+        "kind",
+        "at"
+      ],
+      "additionalProperties": false
+    },
+    "interval": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "interval"
+        },
+        "start": {
+          "$ref": "#/$defs/coordinate"
+        },
+        "end": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/coordinate"
+            },
+            {
+              "$ref": "#/$defs/endBoundary"
+            }
+          ]
+        },
+        "includeStart": {
+          "type": "boolean"
+        },
+        "includeEnd": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "start",
+        "end",
+        "includeStart",
+        "includeEnd"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "end": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "end"
+            ]
+          },
+          "then": {
+            "properties": {
+              "includeEnd": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "piece": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/point"
+        },
+        {
+          "$ref": "#/$defs/interval"
+        }
+      ]
+    },
+    "civilDateTime": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "civilDateTime"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^(?!0000)[0-9]{4}(?:-|-(?:0[1-9]|1[0-2])(?:-(?:0[1-9]|[12][0-9]|3[01]))?)T(?:[01][0-9]|2[0-3])(?::[0-5][0-9](?::[0-5][0-9](?:\\.[0-9]+)?)?)?$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "civilDateTimeSet": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "civilDateTimeSet"
+        },
+        "pieces": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/piece"
+          }
+        }
+      },
+      "required": [
+        "category",
+        "pieces"
+      ],
+      "additionalProperties": false
+    },
+    "dateOrigin": {
+      "enum": [
+        "year",
+        "month",
+        "day",
+        "undeclared"
+      ]
+    },
+    "clockOrigin": {
+      "enum": [
+        "hour",
+        "minute",
+        "second",
+        "undeclared"
+      ]
+    },
+    "history": {
+      "type": "object",
+      "properties": {
+        "clamping": {
+          "enum": [
+            "none-declared",
+            "clamping-declared"
+          ]
+        },
+        "approximation": {
+          "enum": [
+            "none-declared",
+            "approximation-declared"
+          ]
+        }
+      },
+      "required": [
+        "clamping",
+        "approximation"
+      ],
+      "additionalProperties": false
+    },
+    "authoredBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/civilDateTime"
+        },
+        "originDateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "originClockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        },
+        "history": {
+          "$ref": "#/$defs/history"
+        }
+      },
+      "required": [
+        "temporal"
+      ],
+      "additionalProperties": false
+    },
+    "materializedBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/civilDateTime"
+        },
+        "originDateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "originClockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        },
+        "history": {
+          "$ref": "#/$defs/history"
+        }
+      },
+      "required": [
+        "temporal",
+        "originDateGranularity",
+        "originClockForm",
+        "history"
+      ],
+      "additionalProperties": false
+    },
+    "derivedBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/civilDateTimeSet"
+        },
+        "originDateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "originClockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        },
+        "history": {
+          "$ref": "#/$defs/history"
+        }
+      },
+      "required": [
+        "temporal",
+        "originDateGranularity",
+        "originClockForm",
+        "history"
+      ],
+      "additionalProperties": false
+    },
+    "deferredTemporal": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "enum": [
+            "civilDate",
+            "civilDateSet",
+            "finiteNumber",
+            "exactNumber",
+            "exactRational",
+            "string",
+            "boolean",
+            "symbol",
+            "positiveInfinity",
+            "negativeInfinity",
+            "nan",
+            "explicitNull",
+            "explicitAbsence",
+            "toggle",
+            "hex",
+            "radix",
+            "encoding",
+            "separator",
+            "sansaAddress",
+            "referenceForm",
+            "temporal",
+            "container"
+          ]
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "additionalProperties": true
+    },
+    "deferredBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/deferredTemporal"
+        },
+        "originDateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "originClockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        },
+        "history": {
+          "$ref": "#/$defs/history"
+        }
+      },
+      "required": [
+        "temporal"
+      ],
+      "additionalProperties": false
+    },
+    "bundle": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/authoredBundle"
+        },
+        {
+          "$ref": "#/$defs/derivedBundle"
+        },
+        {
+          "$ref": "#/$defs/deferredBundle"
+        }
+      ]
+    },
+    "finiteNumber": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "finiteNumber"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[+-]?(?:(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "exactNumber": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "exactNumber"
+        },
+        "coefficient": {
+          "type": "string",
+          "pattern": "^(?:0|-?[1-9](?:[0-9]*[1-9])?)$(?![\\s\\S])"
+        },
+        "exponent": {
+          "type": "string",
+          "pattern": "^(?:0|-?[1-9][0-9]*)$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "category",
+        "coefficient",
+        "exponent"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "coefficient": {
+                "const": "0"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "exponent": {
+                "const": "0"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "numericHistory": {
+      "enum": [
+        "none-declared",
+        "approximation-declared"
+      ]
+    },
+    "finiteAmount": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "$ref": "#/$defs/finiteNumber"
+        },
+        "history": {
+          "$ref": "#/$defs/numericHistory"
+        }
+      },
+      "required": [
+        "number"
+      ],
+      "additionalProperties": false
+    },
+    "derivedAmount": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "$ref": "#/$defs/exactNumber"
+        },
+        "history": {
+          "$ref": "#/$defs/numericHistory"
+        }
+      },
+      "required": [
+        "number",
+        "history"
+      ],
+      "additionalProperties": false
+    },
+    "deferredNumber": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "enum": [
+            "civilDateTime",
+            "civilDateTimeSet",
+            "civilDate",
+            "civilDateSet",
+            "exactRational",
+            "string",
+            "boolean",
+            "symbol",
+            "positiveInfinity",
+            "negativeInfinity",
+            "nan",
+            "explicitNull",
+            "explicitAbsence",
+            "toggle",
+            "hex",
+            "radix",
+            "encoding",
+            "separator",
+            "sansaAddress",
+            "referenceForm",
+            "temporal",
+            "container"
+          ]
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "additionalProperties": true
+    },
+    "deferredAmount": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "$ref": "#/$defs/deferredNumber"
+        },
+        "history": {
+          "$ref": "#/$defs/numericHistory"
+        }
+      },
+      "required": [
+        "number"
+      ],
+      "additionalProperties": false
+    },
+    "amount": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/finiteAmount"
+        },
+        {
+          "$ref": "#/$defs/derivedAmount"
+        },
+        {
+          "$ref": "#/$defs/deferredAmount"
+        }
+      ]
+    },
+    "count": {
+      "type": "string",
+      "pattern": "^(?:0|-?[1-9][0-9]*)$(?![\\s\\S])"
+    },
+    "dateGranularity": {
+      "enum": [
+        "year",
+        "month",
+        "day"
+      ]
+    },
+    "clockForm": {
+      "enum": [
+        "hour",
+        "minute",
+        "second"
+      ]
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "relationPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "relationEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.civil-datetime.v1"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "shiftPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        },
+        "unit": {
+          "enum": [
+            "day",
+            "month",
+            "year",
+            "eom",
+            "eoy"
+          ]
+        },
+        "count": {
+          "$ref": "#/$defs/count"
+        }
+      },
+      "required": [
+        "unit",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "shiftEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.civil-datetime.v1"
+        },
+        "unit": {
+          "enum": [
+            "day",
+            "month",
+            "year",
+            "eom",
+            "eoy"
+          ]
+        },
+        "count": {
+          "$ref": "#/$defs/count"
+        }
+      },
+      "required": [
+        "profile",
+        "unit",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "clockPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "clockEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.civil-datetime.v1"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "stepPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        },
+        "dateGranularity": {
+          "$ref": "#/$defs/dateGranularity"
+        },
+        "clockForm": {
+          "$ref": "#/$defs/clockForm"
+        },
+        "count": {
+          "$ref": "#/$defs/count"
+        }
+      },
+      "required": [
+        "dateGranularity",
+        "clockForm",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "stepEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.civil-datetime.v1"
+        },
+        "dateGranularity": {
+          "$ref": "#/$defs/dateGranularity"
+        },
+        "clockForm": {
+          "$ref": "#/$defs/clockForm"
+        },
+        "count": {
+          "$ref": "#/$defs/count"
+        }
+      },
+      "required": [
+        "profile",
+        "dateGranularity",
+        "clockForm",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "materialPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        },
+        "dateGranularity": {
+          "$ref": "#/$defs/dateGranularity"
+        },
+        "clockForm": {
+          "$ref": "#/$defs/clockForm"
+        }
+      },
+      "required": [
+        "dateGranularity",
+        "clockForm"
+      ],
+      "additionalProperties": false
+    },
+    "materialEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.civil-datetime.v1"
+        },
+        "dateGranularity": {
+          "$ref": "#/$defs/dateGranularity"
+        },
+        "clockForm": {
+          "$ref": "#/$defs/clockForm"
+        }
+      },
+      "required": [
+        "profile",
+        "dateGranularity",
+        "clockForm"
+      ],
+      "additionalProperties": false
+    },
+    "equalRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "equal"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/bundle"
+            },
+            "right": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/relationPolicy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "compareRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "compare"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/bundle"
+            },
+            "right": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/relationPolicy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "relateRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "relate"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/bundle"
+            },
+            "right": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/relationPolicy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "shiftRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "shift"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/shiftPolicy"
+            }
+          },
+          "required": [
+            "value",
+            "policy"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "shiftClockRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "shiftClock"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/bundle"
+            },
+            "amount": {
+              "$ref": "#/$defs/amount"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/clockPolicy"
+            }
+          },
+          "required": [
+            "value",
+            "amount"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "stepRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "step"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/stepPolicy"
+            }
+          },
+          "required": [
+            "value",
+            "policy"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "materializeRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "materialize"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/materialPolicy"
+            }
+          },
+          "required": [
+            "value",
+            "policy"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/equalRequest"
+        },
+        {
+          "$ref": "#/$defs/compareRequest"
+        },
+        {
+          "$ref": "#/$defs/relateRequest"
+        },
+        {
+          "$ref": "#/$defs/shiftRequest"
+        },
+        {
+          "$ref": "#/$defs/shiftClockRequest"
+        },
+        {
+          "$ref": "#/$defs/stepRequest"
+        },
+        {
+          "$ref": "#/$defs/materializeRequest"
+        }
+      ]
+    },
+    "symbol": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "symbol"
+        },
+        "value": {
+          "enum": [
+            "equal",
+            "notEqual",
+            "before",
+            "after",
+            "indeterminate",
+            "contains",
+            "containedBy",
+            "overlaps",
+            "disjoint"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "originSummary": {
+      "type": "object",
+      "properties": {
+        "dateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "clockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        }
+      },
+      "required": [
+        "dateGranularity",
+        "clockForm"
+      ],
+      "additionalProperties": false
+    },
+    "relationMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "const": "not-applied"
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/relationEffectivePolicy"
+        },
+        "operandHistory": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/history"
+            },
+            "right": {
+              "$ref": "#/$defs/history"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        },
+        "operandOrigin": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/originSummary"
+            },
+            "right": {
+              "$ref": "#/$defs/originSummary"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy",
+        "operandHistory",
+        "operandOrigin"
+      ],
+      "additionalProperties": false
+    },
+    "relationSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/symbol"
+        },
+        "metadata": {
+          "$ref": "#/$defs/relationMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "shiftMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "enum": [
+            "applied",
+            "not-applied"
+          ]
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/shiftEffectivePolicy"
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy"
+      ],
+      "additionalProperties": false
+    },
+    "shiftSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/derivedBundle"
+        },
+        "metadata": {
+          "$ref": "#/$defs/shiftMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "clockMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "const": "not-applied"
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/clockEffectivePolicy"
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy"
+      ],
+      "additionalProperties": false
+    },
+    "clockSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/derivedBundle"
+        },
+        "metadata": {
+          "$ref": "#/$defs/clockMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "stepMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "const": "not-applied"
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/stepEffectivePolicy"
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy"
+      ],
+      "additionalProperties": false
+    },
+    "stepSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/derivedBundle"
+        },
+        "metadata": {
+          "$ref": "#/$defs/stepMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "materialMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "const": "not-applied"
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/materialEffectivePolicy"
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy"
+      ],
+      "additionalProperties": false
+    },
+    "materialSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/materializedBundle"
+        },
+        "metadata": {
+          "$ref": "#/$defs/materialMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "diagnostic"
+        },
+        "reason": {
+          "enum": [
+            "invalid_operand",
+            "unsupported_operation",
+            "invalid_policy",
+            "unsupported_profile",
+            "unsupported_domain",
+            "incompatible_operand",
+            "unrepresentable_result",
+            "resource_limit"
+          ]
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "stage": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
+            },
+            "path": {
+              "oneOf": [
+                {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+                    }
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "stage",
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        "message": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "outcome",
+        "reason",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "result": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/relationSuccess"
+        },
+        {
+          "$ref": "#/$defs/shiftSuccess"
+        },
+        {
+          "$ref": "#/$defs/clockSuccess"
+        },
+        {
+          "$ref": "#/$defs/stepSuccess"
+        },
+        {
+          "$ref": "#/$defs/materialSuccess"
+        },
+        {
+          "$ref": "#/$defs/diagnostic"
+        }
+      ]
+    },
+    "resourceLimits": {
+      "type": "object",
+      "properties": {
+        "maxRequestBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxRequestDepth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxTemporalCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxInputPieces": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxIntermediatePieces": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxOutputPieces": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxWork": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxFractionDigits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxCountCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxNumericCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxCoefficientDigits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxExponentMagnitude": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxWorkspaceDigits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxOutputCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxResultBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+}
