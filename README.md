@@ -72,7 +72,7 @@ Before committing, run:
 bash ./scripts/pre-commit-check.sh
 ```
 
-This checks portable paths, the 98-document source inventory, required envelope declarations,
+This checks portable paths, the 99-document source inventory, required envelope declarations,
 identifier uniqueness, date ordering, related-document IDs, publication links and anchors, referenced
 publication assets, and the contract-resource bundle. Full AEON and &ND parsing, projection tests, and
 website checks run in the consuming publication build. That build validates every
@@ -195,3 +195,15 @@ metadata. Mutable source/schema paths remain separate; the mutable CTS target
 advances to0.2. Stable implementation claims require actual frozen-target runs
 and separate native-capacity evidence. Existing snapshots and publication stay
 unchanged; this is not timezone resolution or consumer/package adoption.
+
+### Standalone civil clock working contract
+
+The [proposal-stage civil clock contract](sources/aes/v1/aeonic-temporal-civil-clock-v1.aeon)
+and [closed operation schema](resources/aeonic-operations/v1/civil-clock-contract.schema.json)
+define explicitly selected `aeonic.operations.temporal.civil-clock.v1`.
+Independent complete Relations and Arithmetic capabilities use exact point/interval
+sets on a signed relative-day axis. Authored clocks start on day zero; shifts and
+steps retain midnight carry, and materialization never discards it. Seven-stage
+fail-closed diagnostics and explicit portable admission accompany the schema.
+This is a mutable, unpublished target, with no stable snapshot, implementation,
+native default capacity or package release claim. Existing frozen artifacts stay unchanged.
