@@ -1,0 +1,174 @@
+; SPDX-License-Identifier: CC-BY-4.0
+; AEON Core v1 informative ABNF, grammar revision 0.3.
+; RFC 5234 + RFC 7405. Input: decoded Unicode scalar values, not UTF-8 octets.
+; Entry: aeon. Recognition consumes the entire input. This is NOT a validator.
+; manifest.json maps every production to normative sources and extra constraints.
+; Normative prose wins on conflict. No language or CTS snapshot is promoted here.
+
+; Document, heads, and containers. Physical LF (including CRLF) inside a
+; completed block comment counts wherever a newline separator is allowed.
+; A comment without LF cannot supply a separator; literal content is unchanged.
+; Zero bindings is intentional: empty, layout-only and comment-only documents
+; are accepted. Structured comments without a target remain unbound.
+aeon = [bom] [shebang] gap [bindings] gap
+bindings = binding *(separator binding) [separator]
+binding = key gap head-tail "=" gap value
+head-tail = [identity gap] [attributes gap] [type-annotation gap]
+identity = %x5C 1*(ascii-letter / ascii-digit / "_" / "-") %x5C
+attributes = "@{" gap [bindings] gap "}"
+type-annotation = ":" gap type-descriptor
+type-descriptor = identifier gap [generic-args gap] [clarifiers gap]
+generic-args = "<" gap type-descriptor *(gap "," gap type-descriptor) gap ">"
+clarifiers = "[" gap clarifier-value *(gap "," gap clarifier-value) gap "]"
+clarifier-value = quoted-string / number
+key = identifier / quoted-string
+identifier = (ascii-letter / "_") *(ascii-letter / ascii-digit / "_")
+object = "{" gap [bindings] gap "}"
+list = "[" gap [elements] gap "]"
+tuple = "(" gap [elements] gap ")"
+elements = element *(separator element) [separator]
+element = value / anonymous-head "=" gap value
+anonymous-head = identity gap [attributes gap] [type-annotation gap]
+anonymous-head =/ attributes gap [type-annotation gap] / type-annotation gap
+node = "<" gap identifier gap head-tail ["(" gap [elements] gap ")" gap] ">"
+separator = hgap ("," gap / newline gap ["," gap] / newline-block gap ["," gap])
+gap = *(layout / comment)
+hgap = *(space / tab / cr-char / comment)
+layout = space / tab / cr-char / newline
+newline = ascii-crlf / lf-char
+bom = %xFEFF
+shebang = "#!" *line-char [newline]
+
+; Values and quoted payloads. C-unicode checks decoded scalar escapes.
+value = quoted-string / raw-string / trimtick / number / infinity / nan
+value =/ null / boolean / toggle / hex / radix / encoding / temporal
+value =/ separator-literal / symbol / object / list / tuple / node
+value =/ reference / sansa
+quoted-string = double-string / single-string
+double-string = ascii-dquote *(double-char / escape) ascii-dquote
+single-string = %x27 *(single-char / escape) %x27
+double-char = %x00-09 / %x0B-0C / %x0E-21 / %x23-5B / %x5D-D7FF / %xE000-10FFFF
+single-char = %x00-09 / %x0B-0C / %x0E-26 / %x28-5B / %x5D-D7FF / %xE000-10FFFF
+escape = %x5C (%x22 / %x27 / %x5C / %x60 / %s"n" / %s"r" / %s"t" / %s"b" / %s"f" / unicode-escape)
+unicode-escape = %s"u" (4hexdigit / "{" 1*6hexdigit "}")
+raw-string = %x60 *(raw-char / escape) %x60
+raw-char = %x00-5F / %x61-D7FF / %xE000-10FFFF
+trimtick = ">" *space raw-string
+symbol = "|" 1*(symbol-char / escape / %x5C.7C) "|"
+symbol-char = %x00-09 / %x0B-0C / %x0E-5B / %x5D-7B / %x7D-D7FF / %xE000-10FFFF
+
+; Finite and sigiled scalars; underscores only occur between digits.
+number = [sign] (integer ["." digits] / "." digits) [exponent]
+integer = "0" / nonzero *(ascii-digit / "_" ascii-digit)
+digits = ascii-digit *(ascii-digit / "_" ascii-digit)
+nonzero = %x31-39
+sign = "+" / "-"
+exponent = (%s"e" / %s"E") [sign] digits
+infinity = ["-"] %s"Infinity"
+nan = ["-"] %s"NaN"
+null = "!" (%s"none" / %s"notSet" / %s"notApplicable" / %s"tombstone" / quoted-string)
+boolean = %s"true" / %s"false"
+toggle = %s"yes" / %s"no" / %s"on" / %s"off"
+hex = "#" hexdigit *(hexdigit / "_" hexdigit)
+radix = "%" [sign] (radix-digits ["." radix-digits] / "." radix-digits)
+radix-digits = radix-digit *(radix-digit / "_" radix-digit)
+radix-digit = ascii-letter / ascii-digit / "&" / "!"
+encoding = "&" 1*(ascii-letter / ascii-digit / "-" / "_") *"="
+separator-literal = "^" 1*(separator-char / quoted-string)
+separator-char = ascii-letter / ascii-digit / "!" / "#" / "$" / "%" / "&" / "*" / "+" / "-" / "." / ":" / ";" / "=" / "?" / "@" / "^" / "_" / "|" / "~" / "<" / ">"
+
+; Temporal shape only. C-temporal supplies intrinsic ranges and context checks.
+; A bare year is a number; YYYY- marks year precision. HH: marks standalone
+; hour precision. Neither marker should be removed to broaden temporal syntax.
+temporal = date / time / date %s"T" clock [offset] ["&" temporal-context]
+date = 4ascii-digit "-" [2ascii-digit ["-" 2ascii-digit]]
+time = 2ascii-digit ":" [2ascii-digit [":" 2ascii-digit [fraction]]] [offset]
+clock = 2ascii-digit [":" [2ascii-digit [":" 2ascii-digit [fraction]]]]
+fraction = "." 1*ascii-digit
+offset = %s"Z" / sign 2ascii-digit ":" 2ascii-digit
+temporal-context = 1*(ascii-letter / ascii-digit / "/" / "_" / "-" / "+" / ".")
+
+; Reference paths are the exact AEON subset. gap is explicit between path
+; tokens to reflect the normative whitespace appendix, never inside a key.
+reference = "~" [">"] gap ref-start *(gap ref-segment)
+ref-start = "$" / key / "[" gap quoted-string gap "]"
+ref-segment = "." gap (key / "[" gap quoted-string gap "]")
+ref-segment =/ "[" gap index gap "]" / "." gap "@" gap "." gap attribute-key
+attribute-key = identifier / "[" gap quoted-string gap "]"
+index = "0" / nonzero *ascii-digit
+
+; SANSA carrier: translate the normative addressing vocabulary, but retain
+; C-sansa for host restrictions and the source's conflicting qualifier sketches.
+; This is an informative embedding aid, not SANSA's authoritative grammar;
+; a SANSA extension requires its own source review and a new translation revision.
+; AEON references above do not inherit these selector alternatives.
+sansa = ("$" / "?") *sansa-selector [":" qualifier-expression]
+sansa-selector = "." (identifier / "[" double-string "]" / "@" / "^" / "*" / "**" / "<" double-string ">" / "(" double-string ")")
+sansa-selector =/ "[" (index / index ".." [index] / ".." index) "]"
+sansa-selector =/ ("#" / "%") identifier
+qualifier-expression = qualifier-term *("|" qualifier-term)
+qualifier-term = identifier *("<" qualifier-term *("," qualifier-term) ">") [sansa-clarifiers]
+sansa-clarifiers = "[" (double-string / number) *("," (double-string / number)) "]"
+
+; Line comments include all structured line channels. Block bodies end at the
+; first matching closer and do not nest. LF payload retains separator significance.
+comment = line-comment / plain-block / doc-block / annotation-block / hint-block / structure-block / profile-block / instructions-block
+line-comment = "//" *line-char
+line-char = %x00-09 / %x0B-0C / %x0E-D7FF / %xE000-10FFFF
+plain-block = "/*" *(plain-other / 1*"*" plain-after) *"*" "*/"
+plain-other = %x0-29 / %x2B-D7FF / %xE000-10FFFF
+plain-after = %x0-29 / %x2B-2E / %x30-D7FF / %xE000-10FFFF
+doc-block = "/#" *(doc-other / 1*"#" doc-after) *"#" "#/"
+doc-other = %x0-22 / %x24-D7FF / %xE000-10FFFF
+doc-after = %x0-22 / %x24-2E / %x30-D7FF / %xE000-10FFFF
+annotation-block = "/@" *(annotation-other / 1*"@" annotation-after) *"@" "@/"
+annotation-other = %x0-3F / %x41-D7FF / %xE000-10FFFF
+annotation-after = %x0-2E / %x30-3F / %x41-D7FF / %xE000-10FFFF
+hint-block = "/?" *(hint-other / 1*"?" hint-after) *"?" "?/"
+hint-other = %x0-3E / %x40-D7FF / %xE000-10FFFF
+hint-after = %x0-2E / %x30-3E / %x40-D7FF / %xE000-10FFFF
+structure-block = "/{" *(structure-other / 1*"}" structure-after) *"}" "}/"
+structure-other = %x0-7C / %x7E-D7FF / %xE000-10FFFF
+structure-after = %x0-2E / %x30-7C / %x7E-D7FF / %xE000-10FFFF
+profile-block = "/[" *(profile-other / 1*"]" profile-after) *"]" "]/"
+profile-other = %x0-5C / %x5E-D7FF / %xE000-10FFFF
+profile-after = %x0-2E / %x30-5C / %x5E-D7FF / %xE000-10FFFF
+instructions-block = "/(" *(instructions-other / 1*")" instructions-after) *")" ")/"
+instructions-other = %x0-28 / %x2A-D7FF / %xE000-10FFFF
+instructions-after = %x0-28 / %x2A-2E / %x30-D7FF / %xE000-10FFFF
+
+; Comment sublanguage containing at least one physical LF. Before that LF,
+; line-other and line-after exclude LF as well as the earlier-closer pattern.
+newline-block = plain-newline-block / doc-newline-block / annotation-newline-block / hint-newline-block / structure-newline-block / profile-newline-block / instructions-newline-block
+plain-newline-block = "/*" *(plain-line-other / 1*"*" plain-line-after) *"*" lf-char *(plain-other / 1*"*" plain-after) *"*" "*/"
+plain-line-other = %x0-9 / %xB-29 / %x2B-D7FF / %xE000-10FFFF
+plain-line-after = %x0-9 / %xB-29 / %x2B-2E / %x30-D7FF / %xE000-10FFFF
+doc-newline-block = "/#" *(doc-line-other / 1*"#" doc-line-after) *"#" lf-char *(doc-other / 1*"#" doc-after) *"#" "#/"
+doc-line-other = %x0-9 / %xB-22 / %x24-D7FF / %xE000-10FFFF
+doc-line-after = %x0-9 / %xB-22 / %x24-2E / %x30-D7FF / %xE000-10FFFF
+annotation-newline-block = "/@" *(annotation-line-other / 1*"@" annotation-line-after) *"@" lf-char *(annotation-other / 1*"@" annotation-after) *"@" "@/"
+annotation-line-other = %x0-9 / %xB-3F / %x41-D7FF / %xE000-10FFFF
+annotation-line-after = %x0-9 / %xB-2E / %x30-3F / %x41-D7FF / %xE000-10FFFF
+hint-newline-block = "/?" *(hint-line-other / 1*"?" hint-line-after) *"?" lf-char *(hint-other / 1*"?" hint-after) *"?" "?/"
+hint-line-other = %x0-9 / %xB-3E / %x40-D7FF / %xE000-10FFFF
+hint-line-after = %x0-9 / %xB-2E / %x30-3E / %x40-D7FF / %xE000-10FFFF
+structure-newline-block = "/{" *(structure-line-other / 1*"}" structure-line-after) *"}" lf-char *(structure-other / 1*"}" structure-after) *"}" "}/"
+structure-line-other = %x0-9 / %xB-7C / %x7E-D7FF / %xE000-10FFFF
+structure-line-after = %x0-9 / %xB-2E / %x30-7C / %x7E-D7FF / %xE000-10FFFF
+profile-newline-block = "/[" *(profile-line-other / 1*"]" profile-line-after) *"]" lf-char *(profile-other / 1*"]" profile-after) *"]" "]/"
+profile-line-other = %x0-9 / %xB-5C / %x5E-D7FF / %xE000-10FFFF
+profile-line-after = %x0-9 / %xB-2E / %x30-5C / %x5E-D7FF / %xE000-10FFFF
+instructions-newline-block = "/(" *(instructions-line-other / 1*")" instructions-line-after) *")" lf-char *(instructions-other / 1*")" instructions-after) *")" ")/"
+instructions-line-other = %x0-9 / %xB-28 / %x2A-D7FF / %xE000-10FFFF
+instructions-line-after = %x0-9 / %xB-28 / %x2A-2E / %x30-D7FF / %xE000-10FFFF
+
+; RFC 5234 core rules, explicitly included for a self-contained resource.
+ascii-letter = %x41-5A / %x61-7A
+ascii-digit = %x30-39
+hexdigit = ascii-digit / %x41-46 / %x61-66
+space = %x20
+tab = %x09
+cr-char = %x0D
+lf-char = %x0A
+ascii-crlf = cr-char lf-char
+ascii-dquote = %x22

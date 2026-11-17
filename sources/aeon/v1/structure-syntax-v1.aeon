@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-structure-syntax"
 title:string = "AEON v1 Structure Syntax Reference"
 description:string = "Reference for binding shape, keys, attributes, datatype clarifiers, newline rules, and structural grammar decisions in AEON Core v1."
 created:date = 2026-03-25
-modified:date = 2026-11-15
+modified:date = 2026-11-18
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -454,7 +454,7 @@ body:prose = >`
 
   ## 6. Newline Rules [# newline-rules]
 
-  Newlines are structural in AEON, but only in specific places.
+  Newlines are structural in AEON, but only in specific places. A physical newline is LF, including the LF in CRLF. A standalone CR remains layout whitespace and does not supply a newline separator.
 
   Between structural tokens, a newline is otherwise treated the same as ordinary inter-token whitespace. A newline becomes special only when the surrounding grammar consumes it as a separator, or when inserting it would split a compact token that must remain contiguous.
 
@@ -491,14 +491,16 @@ body:prose = >`
 
   ### 6.3 Comments and Newlines [# comments-and-newlines]
 
-  Comments do not become separators by themselves.
+  Comment delimiters and non-newline payload characters do not create separators. Physical newlines inside any plain or structured block comment retain their layout significance: wherever the surrounding grammar accepts a newline separator, those newlines MUST be available as newline separators. A block comment without a physical newline does not separate bindings or elements.
 
   Implications:
 
   - a structured or plain comment may appear between bindings or elements;
-  - comment binding rules determine attachment, but comments do not redefine the surrounding grammar;
+  - comment binding rules determine attachment, but do not change the layout significance of physical newlines;
   - line comments end at newline;
-  - block comments may span newlines.
+  - block comments may span newlines, and those physical newlines count at document, header, object, attribute-entry, list, tuple and node-child separator positions;
+  - between other structural tokens, those same newlines are ordinary inter-token layout; they do not split a compact token into valid pieces;
+  - newlines inside quoted, backtick, trimtick, symbolic or other literal payloads are governed by their literal family and do not become separators between surrounding values.
 
   ## 7. Addressing Interaction [# addressing-interaction]
 

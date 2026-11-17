@@ -3,7 +3,7 @@ id:string = "aeon-core-v1"
 title:string = "AEON Specification v1"
 description:string = "Start here for the overall AEON Core v1 model, scope, behavior modes, and the companion documents that define the rest of the specification surface."
 created:date = 2026-03-25
-modified:date = 2026-11-15
+modified:date = 2026-11-18
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -62,6 +62,8 @@ body:prose = >`
   - references
   - canonical paths
   - comments/annotations
+
+  Physical LF newlines (including CRLF) inside plain or structured block comments count wherever the grammar permits newline separators. A block comment with no physical newline is not a separator, and literal payload newlines remain governed by their literal family.
 
   Bindings are separated by newline or comma at document/object level and may contain structured values such as objects, lists, tuples, nodes, and references. Structural identities, when present, are head metadata preserved by Core processors without changing canonical path identity.
 
@@ -143,7 +145,7 @@ body:prose = >`
   - structured annotation channels
   - reserved structured channels
 
-  Comments do not alter parse semantics, path identity, reference legality, or assignment ordering.
+  Comment delimiters and non-newline payload text do not alter value semantics, path identity, reference legality, or assignment ordering. Physical LF newlines inside block comments retain their layout and allowed separator significance.
 
   Structured comments may attach deterministically to neighboring targets and may be emitted as a separate annotation stream.
 

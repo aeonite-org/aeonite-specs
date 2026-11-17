@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-comments-annotations"
 title:string = "AEON v1 Comments and Annotations Reference"
 description:string = "Reference for comment forms, structured channels, reserved meanings, deterministic attachment, and annotation-related boundaries."
 created:date = 2026-03-25
-modified:date = 2026-08-23
+modified:date = 2026-11-18
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -39,7 +39,8 @@ body:prose = >`
 
   Core rule:
 
-  - comments are trivia and do not alter parse semantics, canonical path assignment, or reference legality.
+  - comment delimiters and non-newline payload text are trivia and do not alter value semantics, canonical path assignment, or reference legality;
+  - physical LF newlines, including CRLF, inside block comments retain the same layout and separator significance as physical newlines between other tokens.
 
   ## 2. Channel Catalog [# channel-catalog]
 
@@ -191,12 +192,15 @@ body:prose = >`
   - change canonical path identity;
   - change reference legality;
   - change assignment ordering;
-  - act as list, tuple, node, or binding separators.
+  - create list, tuple, node, attribute-entry or binding separators from delimiters or non-newline payload text.
 
   Implication:
 
   - comments may appear between tokens and still attach to nearby targets;
-  - they do not redefine the grammar around them.
+  - a physical newline inside a block comment counts wherever the surrounding grammar permits a newline separator, including header bindings;
+  - a block comment with no physical newline is not a separator;
+  - a physical newline inside a comment between structural tokens such as a key and its assignment operator is ordinary layout, not a forced binding boundary;
+  - comment-like text or newlines inside a literal remain literal content under that family's rules.
 
   ## 4. Attachment Targets [# attachment-targets]
 
@@ -368,9 +372,10 @@ body:prose = >`
   Rules:
 
   - line comments terminate at newline;
-  - block comments may span newlines;
+  - block comments may span newlines; each physical LF (including CRLF) remains available as layout or a newline separator in the surrounding context;
   - unterminated block comments are a lexer error;
-  - comments are never newline substitutes or grammar separators by themselves.
+  - comment delimiters, escaped backslash-n text, and other non-newline payload characters are never newline substitutes;
+  - standalone CR, U+2028 LINE SEPARATOR and U+2029 PARAGRAPH SEPARATOR inside comments do not supply a newline separator.
 
   ## 11. Minimum Conformance Reminders [# minimum-conformance-reminders]
 

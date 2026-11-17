@@ -1,0 +1,3633 @@
+{
+  "license": "CC0-1.0",
+  "scope": "Expected ABNF recognition, not full AEON validity; deferred obligations and source discrepancies are intentional.",
+  "cases": [
+    {
+      "id": "empty",
+      "source": "",
+      "grammar_matches": true
+    },
+    {
+      "id": "trivia",
+      "source": " // alone\n",
+      "grammar_matches": true
+    },
+    {
+      "id": "binding",
+      "source": "a=1",
+      "grammar_matches": true
+    },
+    {
+      "id": "comma",
+      "source": "a=1,b=2,",
+      "grammar_matches": true
+    },
+    {
+      "id": "lf",
+      "source": "a=1\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "cr",
+      "source": "a=1\rb=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "crlf",
+      "source": "a=1\r\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "empty-object",
+      "source": "a={}",
+      "grammar_matches": true
+    },
+    {
+      "id": "empty-sequences",
+      "source": "a=[(),[],<tag>]",
+      "grammar_matches": true
+    },
+    {
+      "id": "trailing",
+      "source": "a=[1,2,]",
+      "grammar_matches": true
+    },
+    {
+      "id": "anonymous",
+      "source": "a=[\\x\\@{m=1}:number=2]",
+      "grammar_matches": true
+    },
+    {
+      "id": "literal-word-key",
+      "source": "true=true",
+      "grammar_matches": true
+    },
+    {
+      "id": "quoted-empty-key",
+      "source": "\"\"=1",
+      "grammar_matches": true
+    },
+    {
+      "id": "quoted-empty-ref",
+      "source": "\"\"=1\nb=~$.[\"\"]",
+      "grammar_matches": true
+    },
+    {
+      "id": "unicode",
+      "source": "a=\"\ue000\ud83d\ude00\udbff\udfff\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "unicode-escape",
+      "source": "a=\"\\uD83D\\uDE00\\u{10FFFF}\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "mixed-layout",
+      "source": "a\n:\nlist\n<\nnumber\n>\n=\n[1\n2]",
+      "grammar_matches": true
+    },
+    {
+      "id": "clarifier-layout",
+      "source": "a:sep\n[\n\"x\"\n]=^3x4",
+      "grammar_matches": true
+    },
+    {
+      "id": "case-key",
+      "source": "Infinity=\"value\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "number-forms",
+      "source": "a=[.5,-.5,+.5,0,1_000,0e+01,1e0_1]",
+      "grammar_matches": true
+    },
+    {
+      "id": "nonfinite",
+      "source": "a=[Infinity,-Infinity,NaN,-NaN]",
+      "grammar_matches": true
+    },
+    {
+      "id": "null",
+      "source": "a=[!none,!notSet,!notApplicable,!tombstone,!\"later\"]",
+      "grammar_matches": true
+    },
+    {
+      "id": "radix",
+      "source": "a=[%001,%-.3,%+.1,%a_!_&]",
+      "grammar_matches": true
+    },
+    {
+      "id": "encoding",
+      "source": "a=&abc-_===",
+      "grammar_matches": true
+    },
+    {
+      "id": "separator-quoted",
+      "source": "a=^\"[, ]\"|'two words'",
+      "grammar_matches": true
+    },
+    {
+      "id": "symbol",
+      "source": "a=|quoted \" // /* content|",
+      "grammar_matches": true
+    },
+    {
+      "id": "symbol-pipe",
+      "source": "a=|a\\|b|",
+      "grammar_matches": true
+    },
+    {
+      "id": "symbol-escaped-newline",
+      "source": "a=|a\\nb|",
+      "grammar_matches": true
+    },
+    {
+      "id": "raw",
+      "source": "a=`one\ntwo`",
+      "grammar_matches": true
+    },
+    {
+      "id": "trimtick",
+      "source": "a=> `\n  text\n`",
+      "grammar_matches": true
+    },
+    {
+      "id": "trimtick-mixed",
+      "source": "a=>`\n\tone\n two\n`",
+      "grammar_matches": true
+    },
+    {
+      "id": "reference",
+      "source": "a={b=[1]}\nc=~a.b[0]",
+      "grammar_matches": true
+    },
+    {
+      "id": "pointer",
+      "source": "a=1\nb=~>a",
+      "grammar_matches": true
+    },
+    {
+      "id": "attribute-ref",
+      "source": "a@{b=1}=0\nc=~a.@.b",
+      "grammar_matches": true
+    },
+    {
+      "id": "root-quoted-layout",
+      "source": "\"a.b\"=1\nc=~$. [\"a.b\"]",
+      "grammar_matches": true
+    },
+    {
+      "id": "temporal",
+      "source": "a=[2024-,2024-02,2024-02-29,09:,09:30Z,2024-T09,2024-02T09:30&local]",
+      "grammar_matches": true
+    },
+    {
+      "id": "sansa",
+      "source": "a:sansa=$.items.*#text%StringLiteral.(\"item?*\")",
+      "grammar_matches": true
+    },
+    {
+      "id": "sansa-qualifiers",
+      "source": "a:sansa=$.value:tuple<x><y>[\".\"]",
+      "grammar_matches": true
+    },
+    {
+      "id": "sansa-range",
+      "source": "a:sansa=$.items[2..]",
+      "grammar_matches": true
+    },
+    {
+      "id": "sansa-local",
+      "source": "a:sansa=$.<\"space\">.name",
+      "grammar_matches": true
+    },
+    {
+      "id": "bom-shebang",
+      "source": "\ufeff#!/usr/bin/aeon\na=1",
+      "grammar_matches": true
+    },
+    {
+      "id": "shebang-eof",
+      "source": "#!host",
+      "grammar_matches": true
+    },
+    {
+      "id": "host-line",
+      "source": "//! format:aeon\na=1",
+      "grammar_matches": true
+    },
+    {
+      "id": "raw-escape-deferred",
+      "source": "a=`\\q`",
+      "grammar_matches": true
+    },
+    {
+      "id": "unicode-scalar-deferred",
+      "source": "a=\"\\u{110000}\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "duplicate-deferred",
+      "source": "a=1\na=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "datatype-deferred",
+      "source": "a:number=\"text\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "reference-deferred",
+      "source": "a=~missing",
+      "grammar_matches": true
+    },
+    {
+      "id": "temporal-deferred",
+      "source": "a=2025-02-29",
+      "grammar_matches": true
+    },
+    {
+      "id": "null-reason-deferred",
+      "source": "a=!\"\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "local-space-deferred",
+      "source": "a:sansa=$.<\"\">",
+      "grammar_matches": true
+    },
+    {
+      "id": "space-binding",
+      "source": "a=1 b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "space-list",
+      "source": "a=[1 2]",
+      "grammar_matches": false
+    },
+    {
+      "id": "adjacent-list",
+      "source": "a=[truefalse]",
+      "grammar_matches": false
+    },
+    {
+      "id": "semicolon",
+      "source": "a=1;b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "comment-only-separator",
+      "source": "a=1/* gap */b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-newline-is-separator",
+      "source": "a=1/*\n*/b=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "word-joiner",
+      "source": "a\u2060=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "line-separator",
+      "source": "a=1\u2028b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "paragraph-separator",
+      "source": "a=1\u2029b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-key",
+      "source": "1a=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "hyphen-key",
+      "source": "a-b=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "backtick-key",
+      "source": "`a`=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "repeat-attributes",
+      "source": "a@{}@{}=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "head-order",
+      "source": "a:number@{}=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "identity-order",
+      "source": "a@{}\\id\\=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-identity",
+      "source": "a\\\\=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "root-anonymous",
+      "source": ":number=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "object-anonymous",
+      "source": "a={:number=1}",
+      "grammar_matches": false
+    },
+    {
+      "id": "nested-anonymous",
+      "source": "a=[:number=:number=1]",
+      "grammar_matches": false
+    },
+    {
+      "id": "postfix-attributes",
+      "source": "a=[]@{}",
+      "grammar_matches": false
+    },
+    {
+      "id": "unfinished-node",
+      "source": "a=<tag(1)",
+      "grammar_matches": false
+    },
+    {
+      "id": "unknown-value",
+      "source": "a=bare",
+      "grammar_matches": false
+    },
+    {
+      "id": "uppercase-bool",
+      "source": "a=TRUE",
+      "grammar_matches": false
+    },
+    {
+      "id": "plus-infinity",
+      "source": "a=+Infinity",
+      "grammar_matches": false
+    },
+    {
+      "id": "lower-nan",
+      "source": "a=nan",
+      "grammar_matches": false
+    },
+    {
+      "id": "custom-null-bare",
+      "source": "a=!later",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-symbol",
+      "source": "a=||",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-symbol-newline",
+      "source": "a=|one\ntwo|",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-escape",
+      "source": "a=\"\\q\"",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-string-newline",
+      "source": "a=\"one\ntwo\"",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-string-cr",
+      "source": "a=\"one\rtwo\"",
+      "grammar_matches": false
+    },
+    {
+      "id": "double-bom",
+      "source": "\ufeff\ufeffa=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "late-shebang",
+      "source": "a=1\n#!host",
+      "grammar_matches": false
+    },
+    {
+      "id": "leading-shebang-space",
+      "source": " #!host\na=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "unterminated-comment",
+      "source": "a=1/*",
+      "grammar_matches": false
+    },
+    {
+      "id": "skipped-comment-closer",
+      "source": "a=1 /* first */ junk */",
+      "grammar_matches": false
+    },
+    {
+      "id": "leading-zero",
+      "source": "a=01",
+      "grammar_matches": false
+    },
+    {
+      "id": "leading-zero-underscore",
+      "source": "a=0_1",
+      "grammar_matches": false
+    },
+    {
+      "id": "trailing-underscore",
+      "source": "a=1_",
+      "grammar_matches": false
+    },
+    {
+      "id": "repeat-underscore",
+      "source": "a=1__2",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-exponent",
+      "source": "a=1e+",
+      "grammar_matches": false
+    },
+    {
+      "id": "trailing-decimal",
+      "source": "a=1.",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-hex",
+      "source": "a=#",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-hex-underscore",
+      "source": "a=#_ff",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-radix-underscore",
+      "source": "a=%1__a",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-encoding",
+      "source": "a=&ab+c",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-separator",
+      "source": "a=^",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-separator-escape",
+      "source": "a=^a\\b",
+      "grammar_matches": false
+    },
+    {
+      "id": "repeated-trimtick",
+      "source": "a=>>`text`",
+      "grammar_matches": false
+    },
+    {
+      "id": "split-trimtick",
+      "source": "a=> >`text`",
+      "grammar_matches": false
+    },
+    {
+      "id": "root-bracket-ref",
+      "source": "\"a\"=1\nb=~$[\"a\"]",
+      "grammar_matches": false
+    },
+    {
+      "id": "relative-bracket-gap",
+      "source": "a={b=1}\nv=~a[\"b\"]",
+      "grammar_matches": false
+    },
+    {
+      "id": "selector-ref",
+      "source": "a=~$.items.*",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-attribute-ref",
+      "source": "a=~x.@",
+      "grammar_matches": false
+    },
+    {
+      "id": "lowercase-temporal",
+      "source": "a=2025-01-01t09:00z",
+      "grammar_matches": false
+    },
+    {
+      "id": "fraction-without-seconds",
+      "source": "a=09:30.1",
+      "grammar_matches": false
+    },
+    {
+      "id": "offset-seconds",
+      "source": "a=09:30+01:00:01",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-sansa-space",
+      "source": "a:sansa=$.two words",
+      "grammar_matches": false
+    },
+    {
+      "id": "sansa-repeated-clarifier",
+      "source": "a:sansa=$.x:sep[\"x\"][\"y\"]",
+      "grammar_matches": false
+    },
+    {
+      "id": "sansa-nested-union",
+      "source": "a:sansa=$.x:list<string|number>",
+      "grammar_matches": false
+    },
+    {
+      "id": "surrogate-source",
+      "source": "a=\"\ud800\"",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-*",
+      "source": "a=1 /* \ue000\ud83d\ude00 */\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-*",
+      "source": "a=1 /* ***/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-*",
+      "source": "a=1 /* missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-#",
+      "source": "a=1 /# \ue000\ud83d\ude00 #/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-#",
+      "source": "a=1 /# ###/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-#",
+      "source": "a=1 /# missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-@",
+      "source": "a=1 /@ \ue000\ud83d\ude00 @/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-@",
+      "source": "a=1 /@ @@@/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-@",
+      "source": "a=1 /@ missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-?",
+      "source": "a=1 /? \ue000\ud83d\ude00 ?/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-?",
+      "source": "a=1 /? ???/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-?",
+      "source": "a=1 /? missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-{",
+      "source": "a=1 /{ \ue000\ud83d\ude00 }/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-{",
+      "source": "a=1 /{ }}}/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-{",
+      "source": "a=1 /{ missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-[",
+      "source": "a=1 /[ \ue000\ud83d\ude00 ]/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-[",
+      "source": "a=1 /[ ]]]/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-[",
+      "source": "a=1 /[ missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-(",
+      "source": "a=1 /( \ue000\ud83d\ude00 )/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-(",
+      "source": "a=1 /( )))/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-(",
+      "source": "a=1 /( missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "audit-zero-bindings-empty-transport",
+      "source": "",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-empty-strict",
+      "source": "",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-empty-custom",
+      "source": "",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-layout-transport",
+      "source": " \t\r\n",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-layout-strict",
+      "source": " \t\r\n",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-layout-custom",
+      "source": " \t\r\n",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-line-transport",
+      "source": "// comment",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-line-strict",
+      "source": "// comment",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-line-custom",
+      "source": "// comment",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-line-newline-transport",
+      "source": "// comment\n",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-line-newline-strict",
+      "source": "// comment\n",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-line-newline-custom",
+      "source": "// comment\n",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-plain-block-transport",
+      "source": "/* comment */",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-plain-block-strict",
+      "source": "/* comment */",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-plain-block-custom",
+      "source": "/* comment */",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-structured-line-transport",
+      "source": "//@ lonely",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-structured-line-strict",
+      "source": "//@ lonely",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-structured-line-custom",
+      "source": "//@ lonely",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-structured-block-transport",
+      "source": "/@ lonely @/",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-structured-block-strict",
+      "source": "/@ lonely @/",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-structured-block-custom",
+      "source": "/@ lonely @/",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-mixed-transport",
+      "source": " \n/* a */\n//# doc\n",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-mixed-strict",
+      "source": " \n/* a */\n//# doc\n",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-zero-bindings-mixed-custom",
+      "source": " \n/* a */\n//# doc\n",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom",
+        "bindings": 0
+      }
+    },
+    {
+      "id": "audit-disambiguation-2026",
+      "source": "a=2026",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "NumberLiteral"
+      }
+    },
+    {
+      "id": "audit-disambiguation-2026-",
+      "source": "a=2026-",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "DateLiteral"
+      }
+    },
+    {
+      "id": "audit-disambiguation-2026-11",
+      "source": "a=2026-11",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "DateLiteral"
+      }
+    },
+    {
+      "id": "audit-disambiguation-2026-11-18",
+      "source": "a=2026-11-18",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "DateLiteral"
+      }
+    },
+    {
+      "id": "audit-disambiguation-12",
+      "source": "a=12",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "NumberLiteral"
+      }
+    },
+    {
+      "id": "audit-disambiguation-12:",
+      "source": "a=12:",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "TimeLiteral"
+      }
+    },
+    {
+      "id": "audit-disambiguation-12:30",
+      "source": "a=12:30",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "TimeLiteral"
+      }
+    },
+    {
+      "id": "audit-disambiguation-12:30:45",
+      "source": "a=12:30:45",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "TimeLiteral"
+      }
+    },
+    {
+      "id": "audit-disambiguation-2026-T12",
+      "source": "a=2026-T12",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "DateTimeLiteral"
+      }
+    },
+    {
+      "id": "audit-disambiguation-2026-11-18T12:30:45",
+      "source": "a=2026-11-18T12:30:45",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport",
+        "bindings": 1,
+        "value_kind": "DateTimeLiteral"
+      }
+    },
+    {
+      "id": "audit-rule-date-2026",
+      "source": "2026",
+      "grammar_matches": false,
+      "entry": "date"
+    },
+    {
+      "id": "audit-rule-number-2026",
+      "source": "2026",
+      "grammar_matches": true,
+      "entry": "number"
+    },
+    {
+      "id": "audit-rule-date-2026-",
+      "source": "2026-",
+      "grammar_matches": true,
+      "entry": "date"
+    },
+    {
+      "id": "audit-rule-number-2026-",
+      "source": "2026-",
+      "grammar_matches": false,
+      "entry": "number"
+    },
+    {
+      "id": "audit-rule-time-12",
+      "source": "12",
+      "grammar_matches": false,
+      "entry": "time"
+    },
+    {
+      "id": "audit-rule-number-12",
+      "source": "12",
+      "grammar_matches": true,
+      "entry": "number"
+    },
+    {
+      "id": "audit-rule-time-12:",
+      "source": "12:",
+      "grammar_matches": true,
+      "entry": "time"
+    },
+    {
+      "id": "audit-rule-number-12:",
+      "source": "12:",
+      "grammar_matches": false,
+      "entry": "number"
+    },
+    {
+      "id": "audit-comment-is-not-separator",
+      "source": "a=1 /*comment*/ b=2",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-comment-newline-hidden",
+      "source": "a=1 /*\n*/ b=2",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-newline-comment-newline",
+      "source": "a=1\n/*comment*/\nb=2",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-adjacent-line-comment",
+      "source": "a=true//comment",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-keyword-prefix",
+      "source": "a=truefalse",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-nested-closers",
+      "source": "value:list<list<number>>=[[1,2]]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-upper-exponent",
+      "source": "a=1E2",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-lower-exponent",
+      "source": "a=1e2",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-0",
+      "source": "a=\"x\u0000y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-1",
+      "source": "a=\"x\u0001y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-2",
+      "source": "a=\"x\u0002y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-3",
+      "source": "a=\"x\u0003y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-4",
+      "source": "a=\"x\u0004y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-5",
+      "source": "a=\"x\u0005y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-6",
+      "source": "a=\"x\u0006y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-7",
+      "source": "a=\"x\u0007y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-8",
+      "source": "a=\"x\by\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-9",
+      "source": "a=\"x\ty\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-10",
+      "source": "a=\"x\ny\"",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-11",
+      "source": "a=\"x\u000by\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-12",
+      "source": "a=\"x\fy\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-13",
+      "source": "a=\"x\ry\"",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-14",
+      "source": "a=\"x\u000ey\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-15",
+      "source": "a=\"x\u000fy\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-16",
+      "source": "a=\"x\u0010y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-17",
+      "source": "a=\"x\u0011y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-18",
+      "source": "a=\"x\u0012y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-19",
+      "source": "a=\"x\u0013y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-20",
+      "source": "a=\"x\u0014y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-21",
+      "source": "a=\"x\u0015y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-22",
+      "source": "a=\"x\u0016y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-23",
+      "source": "a=\"x\u0017y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-24",
+      "source": "a=\"x\u0018y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-25",
+      "source": "a=\"x\u0019y\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-26",
+      "source": "a=\"x\u001ay\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-27",
+      "source": "a=\"x\u001by\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-28",
+      "source": "a=\"x\u001cy\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-29",
+      "source": "a=\"x\u001dy\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-30",
+      "source": "a=\"x\u001ey\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-31",
+      "source": "a=\"x\u001fy\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-double-127",
+      "source": "a=\"x\u007fy\"",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-0",
+      "source": "a='x\u0000y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-1",
+      "source": "a='x\u0001y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-2",
+      "source": "a='x\u0002y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-3",
+      "source": "a='x\u0003y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-4",
+      "source": "a='x\u0004y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-5",
+      "source": "a='x\u0005y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-6",
+      "source": "a='x\u0006y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-7",
+      "source": "a='x\u0007y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-8",
+      "source": "a='x\by'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-9",
+      "source": "a='x\ty'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-10",
+      "source": "a='x\ny'",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-11",
+      "source": "a='x\u000by'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-12",
+      "source": "a='x\fy'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-13",
+      "source": "a='x\ry'",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-14",
+      "source": "a='x\u000ey'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-15",
+      "source": "a='x\u000fy'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-16",
+      "source": "a='x\u0010y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-17",
+      "source": "a='x\u0011y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-18",
+      "source": "a='x\u0012y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-19",
+      "source": "a='x\u0013y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-20",
+      "source": "a='x\u0014y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-21",
+      "source": "a='x\u0015y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-22",
+      "source": "a='x\u0016y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-23",
+      "source": "a='x\u0017y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-24",
+      "source": "a='x\u0018y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-25",
+      "source": "a='x\u0019y'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-26",
+      "source": "a='x\u001ay'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-27",
+      "source": "a='x\u001by'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-28",
+      "source": "a='x\u001cy'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-29",
+      "source": "a='x\u001dy'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-30",
+      "source": "a='x\u001ey'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-31",
+      "source": "a='x\u001fy'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-control-single-127",
+      "source": "a='x\u007fy'",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "audit-first-closer-plain",
+      "source": "a=1 /* first */ junk */",
+      "grammar_matches": false
+    },
+    {
+      "id": "audit-first-closer-doc",
+      "source": "a=1 /# first #/ junk #/",
+      "grammar_matches": false
+    },
+    {
+      "id": "audit-first-closer-annotation",
+      "source": "a=1 /@ first @/ junk @/",
+      "grammar_matches": false
+    },
+    {
+      "id": "audit-first-closer-hint",
+      "source": "a=1 /? first ?/ junk ?/",
+      "grammar_matches": false
+    },
+    {
+      "id": "audit-first-closer-structure",
+      "source": "a=1 /{ first }/ junk }/",
+      "grammar_matches": false
+    },
+    {
+      "id": "audit-first-closer-profile",
+      "source": "a=1 /[ first ]/ junk ]/",
+      "grammar_matches": false
+    },
+    {
+      "id": "audit-first-closer-instructions",
+      "source": "a=1 /( first )/ junk )/",
+      "grammar_matches": false
+    },
+    {
+      "id": "core-comment-newline-plain-document-lf",
+      "source": "a = 3e3 /*\n*/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-document-crlf",
+      "source": "a = 3e3 /*\r\n*/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-document-single-line",
+      "source": "a = 3e3 /* comment */b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-object-lf",
+      "source": "o = {a = 3e3 /*\n*/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-object-crlf",
+      "source": "o = {a = 3e3 /*\r\n*/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-object-single-line",
+      "source": "o = {a = 3e3 /* comment */b = 399}",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-list-lf",
+      "source": "v = [3e3 /*\n*/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-list-crlf",
+      "source": "v = [3e3 /*\r\n*/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-list-single-line",
+      "source": "v = [3e3 /* comment */399]",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-tuple-lf",
+      "source": "v = (3e3 /*\n*/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-tuple-crlf",
+      "source": "v = (3e3 /*\r\n*/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-tuple-single-line",
+      "source": "v = (3e3 /* comment */399)",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-node-lf",
+      "source": "v = <n(3e3 /*\n*/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-node-crlf",
+      "source": "v = <n(3e3 /*\r\n*/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-node-single-line",
+      "source": "v = <n(3e3 /* comment */399)>",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-attributes-lf",
+      "source": "a@{x = 3e3 /*\n*/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-attributes-crlf",
+      "source": "a@{x = 3e3 /*\r\n*/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-attributes-single-line",
+      "source": "a@{x = 3e3 /* comment */y = 399} = 0",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-header-lf",
+      "source": "aeon:version = \"1.0\" /*\n*/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-header-crlf",
+      "source": "aeon:version = \"1.0\" /*\r\n*/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-header-single-line",
+      "source": "aeon:version = \"1.0\" /* comment */aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-cr-is-not-newline",
+      "source": "a = 3e3 /*\r*/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-escaped-n-is-not-newline",
+      "source": "a = 3e3 /*\\n*/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-line-separator-is-not-newline",
+      "source": "a = 3e3 /*\u2028*/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-paragraph-separator-is-not-newline",
+      "source": "a = 3e3 /*\u2029*/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-inter-token-layout",
+      "source": "a /*\n*/ = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-unterminated",
+      "source": "a=1 /*\n",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-plain-first-closer",
+      "source": "a=1 /*\n*/ b=2 */",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-document-lf",
+      "source": "a = 3e3 /#\n#/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-document-crlf",
+      "source": "a = 3e3 /#\r\n#/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-document-single-line",
+      "source": "a = 3e3 /# comment #/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-object-lf",
+      "source": "o = {a = 3e3 /#\n#/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-object-crlf",
+      "source": "o = {a = 3e3 /#\r\n#/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-object-single-line",
+      "source": "o = {a = 3e3 /# comment #/b = 399}",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-list-lf",
+      "source": "v = [3e3 /#\n#/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-list-crlf",
+      "source": "v = [3e3 /#\r\n#/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-list-single-line",
+      "source": "v = [3e3 /# comment #/399]",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-tuple-lf",
+      "source": "v = (3e3 /#\n#/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-tuple-crlf",
+      "source": "v = (3e3 /#\r\n#/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-tuple-single-line",
+      "source": "v = (3e3 /# comment #/399)",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-node-lf",
+      "source": "v = <n(3e3 /#\n#/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-node-crlf",
+      "source": "v = <n(3e3 /#\r\n#/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-node-single-line",
+      "source": "v = <n(3e3 /# comment #/399)>",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-attributes-lf",
+      "source": "a@{x = 3e3 /#\n#/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-attributes-crlf",
+      "source": "a@{x = 3e3 /#\r\n#/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-attributes-single-line",
+      "source": "a@{x = 3e3 /# comment #/y = 399} = 0",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-header-lf",
+      "source": "aeon:version = \"1.0\" /#\n#/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-header-crlf",
+      "source": "aeon:version = \"1.0\" /#\r\n#/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-header-single-line",
+      "source": "aeon:version = \"1.0\" /# comment #/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-cr-is-not-newline",
+      "source": "a = 3e3 /#\r#/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-escaped-n-is-not-newline",
+      "source": "a = 3e3 /#\\n#/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-line-separator-is-not-newline",
+      "source": "a = 3e3 /#\u2028#/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-paragraph-separator-is-not-newline",
+      "source": "a = 3e3 /#\u2029#/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-inter-token-layout",
+      "source": "a /#\n#/ = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-unterminated",
+      "source": "a=1 /#\n",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-doc-first-closer",
+      "source": "a=1 /#\n#/ b=2 #/",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-document-lf",
+      "source": "a = 3e3 /@\n@/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-document-crlf",
+      "source": "a = 3e3 /@\r\n@/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-document-single-line",
+      "source": "a = 3e3 /@ comment @/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-object-lf",
+      "source": "o = {a = 3e3 /@\n@/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-object-crlf",
+      "source": "o = {a = 3e3 /@\r\n@/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-object-single-line",
+      "source": "o = {a = 3e3 /@ comment @/b = 399}",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-list-lf",
+      "source": "v = [3e3 /@\n@/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-list-crlf",
+      "source": "v = [3e3 /@\r\n@/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-list-single-line",
+      "source": "v = [3e3 /@ comment @/399]",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-tuple-lf",
+      "source": "v = (3e3 /@\n@/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-tuple-crlf",
+      "source": "v = (3e3 /@\r\n@/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-tuple-single-line",
+      "source": "v = (3e3 /@ comment @/399)",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-node-lf",
+      "source": "v = <n(3e3 /@\n@/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-node-crlf",
+      "source": "v = <n(3e3 /@\r\n@/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-node-single-line",
+      "source": "v = <n(3e3 /@ comment @/399)>",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-attributes-lf",
+      "source": "a@{x = 3e3 /@\n@/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-attributes-crlf",
+      "source": "a@{x = 3e3 /@\r\n@/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-attributes-single-line",
+      "source": "a@{x = 3e3 /@ comment @/y = 399} = 0",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-header-lf",
+      "source": "aeon:version = \"1.0\" /@\n@/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-header-crlf",
+      "source": "aeon:version = \"1.0\" /@\r\n@/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-header-single-line",
+      "source": "aeon:version = \"1.0\" /@ comment @/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-cr-is-not-newline",
+      "source": "a = 3e3 /@\r@/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-escaped-n-is-not-newline",
+      "source": "a = 3e3 /@\\n@/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-line-separator-is-not-newline",
+      "source": "a = 3e3 /@\u2028@/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-paragraph-separator-is-not-newline",
+      "source": "a = 3e3 /@\u2029@/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-inter-token-layout",
+      "source": "a /@\n@/ = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-unterminated",
+      "source": "a=1 /@\n",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-annotation-first-closer",
+      "source": "a=1 /@\n@/ b=2 @/",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-document-lf",
+      "source": "a = 3e3 /?\n?/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-document-crlf",
+      "source": "a = 3e3 /?\r\n?/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-document-single-line",
+      "source": "a = 3e3 /? comment ?/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-object-lf",
+      "source": "o = {a = 3e3 /?\n?/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-object-crlf",
+      "source": "o = {a = 3e3 /?\r\n?/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-object-single-line",
+      "source": "o = {a = 3e3 /? comment ?/b = 399}",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-list-lf",
+      "source": "v = [3e3 /?\n?/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-list-crlf",
+      "source": "v = [3e3 /?\r\n?/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-list-single-line",
+      "source": "v = [3e3 /? comment ?/399]",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-tuple-lf",
+      "source": "v = (3e3 /?\n?/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-tuple-crlf",
+      "source": "v = (3e3 /?\r\n?/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-tuple-single-line",
+      "source": "v = (3e3 /? comment ?/399)",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-node-lf",
+      "source": "v = <n(3e3 /?\n?/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-node-crlf",
+      "source": "v = <n(3e3 /?\r\n?/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-node-single-line",
+      "source": "v = <n(3e3 /? comment ?/399)>",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-attributes-lf",
+      "source": "a@{x = 3e3 /?\n?/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-attributes-crlf",
+      "source": "a@{x = 3e3 /?\r\n?/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-attributes-single-line",
+      "source": "a@{x = 3e3 /? comment ?/y = 399} = 0",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-header-lf",
+      "source": "aeon:version = \"1.0\" /?\n?/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-header-crlf",
+      "source": "aeon:version = \"1.0\" /?\r\n?/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-header-single-line",
+      "source": "aeon:version = \"1.0\" /? comment ?/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-cr-is-not-newline",
+      "source": "a = 3e3 /?\r?/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-escaped-n-is-not-newline",
+      "source": "a = 3e3 /?\\n?/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-line-separator-is-not-newline",
+      "source": "a = 3e3 /?\u2028?/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-paragraph-separator-is-not-newline",
+      "source": "a = 3e3 /?\u2029?/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-inter-token-layout",
+      "source": "a /?\n?/ = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-unterminated",
+      "source": "a=1 /?\n",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-hint-first-closer",
+      "source": "a=1 /?\n?/ b=2 ?/",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-document-lf",
+      "source": "a = 3e3 /{\n}/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-document-crlf",
+      "source": "a = 3e3 /{\r\n}/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-document-single-line",
+      "source": "a = 3e3 /{ comment }/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-object-lf",
+      "source": "o = {a = 3e3 /{\n}/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-object-crlf",
+      "source": "o = {a = 3e3 /{\r\n}/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-object-single-line",
+      "source": "o = {a = 3e3 /{ comment }/b = 399}",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-list-lf",
+      "source": "v = [3e3 /{\n}/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-list-crlf",
+      "source": "v = [3e3 /{\r\n}/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-list-single-line",
+      "source": "v = [3e3 /{ comment }/399]",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-tuple-lf",
+      "source": "v = (3e3 /{\n}/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-tuple-crlf",
+      "source": "v = (3e3 /{\r\n}/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-tuple-single-line",
+      "source": "v = (3e3 /{ comment }/399)",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-node-lf",
+      "source": "v = <n(3e3 /{\n}/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-node-crlf",
+      "source": "v = <n(3e3 /{\r\n}/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-node-single-line",
+      "source": "v = <n(3e3 /{ comment }/399)>",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-attributes-lf",
+      "source": "a@{x = 3e3 /{\n}/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-attributes-crlf",
+      "source": "a@{x = 3e3 /{\r\n}/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-attributes-single-line",
+      "source": "a@{x = 3e3 /{ comment }/y = 399} = 0",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-header-lf",
+      "source": "aeon:version = \"1.0\" /{\n}/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-header-crlf",
+      "source": "aeon:version = \"1.0\" /{\r\n}/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-header-single-line",
+      "source": "aeon:version = \"1.0\" /{ comment }/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-cr-is-not-newline",
+      "source": "a = 3e3 /{\r}/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-escaped-n-is-not-newline",
+      "source": "a = 3e3 /{\\n}/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-line-separator-is-not-newline",
+      "source": "a = 3e3 /{\u2028}/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-paragraph-separator-is-not-newline",
+      "source": "a = 3e3 /{\u2029}/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-inter-token-layout",
+      "source": "a /{\n}/ = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-unterminated",
+      "source": "a=1 /{\n",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-structure-first-closer",
+      "source": "a=1 /{\n}/ b=2 }/",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-document-lf",
+      "source": "a = 3e3 /[\n]/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-document-crlf",
+      "source": "a = 3e3 /[\r\n]/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-document-single-line",
+      "source": "a = 3e3 /[ comment ]/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-object-lf",
+      "source": "o = {a = 3e3 /[\n]/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-object-crlf",
+      "source": "o = {a = 3e3 /[\r\n]/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-object-single-line",
+      "source": "o = {a = 3e3 /[ comment ]/b = 399}",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-list-lf",
+      "source": "v = [3e3 /[\n]/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-list-crlf",
+      "source": "v = [3e3 /[\r\n]/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-list-single-line",
+      "source": "v = [3e3 /[ comment ]/399]",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-tuple-lf",
+      "source": "v = (3e3 /[\n]/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-tuple-crlf",
+      "source": "v = (3e3 /[\r\n]/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-tuple-single-line",
+      "source": "v = (3e3 /[ comment ]/399)",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-node-lf",
+      "source": "v = <n(3e3 /[\n]/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-node-crlf",
+      "source": "v = <n(3e3 /[\r\n]/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-node-single-line",
+      "source": "v = <n(3e3 /[ comment ]/399)>",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-attributes-lf",
+      "source": "a@{x = 3e3 /[\n]/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-attributes-crlf",
+      "source": "a@{x = 3e3 /[\r\n]/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-attributes-single-line",
+      "source": "a@{x = 3e3 /[ comment ]/y = 399} = 0",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-header-lf",
+      "source": "aeon:version = \"1.0\" /[\n]/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-header-crlf",
+      "source": "aeon:version = \"1.0\" /[\r\n]/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-header-single-line",
+      "source": "aeon:version = \"1.0\" /[ comment ]/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-cr-is-not-newline",
+      "source": "a = 3e3 /[\r]/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-escaped-n-is-not-newline",
+      "source": "a = 3e3 /[\\n]/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-line-separator-is-not-newline",
+      "source": "a = 3e3 /[\u2028]/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-paragraph-separator-is-not-newline",
+      "source": "a = 3e3 /[\u2029]/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-inter-token-layout",
+      "source": "a /[\n]/ = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-unterminated",
+      "source": "a=1 /[\n",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-profile-first-closer",
+      "source": "a=1 /[\n]/ b=2 ]/",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-document-lf",
+      "source": "a = 3e3 /(\n)/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-document-crlf",
+      "source": "a = 3e3 /(\r\n)/b = 399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-document-single-line",
+      "source": "a = 3e3 /( comment )/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-object-lf",
+      "source": "o = {a = 3e3 /(\n)/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-object-crlf",
+      "source": "o = {a = 3e3 /(\r\n)/b = 399}",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-object-single-line",
+      "source": "o = {a = 3e3 /( comment )/b = 399}",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-list-lf",
+      "source": "v = [3e3 /(\n)/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-list-crlf",
+      "source": "v = [3e3 /(\r\n)/399]",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-list-single-line",
+      "source": "v = [3e3 /( comment )/399]",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-tuple-lf",
+      "source": "v = (3e3 /(\n)/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-tuple-crlf",
+      "source": "v = (3e3 /(\r\n)/399)",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-tuple-single-line",
+      "source": "v = (3e3 /( comment )/399)",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-node-lf",
+      "source": "v = <n(3e3 /(\n)/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-node-crlf",
+      "source": "v = <n(3e3 /(\r\n)/399)>",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-node-single-line",
+      "source": "v = <n(3e3 /( comment )/399)>",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-attributes-lf",
+      "source": "a@{x = 3e3 /(\n)/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-attributes-crlf",
+      "source": "a@{x = 3e3 /(\r\n)/y = 399} = 0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-attributes-single-line",
+      "source": "a@{x = 3e3 /( comment )/y = 399} = 0",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-header-lf",
+      "source": "aeon:version = \"1.0\" /(\n)/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-header-crlf",
+      "source": "aeon:version = \"1.0\" /(\r\n)/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-header-single-line",
+      "source": "aeon:version = \"1.0\" /( comment )/aeon:mode = \"transport\"\na = 1",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-cr-is-not-newline",
+      "source": "a = 3e3 /(\r)/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-escaped-n-is-not-newline",
+      "source": "a = 3e3 /(\\n)/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-line-separator-is-not-newline",
+      "source": "a = 3e3 /(\u2028)/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-paragraph-separator-is-not-newline",
+      "source": "a = 3e3 /(\u2029)/b = 399",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-inter-token-layout",
+      "source": "a /(\n)/ = 1",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-unterminated",
+      "source": "a=1 /(\n",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-instructions-first-closer",
+      "source": "a=1 /(\n)/ b=2 )/",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-strict-typed-document",
+      "source": "a:number=3e3 /*\n*/b:number=399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict"
+      }
+    },
+    {
+      "id": "core-comment-newline-strict-typed-attributes",
+      "source": "a@{x:number=3e3 /*\n*/y:number=399}:number=0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "strict"
+      }
+    },
+    {
+      "id": "core-comment-newline-custom-typed-document",
+      "source": "a:number=3e3 /*\n*/b:number=399",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom"
+      }
+    },
+    {
+      "id": "core-comment-newline-custom-typed-attributes",
+      "source": "a@{x:number=3e3 /*\n*/y:number=399}:number=0",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "custom"
+      }
+    },
+    {
+      "id": "core-comment-newline-raw-string",
+      "source": "a=`/*\n*/` b=2",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-trimtick",
+      "source": "a=>`/*\n*/` b=2",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-quoted-string",
+      "source": "a=\"/*\\n*/\" b=2",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-split-keyword",
+      "source": "a=tr/*\n*/ue",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-split-exponent",
+      "source": "a=3e/*\n*/3",
+      "grammar_matches": false,
+      "runtime_expected": {
+        "ok": false,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-empty",
+      "source": "",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    },
+    {
+      "id": "core-comment-newline-comment-only",
+      "source": "/*\n*/",
+      "grammar_matches": true,
+      "runtime_expected": {
+        "ok": true,
+        "mode": "transport"
+      }
+    }
+  ]
+}

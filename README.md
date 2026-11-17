@@ -72,13 +72,22 @@ Before committing, run:
 bash ./scripts/pre-commit-check.sh
 ```
 
-This checks portable paths, the 99-document source inventory, required envelope declarations,
+This checks portable paths, the 100-document source inventory, required envelope declarations,
 identifier uniqueness, date ordering, related-document IDs, publication links and anchors, referenced
 publication assets, and the contract-resource bundle. Full AEON and &ND parsing, projection tests, and
 website checks run in the consuming publication build. That build validates every
 canonical document, including those with `publish=false`: all tables require a
 nonempty `|~ Caption` immediately after their final row. Source inventory and
 parse-only checks do not replace the publisher's accessibility validation.
+
+## Informative AEON ABNF
+
+[Grammar revision 0.4](resources/grammar/aeon/v1/0.4/aeon.abnf) translates the
+existing Core v1 syntax into ABNF. Its manifest maps every production to exact
+normative-source sections and catalogues extra constraints and open source/CTS
+discrepancies. Full recognition checks cover pinned released and development
+Core targets; they do not claim semantic or SUT conformance. See the
+[maintenance and validation guide](docs/aeon-abnf.md).
 
 ## Public repositories
 
