@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:aeonite:sansa:properties:contract-candidate:0.1",
+  "$id": "urn:aeonite:sansa:properties:contract-candidate:0.2",
   "type": "object",
   "properties": {
     "id": {
-      "const": "sansa.property-selectors.candidate.0.1"
+      "const": "sansa.property-selectors.candidate.0.2"
     },
     "status": {
       "const": "proposal-unpublished-unimplemented"
@@ -13,7 +13,7 @@
       "const": "sansa-v1-property-selectors"
     },
     "profile": {
-      "const": "sansa-properties-read-only-candidate-0.1"
+      "const": "sansa-properties-read-only-candidate-0.2"
     },
     "publishedRegistryIdentifier": {
       "const": false
@@ -25,8 +25,15 @@
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "type": "string"
-      }
+        "type": "string",
+        "enum": [
+          "key",
+          "tag",
+          "headTag"
+        ]
+      },
+      "minItems": 3,
+      "maxItems": 3
     },
     "scopeContext": {
       "type": "array",
@@ -125,7 +132,8 @@
         "property": {
           "const": [
             "key",
-            "tag"
+            "tag",
+            "headTag"
           ]
         },
         "value": {
