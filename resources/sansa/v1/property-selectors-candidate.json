@@ -1,19 +1,21 @@
 {
-  "id": "sansa.property-selectors.candidate.0.1",
+  "id": "sansa.property-selectors.candidate.0.2",
   "status": "proposal-unpublished-unimplemented",
   "document": "sansa-v1-property-selectors",
-  "profile": "sansa-properties-read-only-candidate-0.1",
+  "profile": "sansa-properties-read-only-candidate-0.2",
   "publishedRegistryIdentifier": false,
   "defaultSelection": "exclude",
   "properties": [
     "key",
-    "tag"
+    "tag",
+    "headTag"
   ],
   "selector": {
     "type": "propertyFilter",
     "property": [
       "key",
-      "tag"
+      "tag",
+      "headTag"
     ],
     "value": "Unicode scalar string",
     "isExact": false
