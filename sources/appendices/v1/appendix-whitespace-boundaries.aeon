@@ -3,7 +3,7 @@ id:string = "appendix-whitespace-boundaries-v1"
 title:string = "Appendix — Whitespace Boundaries"
 description:string = "Clarifies where line breaks behave like ordinary whitespace and where compact tokens must remain contiguous."
 created:date = 2026-03-30
-modified:date = 2026-08-23
+modified:date = 2026-11-18
 family:string = "appendices"
 group:string = "Core Syntax"
 standing:string = "official"
@@ -41,7 +41,7 @@ body:prose = >`
   - inter-token whitespace at structural boundaries;
   - interior characters of a single lexical token.
 
-  If a line break appears at a structural boundary, it is accepted on the same basis as an ordinary space.
+  If a line break appears at a structural boundary, it is accepted on the same basis as an ordinary space. Physical LF newlines inside plain or structured block comments retain that same layout significance. Wherever the grammar consumes a newline separator, such a newline inside the comment can supply it; no newline outside the closer is required. A block comment without a physical newline does not create a separator. CRLF includes a physical LF; standalone CR and Unicode line/paragraph separators are not newline separators.
 
   If a line break appears inside a compact token, the token is broken and the form is invalid unless that token family explicitly permits embedded newlines.
 

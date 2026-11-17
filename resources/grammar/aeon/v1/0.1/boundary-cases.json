@@ -1,0 +1,671 @@
+{
+  "license": "CC0-1.0",
+  "scope": "Expected ABNF recognition, not full AEON validity; deferred obligations and source discrepancies are intentional.",
+  "cases": [
+    {
+      "id": "empty",
+      "source": "",
+      "grammar_matches": true
+    },
+    {
+      "id": "trivia",
+      "source": " // alone\n",
+      "grammar_matches": true
+    },
+    {
+      "id": "binding",
+      "source": "a=1",
+      "grammar_matches": true
+    },
+    {
+      "id": "comma",
+      "source": "a=1,b=2,",
+      "grammar_matches": true
+    },
+    {
+      "id": "lf",
+      "source": "a=1\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "cr",
+      "source": "a=1\rb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "crlf",
+      "source": "a=1\r\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "empty-object",
+      "source": "a={}",
+      "grammar_matches": true
+    },
+    {
+      "id": "empty-sequences",
+      "source": "a=[(),[],<tag>]",
+      "grammar_matches": true
+    },
+    {
+      "id": "trailing",
+      "source": "a=[1,2,]",
+      "grammar_matches": true
+    },
+    {
+      "id": "anonymous",
+      "source": "a=[\\x\\@{m=1}:number=2]",
+      "grammar_matches": true
+    },
+    {
+      "id": "literal-word-key",
+      "source": "true=true",
+      "grammar_matches": true
+    },
+    {
+      "id": "quoted-empty-key",
+      "source": "\"\"=1",
+      "grammar_matches": true
+    },
+    {
+      "id": "quoted-empty-ref",
+      "source": "\"\"=1\nb=~$.[\"\"]",
+      "grammar_matches": true
+    },
+    {
+      "id": "unicode",
+      "source": "a=\"\ue000\ud83d\ude00\udbff\udfff\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "unicode-escape",
+      "source": "a=\"\\uD83D\\uDE00\\u{10FFFF}\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "mixed-layout",
+      "source": "a\n:\nlist\n<\nnumber\n>\n=\n[1\n2]",
+      "grammar_matches": true
+    },
+    {
+      "id": "clarifier-layout",
+      "source": "a:sep\n[\n\"x\"\n]=^3x4",
+      "grammar_matches": true
+    },
+    {
+      "id": "case-key",
+      "source": "Infinity=\"value\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "number-forms",
+      "source": "a=[.5,-.5,+.5,0,1_000,0e+01,1e0_1]",
+      "grammar_matches": true
+    },
+    {
+      "id": "nonfinite",
+      "source": "a=[Infinity,-Infinity,NaN,-NaN]",
+      "grammar_matches": true
+    },
+    {
+      "id": "null",
+      "source": "a=[!none,!notSet,!notApplicable,!tombstone,!\"later\"]",
+      "grammar_matches": true
+    },
+    {
+      "id": "radix",
+      "source": "a=[%001,%-.3,%+.1,%a_!_&]",
+      "grammar_matches": true
+    },
+    {
+      "id": "encoding",
+      "source": "a=&abc-_===",
+      "grammar_matches": true
+    },
+    {
+      "id": "separator-quoted",
+      "source": "a=^\"[, ]\"|'two words'",
+      "grammar_matches": true
+    },
+    {
+      "id": "symbol",
+      "source": "a=|quoted \" // /* content|",
+      "grammar_matches": true
+    },
+    {
+      "id": "symbol-pipe",
+      "source": "a=|a\\|b|",
+      "grammar_matches": true
+    },
+    {
+      "id": "symbol-escaped-newline",
+      "source": "a=|a\\nb|",
+      "grammar_matches": true
+    },
+    {
+      "id": "raw",
+      "source": "a=`one\ntwo`",
+      "grammar_matches": true
+    },
+    {
+      "id": "trimtick",
+      "source": "a=> `\n  text\n`",
+      "grammar_matches": true
+    },
+    {
+      "id": "trimtick-mixed",
+      "source": "a=>`\n\tone\n two\n`",
+      "grammar_matches": true
+    },
+    {
+      "id": "reference",
+      "source": "a={b=[1]}\nc=~a.b[0]",
+      "grammar_matches": true
+    },
+    {
+      "id": "pointer",
+      "source": "a=1\nb=~>a",
+      "grammar_matches": true
+    },
+    {
+      "id": "attribute-ref",
+      "source": "a@{b=1}=0\nc=~a.@.b",
+      "grammar_matches": true
+    },
+    {
+      "id": "root-quoted-layout",
+      "source": "\"a.b\"=1\nc=~$. [\"a.b\"]",
+      "grammar_matches": true
+    },
+    {
+      "id": "temporal",
+      "source": "a=[2024-,2024-02,2024-02-29,09:,09:30Z,2024-T09,2024-02T09:30&local]",
+      "grammar_matches": true
+    },
+    {
+      "id": "sansa",
+      "source": "a:sansa=$.items.*#text%StringLiteral.(\"item?*\")",
+      "grammar_matches": true
+    },
+    {
+      "id": "sansa-qualifiers",
+      "source": "a:sansa=$.value:tuple<x><y>[\".\"]",
+      "grammar_matches": true
+    },
+    {
+      "id": "sansa-range",
+      "source": "a:sansa=$.items[2..]",
+      "grammar_matches": true
+    },
+    {
+      "id": "sansa-local",
+      "source": "a:sansa=$.<\"space\">.name",
+      "grammar_matches": true
+    },
+    {
+      "id": "bom-shebang",
+      "source": "\ufeff#!/usr/bin/aeon\na=1",
+      "grammar_matches": true
+    },
+    {
+      "id": "shebang-eof",
+      "source": "#!host",
+      "grammar_matches": true
+    },
+    {
+      "id": "host-line",
+      "source": "//! format:aeon\na=1",
+      "grammar_matches": true
+    },
+    {
+      "id": "raw-escape-deferred",
+      "source": "a=`\\q`",
+      "grammar_matches": true
+    },
+    {
+      "id": "unicode-scalar-deferred",
+      "source": "a=\"\\u{110000}\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "duplicate-deferred",
+      "source": "a=1\na=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "datatype-deferred",
+      "source": "a:number=\"text\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "reference-deferred",
+      "source": "a=~missing",
+      "grammar_matches": true
+    },
+    {
+      "id": "temporal-deferred",
+      "source": "a=2025-02-29",
+      "grammar_matches": true
+    },
+    {
+      "id": "null-reason-deferred",
+      "source": "a=!\"\"",
+      "grammar_matches": true
+    },
+    {
+      "id": "local-space-deferred",
+      "source": "a:sansa=$.<\"\">",
+      "grammar_matches": true
+    },
+    {
+      "id": "space-binding",
+      "source": "a=1 b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "space-list",
+      "source": "a=[1 2]",
+      "grammar_matches": false
+    },
+    {
+      "id": "adjacent-list",
+      "source": "a=[truefalse]",
+      "grammar_matches": false
+    },
+    {
+      "id": "semicolon",
+      "source": "a=1;b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "comment-only-separator",
+      "source": "a=1/* gap */b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-newline-not-separator",
+      "source": "a=1/*\n*/b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "word-joiner",
+      "source": "a\u2060=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "line-separator",
+      "source": "a=1\u2028b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "paragraph-separator",
+      "source": "a=1\u2029b=2",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-key",
+      "source": "1a=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "hyphen-key",
+      "source": "a-b=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "backtick-key",
+      "source": "`a`=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "repeat-attributes",
+      "source": "a@{}@{}=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "head-order",
+      "source": "a:number@{}=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "identity-order",
+      "source": "a@{}\\id\\=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-identity",
+      "source": "a\\\\=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "root-anonymous",
+      "source": ":number=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "object-anonymous",
+      "source": "a={:number=1}",
+      "grammar_matches": false
+    },
+    {
+      "id": "nested-anonymous",
+      "source": "a=[:number=:number=1]",
+      "grammar_matches": false
+    },
+    {
+      "id": "postfix-attributes",
+      "source": "a=[]@{}",
+      "grammar_matches": false
+    },
+    {
+      "id": "unfinished-node",
+      "source": "a=<tag(1)",
+      "grammar_matches": false
+    },
+    {
+      "id": "unknown-value",
+      "source": "a=bare",
+      "grammar_matches": false
+    },
+    {
+      "id": "uppercase-bool",
+      "source": "a=TRUE",
+      "grammar_matches": false
+    },
+    {
+      "id": "plus-infinity",
+      "source": "a=+Infinity",
+      "grammar_matches": false
+    },
+    {
+      "id": "lower-nan",
+      "source": "a=nan",
+      "grammar_matches": false
+    },
+    {
+      "id": "custom-null-bare",
+      "source": "a=!later",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-symbol",
+      "source": "a=||",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-symbol-newline",
+      "source": "a=|one\ntwo|",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-escape",
+      "source": "a=\"\\q\"",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-string-newline",
+      "source": "a=\"one\ntwo\"",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-string-cr",
+      "source": "a=\"one\rtwo\"",
+      "grammar_matches": false
+    },
+    {
+      "id": "double-bom",
+      "source": "\ufeff\ufeffa=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "late-shebang",
+      "source": "a=1\n#!host",
+      "grammar_matches": false
+    },
+    {
+      "id": "leading-shebang-space",
+      "source": " #!host\na=1",
+      "grammar_matches": false
+    },
+    {
+      "id": "unterminated-comment",
+      "source": "a=1/*",
+      "grammar_matches": false
+    },
+    {
+      "id": "skipped-comment-closer",
+      "source": "a=1 /* first */ junk */",
+      "grammar_matches": false
+    },
+    {
+      "id": "leading-zero",
+      "source": "a=01",
+      "grammar_matches": false
+    },
+    {
+      "id": "leading-zero-underscore",
+      "source": "a=0_1",
+      "grammar_matches": false
+    },
+    {
+      "id": "trailing-underscore",
+      "source": "a=1_",
+      "grammar_matches": false
+    },
+    {
+      "id": "repeat-underscore",
+      "source": "a=1__2",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-exponent",
+      "source": "a=1e+",
+      "grammar_matches": false
+    },
+    {
+      "id": "trailing-decimal",
+      "source": "a=1.",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-hex",
+      "source": "a=#",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-hex-underscore",
+      "source": "a=#_ff",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-radix-underscore",
+      "source": "a=%1__a",
+      "grammar_matches": false
+    },
+    {
+      "id": "bad-encoding",
+      "source": "a=&ab+c",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-separator",
+      "source": "a=^",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-separator-escape",
+      "source": "a=^a\\b",
+      "grammar_matches": false
+    },
+    {
+      "id": "repeated-trimtick",
+      "source": "a=>>`text`",
+      "grammar_matches": false
+    },
+    {
+      "id": "split-trimtick",
+      "source": "a=> >`text`",
+      "grammar_matches": false
+    },
+    {
+      "id": "root-bracket-ref",
+      "source": "\"a\"=1\nb=~$[\"a\"]",
+      "grammar_matches": false
+    },
+    {
+      "id": "relative-bracket-gap",
+      "source": "a={b=1}\nv=~a[\"b\"]",
+      "grammar_matches": false
+    },
+    {
+      "id": "selector-ref",
+      "source": "a=~$.items.*",
+      "grammar_matches": false
+    },
+    {
+      "id": "empty-attribute-ref",
+      "source": "a=~x.@",
+      "grammar_matches": false
+    },
+    {
+      "id": "lowercase-temporal",
+      "source": "a=2025-01-01t09:00z",
+      "grammar_matches": false
+    },
+    {
+      "id": "fraction-without-seconds",
+      "source": "a=09:30.1",
+      "grammar_matches": false
+    },
+    {
+      "id": "offset-seconds",
+      "source": "a=09:30+01:00:01",
+      "grammar_matches": false
+    },
+    {
+      "id": "raw-sansa-space",
+      "source": "a:sansa=$.two words",
+      "grammar_matches": false
+    },
+    {
+      "id": "sansa-repeated-clarifier",
+      "source": "a:sansa=$.x:sep[\"x\"][\"y\"]",
+      "grammar_matches": false
+    },
+    {
+      "id": "sansa-nested-union",
+      "source": "a:sansa=$.x:list<string|number>",
+      "grammar_matches": false
+    },
+    {
+      "id": "surrogate-source",
+      "source": "a=\"\ud800\"",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-*",
+      "source": "a=1 /* \ue000\ud83d\ude00 */\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-*",
+      "source": "a=1 /* ***/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-*",
+      "source": "a=1 /* missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-#",
+      "source": "a=1 /# \ue000\ud83d\ude00 #/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-#",
+      "source": "a=1 /# ###/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-#",
+      "source": "a=1 /# missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-@",
+      "source": "a=1 /@ \ue000\ud83d\ude00 @/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-@",
+      "source": "a=1 /@ @@@/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-@",
+      "source": "a=1 /@ missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-?",
+      "source": "a=1 /? \ue000\ud83d\ude00 ?/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-?",
+      "source": "a=1 /? ???/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-?",
+      "source": "a=1 /? missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-{",
+      "source": "a=1 /{ \ue000\ud83d\ude00 }/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-{",
+      "source": "a=1 /{ }}}/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-{",
+      "source": "a=1 /{ missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-[",
+      "source": "a=1 /[ \ue000\ud83d\ude00 ]/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-[",
+      "source": "a=1 /[ ]]]/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-[",
+      "source": "a=1 /[ missing closer",
+      "grammar_matches": false
+    },
+    {
+      "id": "block-(",
+      "source": "a=1 /( \ue000\ud83d\ude00 )/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-run-(",
+      "source": "a=1 /( )))/\nb=2",
+      "grammar_matches": true
+    },
+    {
+      "id": "block-truncated-(",
+      "source": "a=1 /( missing closer",
+      "grammar_matches": false
+    }
+  ]
+}

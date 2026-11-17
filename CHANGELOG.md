@@ -17,6 +17,31 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Bound informative ABNF revision 0.4 to the current upstream source inventory
+  and coordinated CTS/implementation commits for PR validation. Earlier
+  grammar bundles and their recorded evidence retain their original bytes.
+
+- Adopted physical LF/CRLF inside plain and structured block comments as newline
+  separators wherever the surrounding grammar allows them, matching TypeScript.
+  Updated normative references and informative grammar revision 0.3; retained
+  earlier bundles. Comments without LF, literal payloads and compact-token
+  boundaries retain their rules. Core next adds 207 CTS cases and Python exposes
+  those comment newlines as layout tokens. Exact-byte CTS evidence supports
+  offline recognition replay while cross-repository edits remain uncommitted.
+
+- Audited the ABNF red-team feedback in informative revision 0.2, retaining
+  revision 0.1 bytes. Preserved empty/comment-only documents and reduced-precision
+  temporal markers; added 256 focused cases, 9,555 first-closer oracle cases,
+  scoped TypeScript/Python evidence and richer production mappings. Recorded
+  the TypeScript-only hidden-comment-newline separator discrepancy without
+  changing implementation or normative language behavior.
+
+- Added informative AEON Core v1 ABNF revision 0.1, section-level source mappings,
+  additional-constraint catalogue, explicit source/CTS discrepancies, focused
+  boundary cases and reproducible recognition reports for two pinned Core
+  targets. CI checks exact source/CTS bytes and every reviewed disagreement.
+  No normative language rule or historical CTS snapshot is changed.
+
 - Fixed the AEON source escaping of literal periods in the comparison numerical
   grammar, preserving the decoded regular expression. Added four required table
   captions and separated two intentional forward-reference rejection examples,

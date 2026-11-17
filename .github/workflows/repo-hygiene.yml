@@ -21,3 +21,19 @@ jobs:
 
       - name: Check canonical sources and repository hygiene
         run: bash ./scripts/pre-commit-check.sh
+
+  abnf-recognition:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout specification sources
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Set up recognition Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.14'
+      - name: Install pinned recognition dependency
+        run: python -m pip install -r scripts/requirements-abnf.txt
+      - name: Check validation guards
+        run: python -m unittest discover -s tests -p 'test_abnf.py'
+      - name: Recognize pinned Core CTS and compare recorded evidence
+        run: python scripts/check-aeon-abnf.py --cts-archive resources/grammar/aeon/v1/0.4/cts-inputs.json

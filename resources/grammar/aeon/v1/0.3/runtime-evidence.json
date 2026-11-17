@@ -1,0 +1,5050 @@
+{
+  "grammar_id": "aeon-abnf-v1-0.3",
+  "boundary_cases_sha256": "b874a39507f4b06986007a7c3c03300c5ebf5b8d83825577ef5e619cb4c74e49",
+  "implementation_repository": "https://github.com/AltoPelago/aeon",
+  "implementation_revision": "805ba506a10c7f0698a4cb98e368478ccf0f65c9",
+  "implementation_worktree_dirty": true,
+  "observed_artifact_sha256": {
+    "implementations/python/src/aeon/__init__.py": "5c52c90d925fa9c93ab24c4b128b96c8dc3c76afb2f85a63648c724d1a3852ec",
+    "implementations/python/src/aeon/_canonical_ordering.py": "2efd6fa65c0bebc4f23dc52ab66342edda6f1cb9eb19d4dcc08d89a2f0416a7d",
+    "implementations/python/src/aeon/_compat.py": "772bde573bce4953c3f41a897b5bdf7e5b5da46fbe259bd2fbb00251ca15df68",
+    "implementations/python/src/aeon/_numbers.py": "3765b289efa7cad859ad409be65f7d0d8b13c524a8b0b7a16e7007aa7143fe09",
+    "implementations/python/src/aeon/_radix.py": "f5f32a449c7fdbd9f41bbff1af9824f483bcecd2506d89212489952d2618578e",
+    "implementations/python/src/aeon/_reference_path.py": "d839454d595f1bc843792eb46014611cf283f330112550ad87aab70c04e2c93d",
+    "implementations/python/src/aeon/_sansa_cursor.py": "e7c6599b3a36a4905b20a31801cdd77fcd1543027025912dde8da35083c33dc7",
+    "implementations/python/src/aeon/aeos.py": "06ff6b41f9aa02c066b81b6c04cd12a6e27f6beafbdde527dabc16c7b0a5c73b",
+    "implementations/python/src/aeon/annotations.py": "1dd8623aa2c74e31d8218b29eb9b67852bca1176e34589d43df321b6199a266e",
+    "implementations/python/src/aeon/api.py": "9af97010b7ae369da0cbe13a400ed22b93b3db1f8e301d69dd89b6b6bb4651bd",
+    "implementations/python/src/aeon/ast.py": "b68843ef5b7398be8095505e28525efddc396d1a940b5962e26bb2ced3b2d9e8",
+    "implementations/python/src/aeon/canonical.py": "eb7804d3750ccdbf9367d17e3c12bc8337b8117b98a9a46aee5ea687907b00f3",
+    "implementations/python/src/aeon/cli.py": "4dbb0efa9e71aba14bb2cdaf627299a87887358d93345fb2c9c45750c93c9cc8",
+    "implementations/python/src/aeon/core.py": "56d67a8c918a9f58202f195f17925f18064e3d5ed265c06ceb087da7909fadb2",
+    "implementations/python/src/aeon/errors.py": "6b0265584a988a7aba000535a0fcbad6f54b70fd5a509e356da39808cb204c72",
+    "implementations/python/src/aeon/finalize.py": "5ad3203a390fc6cdcea4a488514f3a14ee9e0371271e4a7c8ecea0d2a5c26c70",
+    "implementations/python/src/aeon/lexer.py": "b9dfd8b21c8e0891f48c9d6f9f1287ac0e9b556e9b5f989ab91bd3ca4fc3daa1",
+    "implementations/python/src/aeon/limits.py": "c36d79b2933d3e7a06853b27dc247876f4653345a59a786748580c0dd65454df",
+    "implementations/python/src/aeon/parser.py": "3e9604802c9b78cb74c964b6f45d90cdea53c1d7fa8fde0013052b02e23f594f",
+    "implementations/python/src/aeon/portable.py": "d8d2fd75781470f16330a7e763371556e2f76321eb264a8c9eef48e35a42de52",
+    "implementations/python/src/aeon/portable_finalize.py": "eaf029162d585c25aac4de9d725e8e360fe93009961427ee7a912016b1e0501c",
+    "implementations/python/src/aeon/preamble.py": "2785011f362f2d715ef94fd216fb2761450bd8d0496c401b2b0936cb62703f63",
+    "implementations/python/src/aeon/sansa.py": "51ee9ec1756f4e237ab9fdaa6541c4df79a9d2cdc20c28b9bd6b49ff30268003",
+    "implementations/python/src/aeon/sansa_document.py": "9f5b292fbdbbcf1966c09c5f68b9c5c8d0525bd321e61fb241a2e002cf491948",
+    "implementations/python/src/aeon/spans.py": "b6ed0e3a3b0cc64a3f5fe207b72197489d6e95ec86d1d169603acc630615f5bb",
+    "implementations/python/src/aeon/telex.py": "36da48ca3db4813b30b4bc70bb9ccd412dc4ed6f797f7b46adcd053e064ee2f6",
+    "implementations/typescript/packages/aeos/dist/bin/aeos-validator.js": "4607db13ac0e7506cc1b2baa6bc9a7610f93c8b61f5e1232fb209ebda69851f7",
+    "implementations/typescript/packages/aeos/dist/child-identity-admission.test.js": "cd9f2db248aa2f781c5fb34e10b96bc08142214c5e5da6ff4da9d3d3d4a06e48",
+    "implementations/typescript/packages/aeos/dist/diag/codes.js": "147e8c27e17d0a858cd6fd3fe477ad8f77230a98ac29a37dd83ad25fbc3e9548",
+    "implementations/typescript/packages/aeos/dist/diag/emit.js": "57341e3c5d711aab2ca68368b6921d9b613a50b4ff5beee2bd87588ecb1880b2",
+    "implementations/typescript/packages/aeos/dist/diag/index.js": "326c676b14e6744e9e5e646510aa8419363d5321ddd5fed5a64f3f7eacba442e",
+    "implementations/typescript/packages/aeos/dist/empty-keys.test.js": "0fd94e3519f3ca9418593962504e651b08c4255152dc341dabf40773b7d13631",
+    "implementations/typescript/packages/aeos/dist/index.js": "e2581cabec2ed2fac6d41c8bcc41d6e0cfb3342f21afd778b7e84a557d0fdd66",
+    "implementations/typescript/packages/aeos/dist/phase6.numeric.test.js": "37090055bf298e6f83737444ecef32954444d960a29094d5ff3f52292f51d34a",
+    "implementations/typescript/packages/aeos/dist/phase7.string.pattern.test.js": "e5151cf48ad0f5e4284b3e1126c2358ee2844283117fbaa88dde38d018e27067",
+    "implementations/typescript/packages/aeos/dist/phase7.string.test.js": "60ac8813220c68f763656adc5e2860024c8aada5349ac4ca959148f5c45c0651",
+    "implementations/typescript/packages/aeos/dist/phase8.datatype.test.js": "74d0e01030c79b43cd24ac11c59fe4f92c3f2c3394324073490dc19a351c56a5",
+    "implementations/typescript/packages/aeos/dist/phase9.guarantees.test.js": "85e0729f1638d516aa90f43de5f3eade791f19a3545b0315f8f708fed657f0a5",
+    "implementations/typescript/packages/aeos/dist/radix.test.js": "e5efaeaa572b09a0128fcf5f7b24ba2ca6129f9887b564aa102465e0443daf4d",
+    "implementations/typescript/packages/aeos/dist/rules/index.js": "95e3721cd678f9c6c2df34f04ba9b30ae1b0fa19f6537bbe71a70f18d006ccd8",
+    "implementations/typescript/packages/aeos/dist/rules/numericForm.js": "f89e06fc30b421d2e9832b02423b9256b8897d3bf60802c877afd8ac858a72cb",
+    "implementations/typescript/packages/aeos/dist/rules/presence.js": "1773c7ad3b18eefece310aa3e457a5003c0c4ad239a290404e469b4bca61b4a7",
+    "implementations/typescript/packages/aeos/dist/rules/referenceForm.js": "d4d74b72195ac44743b424cadfb7030e73d29ab046af3189bc573aabe0c747fc",
+    "implementations/typescript/packages/aeos/dist/rules/schemaIndex.js": "4016a315e1e0564335bcd090971a62ef8084b1f77df036b62b888165f8ed500e",
+    "implementations/typescript/packages/aeos/dist/rules/schemaIndex.test.js": "92ff25c6fe5e5d02a5ac805798c59325e04db2f9ca3b99271d02b6ddf9df6867",
+    "implementations/typescript/packages/aeos/dist/rules/stringForm.js": "27696f6bbee927f7852756eb82a4b9f6b9b14dada174192ea221ec978317ec97",
+    "implementations/typescript/packages/aeos/dist/rules/typeCheck.js": "658952156c88912789bbe021af5ee62670d7218631ce8ddb37baa362bf4f1a8d",
+    "implementations/typescript/packages/aeos/dist/schema-codec.js": "c5bd63e9ae7670ae6fae8687db5d47eed41d1e63efe32d4ce4d2e789a857543e",
+    "implementations/typescript/packages/aeos/dist/schema-codec.test.js": "ac9f644eae8e76f7c8a63e7e95a029dbb7ff578cf0f40bab0402b2fe9f83dbb0",
+    "implementations/typescript/packages/aeos/dist/schema-tools.js": "8c88abc17c1c9f2f596906c271d1af0767d17e445628f5ca6e1003109105b84d",
+    "implementations/typescript/packages/aeos/dist/schema-tools.test.js": "f5ddaad1c6b3f710855a4706cc9b2148fff16cf0438a8f6c99deee6c4b4edf79",
+    "implementations/typescript/packages/aeos/dist/telex.js": "7cd6ba2933c1e3be39ac8e2041f58a11bc6b2ce40e4fb765474d39b796a2c43c",
+    "implementations/typescript/packages/aeos/dist/telex.test.js": "c6300111d151e0c2a0b86dee2e928a0d9963b951005ecf1f766975f3b5602144",
+    "implementations/typescript/packages/aeos/dist/types/aes.js": "ca839ef43757b79e66e9ed5cc40012fbdd8c520e0bfddfba47a15cce79621140",
+    "implementations/typescript/packages/aeos/dist/types/envelope.js": "6d51d83622e7f9b07cb3af0a00ccf49dea9ae4a67c799c8b1cab00e979c93e44",
+    "implementations/typescript/packages/aeos/dist/types/index.js": "c107520b269d007ce80546bab7529765d63f7a82df79789beee03702b359d7cd",
+    "implementations/typescript/packages/aeos/dist/types/schema.js": "3f8d2a9940f3a9b798e1135514e082dc1ce2b82654410cfca453de44c99dde1e",
+    "implementations/typescript/packages/aeos/dist/types/spans.js": "005278cad0c892ab5b04e840c51f901ea647b6c31237f597263ecd3a698a3a42",
+    "implementations/typescript/packages/aeos/dist/util/datatypes.js": "e7460aceb3b8c01b3766534a2750c134a905b188eccfe96f7220c1ddbe17e4ad",
+    "implementations/typescript/packages/aeos/dist/util/digits.js": "af8660b90b4bc75cede2f8524ad611f74fa52b67cf00163beb8f70013913aadf",
+    "implementations/typescript/packages/aeos/dist/util/index.js": "5772e18bc5e4d83a4d20d33375e4570c114598f49f798f5ed7a9b299b0d0d436",
+    "implementations/typescript/packages/aeos/dist/util/numericBounds.js": "6577d5817791a9ef164d155d3030d3075585a861943b0d67c5579a7ff9c1bcd8",
+    "implementations/typescript/packages/aeos/dist/validate.js": "1b29e1c5ce954fa296758f85cefaef64e87e5b4001a7c983df770742222abb44",
+    "implementations/typescript/packages/aeos/dist/validate.test.js": "cabd2a537511c65025cb322d03db8607062a2e4513013b14dd720e163885ba31",
+    "implementations/typescript/packages/aes/dist/candidate.js": "50da9480667c6110dbc6dc6a931dd0a27ae35db0d5362ba57b8fdc65ca4fb675",
+    "implementations/typescript/packages/aes/dist/candidate.test.js": "49922ab023f2b816ce4cc68c50de9dbb4ca3e306bbcf49b15439958f13de4392",
+    "implementations/typescript/packages/aes/dist/datatype.js": "4566d2af2ace897dac83a39b5fa13172c149b637bc48c65ade5d2324866c60e3",
+    "implementations/typescript/packages/aes/dist/datatype.test.js": "143b23321926861511ea7ed11765426fc9e26bf459968ef28f98f585048b86f1",
+    "implementations/typescript/packages/aes/dist/events.js": "e2471d5c24a2c864c3404e2e284282d8f65383f446fcd42d548a5fdacd3a57c7",
+    "implementations/typescript/packages/aes/dist/events.test.js": "9f77323b540aaf3f5573ece380662b11ed05b4b525251bdcaed1a9dad2b5dd55",
+    "implementations/typescript/packages/aes/dist/film-internal.js": "00ff5c303f162fd2ff37f0ab3b2d9e3bc813463a3b53555a4d99243411e7fadb",
+    "implementations/typescript/packages/aes/dist/film.js": "14281a2b339f8c2ebd196ea3f86b4d856565796fdc72bf36e2c06747a1df77fc",
+    "implementations/typescript/packages/aes/dist/film.test.js": "c38777d2f119f41133e03493971ac370bdd01fb0de91c01cc041e1ba97231e26",
+    "implementations/typescript/packages/aes/dist/index.js": "70ccb7e3f6bf097bd112968ff62214c0d07247745502c756447067f4f322e639",
+    "implementations/typescript/packages/aes/dist/modes.js": "0a1621e64267516dd896ecfd6bc3ec804f8c3f63ebb10020c6d7e2d2d71b469d",
+    "implementations/typescript/packages/aes/dist/modes.test.js": "640766e81eb53f467c6854ad09a2ab28b0aa3c4cb23de9b30a6bb48b50c7494e",
+    "implementations/typescript/packages/aes/dist/paths.js": "2e1b8a91df0eb03f1661a807ec13d89967463fd66a4b41e9ae8aabe6ba480505",
+    "implementations/typescript/packages/aes/dist/paths.test.js": "62ff6075ce69272477209affc1454661c9dc283595922aa05d1e3487e59b05d1",
+    "implementations/typescript/packages/aes/dist/portable.js": "f324a7cb58bb9f6822fa15fa655699adfe5316e809d5cde86aabc7f2b847e62a",
+    "implementations/typescript/packages/aes/dist/portable.test.js": "18b5ba15d40d2ab510b61d546f729704c141e37eb2b2a79ea538121ea598dcc6",
+    "implementations/typescript/packages/aes/dist/radix.js": "5ec88986ef9d3a06efa2587015cf78d3bd8b1164080a1423b53d62c9964527b0",
+    "implementations/typescript/packages/aes/dist/radix.test.js": "c63140d07b4dd4078a76448d59e0746ce0c20a420df0aadae7e7f89491e0733a",
+    "implementations/typescript/packages/aes/dist/reference-order.js": "39ccd64fc30961340119c799cc90e242b719733644e4663c6fdf65176e906ad6",
+    "implementations/typescript/packages/aes/dist/reference-order.test.js": "8da8b2d7ac7461aec4aec3c9847b7cc7fc0a35aa259e4de76a4e88f42ab7c0ba",
+    "implementations/typescript/packages/aes/dist/reference-target.js": "6d7c84138f6272102ef2b1f5a36f984b25784109cd150431b5d6b653f8054705",
+    "implementations/typescript/packages/aes/dist/reference-target.test.js": "d925948f63b6432a068f038c734fc830e96f6502512111b6137cf9a72084a2aa",
+    "implementations/typescript/packages/aes/dist/references.js": "b4c9edd9f9dbe7464a6370569d20df25ab8e517106f5ccdfd8b1f3d405d9eca6",
+    "implementations/typescript/packages/aes/dist/references.test.js": "ddfcef425e8d54ccec3824f136eb991d63335dbfab542015b407480b0d29d8e6",
+    "implementations/typescript/packages/aes/dist/resolve.js": "2248e102b5a4e7c135a96d2b48a536078d35908eeb3c8afcc2d390d1922746c2",
+    "implementations/typescript/packages/aes/dist/resolve.test.js": "935dd79cdf27a39929f5d16eece95800bde4c52256969d2a8df0cd76e18c6ebb",
+    "implementations/typescript/packages/aes/dist/sha256.js": "3ae9e4e3ef98b6c0516bad03a6cc36dfcb315d553351d4ee4bafae5b3eccef1d",
+    "implementations/typescript/packages/aes/dist/sha256.test.js": "54ca26718697c832b3a43cedbeab0bf448256e9c8a3c44d0b73ef4731d327fe1",
+    "implementations/typescript/packages/aes/dist/structural-reference.test.js": "7604fbea3d82c09da6c74ad47cedc1911805672d9a026c388f1d863b1a1f9ea5",
+    "implementations/typescript/packages/aes/dist/telex-datatype-internal.js": "f05ea71f00284fd868c80fc4331653b04ab27518899c809011b603deb39c643a",
+    "implementations/typescript/packages/aes/dist/telex-incremental-internal.js": "1bb568809986aa300702112c6b04fd794776da66bce776387a1a51983b105624",
+    "implementations/typescript/packages/aes/dist/telex-incremental-internal.test.js": "45920a02bd9481de91c7a98bf4fc2928b71889165e47aed454e46451b4b873b4",
+    "implementations/typescript/packages/aes/dist/telex-internal.js": "5f5a64b3d47302e49d539497ab9794fcbe46ca835e9f4eb5f7ec84e67782a148",
+    "implementations/typescript/packages/aes/dist/telex-limits-internal.js": "843946ae896c70a24a9a076af278897417c4ddb9b664fe8013aa9ea1450207fd",
+    "implementations/typescript/packages/aes/dist/telex.js": "459dba13880fdf3312418a88259c9b31be0ff4a2af548e8e0fb2948b086ba485",
+    "implementations/typescript/packages/aes/dist/telex.test.js": "65d7e1e9363b096854e7c88fabf0a81eab7b8a70ac899850a3da41babf166ba6",
+    "implementations/typescript/packages/aes/dist/transport-generics.test.js": "f250359c37a20aca96b4ab56b8216826f2ae8fb7bd42d0fba710588edb667baf",
+    "implementations/typescript/packages/annotation-stream/dist/index.js": "508be2066ce0ea556d7d13171ab5616e7d91a7c8baeff4e98f032f50bc68e768",
+    "implementations/typescript/packages/annotation-stream/dist/stream.js": "90b0faf60224dd6b200f61232b84192dd2f1be91910d1617f49e87c4e042a4bc",
+    "implementations/typescript/packages/annotation-stream/dist/stream.test.js": "f66e4e1fe957dd3d2712216b4669b525259a84a5bc06cf8990ec43f08628102c",
+    "implementations/typescript/packages/canonical/dist/canonical.test.js": "f1e287e59e4c131936fbaf65c963279ae0866f85386b1abfd6d2dde9adf834a6",
+    "implementations/typescript/packages/canonical/dist/datatype.js": "661d0e2cdf343d4ff225ce11325fb83714c6093d8ff87db607be9aa9b2e388f4",
+    "implementations/typescript/packages/canonical/dist/datatype.test.js": "9e30806c05edff40e9bb77fdd49a77125e1a820f0b3bc696840b56a71f1a6403",
+    "implementations/typescript/packages/canonical/dist/emission-reuse.test.js": "6e37b56ba9054f42435c6aedf9a243ec3c48733151fab4acc162096998217772",
+    "implementations/typescript/packages/canonical/dist/empty-keys.test.js": "eb5ab25e438777dd085613110749285c81ebce54d49f5206bb1915fd0fc2cf96",
+    "implementations/typescript/packages/canonical/dist/index.js": "790771e3e6494e98ad887172972bba59342f8dd6e786b025307570bbdd57cf3b",
+    "implementations/typescript/packages/canonical/dist/ordering.js": "d281599da714cbcf26a5ea2bdb1c4f2de1721a3a3d496babb5d5e57caba255f8",
+    "implementations/typescript/packages/canonical/dist/ordering.test.js": "8a13b8512ce13eedd8f95d993f783fceb6bb8f27efafbd2c6427e210da9a6bdd",
+    "implementations/typescript/packages/canonical/dist/reference-path.js": "a05f2ce65c968d8e8e42703f2ea9ba238bdf6b159147f0ccaf3538bd10bf1c4a",
+    "implementations/typescript/packages/canonical/dist/reference-path.test.js": "019e88f6ffbb4f2ecbac4200942f4a389d0318c8a4696e7c60b2bf7f0c9ebf61",
+    "implementations/typescript/packages/cli/dist/cli.contract.test.js": "7c9d671170b8444c924fce2e6f92bb5a604e886c17658a194242fccfd8c1b445",
+    "implementations/typescript/packages/cli/dist/main.js": "6afbc7231ccef5782d28cdc7d4e492f7331d0b3f54b12defa389dd8a7ba1047c",
+    "implementations/typescript/packages/cli/dist/runtime-bind.js": "0d6df173dfb445f2dc058684a96353697a537811bff5c4c66c7f48e78f9a9107",
+    "implementations/typescript/packages/core/dist/core.test.js": "bc2d7c02eb0f166a52392f800a866b7318253fd663c369af7329aa9d21921e48",
+    "implementations/typescript/packages/core/dist/empty-keys.test.js": "ce7ac2a516532bf7de0de5a033f51862380254186b4291707dd33420e5cd6988",
+    "implementations/typescript/packages/core/dist/index.js": "d6bb0080b1c34ac998772126962fd6dfaf3fd1dfe68466f298c5342982b8d3c9",
+    "implementations/typescript/packages/core/dist/limits.js": "e79d150f89f24539bde0f09fba7d4dec1f4f0981e4bbab1f2274deb1294e2be1",
+    "implementations/typescript/packages/core/dist/limits.test.js": "16e1b8d63cd3cb14e8113d72650f4e8b0bd3e9763d019a8b900b2ce88b1ea3b1",
+    "implementations/typescript/packages/core/dist/preamble.js": "17ff2b7a67c6324b77882b99c367bd11f07d921ef76e0bf0157503f10ab1a429",
+    "implementations/typescript/packages/finalize/dist/datatype.js": "97b098a766e72d419abd56ff429ae8a7fda57f53a10b3939c257bc32f64c20ee",
+    "implementations/typescript/packages/finalize/dist/datatype.test.js": "f6930a995fcd3fc3f93c14510fd3386e78164c3ee71f12212b92b96978d4b663",
+    "implementations/typescript/packages/finalize/dist/finalize.js": "af741ddc423301e4e7d95febb106918eb21c5361f7bf9eadcf51475582282d5e",
+    "implementations/typescript/packages/finalize/dist/finalize.test.js": "0d12abcb41ac0c24caf7802d3360157bdae087fbda5f5ba945c71c60b1219f4a",
+    "implementations/typescript/packages/finalize/dist/index.js": "b045568907aaa437d42bed3d4f7cac49a1732d3fde1bf33ecb0992a97d9fcedc",
+    "implementations/typescript/packages/finalize/dist/json.js": "10f221745446676273d428f5b882613dd13cae44d21375f3b3249b84c55e0cf4",
+    "implementations/typescript/packages/finalize/dist/json.test.js": "ae6e0eb6ef3095060f6fe5e70163456ee080e286f38fe78ca5c2fcba906dc0e0",
+    "implementations/typescript/packages/finalize/dist/node.js": "4b882e50e562c3d007a9968014231e6ada898a1d30252afa6df93c43914482e6",
+    "implementations/typescript/packages/finalize/dist/node.test.js": "8e756afe40a9f765752e358c91f09a24b993d30b903bf72ff48e0e0409264ab7",
+    "implementations/typescript/packages/finalize/dist/outputs.js": "a1e83dc2c635325bda236c741d66d3e8fb22e695b0b85ab374066614c7a96e9e",
+    "implementations/typescript/packages/finalize/dist/outputs.test.js": "b295a4ead0d7856ac9598e8b6c4755fa94d49b0cec7de8ed11c62c3a9430994a",
+    "implementations/typescript/packages/finalize/dist/portable-json.js": "5dd26a7ff5dd8defc0904d21c4cf2ce02bfaee3a364bbd7d1d45a745801ec758",
+    "implementations/typescript/packages/finalize/dist/portable-json.test.js": "2dc7c89baa93d478d6a70bdc5c71fcce42b14e9ec5e4530bdc400d8d8561c886",
+    "implementations/typescript/packages/finalize/dist/projection.js": "2264adb0d3ea246f9ab130b97f9f8968c7246c59e5549b07ee7b090b880bfb2d",
+    "implementations/typescript/packages/finalize/dist/radix.test.js": "aa8040b044822404be0aab5edc755b45ac2a702662d46f5eebbb8d1363efc4ea",
+    "implementations/typescript/packages/finalize/dist/reference-path.js": "0c88c974590ee3e7942a218a4719ad579306ec376a3a5594a07124348bede265",
+    "implementations/typescript/packages/finalize/dist/reference-path.test.js": "fb324f0738f5c7cafeee3a8796860abda28f8063da7e47d2e6e80186c42cbc28",
+    "implementations/typescript/packages/finalize/dist/transform.js": "c65863c311692ebe1ca6d0d147b1c86f53296c946d8440f046d7db3e25124d86",
+    "implementations/typescript/packages/finalize/dist/transform.test.js": "9783adc5090a6d6316008a0f835194957d90314b679a27c971f9c467c5db26d3",
+    "implementations/typescript/packages/finalize/dist/types.js": "01ae2a5b120382f9a648ced7ee8507493a134f216d100fc61600c6c9738235d2",
+    "implementations/typescript/packages/integrity/dist/index.js": "0a8b08d834e47a6b5dc4208c73b8abaf25ad599cddce21c0345850eb4f7fae25",
+    "implementations/typescript/packages/integrity/dist/integrity.test.js": "e2f161bdaff133b1ce480c86416426c768b3c5a3de8602908adc1aadad0d1bca",
+    "implementations/typescript/packages/lexer/dist/errors.js": "e0b8200c853260aadeaf152049de535f5d8402c16e82bbd688a903eefa22409d",
+    "implementations/typescript/packages/lexer/dist/index.js": "3492766625bdf28718f4de2afe0decc92f512eb8e151ef5b7344d95d0deea0e4",
+    "implementations/typescript/packages/lexer/dist/lexer.js": "303dd8a075d0bf7e94c6a548348af8cd3a6983bf9e22d4724202244c99eae927",
+    "implementations/typescript/packages/lexer/dist/lexer.test.js": "7a768a95e5564730ac7060a3bebae462c85c7474bf96bd48f73ba748988e181d",
+    "implementations/typescript/packages/lexer/dist/tokens.js": "cc9e55d336b92b83d110a471f2d1ae96bc7d1b1d670d0ead08aa45f373dfbf73",
+    "implementations/typescript/packages/parser/dist/ast.js": "2644228999d8560ca7f1817fa743fff739ee1c8cd06fb47b20cd76551ab9085b",
+    "implementations/typescript/packages/parser/dist/errors.js": "1b7ab5317643377b304cbfefe68ade39e306e890bcac2eabc1231441fa3ee7b0",
+    "implementations/typescript/packages/parser/dist/index.js": "3aed4f218486be79ea4f9d350c7cd768650d2c5cc5174de31530457ddb2bd324",
+    "implementations/typescript/packages/parser/dist/node-binding-generics.test.js": "162957fb6d52b2deeb45c7d83b363ea3ffc474591bc739fe2b5e44ee91f28af7",
+    "implementations/typescript/packages/parser/dist/number.js": "bf4418510a5f48628accfcf56cd4a89b1cafa590caa099c718568bd7228b6483",
+    "implementations/typescript/packages/parser/dist/number.test.js": "7784c6285d63b702f65756b3269f3f551b9aeacab919b258604901a2b38a0a84",
+    "implementations/typescript/packages/parser/dist/parser.js": "42009687016a0ad1061ed6907314f7405c7048e45643a2ba372c42d0d5387b24",
+    "implementations/typescript/packages/parser/dist/parser.test.js": "5782de02a5566ddd9b21dd08d253f2eee1a887b603a8b8ef372490db7a657e34",
+    "implementations/typescript/packages/parser/dist/path-resolution.test.js": "d702adb0cb17354a6d24579da14e87b823f3ec9ec09e9e09726568a70a2d3f2b",
+    "implementations/typescript/packages/parser/dist/path-resolver.js": "1e8fdd351ca1417692a3ca42e71a9daf287dde6a9ff078ee33df709f8869bf38",
+    "implementations/typescript/packages/parser/dist/reference-address.js": "f4d7b148d87eadaa56d50a19df5cce74474f7512daff30f73258180700958095",
+    "implementations/typescript/packages/parser/dist/reference-path.test.js": "6b2f3f0711828fd6976d228148841670fe4881264ec0a047f326569be99bca5b",
+    "implementations/typescript/packages/parser/dist/trimticks.js": "7e18a56cdd31400a5d90edafa396344c24566841c0df26ad40fe1d811366f713",
+    "implementations/typescript/packages/parser/dist/trimticks.test.js": "987aac1713e16e72657a4d12b1e48db26db88060262f533c5e6eca44289b1b0c",
+    "implementations/typescript/packages/profiles/dist/attributes.test.js": "e9011ec17b3ade077e739fb30436b9eb07c997a0ee211c650b25619b1968c175",
+    "implementations/typescript/packages/profiles/dist/compile.integration.test.js": "a5aedda0ef53c5bc343b4159f04736451b2459e11ff11dfcab7522283fab6582",
+    "implementations/typescript/packages/profiles/dist/compile.js": "c80a32afa639d2cf770a139debecf0ef3c174ce2d25e2080b4e9ad667c7f10dc",
+    "implementations/typescript/packages/profiles/dist/compile.test.js": "15af2634c648a976c5bc07d0eca05b070c7f688d714c2bf9d36172c06497182f",
+    "implementations/typescript/packages/profiles/dist/default-registry.js": "2f2402f034a6035e028256eb53ebb3b8d7f63a872703864c2d3228ed0e019902",
+    "implementations/typescript/packages/profiles/dist/index.js": "eaf4ba3863152fab309843043d8228000a1cfe9699d0940fe163be13c7f8ee59",
+    "implementations/typescript/packages/profiles/dist/processors/resolve-refs.js": "4ef1766c549cf11dc2f27c7a84c46f45c936a2155c7a502a25ed39b0581d8bb3",
+    "implementations/typescript/packages/profiles/dist/profiles/aeon-gp-core.js": "b50573d015bad66525e49c086049cbf90f31f8cf6517eab6c64d1a44869b39d3",
+    "implementations/typescript/packages/profiles/dist/profiles/altopelago-core.js": "09e09d1c43f032dc1a0cfdf3368c477ca0d7b9c4354c7f3912aa18914d1be3ba",
+    "implementations/typescript/packages/profiles/dist/profiles/core-compile.js": "930da4cb137507b150b82063c32c472a23e62f34ba1f238c93aa15340f97bf09",
+    "implementations/typescript/packages/profiles/dist/profiles/datatype-semantics.js": "5bbf49ee710f19d4ba7e18b535485154cacf165afc9d7aff9fb2c2bb62a96f1c",
+    "implementations/typescript/packages/profiles/dist/profiles/json.js": "995d38580f3d1e4a2affe933bbbb9792de97e61dcd301f488e8c864f11f98141",
+    "implementations/typescript/packages/profiles/dist/radix.test.js": "0aff36aa2510ce5c830684f5d4ca512fc330a333a77075963135509ea9a32262",
+    "implementations/typescript/packages/profiles/dist/registry.js": "01561a45ab3efc605641614414fd9b6a64f83b57eaec1b08a2e240108fb59628",
+    "implementations/typescript/packages/profiles/dist/types.js": "01ae2a5b120382f9a648ced7ee8507493a134f216d100fc61600c6c9738235d2",
+    "implementations/typescript/packages/runtime/dist/index.js": "4a060fc3c19867ed266a24537f3402e63bc148a686cd57baf3dce10afa7639b2",
+    "implementations/typescript/packages/runtime/dist/runtime.js": "38199110a205e1694e02dbe03ecafa02aea0333d7e7e5a8a5ebdec8d2d84723f",
+    "implementations/typescript/packages/runtime/dist/runtime.test.js": "431bebe01523312506d091bdb653493c25ab0079994f9d649440a6b52dd116fb",
+    "implementations/typescript/packages/sdk/dist/document-projection-contract.test.js": "6908205693ab2875133b6288fda26baaceefeeddaac2f6071e463b0310f4f377",
+    "implementations/typescript/packages/sdk/dist/index.js": "faaba9a1a1c00159c3b0cec8b8132e036aa4f8ef14e0b92921ccff15fb69fdb9",
+    "implementations/typescript/packages/sdk/dist/index.test.js": "d08e7767a3934f60fb50a49f72a2c0f0e7cdfea2e815069bbc4e742c991dfa87",
+    "implementations/typescript/packages/sdk/dist/sansa.js": "041a8b88b0846ff956e9f124a94eb5799d9a73266f0747f552f4319068eac28e",
+    "implementations/typescript/packages/sdk/dist/sansa.test.js": "58c5bbf7d3cf9c1e90bbfe9bbb3f333e75d572f19ce0ce26c7873d8ee61937cd",
+    "implementations/typescript/packages/sdk-internal/dist/index.js": "8a4f91c548f96d2737c65d7feba6782db5950db3e5c85db1ccb59cd5e41cf475",
+    "implementations/typescript/packages/sdk-internal/dist/index.test.js": "13077ed3f0a1660d5c33d3acb338617cdc16298129d7025424907bbbee178393",
+    "implementations/typescript/packages/tonic/dist/index.js": "7c7728cd41fef08d3a5a149f28b597af0cefa3c87db0f862c11ff9df582df30b",
+    "implementations/typescript/packages/tonic/dist/matter.js": "9e6f1019f07d628b53162ef05eb7a0327e9b78eb60a66530cb353131d96f9a8a",
+    "implementations/typescript/packages/tonic/dist/tonic.js": "cbae86d3607b943bb5442f6f021f90c9e4907f570fbc2727158a9570aaeba726",
+    "implementations/typescript/packages/tonic/dist/tonic.test.js": "41349c3697f3458a05e31a9979c8c5f10ac6b78b94a802bf99a22447d29ae10e",
+    "implementations/typescript/packages/transport/dist/index.js": "4e8c47d52fe0fb1275bbdd279e5f926ed5ead7f4f2fed7abc9ba0fd95e3dc66e",
+    "implementations/typescript/packages/transport/dist/transport.test.js": "50159625cc9a9d58555af5723daa4e40cde620071e41291127ee8e6cf1cda75e",
+    "implementations/typescript/packages/typegen/dist/index.js": "b8bea50508dbf11191e700f994db54b31dabbe592773bb8a6eed733f867fcac1",
+    "implementations/typescript/packages/typegen/dist/typegen.test.js": "7cd6c8e503f4aef9b4ef22adf38fa3b60b105c3f0b85581ae77edbe9781f3419",
+    "implementations/typescript/packages/wasm/dist/index.js": "e5e9a71fec58f2bf0430b0858ede7c0bfed64fd473388ae2d14fbf502e900d55",
+    "implementations/typescript/packages/wasm/dist/index.test.js": "a7c5bd67ef43efd24943e21d1961c2869455df37bcd3aa42d714fc558e26c090",
+    "implementations/typescript/packages/wasm/dist/src/index.js": "7dcf54e446921da49648c562c923a609115d0e057a8d612105977645b338979a",
+    "implementations/typescript/packages/wasm/dist/src/index.test.js": "325e6530fb129adc80927738347dd1fdb80d8b064e7291cfd3fd2bd5813f8a9d"
+  },
+  "cases_per_implementation": 315,
+  "unexplained_mismatches": 0,
+  "reviewed_disagreements": [],
+  "results": {
+    "typescript": [
+      {
+        "id": "audit-zero-bindings-empty-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-empty-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-empty-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-layout-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-layout-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-layout-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-newline-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-newline-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-newline-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-plain-block-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-plain-block-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-plain-block-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-line-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-line-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-line-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-block-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-block-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-block-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-mixed-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-mixed-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-mixed-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-11",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-11-18",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-12",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-12:",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-12:30",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-12:30:45",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-T12",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateTimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-11-18T12:30:45",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateTimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-comment-is-not-separator",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "audit-comment-newline-hidden",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-newline-comment-newline",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-adjacent-line-comment",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "BooleanLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-keyword-prefix",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "audit-nested-closers",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "audit-upper-exponent",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-lower-exponent",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-0",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-1",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-2",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-3",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-4",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-5",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-6",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-7",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-8",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-9",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-10",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "UNTERMINATED_STRING",
+          "UNTERMINATED_STRING"
+        ]
+      },
+      {
+        "id": "audit-control-double-11",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-12",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-13",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "UNTERMINATED_STRING",
+          "UNTERMINATED_STRING"
+        ]
+      },
+      {
+        "id": "audit-control-double-14",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-15",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-16",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-17",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-18",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-19",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-20",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-21",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-22",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-23",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-24",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-25",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-26",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-27",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-28",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-29",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-30",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-31",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-127",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-0",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-1",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-2",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-3",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-4",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-5",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-6",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-7",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-8",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-9",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-10",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "UNTERMINATED_STRING",
+          "UNTERMINATED_STRING"
+        ]
+      },
+      {
+        "id": "audit-control-single-11",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-12",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-13",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "UNTERMINATED_STRING",
+          "UNTERMINATED_STRING"
+        ]
+      },
+      {
+        "id": "audit-control-single-14",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-15",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-16",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-17",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-18",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-19",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-20",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-21",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-22",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-23",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-24",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-25",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-26",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-27",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-28",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-29",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-30",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-31",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-127",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-strict-typed-document",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-strict-typed-attributes",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-custom-typed-document",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-custom-typed-attributes",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-raw-string",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-trimtick",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-quoted-string",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-split-keyword",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-split-exponent",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "INVALID_NUMBER"
+        ]
+      },
+      {
+        "id": "core-comment-newline-empty",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-comment-only",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      }
+    ],
+    "python": [
+      {
+        "id": "audit-zero-bindings-empty-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-empty-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-empty-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-layout-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-layout-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-layout-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-newline-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-newline-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-line-newline-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-plain-block-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-plain-block-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-plain-block-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-line-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-line-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-line-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-block-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-block-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-structured-block-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-mixed-transport",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-mixed-strict",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-zero-bindings-mixed-custom",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-11",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-11-18",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-12",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-12:",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-12:30",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-12:30:45",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-T12",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateTimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-disambiguation-2026-11-18T12:30:45",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "DateTimeLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-comment-is-not-separator",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "audit-comment-newline-hidden",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-newline-comment-newline",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-adjacent-line-comment",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "BooleanLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-keyword-prefix",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "audit-nested-closers",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "audit-upper-exponent",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-lower-exponent",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-0",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-1",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-2",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-3",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-4",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-5",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-6",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-7",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-8",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-9",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-10",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "UNTERMINATED_STRING",
+          "UNTERMINATED_STRING"
+        ]
+      },
+      {
+        "id": "audit-control-double-11",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-12",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-13",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "UNTERMINATED_STRING",
+          "UNTERMINATED_STRING"
+        ]
+      },
+      {
+        "id": "audit-control-double-14",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-15",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-16",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-17",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-18",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-19",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-20",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-21",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-22",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-23",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-24",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-25",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-26",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-27",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-28",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-29",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-30",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-31",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-double-127",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-0",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-1",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-2",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-3",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-4",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-5",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-6",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-7",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-8",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-9",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-10",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "UNTERMINATED_STRING",
+          "UNTERMINATED_STRING"
+        ]
+      },
+      {
+        "id": "audit-control-single-11",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-12",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-13",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "UNTERMINATED_STRING",
+          "UNTERMINATED_STRING"
+        ]
+      },
+      {
+        "id": "audit-control-single-14",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-15",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-16",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-17",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-18",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-19",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-20",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-21",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-22",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-23",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-24",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-25",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-26",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-27",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-28",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-29",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-30",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-31",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "audit-control-single-127",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-plain-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-plain-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-doc-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-doc-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-annotation-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-annotation-first-closer",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-hint-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-hint-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-structure-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-structure-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-profile-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-profile-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-document-lf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-document-crlf",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-document-single-line",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-object-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-object-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ObjectNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-object-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-list-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-list-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "ListNode",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-list-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-tuple-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-tuple-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "TupleLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-tuple-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-node-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-node-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NodeLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-node-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-attributes-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-attributes-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-attributes-single-line",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-header-lf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-header-crlf",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-header-single-line",
+        "ok": false,
+        "bindings": null,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-cr-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-escaped-n-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-line-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-paragraph-separator-is-not-newline",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-inter-token-layout",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-instructions-unterminated",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "UNTERMINATED_BLOCK_COMMENT"
+        ]
+      },
+      {
+        "id": "core-comment-newline-instructions-first-closer",
+        "ok": false,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-strict-typed-document",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-strict-typed-attributes",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-custom-typed-document",
+        "ok": true,
+        "bindings": 2,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-custom-typed-attributes",
+        "ok": true,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-raw-string",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-trimtick",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-quoted-string",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "StringLiteral",
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-split-keyword",
+        "ok": false,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": [
+          "SYNTAX_ERROR"
+        ]
+      },
+      {
+        "id": "core-comment-newline-split-exponent",
+        "ok": false,
+        "bindings": 1,
+        "value_kind": "NumberLiteral",
+        "errors": [
+          "INVALID_NUMBER"
+        ]
+      },
+      {
+        "id": "core-comment-newline-empty",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      },
+      {
+        "id": "core-comment-newline-comment-only",
+        "ok": true,
+        "bindings": 0,
+        "value_kind": null,
+        "errors": []
+      }
+    ]
+  },
+  "limits": [
+    "Scoped TypeScript built-module and Python-source probes; not a full CTS SUT run and no Rust/PHP claim.",
+    "The implementation checkout contains other work. Hashes identify available Python sources and TypeScript package dist JS; a clean rebuild or complete transitive dependency fingerprint is not asserted.",
+    "Implementation agreement is evidence of existing behavior, not independent normative authority."
+  ]
+}

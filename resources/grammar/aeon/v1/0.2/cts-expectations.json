@@ -1,0 +1,2062 @@
+{
+  "schema_version": 1,
+  "license": "CC-BY-4.0",
+  "targets": {
+    "cts/core/v1/core-cts.v1.snapshot-0.5.json": {
+      "files_sha256": {
+        "cts/core/v1/core-cts.v1.snapshot-0.5.json": "06e8ea1f05ff45c4e4c8008603f0d564e9ab4cbddd7f35e3f789c3a142b16772",
+        "cts/core/v1/suites/01-baseline.json": "a02f01d20e627015024f2609654021dfae38d519893993926d1ee7cb69b98f04",
+        "cts/core/v1/suites/02-addressing-and-syntax.json": "3a55e4cd57a781e27f4d7ba8a6f5c609d2e58ba98a3911fcaa2f0b27540c9638",
+        "cts/core/v1/suites/03-attributes-and-references.json": "d53e86ce3cde752a6b03bb3bae1eaaeab06281509e37e8abd2144f72b51b30b9",
+        "cts/core/v1/suites/04-fail-closed-semantics.json": "51fcf321a9ea13e115236c4624535ae1ce39e5d9770efddc7bfee671314626ab",
+        "cts/core/v1/suites/05-promoted-edge-rejections.json": "83b0c826950ad7cf938f279c6521a368c09414deb3d3a83385a839387b4160c4",
+        "cts/core/v1/suites/06-promoted-domain-fixtures.json": "95a36778b8939113023e13d564d7ed66918eea54bd9c1d521eff7c012bc45459",
+        "cts/core/v1/suites/07-promoted-snippet-transport.json": "15d2ae6650d63a7c3ae54948839418c9a449146ebaf87b25ce622ea6b488d5aa",
+        "cts/core/v1/suites/08-promoted-strict-literals.json": "ec5febaeacf642f8d920961fc73a108433ba9aa3c33274e83af0d766f93609c0",
+        "cts/core/v1/suites/09-promoted-separator-literals.json": "df2e83749ee2fb8212820a98ba34d879c0d1fc7f6fa0b8f0d6d139e002fbd075",
+        "cts/core/v1/suites/10-promoted-numeric-and-encoding-literals.json": "c46b0c7ad1351dab52c94a1840d348acb92a5c4be406f37667219dc5fb162517",
+        "cts/core/v1/suites/11-promoted-custom-literals.json": "a04df7e673c6f37a954e72515fcbeb1d33f5edd1403b17ca0e61deb598c321ff",
+        "cts/core/v1/suites/12-promoted-custom-rejections.json": "555a966cbc8ff28bc252d77100d9aa16c316de22407c92bea75ca3cb03dbecfe",
+        "cts/core/v1/suites/13-promoted-whitespace-boundaries.json": "3e7ff0318432b729f826339b717faf25a8791ad3e17e11c9e37f7fef29148baa",
+        "cts/core/v1/suites/14-resource-policy.json": "9ba7ed3a693c3ea49cb7d92375af5ba4a3f6151df5121df75aedd29902388640",
+        "cts/core/v1/suites/15-structural-identity.json": "da9caa298617362c1c8e81be87704a75fab9c4b67885a7f1f8465426e6466577",
+        "cts/core/v1/suites/16-aeonic-limit-boundaries.json": "fea3fc1540edefd3cbd0d39a1d0a2c8ddf2b6bd38fa5462a796a1e35a7475d9f",
+        "cts/core/v1/suites/17-next-limit-semantics.json": "af5a74764590894603eac46c762ef83429407fa189c2ab3551836163e4aa8885",
+        "cts/core/v1/suites/18-next-profile-custom-clarifiers.json": "cacfa757db8c066888b6738d655cc889efb609de43aaeac43e53d666b7603df7",
+        "cts/core/v1/suites/19-next-special-number-literals.json": "ad2cfd82fa046e450963710b759585c74c38faa22af5204800680c1c4b6de0f5",
+        "cts/core/v1/suites/20-next-contextual-datatype-names.json": "fc0544db77ca975a3daec467d3ea0bae136d162b8caf0d2b667ef3be2bf2a69f",
+        "cts/core/v1/suites/21-temporal-precision-and-boundaries.json": "90831c295f84ef45eff631dfc5ed226c0d52e315e915e4a40c78b592d6e8fa2b",
+        "cts/core/v1/suites/22-next-symbolic-literals.json": "298db0e717bffbaee724bdc3a6a12df89fd164acc62809b60a3e684027bfb868",
+        "cts/core/v1/suites/23-next-trimtick-gutters.json": "5f39646520348e66469a31938fcccf35c1d22268cd95b3459ebf30c1c180d61f",
+        "cts/core/v1/suites/25-next-base64url-validation.json": "2f5739778ab1de0ae3388ddf6b203834b12bac7c785cf6c019b364ac9aa90d19"
+      },
+      "disagreements": {
+        "core-baseline-003-strict-reserved-only-custom-datatype-reject": {
+          "case_sha256": "d4f3532e5f59106159696ad28c40768b4222f96ed304bc1d9f7db3e57424ca60",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode rejects custom datatype by default (reserved_only). Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-006-strict-reserved-datatype-literal-mismatch": {
+          "case_sha256": "6a7aa33e0eac75e5b03956627755cf8b4914dfa7a0bba91dbb01c3c87186d2dd",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Strict mode rejects reserved datatype/literal mismatches. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-baseline-007-transport-explicit-reserved-datatype-literal-mismatch": {
+          "case_sha256": "6e23ed2b70af4a7c1d3f04ed428dbf497cdd60494b21e708f1290787ee5f1b3d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Transport mode still rejects explicit reserved datatype/literal mismatches. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-baseline-008e-declared-transport-effective-strict-reject": {
+          "case_sha256": "ef7a49c4eed957292eda8423196f0d5e16a47d70f1d85e60598605d51b9b87de",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Consumer-selected strict mode has authority over a document-declared transport mode. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-008f-late-structured-header-reject": {
+          "case_sha256": "ac4b61ede12e82bac1bff644833f06ec8958ecdbbd73a4287066fa3634294512",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-header"
+          ],
+          "reason": "Structured headers are rejected when they appear after body bindings. Matching token/structure shape alone does not enforce C-header."
+        },
+        "core-baseline-011-strict-removed-separator-alias-reject": {
+          "case_sha256": "8924304a691783f4fefb1290ebe642a40c108ffda5082405837a1de5b8210cb8",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode treats removed separator aliases like dim[...] as custom datatypes. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-015-strict-stale-radix-alias-reject": {
+          "case_sha256": "149a5df49ccf9023331222f5e098c2d95fd3e2de69218643f1df674be82d8a9f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode treats stale radix aliases like radix16 as custom datatypes. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-015b-strict-uppercase-number-alias-reject": {
+          "case_sha256": "62a7c31bf6e2d993226bdc0fa020d9dd53f954a248089fb1843e97f5ab00ada3",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode treats uppercase reserved-looking names like N as custom datatypes. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-025-custom-mode-untyped-reject": {
+          "case_sha256": "9f7c0cdf1ae0e0c31f980dcc437dc66572e06822929279da1ddd3a0adf8fc702",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Custom mode rejects untyped non-header bindings. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-026-transport-meaningless-reserved-generic-reject": {
+          "case_sha256": "ef78b7128459dbb7d8831ab89f7ca611455e3928d8a71c2e4a1bc013489588bb",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Transport mode rejects meaningless generic adornments on reserved scalar datatypes. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-baseline-029a-transport-reserved-child-datatype-binding-node-reject": {
+          "case_sha256": "4c59d7f8aab7b015c381ece4daad744d0dde0795800d5cbc1912c457450f8ee0",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Transport mode rejects reserved child-value datatype arguments on ordinary binding node<T> claims. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-baseline-029b-transport-non-node-generic-node-head-reject": {
+          "case_sha256": "1b0a5ef0aa44077b1e76ae2e80e5bd6c968e71b75592507573384326cae73b9a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Transport mode rejects non-node generic datatype adornments inside node heads. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-addr-001b-empty-quoted-key-reject": {
+          "case_sha256": "439c960fda749b99ac8c7812b6add686f6155a133a6cbe3efde35d68d5124977",
+          "grammar_matches": true,
+          "classification": "historical-expectation",
+          "references": [
+            "H-empty-keys"
+          ],
+          "reason": "Historical snapshot rejects empty decoded keys/path segments as syntax. Current mapped normative sources admit their spelling; missing reference targets may still independently require C-reference rejection."
+        },
+        "core-addr-001c-empty-quoted-path-segment-reject": {
+          "case_sha256": "60eae9c59ad3144931f3146f3ef174e777212c1e9c23b24a175904890473896f",
+          "grammar_matches": true,
+          "classification": "historical-expectation",
+          "references": [
+            "H-empty-keys"
+          ],
+          "reason": "Historical snapshot rejects empty decoded keys/path segments as syntax. Current mapped normative sources admit their spelling; missing reference targets may still independently require C-reference rejection."
+        },
+        "core-attr-002-missing-target": {
+          "case_sha256": "27a67d4c0e41e5e3d9852d4e4e6c627f0abb75fb8e5ddf5fb2d8fdd489dfb79c",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Missing attribute reference target is rejected deterministically. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-003-forward-target": {
+          "case_sha256": "34dd16c800080bca610a53d9678a9e3a2bc13ebd47b172a675be502e69de7b1c",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Forward attribute reference target is rejected. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-004-depth-exceeded": {
+          "case_sha256": "07ad51f78f3ce94ca3325f6b1245026aada3a898abfee44b98633f4cfb3ae0cc",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Chained attribute reference beyond default depth lock is rejected. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-attr-004a-nested-attribute-head-depth-exceeded": {
+          "case_sha256": "194e538cd91165f3ed04fe71eb4e55fd9d3ab83b71123f2957be09b89cdb5fdd",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Nested attribute heads count against the default max_attribute_depth limit. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-attr-004c-duplicate-attribute-key-reject": {
+          "case_sha256": "b9763252f333f83aef6d21bc443cb47b8c7348e87322c5adaa498cdd2b957089",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "Duplicate keys inside one attribute map are rejected fail closed. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-attr-009-attribute-payload-self-payload-reject": {
+          "case_sha256": "b64b949df425758a9be3bc9455994a1a82e4a6339ab8f35785cf2472975a65ae",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "An attribute payload may not reference the payload of its own binding. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-010-attribute-payload-forward-binding-reject": {
+          "case_sha256": "7319c8aad6c1bf35cd2183d77ab0ac6431fa3a0fd3671884a9b819c7b6375c58",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "An attribute payload may not reference a later payload binding. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-012-direct-sequence-item-forward-reject": {
+          "case_sha256": "107fa8c1481f523412b92105c99a14ec3cc17ccd65bf2a25500b78d6e52e5228",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Direct sequence items may not reference later sibling items by index. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-015-strict-untyped-attribute-entry-reject": {
+          "case_sha256": "5ce66fcfc20eb723dc8666d203ce2c925a5149963f994e063177133fb6b837db",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Typed modes require datatype annotations on attribute entries that carry values. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-semantics-001-duplicate-key-fail-closed": {
+          "case_sha256": "09152cc1715788533461f3964bf5e19b5c51bed2ea6f0fbbac7e2017701c027d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "Duplicate keys in one document are rejected and emit no bindings in fail-closed mode. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-semantics-001a-duplicate-object-member-key-fail-closed": {
+          "case_sha256": "05bbd91acf8af8675c9e3d5cb926d4e725dceddd484858131fae9418bd20576e",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "Duplicate object member keys are rejected and emit no bindings in fail-closed mode. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-semantics-002-header-conflict-fail-closed": {
+          "case_sha256": "a4364e0f468ba07591dc5e9c331b8fac6f498b5b172c488fad579ff27c746670",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-header"
+          ],
+          "reason": "Structured header and shorthand header bindings cannot be mixed. Matching token/structure shape alone does not enforce C-header."
+        },
+        "core-semantics-003-strict-untyped-toggle-fail-closed": {
+          "case_sha256": "4cf2b24ab027db300d41dee2e2e2e79666e1d606dcde59682a79b964dc5a34ed",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode requires toggle literals to be explicitly typed. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-semantics-004-escaped-decoded-identity-duplicate-key-fail-closed": {
+          "case_sha256": "a4fd3f0329c36b95ceb9b85038d3c3fa6f9959d1b5daad03cc91b41941b9c18d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "Escaped and decoded-equivalent keys are rejected fail closed as duplicate keys. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-edge-014-braced-unicode-out-of-range-rejects": {
+          "case_sha256": "dc4682f370dce9c4a33400691e005633b0a8b81bcec430e2caa91d2dc527bc88",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ],
+          "reason": "Out-of-range Unicode escapes fail closed with INVALID_ESCAPE. Matching token/structure shape alone does not enforce C-unicode."
+        },
+        "core-edge-015-unpaired-surrogates-reject": {
+          "case_sha256": "09ae7e4d98c9e783995472c1c61578cccadcfc3bdc0b4b3417b467f192d39a05",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ],
+          "reason": "Lone surrogate Unicode escapes fail closed with INVALID_ESCAPE. Matching token/structure shape alone does not enforce C-unicode."
+        },
+        "core-edge-018-invalid-backtick-escape-rejects": {
+          "case_sha256": "8edbe832b6901ff6d255c87333ecf770a9313875a5cdf93672df521007c38256",
+          "grammar_matches": true,
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-raw-escapes"
+          ],
+          "reason": "CTS rejects backslash-q in a backtick payload, while the mapped source calls backtick strings raw. The grammar intentionally over-accepts pending clarification."
+        },
+        "core-edge-019-invalid-trimtick-escape-rejects": {
+          "case_sha256": "3f633f14f11cd8acd68e8677b522ad16ee0e7b4b218b0fe883129b21c41a2105",
+          "grammar_matches": true,
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-raw-escapes"
+          ],
+          "reason": "CTS rejects backslash-q in a backtick payload, while the mapped source calls backtick strings raw. The grammar intentionally over-accepts pending clarification."
+        },
+        "core-edge-020-braced-surrogate-escape-rejects": {
+          "case_sha256": "eed5f52b39aa8bf851db930f7369c006fbf7c544353407e6110af3eb4e91ae04",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ],
+          "reason": "Braced Unicode escapes reject surrogate code points with INVALID_ESCAPE. Matching token/structure shape alone does not enforce C-unicode."
+        },
+        "core-edge-020b-braced-surrogate-pair-spelling-rejects": {
+          "case_sha256": "1846901fea9f11f1d91afbff5e59dbdc63cbdc26165b3092c9286983b6cef783",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ],
+          "reason": "Braced surrogate escapes remain invalid even when followed by a fixed-width low surrogate. Matching token/structure shape alone does not enforce C-unicode."
+        },
+        "core-domain-002-namespace-and-quoted-key-disambiguation": {
+          "case_sha256": "43452c9a35681fbe34d61f27b3ad6503f8dfdba276a10c827ac3c0204ad90b7f",
+          "grammar_matches": false,
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-reference-brackets"
+          ],
+          "reason": "Positive domain fixture uses relative bracketed quoted-member traversal absent from the mapped normative grammar sketches. No fixture is omitted or changed."
+        },
+        "core-snippet-transport-003-empty-quoted-keys-reject": {
+          "case_sha256": "ad1bedb0d2cd7a7980dc6f1162f276f19079ae2e41fd942862df6014723a0626",
+          "grammar_matches": true,
+          "classification": "historical-expectation",
+          "references": [
+            "H-empty-keys"
+          ],
+          "reason": "Historical snapshot rejects empty decoded keys/path segments as syntax. Current mapped normative sources admit their spelling; missing reference targets may still independently require C-reference rejection."
+        },
+        "core-snippet-transport-006-attribute-depth-max-enforced": {
+          "case_sha256": "122ed9c00a1f1f855c660ce58e333b3a8ab18e950c4e59a3554111712cee6785",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Attribute traversal beyond the allowed depth rejects during reference validation. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-snippet-transport-007-missing-reference-target-rejects": {
+          "case_sha256": "519ec49501d26e685dd6ec0a3e46a158381334802d8eb6ae676e6316bbe4b050",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Quoted traversal to a missing nested target rejects during reference validation. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-strict-004d-wtc-local-case-variants-reject": {
+          "case_sha256": "03babe2aef7f304f6204f7655ab4b618f511727e95e046285fb21ff531b3d860",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "The reserved WTC local reference rejects non-canonical case variants. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-004e-wtc-uppercase-local-reject": {
+          "case_sha256": "f1c35009feb73ed61bde020e8267e1f7d5006fb2468d37eceaf5a94f4aa5094f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "The reserved WTC local reference rejects the all-uppercase spelling. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-005-invalid-time-rejects": {
+          "case_sha256": "25fbd6ed28463a986c66f947b78df95f42fdfb7f7b36f5562998d570499107b1",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "Out-of-range time literals reject during parsing. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-006-invalid-date-rejects": {
+          "case_sha256": "edb570e9c0a2e0a875e405803a29dac3d8f5dd91afb1478b1b529b717ac373e2",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "Non-existent calendar dates reject during parsing. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-007-invalid-wtc-datetime-rejects": {
+          "case_sha256": "ed6fe223f5142cea3c634da21c468c678caef72b055fd911be042163cff36a21",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "Malformed WTC reference suffixes reject as invalid datetime literals during parsing. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-008-datatype-literal-mismatch-rejects": {
+          "case_sha256": "594a9df16fc8769d3e6aca5c780340d8cc728559d2a4c63f46b876721d0818ff",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Datatype declarations reject incompatible literal classes during core validation. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-strict-010-number-rejects-nan-literal": {
+          "case_sha256": "dff1749f7dcb2acd3c07a86e0a055058109d6f5f12d9ebf6dbb491073c66f1af",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Strict mode rejects NaN literals bound to :number. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-strict-012-number-rejects-null-datatype-mismatch": {
+          "case_sha256": "e153eb34daf413f0a36e54d49606997e8dbf43533590002b255af922a7de9660",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Strict typed null bindings reject ordinary numbers as datatype/literal mismatches. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-strict-014-retired-zrut-datatype-rejects": {
+          "case_sha256": "44b3ef96e726cbff7c461b87f5083234f4ed54dc78cbc39bc2cf1fbed52d3cbc",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "The retired zrut datatype name is rejected in the strict reserved datatype surface. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-sep-005c-removed-set-alias-rejects-in-strict-mode": {
+          "case_sha256": "be1627f674b949617a34de7d1fa1462b3c3f12092e634bfb6850249c1495c23d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode treats the removed separator alias set as a custom datatype. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-sep-006-separator-datatype-rejects-list-node": {
+          "case_sha256": "898e507d8031c82a9c76ee959a38208b17d58a8583ebb956512eae6269e3b65a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "A sep-typed binding rejects list literals even when the list contains a separator literal. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-custom-reject-001-custom-mode-untyped-literal-matrix-rejects": {
+          "case_sha256": "cc10e2ea028f9e56ef1711041e98b1d972c7d24465d5b7b9c4bf3bc363af5356",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Custom mode still fails closed on untyped non-header bindings even when the literal families are otherwise accepted when typed. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-custom-reject-002-strict-allow-custom-still-rejects-toggle-aliases": {
+          "case_sha256": "bc27b98615cd3f9bf38d4cf11530d71846542fdda2b1b1ffce7b040b9a51dfb0",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode keeps the dedicated toggle-type requirement even when general custom datatypes are enabled. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-custom-reject-002-custom-mode-does-not-apply-strict-switch-rule": {
+          "case_sha256": "53842c773ebf6856588eb282ff4bd65787360ea7afc4f30d742d575e32015408",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Custom mode rejects untyped toggle literals through typed-mode enforcement rather than the strict-only untyped-toggle rule. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-custom-reject-003-custom-mode-still-enforces-reserved-datatype-match": {
+          "case_sha256": "5f83c2075e194b8242278941259db67cc0a62cbe88bc978f47a03c0dcce46bd4",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Custom mode still rejects reserved datatypes when the bound literal class is incompatible. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-custom-reject-004-custom-mode-still-enforces-reserved-infinity-match": {
+          "case_sha256": "21ac9f7d353a7e29004d9774a21f3d7b53f87b94654ab3f8b4dfe02619a2b2fc",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Custom mode rejects reserved numeric datatypes when the literal is an infinity value rather than a number literal. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-custom-reject-005-generic-custom-scalar-binding-rejects": {
+          "case_sha256": "06852c3e3806548b52e8a0140faac00a31b9e44aabdc3fa7574098d424bede76",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Generic custom datatypes reject scalar values in custom mode. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-resource-policy-002-max-events-fail": {
+          "case_sha256": "f242d1a2dee6f84d16b311a896ccd279f0c479c26a993a1154bdd6eb57fba618",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Core fails closed when emitted AES events exceed max_events.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-structural-identity-002-duplicate-reject": {
+          "case_sha256": "ea5ea497129124f4de6cbf240f745a544bbc1702add7f4aff45599773c2abc3f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ],
+          "reason": "Structural identities are document-wide unique. Matching token/structure shape alone does not enforce C-identity."
+        },
+        "core-structural-identity-007-cross-location-duplicate-reject": {
+          "case_sha256": "441dd2d3a0d2409b09d3d9c80502b96281d2e51f1bb69b443b75cf936f4c137e",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ],
+          "reason": "Structural identities remain document-wide unique across attribute-entry and node heads. Matching token/structure shape alone does not enforce C-identity."
+        },
+        "core-structural-identity-008-binding-anonymous-duplicate-reject": {
+          "case_sha256": "a52d9cdbed689e1d685d00ef196d5fe8a837ec559793a49a33d07e71688e2c21",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ],
+          "reason": "Document-wide uniqueness also spans ordinary binding and anonymous container child heads. Matching token/structure shape alone does not enforce C-identity."
+        },
+        "core-limits-002-input-bytes-one-over": {
+          "case_sha256": "9b791fb46f1a3fef0974521f4c55c14f446b58dcb4160b555655be647038b06a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "AEON input exceeding max_input_bytes fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-004-attribute-depth-one-over": {
+          "case_sha256": "6aff52762c225fe73e3ddf30a81e92de405ebe705400c6e7fae457c5be701b92",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Attribute nesting exceeding max_attribute_depth fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-006-generic-depth-one-over": {
+          "case_sha256": "2827051200a90ef5ac055c437c244515a297e4fd7fcd85d947587b1de1fe8c1d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Datatype recursion exceeding max_generic_depth fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-008-generic-arguments-one-over": {
+          "case_sha256": "66fff5eec0d9f434d7632205a82332e9d743355a81ba772d58a9ece6202507fa",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A generic list exceeding max_generic_arguments fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-010-clarifier-values-one-over": {
+          "case_sha256": "0e580713891ed58b6390d6a1ff414d8e358e3067c9cee3605bef69211e89b23a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A clarifier list exceeding max_clarifier_values fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-012-datatype-components-one-over": {
+          "case_sha256": "fb726de210513752b13a4c3f925eaa19b28a3a8cad43e4cb211c56dba0707f9a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A datatype tree exceeding max_datatype_components fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-014-value-nesting-one-over": {
+          "case_sha256": "94ef1d063e93b0cbf2754bc79903e243afba65364049866da7e6c3f775d0a22c",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Container nesting exceeding max_value_nesting_depth fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-016-path-depth-one-over": {
+          "case_sha256": "a07122691551de6a6799c47e93b4c5e6a0515cbe2944327dc5ca161b933a7052",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Canonical path depth exceeding max_path_depth fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-018-string-codepoints-one-over": {
+          "case_sha256": "7394394139d2419c858260b0edca78991dfea087ed9136e71dbe061efc1fa245",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A decoded string exceeding max_string_codepoints fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-020-key-segment-one-over": {
+          "case_sha256": "093d7e488f8005b033a26c5e3b6651b0a8a816ff605679937849803c2b47b695",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A decoded key segment exceeding max_key_segment_codepoints fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-022-list-items-one-over": {
+          "case_sha256": "aa74483b8712ab886ebecb20d4030ee4c861c3960c2058b69145e34cd58b944e",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A list exceeding max_list_items fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-024-tuple-items-one-over": {
+          "case_sha256": "a74e93bfaf954ba2b4958da05bf08b2ca06b2f6567ccd17553733d5d7d676337",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A tuple exceeding max_tuple_items fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-026-path-characters-one-over": {
+          "case_sha256": "91284f1495823be1ffe7738828cdac2b4722c301b1f2c509318b6f8af8cc9f10",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A canonical path exceeding max_path_characters fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-028-events-one-over": {
+          "case_sha256": "57939886e66befe7f0ae58b6e58c1554a826ebaed332d9ff7eb36b77bcc7e1b9",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Emitted AES events exceeding max_events fail closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-030-numeric-characters-one-over": {
+          "case_sha256": "4c0ecc311262ae7071007ea586d8b839d25aa26c9c9ac7da01ce2ac31f6fe366",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A raw numeric literal exceeding max_numeric_literal_characters fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-032-structured-comment-one-over": {
+          "case_sha256": "a06b40284b6dfd4461ffed7707a41995b5239dbfa5845f8b569784f1436aef2b",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A structured-comment payload exceeding max_structured_comment_characters fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-temporal-003-year-zero-rejects": {
+          "case_sha256": "31349cc441409b4c6ec53525de0638e074f04ac7b5b139f554d37b98784426f9",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "The four-digit Core year domain excludes year 0000. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-temporal-005-second-61-rejects": {
+          "case_sha256": "dfe64980e009dc1a170b4056338c996408be0ab7545d6a9fcf76fd4b2d7fc7c6",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "Core admits second 60 but rejects seconds above the structural range. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-symbol-006-string-mismatch": {
+          "case_sha256": "fbddc4266cd293e3cbcaaec50d5e6cabf255c85e5128436661f5a0ddd14566a2",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "The reserved symbol datatype rejects a string literal. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-base64url-002-remainder-one-rejects": {
+          "case_sha256": "eeaacfba5d38f7930c06dab519950d06c77762467a893062622f454264adf0f3",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ],
+          "reason": "A Base64URL data length congruent to one modulo four cannot decode. Matching token/structure shape alone does not enforce C-base64."
+        },
+        "core-base64url-003-two-padding-tail-bits-reject": {
+          "case_sha256": "4ad1b1fd0ed3907519cbc0e13a436b3d985a1684896dcb4df6707c6168c11356",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ],
+          "reason": "A two-padding Base64URL payload rejects non-zero unused tail bits. Matching token/structure shape alone does not enforce C-base64."
+        },
+        "core-base64url-004-one-padding-tail-bits-reject": {
+          "case_sha256": "172eeb0b9c46d9ce1e702939b7f22320208b9a05099126a551b55131f816d771",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ],
+          "reason": "A one-padding Base64URL payload rejects non-zero unused tail bits. Matching token/structure shape alone does not enforce C-base64."
+        },
+        "core-base64url-005-legacy-lexical-only-forms-reject": {
+          "case_sha256": "daf2912d73b997ffd46d91a0640463249e67eb4a18a2b99ededaad7bf12ce688",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ],
+          "reason": "Previously accepted lexical-only examples reject when they are not decodable Base64URL. Matching token/structure shape alone does not enforce C-base64."
+        }
+      }
+    },
+    "cts/core/v1/core-cts.v1.next.json": {
+      "files_sha256": {
+        "cts/core/v1/core-cts.v1.next.json": "4a61ddc209de79ecdf76395afe1c5e818f4cae0ad661b37ce7a2bdc9b8426435",
+        "cts/core/v1/suites/01-baseline.json": "a02f01d20e627015024f2609654021dfae38d519893993926d1ee7cb69b98f04",
+        "cts/core/v1/suites/02-addressing-and-syntax.json": "3a55e4cd57a781e27f4d7ba8a6f5c609d2e58ba98a3911fcaa2f0b27540c9638",
+        "cts/core/v1/suites/03-attributes-and-references.json": "d53e86ce3cde752a6b03bb3bae1eaaeab06281509e37e8abd2144f72b51b30b9",
+        "cts/core/v1/suites/04-fail-closed-semantics.json": "51fcf321a9ea13e115236c4624535ae1ce39e5d9770efddc7bfee671314626ab",
+        "cts/core/v1/suites/05-promoted-edge-rejections.json": "83b0c826950ad7cf938f279c6521a368c09414deb3d3a83385a839387b4160c4",
+        "cts/core/v1/suites/06-promoted-domain-fixtures.json": "95a36778b8939113023e13d564d7ed66918eea54bd9c1d521eff7c012bc45459",
+        "cts/core/v1/suites/07-promoted-snippet-transport.json": "15d2ae6650d63a7c3ae54948839418c9a449146ebaf87b25ce622ea6b488d5aa",
+        "cts/core/v1/suites/08-promoted-strict-literals.json": "ec5febaeacf642f8d920961fc73a108433ba9aa3c33274e83af0d766f93609c0",
+        "cts/core/v1/suites/09-promoted-separator-literals.json": "df2e83749ee2fb8212820a98ba34d879c0d1fc7f6fa0b8f0d6d139e002fbd075",
+        "cts/core/v1/suites/10-promoted-numeric-and-encoding-literals.json": "c46b0c7ad1351dab52c94a1840d348acb92a5c4be406f37667219dc5fb162517",
+        "cts/core/v1/suites/11-promoted-custom-literals.json": "a04df7e673c6f37a954e72515fcbeb1d33f5edd1403b17ca0e61deb598c321ff",
+        "cts/core/v1/suites/12-promoted-custom-rejections.json": "555a966cbc8ff28bc252d77100d9aa16c316de22407c92bea75ca3cb03dbecfe",
+        "cts/core/v1/suites/13-promoted-whitespace-boundaries.json": "3e7ff0318432b729f826339b717faf25a8791ad3e17e11c9e37f7fef29148baa",
+        "cts/core/v1/suites/14-resource-policy.json": "9ba7ed3a693c3ea49cb7d92375af5ba4a3f6151df5121df75aedd29902388640",
+        "cts/core/v1/suites/15-structural-identity.json": "da9caa298617362c1c8e81be87704a75fab9c4b67885a7f1f8465426e6466577",
+        "cts/core/v1/suites/16-aeonic-limit-boundaries.json": "fea3fc1540edefd3cbd0d39a1d0a2c8ddf2b6bd38fa5462a796a1e35a7475d9f",
+        "cts/core/v1/suites/17-next-limit-semantics.json": "af5a74764590894603eac46c762ef83429407fa189c2ab3551836163e4aa8885",
+        "cts/core/v1/suites/18-next-profile-custom-clarifiers.json": "cacfa757db8c066888b6738d655cc889efb609de43aaeac43e53d666b7603df7",
+        "cts/core/v1/suites/19-next-special-number-literals.json": "ad2cfd82fa046e450963710b759585c74c38faa22af5204800680c1c4b6de0f5",
+        "cts/core/v1/suites/20-next-contextual-datatype-names.json": "fc0544db77ca975a3daec467d3ea0bae136d162b8caf0d2b667ef3be2bf2a69f",
+        "cts/core/v1/suites/21-temporal-precision-and-boundaries.json": "90831c295f84ef45eff631dfc5ed226c0d52e315e915e4a40c78b592d6e8fa2b",
+        "cts/core/v1/suites/22-next-symbolic-literals.json": "298db0e717bffbaee724bdc3a6a12df89fd164acc62809b60a3e684027bfb868",
+        "cts/core/v1/suites/23-next-trimtick-gutters.json": "5f39646520348e66469a31938fcccf35c1d22268cd95b3459ebf30c1c180d61f",
+        "cts/core/v1/suites/24-next-literal-flow-regressions.json": "4f67ca3a91aec83a095bbcc03ca22581c40cb877394da6d2db8ba45fc057081a",
+        "cts/core/v1/suites/25-next-base64url-validation.json": "2f5739778ab1de0ae3388ddf6b203834b12bac7c785cf6c019b364ac9aa90d19",
+        "cts/core/v1/suites/26-next-reference-authored-order.json": "d9f5a5f64cfd4b74e8cab81a40519beec1d64f82d142bda73d2b870db5776086",
+        "cts/core/v1/suites/27-next-type-only-generics.json": "6eb6e00203a7877148913c7388feed190a5cf384fcb406bc0d5555d62e083949",
+        "cts/core/v1/suites/28-next-node-binding-generics.json": "bb7cd7d3ee29d34297d484b0468c7c542f36634e403e0c5989e827739fb882a7",
+        "cts/core/v1/suites/29-next-empty-keys.json": "9c98281f7556263308da08158a4773cf3a807872b987cc741c3054a9c0af1f23"
+      },
+      "disagreements": {
+        "core-baseline-003-strict-reserved-only-custom-datatype-reject": {
+          "case_sha256": "d4f3532e5f59106159696ad28c40768b4222f96ed304bc1d9f7db3e57424ca60",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode rejects custom datatype by default (reserved_only). Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-006-strict-reserved-datatype-literal-mismatch": {
+          "case_sha256": "6a7aa33e0eac75e5b03956627755cf8b4914dfa7a0bba91dbb01c3c87186d2dd",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Strict mode rejects reserved datatype/literal mismatches. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-baseline-007-transport-explicit-reserved-datatype-literal-mismatch": {
+          "case_sha256": "6e23ed2b70af4a7c1d3f04ed428dbf497cdd60494b21e708f1290787ee5f1b3d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Transport mode still rejects explicit reserved datatype/literal mismatches. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-baseline-008e-declared-transport-effective-strict-reject": {
+          "case_sha256": "ef7a49c4eed957292eda8423196f0d5e16a47d70f1d85e60598605d51b9b87de",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Consumer-selected strict mode has authority over a document-declared transport mode. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-008f-late-structured-header-reject": {
+          "case_sha256": "ac4b61ede12e82bac1bff644833f06ec8958ecdbbd73a4287066fa3634294512",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-header"
+          ],
+          "reason": "Structured headers are rejected when they appear after body bindings. Matching token/structure shape alone does not enforce C-header."
+        },
+        "core-baseline-011-strict-removed-separator-alias-reject": {
+          "case_sha256": "8924304a691783f4fefb1290ebe642a40c108ffda5082405837a1de5b8210cb8",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode treats removed separator aliases like dim[...] as custom datatypes. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-015-strict-stale-radix-alias-reject": {
+          "case_sha256": "149a5df49ccf9023331222f5e098c2d95fd3e2de69218643f1df674be82d8a9f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode treats stale radix aliases like radix16 as custom datatypes. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-015b-strict-uppercase-number-alias-reject": {
+          "case_sha256": "62a7c31bf6e2d993226bdc0fa020d9dd53f954a248089fb1843e97f5ab00ada3",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode treats uppercase reserved-looking names like N as custom datatypes. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-025-custom-mode-untyped-reject": {
+          "case_sha256": "9f7c0cdf1ae0e0c31f980dcc437dc66572e06822929279da1ddd3a0adf8fc702",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Custom mode rejects untyped non-header bindings. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-baseline-026-transport-meaningless-reserved-generic-reject": {
+          "case_sha256": "ef78b7128459dbb7d8831ab89f7ca611455e3928d8a71c2e4a1bc013489588bb",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Transport mode rejects meaningless generic adornments on reserved scalar datatypes. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-baseline-029a-transport-reserved-child-datatype-binding-node-reject": {
+          "case_sha256": "4c59d7f8aab7b015c381ece4daad744d0dde0795800d5cbc1912c457450f8ee0",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Transport mode rejects reserved child-value datatype arguments on ordinary binding node<T> claims. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-baseline-029b-transport-non-node-generic-node-head-reject": {
+          "case_sha256": "1b0a5ef0aa44077b1e76ae2e80e5bd6c968e71b75592507573384326cae73b9a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Transport mode rejects non-node generic datatype adornments inside node heads. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-attr-002-missing-target": {
+          "case_sha256": "27a67d4c0e41e5e3d9852d4e4e6c627f0abb75fb8e5ddf5fb2d8fdd489dfb79c",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Missing attribute reference target is rejected deterministically. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-003-forward-target": {
+          "case_sha256": "34dd16c800080bca610a53d9678a9e3a2bc13ebd47b172a675be502e69de7b1c",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Forward attribute reference target is rejected. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-004-depth-exceeded": {
+          "case_sha256": "07ad51f78f3ce94ca3325f6b1245026aada3a898abfee44b98633f4cfb3ae0cc",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Chained attribute reference beyond default depth lock is rejected. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-attr-004a-nested-attribute-head-depth-exceeded": {
+          "case_sha256": "194e538cd91165f3ed04fe71eb4e55fd9d3ab83b71123f2957be09b89cdb5fdd",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Nested attribute heads count against the default max_attribute_depth limit. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-attr-004c-duplicate-attribute-key-reject": {
+          "case_sha256": "b9763252f333f83aef6d21bc443cb47b8c7348e87322c5adaa498cdd2b957089",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "Duplicate keys inside one attribute map are rejected fail closed. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-attr-009-attribute-payload-self-payload-reject": {
+          "case_sha256": "b64b949df425758a9be3bc9455994a1a82e4a6339ab8f35785cf2472975a65ae",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "An attribute payload may not reference the payload of its own binding. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-010-attribute-payload-forward-binding-reject": {
+          "case_sha256": "7319c8aad6c1bf35cd2183d77ab0ac6431fa3a0fd3671884a9b819c7b6375c58",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "An attribute payload may not reference a later payload binding. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-012-direct-sequence-item-forward-reject": {
+          "case_sha256": "107fa8c1481f523412b92105c99a14ec3cc17ccd65bf2a25500b78d6e52e5228",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Direct sequence items may not reference later sibling items by index. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-attr-015-strict-untyped-attribute-entry-reject": {
+          "case_sha256": "5ce66fcfc20eb723dc8666d203ce2c925a5149963f994e063177133fb6b837db",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Typed modes require datatype annotations on attribute entries that carry values. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-semantics-001-duplicate-key-fail-closed": {
+          "case_sha256": "09152cc1715788533461f3964bf5e19b5c51bed2ea6f0fbbac7e2017701c027d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "Duplicate keys in one document are rejected and emit no bindings in fail-closed mode. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-semantics-001a-duplicate-object-member-key-fail-closed": {
+          "case_sha256": "05bbd91acf8af8675c9e3d5cb926d4e725dceddd484858131fae9418bd20576e",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "Duplicate object member keys are rejected and emit no bindings in fail-closed mode. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-semantics-002-header-conflict-fail-closed": {
+          "case_sha256": "a4364e0f468ba07591dc5e9c331b8fac6f498b5b172c488fad579ff27c746670",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-header"
+          ],
+          "reason": "Structured header and shorthand header bindings cannot be mixed. Matching token/structure shape alone does not enforce C-header."
+        },
+        "core-semantics-003-strict-untyped-toggle-fail-closed": {
+          "case_sha256": "4cf2b24ab027db300d41dee2e2e2e79666e1d606dcde59682a79b964dc5a34ed",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode requires toggle literals to be explicitly typed. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-semantics-004-escaped-decoded-identity-duplicate-key-fail-closed": {
+          "case_sha256": "a4fd3f0329c36b95ceb9b85038d3c3fa6f9959d1b5daad03cc91b41941b9c18d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "Escaped and decoded-equivalent keys are rejected fail closed as duplicate keys. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-edge-014-braced-unicode-out-of-range-rejects": {
+          "case_sha256": "dc4682f370dce9c4a33400691e005633b0a8b81bcec430e2caa91d2dc527bc88",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ],
+          "reason": "Out-of-range Unicode escapes fail closed with INVALID_ESCAPE. Matching token/structure shape alone does not enforce C-unicode."
+        },
+        "core-edge-015-unpaired-surrogates-reject": {
+          "case_sha256": "09ae7e4d98c9e783995472c1c61578cccadcfc3bdc0b4b3417b467f192d39a05",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ],
+          "reason": "Lone surrogate Unicode escapes fail closed with INVALID_ESCAPE. Matching token/structure shape alone does not enforce C-unicode."
+        },
+        "core-edge-018-invalid-backtick-escape-rejects": {
+          "case_sha256": "8edbe832b6901ff6d255c87333ecf770a9313875a5cdf93672df521007c38256",
+          "grammar_matches": true,
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-raw-escapes"
+          ],
+          "reason": "CTS rejects backslash-q in a backtick payload, while the mapped source calls backtick strings raw. The grammar intentionally over-accepts pending clarification."
+        },
+        "core-edge-019-invalid-trimtick-escape-rejects": {
+          "case_sha256": "3f633f14f11cd8acd68e8677b522ad16ee0e7b4b218b0fe883129b21c41a2105",
+          "grammar_matches": true,
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-raw-escapes"
+          ],
+          "reason": "CTS rejects backslash-q in a backtick payload, while the mapped source calls backtick strings raw. The grammar intentionally over-accepts pending clarification."
+        },
+        "core-edge-020-braced-surrogate-escape-rejects": {
+          "case_sha256": "eed5f52b39aa8bf851db930f7369c006fbf7c544353407e6110af3eb4e91ae04",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ],
+          "reason": "Braced Unicode escapes reject surrogate code points with INVALID_ESCAPE. Matching token/structure shape alone does not enforce C-unicode."
+        },
+        "core-edge-020b-braced-surrogate-pair-spelling-rejects": {
+          "case_sha256": "1846901fea9f11f1d91afbff5e59dbdc63cbdc26165b3092c9286983b6cef783",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ],
+          "reason": "Braced surrogate escapes remain invalid even when followed by a fixed-width low surrogate. Matching token/structure shape alone does not enforce C-unicode."
+        },
+        "core-domain-002-namespace-and-quoted-key-disambiguation": {
+          "case_sha256": "43452c9a35681fbe34d61f27b3ad6503f8dfdba276a10c827ac3c0204ad90b7f",
+          "grammar_matches": false,
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-reference-brackets"
+          ],
+          "reason": "Positive domain fixture uses relative bracketed quoted-member traversal absent from the mapped normative grammar sketches. No fixture is omitted or changed."
+        },
+        "core-snippet-transport-006-attribute-depth-max-enforced": {
+          "case_sha256": "122ed9c00a1f1f855c660ce58e333b3a8ab18e950c4e59a3554111712cee6785",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Attribute traversal beyond the allowed depth rejects during reference validation. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-snippet-transport-007-missing-reference-target-rejects": {
+          "case_sha256": "519ec49501d26e685dd6ec0a3e46a158381334802d8eb6ae676e6316bbe4b050",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Quoted traversal to a missing nested target rejects during reference validation. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-strict-004d-wtc-local-case-variants-reject": {
+          "case_sha256": "03babe2aef7f304f6204f7655ab4b618f511727e95e046285fb21ff531b3d860",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "The reserved WTC local reference rejects non-canonical case variants. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-004e-wtc-uppercase-local-reject": {
+          "case_sha256": "f1c35009feb73ed61bde020e8267e1f7d5006fb2468d37eceaf5a94f4aa5094f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "The reserved WTC local reference rejects the all-uppercase spelling. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-005-invalid-time-rejects": {
+          "case_sha256": "25fbd6ed28463a986c66f947b78df95f42fdfb7f7b36f5562998d570499107b1",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "Out-of-range time literals reject during parsing. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-006-invalid-date-rejects": {
+          "case_sha256": "edb570e9c0a2e0a875e405803a29dac3d8f5dd91afb1478b1b529b717ac373e2",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "Non-existent calendar dates reject during parsing. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-007-invalid-wtc-datetime-rejects": {
+          "case_sha256": "ed6fe223f5142cea3c634da21c468c678caef72b055fd911be042163cff36a21",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "Malformed WTC reference suffixes reject as invalid datetime literals during parsing. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-strict-008-datatype-literal-mismatch-rejects": {
+          "case_sha256": "594a9df16fc8769d3e6aca5c780340d8cc728559d2a4c63f46b876721d0818ff",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Datatype declarations reject incompatible literal classes during core validation. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-strict-010-number-rejects-nan-literal": {
+          "case_sha256": "dff1749f7dcb2acd3c07a86e0a055058109d6f5f12d9ebf6dbb491073c66f1af",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Strict mode rejects NaN literals bound to :number. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-strict-012-number-rejects-null-datatype-mismatch": {
+          "case_sha256": "e153eb34daf413f0a36e54d49606997e8dbf43533590002b255af922a7de9660",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Strict typed null bindings reject ordinary numbers as datatype/literal mismatches. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-strict-014-retired-zrut-datatype-rejects": {
+          "case_sha256": "44b3ef96e726cbff7c461b87f5083234f4ed54dc78cbc39bc2cf1fbed52d3cbc",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "The retired zrut datatype name is rejected in the strict reserved datatype surface. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-sep-005c-removed-set-alias-rejects-in-strict-mode": {
+          "case_sha256": "be1627f674b949617a34de7d1fa1462b3c3f12092e634bfb6850249c1495c23d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode treats the removed separator alias set as a custom datatype. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-sep-006-separator-datatype-rejects-list-node": {
+          "case_sha256": "898e507d8031c82a9c76ee959a38208b17d58a8583ebb956512eae6269e3b65a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "A sep-typed binding rejects list literals even when the list contains a separator literal. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-custom-reject-001-custom-mode-untyped-literal-matrix-rejects": {
+          "case_sha256": "cc10e2ea028f9e56ef1711041e98b1d972c7d24465d5b7b9c4bf3bc363af5356",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Custom mode still fails closed on untyped non-header bindings even when the literal families are otherwise accepted when typed. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-custom-reject-002-strict-allow-custom-still-rejects-toggle-aliases": {
+          "case_sha256": "bc27b98615cd3f9bf38d4cf11530d71846542fdda2b1b1ffce7b040b9a51dfb0",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Strict mode keeps the dedicated toggle-type requirement even when general custom datatypes are enabled. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-custom-reject-002-custom-mode-does-not-apply-strict-switch-rule": {
+          "case_sha256": "53842c773ebf6856588eb282ff4bd65787360ea7afc4f30d742d575e32015408",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ],
+          "reason": "Custom mode rejects untyped toggle literals through typed-mode enforcement rather than the strict-only untyped-toggle rule. Matching token/structure shape alone does not enforce C-mode."
+        },
+        "core-custom-reject-003-custom-mode-still-enforces-reserved-datatype-match": {
+          "case_sha256": "5f83c2075e194b8242278941259db67cc0a62cbe88bc978f47a03c0dcce46bd4",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Custom mode still rejects reserved datatypes when the bound literal class is incompatible. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-custom-reject-004-custom-mode-still-enforces-reserved-infinity-match": {
+          "case_sha256": "21ac9f7d353a7e29004d9774a21f3d7b53f87b94654ab3f8b4dfe02619a2b2fc",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Custom mode rejects reserved numeric datatypes when the literal is an infinity value rather than a number literal. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-custom-reject-005-generic-custom-scalar-binding-rejects": {
+          "case_sha256": "06852c3e3806548b52e8a0140faac00a31b9e44aabdc3fa7574098d424bede76",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Generic custom datatypes reject scalar values in custom mode. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-resource-policy-002-max-events-fail": {
+          "case_sha256": "f242d1a2dee6f84d16b311a896ccd279f0c479c26a993a1154bdd6eb57fba618",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Core fails closed when emitted AES events exceed max_events.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-structural-identity-002-duplicate-reject": {
+          "case_sha256": "ea5ea497129124f4de6cbf240f745a544bbc1702add7f4aff45599773c2abc3f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ],
+          "reason": "Structural identities are document-wide unique. Matching token/structure shape alone does not enforce C-identity."
+        },
+        "core-structural-identity-007-cross-location-duplicate-reject": {
+          "case_sha256": "441dd2d3a0d2409b09d3d9c80502b96281d2e51f1bb69b443b75cf936f4c137e",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ],
+          "reason": "Structural identities remain document-wide unique across attribute-entry and node heads. Matching token/structure shape alone does not enforce C-identity."
+        },
+        "core-structural-identity-008-binding-anonymous-duplicate-reject": {
+          "case_sha256": "a52d9cdbed689e1d685d00ef196d5fe8a837ec559793a49a33d07e71688e2c21",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ],
+          "reason": "Document-wide uniqueness also spans ordinary binding and anonymous container child heads. Matching token/structure shape alone does not enforce C-identity."
+        },
+        "core-limits-002-input-bytes-one-over": {
+          "case_sha256": "9b791fb46f1a3fef0974521f4c55c14f446b58dcb4160b555655be647038b06a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "AEON input exceeding max_input_bytes fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-004-attribute-depth-one-over": {
+          "case_sha256": "6aff52762c225fe73e3ddf30a81e92de405ebe705400c6e7fae457c5be701b92",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Attribute nesting exceeding max_attribute_depth fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-006-generic-depth-one-over": {
+          "case_sha256": "2827051200a90ef5ac055c437c244515a297e4fd7fcd85d947587b1de1fe8c1d",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Datatype recursion exceeding max_generic_depth fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-008-generic-arguments-one-over": {
+          "case_sha256": "66fff5eec0d9f434d7632205a82332e9d743355a81ba772d58a9ece6202507fa",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A generic list exceeding max_generic_arguments fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-010-clarifier-values-one-over": {
+          "case_sha256": "0e580713891ed58b6390d6a1ff414d8e358e3067c9cee3605bef69211e89b23a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A clarifier list exceeding max_clarifier_values fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-012-datatype-components-one-over": {
+          "case_sha256": "fb726de210513752b13a4c3f925eaa19b28a3a8cad43e4cb211c56dba0707f9a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A datatype tree exceeding max_datatype_components fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-014-value-nesting-one-over": {
+          "case_sha256": "94ef1d063e93b0cbf2754bc79903e243afba65364049866da7e6c3f775d0a22c",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Container nesting exceeding max_value_nesting_depth fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-016-path-depth-one-over": {
+          "case_sha256": "a07122691551de6a6799c47e93b4c5e6a0515cbe2944327dc5ca161b933a7052",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Canonical path depth exceeding max_path_depth fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-018-string-codepoints-one-over": {
+          "case_sha256": "7394394139d2419c858260b0edca78991dfea087ed9136e71dbe061efc1fa245",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A decoded string exceeding max_string_codepoints fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-020-key-segment-one-over": {
+          "case_sha256": "093d7e488f8005b033a26c5e3b6651b0a8a816ff605679937849803c2b47b695",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A decoded key segment exceeding max_key_segment_codepoints fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-022-list-items-one-over": {
+          "case_sha256": "aa74483b8712ab886ebecb20d4030ee4c861c3960c2058b69145e34cd58b944e",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A list exceeding max_list_items fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-024-tuple-items-one-over": {
+          "case_sha256": "a74e93bfaf954ba2b4958da05bf08b2ca06b2f6567ccd17553733d5d7d676337",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A tuple exceeding max_tuple_items fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-026-path-characters-one-over": {
+          "case_sha256": "91284f1495823be1ffe7738828cdac2b4722c301b1f2c509318b6f8af8cc9f10",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A canonical path exceeding max_path_characters fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-028-events-one-over": {
+          "case_sha256": "57939886e66befe7f0ae58b6e58c1554a826ebaed332d9ff7eb36b77bcc7e1b9",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "Emitted AES events exceeding max_events fail closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-030-numeric-characters-one-over": {
+          "case_sha256": "4c0ecc311262ae7071007ea586d8b839d25aa26c9c9ac7da01ce2ac31f6fe366",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A raw numeric literal exceeding max_numeric_literal_characters fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-limits-032-structured-comment-one-over": {
+          "case_sha256": "a06b40284b6dfd4461ffed7707a41995b5239dbfa5845f8b569784f1436aef2b",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ],
+          "reason": "A structured-comment payload exceeding max_structured_comment_characters fails closed.. Matching token/structure shape alone does not enforce C-limits."
+        },
+        "core-temporal-003-year-zero-rejects": {
+          "case_sha256": "31349cc441409b4c6ec53525de0638e074f04ac7b5b139f554d37b98784426f9",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "The four-digit Core year domain excludes year 0000. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-temporal-005-second-61-rejects": {
+          "case_sha256": "dfe64980e009dc1a170b4056338c996408be0ab7545d6a9fcf76fd4b2d7fc7c6",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ],
+          "reason": "Core admits second 60 but rejects seconds above the structural range. Matching token/structure shape alone does not enforce C-temporal."
+        },
+        "core-symbol-006-string-mismatch": {
+          "case_sha256": "fbddc4266cd293e3cbcaaec50d5e6cabf255c85e5128436661f5a0ddd14566a2",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "The reserved symbol datatype rejects a string literal. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-literal-flow-012-prose-rejects-double-quoted": {
+          "case_sha256": "d6005c9db93135edb92133efc4a2ff7b746bc6185cc92e2465171ce83dbe72ca",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "The reserved prose datatype requires a trimtick literal, not double-quoted content. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-literal-flow-013-prose-rejects-single-quoted": {
+          "case_sha256": "ef34f6b22dd493e7890ff643c399a5f11ce8a1beef045c75a3f8aa794d2bbaa5",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "The reserved prose datatype requires a trimtick literal, not single-quoted content. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-literal-flow-014-prose-rejects-backtick": {
+          "case_sha256": "e699abb00daf9864580f9efb6f7fef197f480751b91cd3b9fad991dbe40e1aaa",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "The reserved prose datatype requires a trimtick literal, not backtick content. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-literal-flow-015-prose-rejects-symbol": {
+          "case_sha256": "e908d9b689cf78c7ec9e6167a480458a2e68c2409c9f75c9ca4f33f8e412ad9f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "The reserved prose datatype requires a trimtick literal, not symbol content. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-literal-flow-016-prose-rejects-number": {
+          "case_sha256": "0997b9195fdeecc90344b3e1a9bfdab7e04f0917fc818e1e9c91573667f2749c",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "The reserved prose datatype requires a trimtick literal, not number content. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-literal-flow-017-prose-rejects-list": {
+          "case_sha256": "b825985ed8de5cc43fa08d1419667fdf4a2765ba45312c98be51d0907cfeb4ed",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Explicit prose bindings enforce the trimtick family inside a list. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-literal-flow-018-prose-rejects-tuple": {
+          "case_sha256": "da2d6078b8eb25c82c38e09add267da7190fe525e6ebc22d1ef087fda1da4cee",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Explicit prose bindings enforce the trimtick family inside a tuple. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-literal-flow-019-prose-rejects-object": {
+          "case_sha256": "32821a51b477a58c0f203fa58c110e6094db380bcbfb35a75fe8526425751cbd",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Explicit prose bindings enforce the trimtick family inside a object. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-literal-flow-020-prose-rejects-attribute": {
+          "case_sha256": "9b8e588c13a44d46a1e302f2146894d9328a60b07eea0698453b4f26b2b3ea74",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ],
+          "reason": "Explicit prose bindings enforce the trimtick family inside a attribute. Matching token/structure shape alone does not enforce C-datatype."
+        },
+        "core-base64url-002-remainder-one-rejects": {
+          "case_sha256": "eeaacfba5d38f7930c06dab519950d06c77762467a893062622f454264adf0f3",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ],
+          "reason": "A Base64URL data length congruent to one modulo four cannot decode. Matching token/structure shape alone does not enforce C-base64."
+        },
+        "core-base64url-003-two-padding-tail-bits-reject": {
+          "case_sha256": "4ad1b1fd0ed3907519cbc0e13a436b3d985a1684896dcb4df6707c6168c11356",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ],
+          "reason": "A two-padding Base64URL payload rejects non-zero unused tail bits. Matching token/structure shape alone does not enforce C-base64."
+        },
+        "core-base64url-004-one-padding-tail-bits-reject": {
+          "case_sha256": "172eeb0b9c46d9ce1e702939b7f22320208b9a05099126a551b55131f816d771",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ],
+          "reason": "A one-padding Base64URL payload rejects non-zero unused tail bits. Matching token/structure shape alone does not enforce C-base64."
+        },
+        "core-base64url-005-legacy-lexical-only-forms-reject": {
+          "case_sha256": "daf2912d73b997ffd46d91a0640463249e67eb4a18a2b99ededaad7bf12ce688",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ],
+          "reason": "Previously accepted lexical-only examples reject when they are not decodable Base64URL. Matching token/structure shape alone does not enforce C-base64."
+        },
+        "core-reference-order-001-object-forward": {
+          "case_sha256": "e646c57faaa12767f64477c27b1e7a6f1b2c2782ee6bdf7bb0a4dd2e3607f48a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: object forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-003-attribute-forward": {
+          "case_sha256": "0c7c4514e4b6f38ecb46f18818be796d18a1a33a723a25d4b7db5178317ab1c7",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: attribute forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-005-attribute-pointer-forward": {
+          "case_sha256": "5022e3e3cfeca1fad58ed60049442b9de53d3ac98d32abb6d3f8c92f90d147cf",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: attribute pointer forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-007-attribute-self": {
+          "case_sha256": "f659d8569e61355529a0c091088f452d70e1bf47faf396e23297a190388cfa58",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: attribute self. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-008-attribute-own-payload": {
+          "case_sha256": "6443631ebef5acabeb52620a471457092c0fe041d955de632c659f6be9c82247",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: attribute own payload. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-010-attribute-missing": {
+          "case_sha256": "1312091a588752762d0179c11b685e7dfa12ad111914201199ddf7da3554f466",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: attribute missing. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-011-attribute-object-forward": {
+          "case_sha256": "c896cdbc6801553bcbe37e874f5c19eeb6a6743beac880a7da91784d299ca19f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: attribute object forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-013-attribute-list-forward": {
+          "case_sha256": "2f3e2cba13c583c0fb6cad3fb2fb3d084a1dfe56ec5991176f9e5a2440c4d1b8",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: attribute list forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-015-node-head-forward": {
+          "case_sha256": "0f94a8febd66f52dd8a57d895fe5cf5a43ee34bc4809568a8902b993ef9d3384",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: node head forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-016-node-head-backward": {
+          "case_sha256": "5213e3be6ea79eb403890b8f6154b79613422dc0ac060acea3aa40ecc2588f03",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: node head backward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-017-anonymous-head-forward": {
+          "case_sha256": "cc890af9a48567aba869e639449787ced346814a272928273f9c12d2b787f9c2",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: anonymous head forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-019-quoted-key-forward": {
+          "case_sha256": "6975cf34f55e561885817f74164e872f02cb3ee4ea05ee7c3b28451b27a4b774",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: quoted key forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-022-nested-attribute-forward": {
+          "case_sha256": "b34dd38b35799b971d79cb6675c93a6b2ceaaf8552d829ce4ccb46c693dcf079",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: nested attribute forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-024-nested-attribute-own-payload": {
+          "case_sha256": "ee9288a8298d394bd2c737b5f5258b5b4ace48045033c390d3047dee4cb93ed8",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: nested attribute own payload. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-027-node-child-error-once": {
+          "case_sha256": "3312d2a6acc2c37242a8da3c0e785f12fc294bbd3e48b749b5a89d1e62f46107",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: node child error once. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-028-anonymous-head-own-payload": {
+          "case_sha256": "114a7b4abcbb54f0948998e45ec88d472db0047fb6f0e0632e025450e7e8ff81",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: anonymous head own payload. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-031-node-head-external-forward": {
+          "case_sha256": "7cbb3fb6fae776d650b877141b3d411df9c9f2bcf31ae625ca4e46598ec7b0b8",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: node head external forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-033-nested-attribute-later-payload-member": {
+          "case_sha256": "3e94a29ae0f073e924a709633e5ea20dc046a48d3253cba9416818ff88708cd9",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: nested attribute later payload member. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-035-node-head-nested-list-reference": {
+          "case_sha256": "7f536966c8a338acf55f7fd3c32d46e1f6b3534fe0cf71ddd5c292de415b6808",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: node head nested list reference. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-036-node-head-nested-object-reference": {
+          "case_sha256": "42add39218652f41a60fbbdda25e5b4764075978f9522a4d7fccd74b4d6d0811",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: node head nested object reference. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-037-object-member-attribute-error-once": {
+          "case_sha256": "cfadd7eb37240d917736d45a792c172ef2bb67d89bc6d4f25def11e9c8339ee3",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: object member attribute error once. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-038-anonymous-tuple-head-forward": {
+          "case_sha256": "0b859dbb82fd0fbf8900a72d420b2c2546fd9c611ba92deeb12049c7f3339067",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: anonymous tuple head forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-039-anonymous-node-child-head-forward": {
+          "case_sha256": "9b2c99c1507c995b00664104bc6b2a0af2502862ab2c0355a1861fded84c5335",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: anonymous node child head forward. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-040-quoted-attribute-own-payload": {
+          "case_sha256": "a9de11ddd823541b4ce092771ee68db54dd05c083ca5e1db618719f349a7f766",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: quoted attribute own payload. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-reference-order-041-node-head-not-binding-target": {
+          "case_sha256": "6ca2b62d22a1594ec0e62a5c53190e53ad5d9abf79d24e6a63c820609fe9c78a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "Reference occurrence order: node head not binding target. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-node-binding-generics-001-reject": {
+          "case_sha256": "e855120cbd3c9fa66c536e5acf7382cda1c978482c62fb31e9ee72a464ee77e3",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-002-reject": {
+          "case_sha256": "8081c8a15174bd0467bf9cdf8edc81b4c3972bc205e81000cbc204d2502aeb62",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-003-reject": {
+          "case_sha256": "ab2512a91f504a2d1fc632bd95f84c920823a1ef43ee080618d12b44c969e0ee",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-004-reject": {
+          "case_sha256": "cd2a1a89cb0f2fbf765a2644bef22ab3f7ae9ea933ee6094ed48e6643c166c96",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-005-reject": {
+          "case_sha256": "41f7ca34b9f88cc3ec32d0f7160acec62cd55901b490c6ed898d0d89b86cf1ca",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-006-reject": {
+          "case_sha256": "e3b7774f4f2587734fdee3883ae06c4bf2c701a7b3b4681ba46c7689669ba137",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-007-reject": {
+          "case_sha256": "430dd3849dd8805ca1cd015df0729950d5fde6d49b02a1b5c17d9870189282fd",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-008-reject": {
+          "case_sha256": "75ef233cad3aec3aaf3d2b9f02dbabae4e82f55b0ba28fcb102e872a6eccc826",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-009-reject": {
+          "case_sha256": "159422d36967e4eedd7d7e626b38d60b9c2aa28faa89c4cd0fcc3fa3a650a782",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-010-reject": {
+          "case_sha256": "04b85d61bcb3a066a3834787ce8eb38f7fc537cab0ab19ee716b7ff0bbe08f1f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-011-reject": {
+          "case_sha256": "7910c70289923e74850068060c0638e1d513726be39b2c4f38780c3b36d11bd9",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-012-reject": {
+          "case_sha256": "eda01773fa7b2979495be60bf7810025d66e5c01a8fd881c415c434cb9e1b04a",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-013-reject": {
+          "case_sha256": "c82f013544158eee494bd5321bd749e5b7db00bcc07bddfa2e30c1e6b45dc779",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-014-reject": {
+          "case_sha256": "71dccb19de4bfe768d4d9707b86b17c2bf14e1cc69717b636bc12ffa14efdc8f",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-015-reject": {
+          "case_sha256": "215b06f8e22ee60e7d3fade77bc4c770161097389ebc131c55a234965a200970",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-016-reject": {
+          "case_sha256": "142558f426c1b0f5c96c9cd90031ad10c771884ee35cc198c0c202edee783396",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-017-reject": {
+          "case_sha256": "ec75e971d6b938e06e12ee5146fde384fb6e1fc10d490a7aade0ad926e90798e",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-018-reject": {
+          "case_sha256": "0d29efa83c2c7a4407099404ece9b444b15a0af46afb1a544dca0c557328efad",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-node-binding-generics-019-reject": {
+          "case_sha256": "b0a9bcc2faa72c5482634ba7585469a2f9df2374f68e64af3c42299f878df137",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ],
+          "reason": "Reserved non-node binding arguments remain invalid regardless of clarifiers, value spelling, or ownership context. Matching token/structure shape alone does not enforce C-generics."
+        },
+        "core-empty-key-root-duplicate": {
+          "case_sha256": "c9ab8722f023f7646fb6ab7d3a015586abc625c40f4d9a0b52ceadbf7330b5aa",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "root duplicate. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-empty-key-object-duplicate": {
+          "case_sha256": "c305d5d8d4891c5aeb3c2dbdeed6f70614fe6853cc496b80460a7dfdd87a63d7",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "object duplicate. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-empty-key-attribute-duplicate": {
+          "case_sha256": "ac9f8bb6a1cddde468815c440624490fea6ce922fe196c0a99172f4f56a1c109",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ],
+          "reason": "attribute duplicate. Matching token/structure shape alone does not enforce C-keys."
+        },
+        "core-empty-key-missing-target": {
+          "case_sha256": "24f1678478afd2a20accb509d46a3ce228d390ba8bf0d7dbd2bb9d3ae5ced0d0",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "missing target. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-empty-key-forward-target": {
+          "case_sha256": "ca9d983845a8bfe8484ea2744b524040e1e08cd96cba6282fdaf4ce74591ad34",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "forward target. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-empty-key-self-target": {
+          "case_sha256": "7fd76d1ac22acdafc3127a5554c2c6e28bfffef6022ec8e2c4f8a9fccf4ee84c",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ],
+          "reason": "self target. Matching token/structure shape alone does not enforce C-reference."
+        },
+        "core-empty-key-empty-local-space": {
+          "case_sha256": "ccad1e171b3204f2bbf4e09cf5aa58b340e96a187f6639238546cb5314e89a85",
+          "grammar_matches": true,
+          "classification": "extra-constraint",
+          "references": [
+            "C-sansa"
+          ],
+          "reason": "empty local space. Matching token/structure shape alone does not enforce C-sansa."
+        }
+      }
+    }
+  }
+}

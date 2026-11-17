@@ -1,0 +1,90 @@
+schemaVersion:string = "1"
+id:string = "appendix-aeon-abnf-v1"
+title:string = "Appendix — Informative AEON ABNF"
+description:string = "Versioned informative AEON Core v1 ABNF with normative-source mappings, additional constraints, open discrepancies, and pinned CTS recognition evidence."
+created:date = 2026-11-18
+modified:date = 2026-11-18
+family:string = "appendices"
+group:string = "Core Appendices"
+standing:string = "official"
+lifecycle:string = "draft"
+normativity:string = "informative"
+license:string = "CC-BY-4.0"
+path:string = "specification/appendices/appendix-aeon-abnf-v1"
+order:number = 125
+publish:boolean = true
+keywords:list<string> = ["AEON", "ABNF", "grammar", "syntax", "CTS", "source mappings"]
+related:list<string> = ["aeon-core-v1", "aeon-core-v1-structure-syntax", "aeon-core-v1-value-types", "aeon-core-v1-addressing-references", "aeon-core-v1-comments-annotations", "sansa-v1-addressing", "appendix-grammar-flow-v1"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Appendix — Informative AEON ABNF [# appendix-informative-aeon-abnf]
+
+  ## 1. Status and Authority [# status-and-authority]
+
+  Grammar revision [$ aeon-abnf-v1-0.4] is an informative translation of the existing AEON Core v1 normative sources. It is a reviewable syntax reference, not a new conformance target, an executable AEON validator, or a normative replacement for the source documents. The mapped sources include published and draft documents; their lifecycle and normativity are recorded independently in the manifest.
+
+  The [@ document:aeon-core-v1-structure-syntax | Structure Syntax Reference] and other mapped normative sources retain authority. Any unresolved disagreement is recorded explicitly. Grammar recognition neither establishes AEON validity nor proves that the translation covers every valid AEON document.
+
+  ## 2. Versioned Resources [# versioned-resources]
+
+  The versioned bundle contains:
+
+  - [@ assets/grammar/aeon/v1/0.3/aeon.abnf | AEON ABNF]: the grammar, with entry rule [$ aeon];
+  - [@ assets/grammar/aeon/v1/0.3/manifest.json | source and constraint manifest]: exact source revision and hashes, production-to-source section mappings, additional constraints and unresolved discrepancies;
+  - [@ assets/grammar/aeon/v1/0.3/cts-expectations.json | CTS classifications]: exact CTS files and per-case explanations for every recognition disagreement;
+  - [@ assets/grammar/aeon/v1/0.3/cts-inputs.json | exact CTS input evidence]: read-only, licensed source bytes for offline replay; conformance authorship remains in the CTS repository;
+  - [@ assets/grammar/aeon/v1/0.3/boundary-cases.json | focused boundary cases]: expected grammar recognition, including intentional over-acceptance;
+  - [@ assets/grammar/aeon/v1/0.3/runtime-evidence.json | scoped runtime observations]: TypeScript and Python probes, with artifact hashes and verification limits;
+  - [@ assets/grammar/aeon/v1/0.3/validation-report.json | validation report]: reproducible recognition counts, exclusions and verification limits.
+
+  Revisions [$ 0.1], [$ 0.2] and [$ 0.3] are retained byte for byte. Revision [$ 0.4] adopts the working normative amendment that physical LF/CRLF inside completed block comments counts wherever newline separators are permitted. Empty, whitespace-only and comment-only documents remain accepted. Bare years and hours remain numbers; trailing hyphen and colon markers distinguish reduced-precision date and time values.
+
+  Revision [$ 0.4] versions the grammar artifact independently of the language version, implementation packages and CTS snapshots. Once shared or released, its bytes are retained; substantive corrections require a new grammar revision. A new revision must not silently rewrite an earlier CTS or specification snapshot.
+
+  ## 3. Input and Recognition Model [# input-and-recognition-model]
+
+  The notation is RFC 5234 ABNF with RFC 7405 case-sensitive strings. The input alphabet is Unicode scalar values obtained by decoding well-formed UTF-8, rather than UTF-8 octets. Quoted alphabetic literal keywords use case-sensitive terminals. Recognition starts at [$ aeon] and consumes the entire input.
+
+  The grammar distinguishes inter-token layout from binding and element separators, compact literal payloads, and comment bodies. A block comment containing physical LF can supply a newline separator; a comment without LF cannot. Literal payload newlines keep their own rules. A single leading BOM and the permitted file-header shebang slot are represented explicitly. Unicode escapes still require decoded scalar validation.
+
+  ABNF alternatives are unordered. Their textual order is not lexer precedence, a longest-token algorithm or a promise of an unambiguous syntax tree. The grammar is not a production-parser architecture requirement.
+
+  ## 4. Additional Constraints [# additional-constraints]
+
+  Each additional obligation has a stable identifier and source-section mappings in the manifest. The catalogue is informative; requirements derive from the mapped normative sources.
+
+  - [$ C-input] and [$ C-unicode]: UTF-8/scalar validity, escape decoding and surrogate pairing;
+  - [$ C-keys] and [$ C-identity]: decoded-key uniqueness, path collisions and document-wide structural identity uniqueness;
+  - [$ C-header] and [$ C-mode]: header placement, conflicts, effective processing mode and required annotations;
+  - [$ C-datatype] and [$ C-generics]: literal-family compatibility and datatype-dependent generic restrictions;
+  - [$ C-null] and [$ C-base64]: decoded null reasons and explicit Base64URL claim validation;
+  - [$ C-temporal]: intrinsic calendar, clock, offset and temporal-context validity;
+  - [$ C-reference]: authored-order availability, missing and self-reference rejection, and namespace rules;
+  - [$ C-limits]: configured resource limits and capability policy;
+  - [$ C-token-boundary] and [$ C-sansa]: compact-token consumption and SANSA-owned address validity;
+  - [$ C-trimtick] and [$ C-comments]: value normalization and annotation interpretation;
+  - [$ C-downstream]: separately governed schema, profile, materialization and consumer semantics.
+
+  These are logical responsibilities, not mandated parser passes. Some invalid inputs are rejected directly by the grammar; matching invalid inputs require an applicable additional check. Recognition tooling classifies these checks but does not execute them.
+
+  ## 5. CTS Evidence and Open Discrepancies [# cts-evidence-and-open-discrepancies]
+
+  The current bundle identifies its exact source amendments by file hashes and pins the coordinated CTS commit. Its specification baseline revision is provenance, not a claim that the baseline already contains this PR. A read-only exact-byte CTS evidence archive enables offline replay without assigning conformance ownership to this grammar. Revision [$ 0.4] refreshes provenance against current upstream sources for PR publication, preserving the grammar behavior of revision [$ 0.3].
+
+  Revision [$ 0.4] checks every selected case in the pinned released [$ core-cts-v1-snapshot-0.5] target and the pinned experimental development [$ core-next-cts-v1-snapshot-0.1] target. Manifest exclusions remain explicit. Their expected verdicts, modes and options are preserved; no CTS files are changed by this translation.
+
+  One positive domain fixture in each target uses relative bracketed quoted-member reference traversal not clearly admitted by the normative sketches. Two negative cases in each target reject escapes in backtick payloads that the source calls raw. The released target also retains three historical empty-key/path syntax expectations predating the current normative text. All are recorded individually with exact case hashes. Historical reference cases may still fail an independent missing-target check under current rules.
+
+  The manifest also records conflicting SANSA qualifier descriptions, clarifier layout wording, optional sequence-separator sketches and incomplete number-token detail. These are specification questions, not authority for the grammar to change the language.
+
+  A mechanical audit checks all 9,555 bounded first-closer cases and the corresponding 9,555 LF-bearing block-comment assertions across seven channels. The focused corpus contains 463 cases. Scoped TypeScript and Python observations cover 315 cases each with no unexplained differences, including the 207 new Core next vectors. Python and this grammar now match TypeScript for physical comment newlines. The old separator discrepancy is resolved by the explicit normative amendment; previous evidence is retained.
+
+  The checker fails on unexplained disagreements, stale classifications, changed fixture bytes and incomplete production mappings. Its report is grammar-recognition evidence only: it does not run an AEON implementation, establish semantic conformance, validate annotation attachment or schema behavior, or prove universal syntax coverage.
+
+  ## 6. Promotion Gate [# promotion-gate]
+
+  Before any normative promotion, reconcile the recorded source discrepancies through the specification lifecycle, review the full translation independently, broaden positive and negative boundary coverage, and define how grammar and prose conflicts are resolved. Grammar-generated candidates must be independently validated before receiving CTS verdicts. Mutation alone does not establish that a generated example is invalid.
+`

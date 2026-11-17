@@ -1,0 +1,611 @@
+{
+  "schema_version": 1,
+  "id": "aeon-abnf-v1-0.1",
+  "grammar_version": "0.1",
+  "language_line": "AEON Core v1",
+  "normativity": "informative",
+  "created": "2026-11-18",
+  "license": "CC-BY-4.0",
+  "dialect": [
+    "RFC 5234",
+    "RFC 7405"
+  ],
+  "input": "Unicode scalar values decoded from well-formed UTF-8",
+  "entry_rule": "aeon",
+  "spec_repository": "https://github.com/aeonite-org/aeonite-specs",
+  "spec_revision": "a2de96d3792dca39a27f6d3c41365d560221ccde",
+  "grammar_sha256": "1843b74f8cc56839a0ea3699fadd085e89b3d815364fb0ed8ca95f508453f841",
+  "sources": {
+    "core": {
+      "path": "sources/aeon/v1/AEON-spec-v1.aeon",
+      "sha256": "d54d8016c00d2d9a1a1b512190271e80d981280f018c5f8068a20653bcd33940",
+      "document_id": "aeon-core-v1",
+      "normativity": "normative",
+      "lifecycle": "draft"
+    },
+    "structure": {
+      "path": "sources/aeon/v1/structure-syntax-v1.aeon",
+      "sha256": "35effa79272ade1a2e36df5903b8eee99b5402cce4c04d3679101ee385937bc4",
+      "document_id": "aeon-core-v1-structure-syntax",
+      "normativity": "normative",
+      "lifecycle": "published"
+    },
+    "values": {
+      "path": "sources/aeon/v1/value-types-v1.aeon",
+      "sha256": "5af7b8acaaa4b689bac34ac325068c3eb55cfebcbda4295082d25ca7c1c1bab4",
+      "document_id": "aeon-core-v1-value-types",
+      "normativity": "normative",
+      "lifecycle": "draft"
+    },
+    "references": {
+      "path": "sources/aeon/v1/addressing-references-v1.aeon",
+      "sha256": "9bd80b6452f2136a31e625e1bbd9d7be1dfe9caa42f6de2f4bdfdacb65c57fec",
+      "document_id": "aeon-core-v1-addressing-references",
+      "normativity": "normative",
+      "lifecycle": "published"
+    },
+    "comments": {
+      "path": "sources/aeon/v1/comments-annotations-v1.aeon",
+      "sha256": "2b11ac987f98191529b3e6a0c9ef3b3cab7d19894bfbffb9501e4df51c1778f1",
+      "document_id": "aeon-core-v1-comments-annotations",
+      "normativity": "normative",
+      "lifecycle": "published"
+    },
+    "sansa": {
+      "path": "sources/sansa/v1/addressing-v1.aeon",
+      "sha256": "72cf8b7b89f7b215a6a2683af16d0dd86224e70d16b6e1f65e6de9f9cc26e74b",
+      "document_id": "sansa-v1-addressing",
+      "normativity": "normative",
+      "lifecycle": "draft"
+    },
+    "rfc5234": {
+      "url": "https://www.rfc-editor.org/rfc/rfc5234",
+      "sections": [
+        "2",
+        "3",
+        "B.1"
+      ]
+    },
+    "rfc7405": {
+      "url": "https://www.rfc-editor.org/rfc/rfc7405",
+      "sections": [
+        "2"
+      ]
+    }
+  },
+  "production_mappings": [
+    {
+      "rules": [
+        "aeon",
+        "bindings",
+        "binding",
+        "head-tail"
+      ],
+      "sources": [
+        "core#document-model",
+        "structure#binding-shape"
+      ],
+      "note": "Header spellings reuse binding heads; header recognition, placement and conflicts require C-header."
+    },
+    {
+      "rules": [
+        "identity"
+      ],
+      "sources": [
+        "structure#structural-identities"
+      ],
+      "note": "Name spelling only; document-wide identity uniqueness is C-identity."
+    },
+    {
+      "rules": [
+        "attributes"
+      ],
+      "sources": [
+        "structure#attributes"
+      ],
+      "note": "Entries reuse full binding heads, including a structural identity; nested metadata policy is C-limits."
+    },
+    {
+      "rules": [
+        "type-annotation",
+        "type-descriptor",
+        "generic-args",
+        "clarifiers",
+        "clarifier-value"
+      ],
+      "sources": [
+        "structure#binding-shape",
+        "structure#datatype-clarifiers"
+      ],
+      "note": "Recursive descriptors, one clarifier list, quoted string/number arguments. Name-dependent restrictions require C-generics. Inter-token layout follows the accepted normative examples; see G-clarifier-layout."
+    },
+    {
+      "rules": [
+        "key",
+        "identifier"
+      ],
+      "sources": [
+        "structure#supported-key-forms"
+      ],
+      "note": "ASCII bare keys; decoded quoted keys may be empty. All identifier roles remain nonempty."
+    },
+    {
+      "rules": [
+        "object",
+        "list",
+        "tuple",
+        "elements",
+        "element",
+        "anonymous-head",
+        "node"
+      ],
+      "sources": [
+        "structure#assignment-and-element-separators",
+        "structure#binding-shape"
+      ],
+      "note": "Anonymous heads only in sequence children. Required separators follow prose; optional-separator EBNF is recorded as G-element-separators."
+    },
+    {
+      "rules": [
+        "separator",
+        "gap",
+        "hgap",
+        "layout",
+        "newline"
+      ],
+      "sources": [
+        "structure#newline-rules",
+        "structure#top-level-and-object-bindings",
+        "comments#non-influence-rule"
+      ],
+      "note": "Explicit ASCII layout; block-comment contents are not physical separators. CR is admitted as layout in addition to LF and CRLF."
+    },
+    {
+      "rules": [
+        "bom",
+        "shebang"
+      ],
+      "sources": [
+        "comments#host-channel"
+      ],
+      "note": "At most one leading BOM; shebang only at the start. Host-directive placement affects meaning, not line-comment recognition."
+    },
+    {
+      "rules": [
+        "value"
+      ],
+      "sources": [
+        "values#value-kind-catalog"
+      ],
+      "note": "Union of literal families. Datatype family compatibility is C-datatype; address validity is C-sansa."
+    },
+    {
+      "rules": [
+        "quoted-string",
+        "double-string",
+        "single-string",
+        "double-char",
+        "single-char",
+        "escape",
+        "unicode-escape"
+      ],
+      "sources": [
+        "values#string-2",
+        "structure#supported-key-forms"
+      ],
+      "note": "Escapes are shaped here; scalar validity, surrogate pairing and decoded identity require C-unicode."
+    },
+    {
+      "rules": [
+        "raw-string",
+        "raw-char",
+        "trimtick"
+      ],
+      "sources": [
+        "values#string-2",
+        "values#trimtick-2"
+      ],
+      "note": "Raw/escaped backtick recognition is deliberately a superset pending G-raw-escapes. C-trimtick specifies value normalization, not validity of indentation style."
+    },
+    {
+      "rules": [
+        "symbol",
+        "symbol-char"
+      ],
+      "sources": [
+        "values#symbolic-literal"
+      ],
+      "note": "Nonempty pipe-delimited payload, string-style escapes plus escaped pipe, no raw CR or LF."
+    },
+    {
+      "rules": [
+        "number",
+        "integer",
+        "digits",
+        "nonzero",
+        "sign",
+        "exponent"
+      ],
+      "sources": [
+        "values#number-2"
+      ],
+      "note": "Digit separators only between digits; integer mantissas have no redundant leading zero. Exponents permit leading zeroes. Numeric interpretation is not supplied by the grammar."
+    },
+    {
+      "rules": [
+        "infinity",
+        "nan",
+        "null",
+        "boolean",
+        "toggle"
+      ],
+      "sources": [
+        "values#infinity-2",
+        "values#nan-2",
+        "values#null-2",
+        "values#boolean-2",
+        "values#toggle-2"
+      ],
+      "note": "Case-sensitive terminals. Decoded null reason constraints require C-null."
+    },
+    {
+      "rules": [
+        "hex",
+        "radix",
+        "radix-digits",
+        "radix-digit",
+        "encoding"
+      ],
+      "sources": [
+        "values#hex-2",
+        "values#radix-2",
+        "values#encoding-2"
+      ],
+      "note": "Encoding grammar is lexical only; explicit base64 claims additionally require C-base64. Radix base meaning remains downstream."
+    },
+    {
+      "rules": [
+        "separator-literal",
+        "separator-char"
+      ],
+      "sources": [
+        "values#separator-literal",
+        "structure#datatype-clarifiers"
+      ],
+      "note": "Contiguous raw or quoted segments; punctuation and container boundaries require C-token-boundary."
+    },
+    {
+      "rules": [
+        "temporal",
+        "date",
+        "time",
+        "clock",
+        "fraction",
+        "offset",
+        "temporal-context"
+      ],
+      "sources": [
+        "values#date-time-datetime-wtc",
+        "values#temporal-year-range-and-future-expansion"
+      ],
+      "note": "Field widths and uppercase markers only; C-temporal covers intrinsic ranges, leap-second shape and temporal context validity."
+    },
+    {
+      "rules": [
+        "reference",
+        "ref-start",
+        "ref-segment",
+        "attribute-key",
+        "index"
+      ],
+      "sources": [
+        "references#canonical-path-model",
+        "references#key-segment-forms",
+        "references#attribute-address-space"
+      ],
+      "note": "Exact member/index/attribute subset; reference legality is C-reference. Legacy bracketed member traversal is unresolved G-reference-brackets."
+    },
+    {
+      "rules": [
+        "sansa",
+        "sansa-selector",
+        "qualifier-expression",
+        "qualifier-term",
+        "sansa-clarifiers"
+      ],
+      "sources": [
+        "values#sansa-address-literal",
+        "sansa#lexical-model",
+        "sansa#exact-selectors",
+        "sansa#non-exact-selectors",
+        "sansa#filter-selectors",
+        "sansa#qualified-address-literals"
+      ],
+      "note": "SANSA retains grammar ownership. Clarifiers follow the later prose restriction to one string/number list; conflicting sketches are G-sansa-qualifiers. C-sansa still applies."
+    },
+    {
+      "rules": [
+        "comment",
+        "line-comment",
+        "line-char",
+        "plain-block",
+        "plain-other",
+        "plain-after",
+        "doc-block",
+        "doc-other",
+        "doc-after",
+        "annotation-block",
+        "annotation-other",
+        "annotation-after",
+        "hint-block",
+        "hint-other",
+        "hint-after",
+        "structure-block",
+        "structure-other",
+        "structure-after",
+        "profile-block",
+        "profile-other",
+        "profile-after",
+        "instructions-block",
+        "instructions-other",
+        "instructions-after"
+      ],
+      "sources": [
+        "comments#comment-families",
+        "comments#newline-and-block-behavior"
+      ],
+      "note": "All official channels. First matching block closer, no nesting; comment attachment is C-comments."
+    },
+    {
+      "rules": [
+        "ascii-letter",
+        "ascii-digit",
+        "hexdigit",
+        "space",
+        "tab",
+        "cr-char",
+        "lf-char",
+        "ascii-crlf",
+        "ascii-dquote"
+      ],
+      "sources": [
+        "rfc5234#B.1",
+        "rfc7405#2"
+      ],
+      "note": "Explicit ASCII core-rule equivalents avoid shared built-in rule mutation in recognizers. Quoted alphabetic keywords use RFC 7405 case-sensitive strings."
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C-input",
+      "layer": "Input decoding",
+      "statement": "Decode well-formed UTF-8 before recognition. The grammar alphabet is Unicode scalar values; reject surrogate code points. No Unicode normalization is introduced. A single BOM is permitted only in the initial preamble slot.",
+      "sources": [
+        "values#string-2",
+        "comments#host-channel"
+      ]
+    },
+    {
+      "id": "C-unicode",
+      "layer": "Core validation",
+      "statement": "Validate decoded string/key/symbol escapes: braced values must be scalar values at most U+10FFFF; fixed-width high surrogates require an immediately following fixed-width low surrogate. Reject lone surrogates and braced surrogate spellings. Compare decoded keys without inventing normalization.",
+      "sources": [
+        "values#string-2",
+        "references#duplicate-identity-and-decoding"
+      ]
+    },
+    {
+      "id": "C-keys",
+      "layer": "Core validation",
+      "statement": "Keys are unique after decoding within each document, object and attribute map, including empty decoded keys and differently quoted equivalents. Canonical paths must not collide.",
+      "sources": [
+        "structure#supported-key-forms",
+        "structure#attributes",
+        "references#duplicate-identity-and-decoding"
+      ]
+    },
+    {
+      "id": "C-identity",
+      "layer": "Core validation",
+      "statement": "Structural identities are unique document-wide across all headed occurrences, including node heads and anonymous children; identities are metadata, not scalar values or canonical path segments.",
+      "sources": [
+        "structure#structural-identities"
+      ]
+    },
+    {
+      "id": "C-header",
+      "layer": "Core validation",
+      "statement": "Recognize header declarations only in the initial block. Reject a late structured header and incompatible mixed structured/shorthand headers. Validate header field values and distinguish declared document mode from authoritative effective processor policy.",
+      "sources": [
+        "core#phase-boundaries",
+        "core#behavior-modes-and-datatype-policy"
+      ]
+    },
+    {
+      "id": "C-mode",
+      "layer": "Core validation",
+      "statement": "Apply effective transport/strict/custom mode and datatype policy, including required annotations on named bindings and value-carrying attribute entries, custom-name admission and strict toggle rules. Anonymous sequence children do not inherit a universal annotation requirement.",
+      "sources": [
+        "values#binding-forms",
+        "core#behavior-modes-and-datatype-policy"
+      ]
+    },
+    {
+      "id": "C-datatype",
+      "layer": "Core validation",
+      "statement": "Validate reserved datatype/literal-family compatibility in every applicable mode; number is finite-only, symbol differs from string, and prose/trimtick require the trimtick family. Core does not generally enforce numeric width, integer-only claims or container child schema claims.",
+      "sources": [
+        "values#binding-forms",
+        "values#value-kind-catalog"
+      ]
+    },
+    {
+      "id": "C-generics",
+      "layer": "Core validation",
+      "statement": "Enforce datatype-dependent generic admission and argument restrictions, including node<T> binding claims and node-head generic restrictions. Syntactically well-shaped descriptors do not imply that their claimed datatype permits those arguments.",
+      "sources": [
+        "structure#datatype-clarifiers",
+        "structure#node-children"
+      ]
+    },
+    {
+      "id": "C-null",
+      "layer": "Core validation",
+      "statement": "Quoted custom null reasons must decode to nonempty, non-ASCII-whitespace-only strings and must not collide with a reserved sentinel name; reserved spellings are exact.",
+      "sources": [
+        "values#null-2"
+      ]
+    },
+    {
+      "id": "C-base64",
+      "layer": "Core validation",
+      "statement": "Explicit base64 claims require decodable Base64URL: nonempty data, valid length, at most two trailing padding characters, consistent final quantum and zero unused tail bits. Opaque encoding/inline/embed claims retain their lexical contract.",
+      "sources": [
+        "values#encoding-2"
+      ]
+    },
+    {
+      "id": "C-temporal",
+      "layer": "Core validation",
+      "statement": "Validate four-digit years 0001 through 9999, calendar dates, clock fields, numeric offsets and temporal contexts. Preserve reduced precision and offset spelling. Second 60 has structural restrictions; leap-table truth, coordinate ranges and zone resolution are downstream. Reject local case variants and malformed contiguous WTC contexts rather than splitting them into comments.",
+      "sources": [
+        "values#date-time-datetime-wtc",
+        "values#temporal-year-range-and-future-expansion"
+      ]
+    },
+    {
+      "id": "C-reference",
+      "layer": "Core validation",
+      "statement": "Validate exact reference targets against authored availability: reject forward, missing and self references, independently per namespace and within metadata. Node-head attributes are not binding attributes. Following and materialization are separate from syntax recognition.",
+      "sources": [
+        "references#reference-legality",
+        "references#reference-forms"
+      ]
+    },
+    {
+      "id": "C-limits",
+      "layer": "Processor policy",
+      "statement": "Apply configured resource and capability policies, including input size, nesting, attributes, generics, clarifiers, path/key/string lengths, item counts and event counts. Resource rejection does not make an otherwise matching source grammatically invalid.",
+      "sources": [
+        "core#deterministic-policy-knobs",
+        "structure#datatype-clarifiers",
+        "structure#attributes"
+      ]
+    },
+    {
+      "id": "C-token-boundary",
+      "layer": "Core validation",
+      "statement": "Enforce compact-token boundaries and context-dependent closing delimiters. ABNF alternative order is not lexer precedence or maximal-munch policy; do not accept a partial scalar prefix followed by another token without a legal boundary. Comment markers inside symbolic, quoted and contiguous WTC payloads retain the owning token rules.",
+      "sources": [
+        "structure#newline-forbidden-in-compact-tokens",
+        "values#separator-literal",
+        "values#sansa-address-literal"
+      ]
+    },
+    {
+      "id": "C-sansa",
+      "layer": "Core validation",
+      "statement": "Validate embedded addresses against SANSA and the AEON host surface, including nonempty local-space names, qualifier restrictions, configured index bounds and compact-token consumption. The ABNF translation is not an independent authority for SANSA. No address evaluation or authorization is performed here.",
+      "sources": [
+        "values#sansa-address-literal",
+        "sansa#lexical-model",
+        "sansa#local-address-space",
+        "sansa#qualified-address-literals"
+      ]
+    },
+    {
+      "id": "C-trimtick",
+      "layer": "Value interpretation",
+      "statement": "Apply the normative first/trailing blank-line and exact-character gutter algorithm. Mixed indentation is valid; tabs have no visual width. Preserve the trimtick versus ordinary-string literal family.",
+      "sources": [
+        "values#trimtick-2"
+      ]
+    },
+    {
+      "id": "C-comments",
+      "layer": "Annotation interpretation",
+      "statement": "Classify structured channels, interpret the host slot only in its allowed preamble position, and attach annotations deterministically without changing keys, ordering, paths or reference legality. Recognizing a comment does not authorize executing it.",
+      "sources": [
+        "comments#host-channel",
+        "comments#non-influence-rule",
+        "comments#deterministic-attachment-rules"
+      ]
+    },
+    {
+      "id": "C-downstream",
+      "layer": "Downstream validation",
+      "statement": "AEOS schemas, profiles, domain claims, reference materialization, SANSA evaluation and temporal authority lookup have their own contracts. Grammar acceptance establishes none of these.",
+      "sources": [
+        "values#binding-forms",
+        "core#phase-boundaries"
+      ]
+    }
+  ],
+  "discrepancies": [
+    {
+      "id": "G-reference-brackets",
+      "sources": [
+        "references#canonical-path-model",
+        "references#key-segment-forms"
+      ],
+      "description": "The domain CTS fixture core-domain-002 uses ~obj[\"key with space\"][\"inner.dot\"]. Current normative sketches describe dot-bracket quoted member traversal and explicitly reject root-bracket members. Revision 0.1 keeps the documented subset and records this positive CTS mismatch; it does not silently adopt the legacy extension."
+    },
+    {
+      "id": "G-raw-escapes",
+      "sources": [
+        "values#string-2",
+        "values#trimtick-2"
+      ],
+      "description": "Value Types calls backtick strings raw, while Core CTS rejects backtick/trimtick payloads containing backslash-q as INVALID_ESCAPE. The raw-string production deliberately admits raw characters and recognized escapes; the two CTS rejections remain explicit source/CTS discrepancies, not new normative escape requirements. Backtick escape termination and decoding need clarification before normative promotion."
+    },
+    {
+      "id": "G-sansa-qualifiers",
+      "sources": [
+        "sansa#qualified-address-literals"
+      ],
+      "description": "The qualifier EBNF permits repeated argument groups and broad raw arguments; later prose forbids repeated clarifier lists and requires strings or numbers. The informative translation follows the later prose, preserves repeated parameter groups, and leaves C-sansa validation explicit. This does not revise SANSA."
+    },
+    {
+      "id": "G-clarifier-layout",
+      "sources": [
+        "structure#datatype-clarifiers",
+        "structure#newline-forbidden-in-compact-tokens"
+      ],
+      "description": "The compact-token list says no newlines in datatype clarifiers, but the same normative source explicitly allows newline layout inside sep clarifier brackets. The translation follows the concrete accepted examples and treats each argument token as compact."
+    },
+    {
+      "id": "G-element-separators",
+      "sources": [
+        "structure#lists",
+        "structure#tuples",
+        "structure#node-children"
+      ],
+      "description": "Sequence EBNF fragments make element separators optional; surrounding prose specifies comma/newline separation. This translation requires a separator. Adjacency behavior needs explicit normative reconciliation before promotion."
+    },
+    {
+      "id": "H-empty-keys",
+      "sources": [
+        "structure#supported-key-forms",
+        "references#attribute-address-space"
+      ],
+      "description": "Released Core snapshot 0.5 retains three empty-key/path rejection cases predating the mapped normative source. They match this grammar and are classified as historical expectations, not current extra constraints."
+    },
+    {
+      "id": "G-number-lexicon",
+      "sources": [
+        "values#number-2"
+      ],
+      "description": "The Number reference describes examples, underscores and leading-dot forms but does not provide a complete token production or explicitly state the integer leading-zero restriction. This translation uses the CTS-covered zero/nonzero integer distinction and separate exponent digit rules; normative promotion requires completing the source contract."
+    }
+  ],
+  "cts": {
+    "repository": "https://github.com/aeonite-org/aeonite-cts",
+    "revision": "3202fd4ac4795551c06edc616ac7e7def598e030",
+    "targets": [
+      "cts/core/v1/core-cts.v1.snapshot-0.5.json",
+      "cts/core/v1/core-cts.v1.next.json"
+    ],
+    "expectations": "cts-expectations.json",
+    "scope": "Full selected Core manifests, with suite exclusions honored. This is grammar recognition against CTS expectations, not a SUT conformance run."
+  }
+}

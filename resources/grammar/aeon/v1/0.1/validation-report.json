@@ -1,0 +1,1612 @@
+{
+  "grammar_id": "aeon-abnf-v1-0.1",
+  "grammar_sha256": "1843b74f8cc56839a0ea3699fadd085e89b3d815364fb0ed8ca95f508453f841",
+  "manifest_sha256": "a123928b8d4edfc9bb7ed422b9524d78824c9a154a43eca31d6843da22f3ffc4",
+  "expectations_sha256": "cd4fc5cd79472bf8cd4cf00c3ce87ffaeff91b536fb57bf19f4eba6b21a83c46",
+  "boundary_cases_sha256": "da2c5bd809974455618a8198ffc4be4b537fdb33f5f8e51e20948c37c71efc5a",
+  "recognizer": "abnf==2.9.0 (Python backend)",
+  "spec_revision": "a2de96d3792dca39a27f6d3c41365d560221ccde",
+  "cts_revision": "3202fd4ac4795551c06edc616ac7e7def598e030",
+  "boundary_cases": 133,
+  "targets": [
+    {
+      "manifest": "cts/core/v1/core-cts.v1.snapshot-0.5.json",
+      "snapshot_id": "core-cts-v1-snapshot-0.5",
+      "selected": 299,
+      "excluded": [
+        "core-baseline-016-separator-depth-default-reject",
+        "core-baseline-018-generic-depth-default-reject",
+        "core-addr-010-trimticks-pass",
+        "core-addr-012-invalid-separator-char-in-type-annotation-reject",
+        "core-sep-010-inline-boundary-collision-rejects",
+        "core-numenc-007-base64url-forms-accepted"
+      ],
+      "counts": {
+        "extra-constraint": 76,
+        "historical-expectation": 3,
+        "negative-rejected": 84,
+        "open-source-discrepancy": 3,
+        "positive-match": 133
+      },
+      "disagreements": [
+        {
+          "id": "core-baseline-003-strict-reserved-only-custom-datatype-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-006-strict-reserved-datatype-literal-mismatch",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-baseline-007-transport-explicit-reserved-datatype-literal-mismatch",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-baseline-008e-declared-transport-effective-strict-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-008f-late-structured-header-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-header"
+          ]
+        },
+        {
+          "id": "core-baseline-011-strict-removed-separator-alias-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-015-strict-stale-radix-alias-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-015b-strict-uppercase-number-alias-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-025-custom-mode-untyped-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-026-transport-meaningless-reserved-generic-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-baseline-029a-transport-reserved-child-datatype-binding-node-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-baseline-029b-transport-non-node-generic-node-head-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-addr-001b-empty-quoted-key-reject",
+          "classification": "historical-expectation",
+          "references": [
+            "H-empty-keys"
+          ]
+        },
+        {
+          "id": "core-addr-001c-empty-quoted-path-segment-reject",
+          "classification": "historical-expectation",
+          "references": [
+            "H-empty-keys"
+          ]
+        },
+        {
+          "id": "core-attr-002-missing-target",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-003-forward-target",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-004-depth-exceeded",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-attr-004a-nested-attribute-head-depth-exceeded",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-attr-004c-duplicate-attribute-key-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-attr-009-attribute-payload-self-payload-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-010-attribute-payload-forward-binding-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-012-direct-sequence-item-forward-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-015-strict-untyped-attribute-entry-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-semantics-001-duplicate-key-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-semantics-001a-duplicate-object-member-key-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-semantics-002-header-conflict-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-header"
+          ]
+        },
+        {
+          "id": "core-semantics-003-strict-untyped-toggle-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-semantics-004-escaped-decoded-identity-duplicate-key-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-edge-014-braced-unicode-out-of-range-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ]
+        },
+        {
+          "id": "core-edge-015-unpaired-surrogates-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ]
+        },
+        {
+          "id": "core-edge-018-invalid-backtick-escape-rejects",
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-raw-escapes"
+          ]
+        },
+        {
+          "id": "core-edge-019-invalid-trimtick-escape-rejects",
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-raw-escapes"
+          ]
+        },
+        {
+          "id": "core-edge-020-braced-surrogate-escape-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ]
+        },
+        {
+          "id": "core-edge-020b-braced-surrogate-pair-spelling-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ]
+        },
+        {
+          "id": "core-domain-002-namespace-and-quoted-key-disambiguation",
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-reference-brackets"
+          ]
+        },
+        {
+          "id": "core-snippet-transport-003-empty-quoted-keys-reject",
+          "classification": "historical-expectation",
+          "references": [
+            "H-empty-keys"
+          ]
+        },
+        {
+          "id": "core-snippet-transport-006-attribute-depth-max-enforced",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-snippet-transport-007-missing-reference-target-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-strict-004d-wtc-local-case-variants-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-004e-wtc-uppercase-local-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-005-invalid-time-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-006-invalid-date-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-007-invalid-wtc-datetime-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-008-datatype-literal-mismatch-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-strict-010-number-rejects-nan-literal",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-strict-012-number-rejects-null-datatype-mismatch",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-strict-014-retired-zrut-datatype-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-sep-005c-removed-set-alias-rejects-in-strict-mode",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-sep-006-separator-datatype-rejects-list-node",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-custom-reject-001-custom-mode-untyped-literal-matrix-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-custom-reject-002-strict-allow-custom-still-rejects-toggle-aliases",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-custom-reject-002-custom-mode-does-not-apply-strict-switch-rule",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-custom-reject-003-custom-mode-still-enforces-reserved-datatype-match",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-custom-reject-004-custom-mode-still-enforces-reserved-infinity-match",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-custom-reject-005-generic-custom-scalar-binding-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-resource-policy-002-max-events-fail",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-structural-identity-002-duplicate-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ]
+        },
+        {
+          "id": "core-structural-identity-007-cross-location-duplicate-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ]
+        },
+        {
+          "id": "core-structural-identity-008-binding-anonymous-duplicate-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ]
+        },
+        {
+          "id": "core-limits-002-input-bytes-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-004-attribute-depth-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-006-generic-depth-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-008-generic-arguments-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-010-clarifier-values-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-012-datatype-components-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-014-value-nesting-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-016-path-depth-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-018-string-codepoints-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-020-key-segment-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-022-list-items-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-024-tuple-items-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-026-path-characters-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-028-events-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-030-numeric-characters-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-032-structured-comment-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-temporal-003-year-zero-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-temporal-005-second-61-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-symbol-006-string-mismatch",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-base64url-002-remainder-one-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ]
+        },
+        {
+          "id": "core-base64url-003-two-padding-tail-bits-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ]
+        },
+        {
+          "id": "core-base64url-004-one-padding-tail-bits-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ]
+        },
+        {
+          "id": "core-base64url-005-legacy-lexical-only-forms-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ]
+        }
+      ]
+    },
+    {
+      "manifest": "cts/core/v1/core-cts.v1.next.json",
+      "snapshot_id": "core-next-cts-v1-snapshot-0.1",
+      "selected": 448,
+      "excluded": [
+        "core-baseline-016-separator-depth-default-reject",
+        "core-baseline-018-generic-depth-default-reject",
+        "core-addr-001b-empty-quoted-key-reject",
+        "core-addr-001c-empty-quoted-path-segment-reject",
+        "core-addr-010-trimticks-pass",
+        "core-addr-012-invalid-separator-char-in-type-annotation-reject",
+        "core-snippet-transport-003-empty-quoted-keys-reject",
+        "core-sep-010-inline-boundary-collision-rejects",
+        "core-numenc-007-base64url-forms-accepted"
+      ],
+      "counts": {
+        "extra-constraint": 136,
+        "negative-rejected": 113,
+        "open-source-discrepancy": 3,
+        "positive-match": 196
+      },
+      "disagreements": [
+        {
+          "id": "core-baseline-003-strict-reserved-only-custom-datatype-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-006-strict-reserved-datatype-literal-mismatch",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-baseline-007-transport-explicit-reserved-datatype-literal-mismatch",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-baseline-008e-declared-transport-effective-strict-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-008f-late-structured-header-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-header"
+          ]
+        },
+        {
+          "id": "core-baseline-011-strict-removed-separator-alias-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-015-strict-stale-radix-alias-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-015b-strict-uppercase-number-alias-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-025-custom-mode-untyped-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-baseline-026-transport-meaningless-reserved-generic-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-baseline-029a-transport-reserved-child-datatype-binding-node-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-baseline-029b-transport-non-node-generic-node-head-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-attr-002-missing-target",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-003-forward-target",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-004-depth-exceeded",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-attr-004a-nested-attribute-head-depth-exceeded",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-attr-004c-duplicate-attribute-key-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-attr-009-attribute-payload-self-payload-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-010-attribute-payload-forward-binding-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-012-direct-sequence-item-forward-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-attr-015-strict-untyped-attribute-entry-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-semantics-001-duplicate-key-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-semantics-001a-duplicate-object-member-key-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-semantics-002-header-conflict-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-header"
+          ]
+        },
+        {
+          "id": "core-semantics-003-strict-untyped-toggle-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-semantics-004-escaped-decoded-identity-duplicate-key-fail-closed",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-edge-014-braced-unicode-out-of-range-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ]
+        },
+        {
+          "id": "core-edge-015-unpaired-surrogates-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ]
+        },
+        {
+          "id": "core-edge-018-invalid-backtick-escape-rejects",
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-raw-escapes"
+          ]
+        },
+        {
+          "id": "core-edge-019-invalid-trimtick-escape-rejects",
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-raw-escapes"
+          ]
+        },
+        {
+          "id": "core-edge-020-braced-surrogate-escape-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ]
+        },
+        {
+          "id": "core-edge-020b-braced-surrogate-pair-spelling-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-unicode"
+          ]
+        },
+        {
+          "id": "core-domain-002-namespace-and-quoted-key-disambiguation",
+          "classification": "open-source-discrepancy",
+          "references": [
+            "G-reference-brackets"
+          ]
+        },
+        {
+          "id": "core-snippet-transport-006-attribute-depth-max-enforced",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-snippet-transport-007-missing-reference-target-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-strict-004d-wtc-local-case-variants-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-004e-wtc-uppercase-local-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-005-invalid-time-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-006-invalid-date-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-007-invalid-wtc-datetime-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-strict-008-datatype-literal-mismatch-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-strict-010-number-rejects-nan-literal",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-strict-012-number-rejects-null-datatype-mismatch",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-strict-014-retired-zrut-datatype-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-sep-005c-removed-set-alias-rejects-in-strict-mode",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-sep-006-separator-datatype-rejects-list-node",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-custom-reject-001-custom-mode-untyped-literal-matrix-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-custom-reject-002-strict-allow-custom-still-rejects-toggle-aliases",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-custom-reject-002-custom-mode-does-not-apply-strict-switch-rule",
+          "classification": "extra-constraint",
+          "references": [
+            "C-mode"
+          ]
+        },
+        {
+          "id": "core-custom-reject-003-custom-mode-still-enforces-reserved-datatype-match",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-custom-reject-004-custom-mode-still-enforces-reserved-infinity-match",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-custom-reject-005-generic-custom-scalar-binding-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-resource-policy-002-max-events-fail",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-structural-identity-002-duplicate-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ]
+        },
+        {
+          "id": "core-structural-identity-007-cross-location-duplicate-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ]
+        },
+        {
+          "id": "core-structural-identity-008-binding-anonymous-duplicate-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-identity"
+          ]
+        },
+        {
+          "id": "core-limits-002-input-bytes-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-004-attribute-depth-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-006-generic-depth-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-008-generic-arguments-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-010-clarifier-values-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-012-datatype-components-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-014-value-nesting-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-016-path-depth-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-018-string-codepoints-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-020-key-segment-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-022-list-items-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-024-tuple-items-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-026-path-characters-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-028-events-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-030-numeric-characters-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-limits-032-structured-comment-one-over",
+          "classification": "extra-constraint",
+          "references": [
+            "C-limits"
+          ]
+        },
+        {
+          "id": "core-temporal-003-year-zero-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-temporal-005-second-61-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-temporal"
+          ]
+        },
+        {
+          "id": "core-symbol-006-string-mismatch",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-literal-flow-012-prose-rejects-double-quoted",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-literal-flow-013-prose-rejects-single-quoted",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-literal-flow-014-prose-rejects-backtick",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-literal-flow-015-prose-rejects-symbol",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-literal-flow-016-prose-rejects-number",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-literal-flow-017-prose-rejects-list",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-literal-flow-018-prose-rejects-tuple",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-literal-flow-019-prose-rejects-object",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-literal-flow-020-prose-rejects-attribute",
+          "classification": "extra-constraint",
+          "references": [
+            "C-datatype"
+          ]
+        },
+        {
+          "id": "core-base64url-002-remainder-one-rejects",
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ]
+        },
+        {
+          "id": "core-base64url-003-two-padding-tail-bits-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ]
+        },
+        {
+          "id": "core-base64url-004-one-padding-tail-bits-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ]
+        },
+        {
+          "id": "core-base64url-005-legacy-lexical-only-forms-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-base64"
+          ]
+        },
+        {
+          "id": "core-reference-order-001-object-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-003-attribute-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-005-attribute-pointer-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-007-attribute-self",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-008-attribute-own-payload",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-010-attribute-missing",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-011-attribute-object-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-013-attribute-list-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-015-node-head-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-016-node-head-backward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-017-anonymous-head-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-019-quoted-key-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-022-nested-attribute-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-024-nested-attribute-own-payload",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-027-node-child-error-once",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-028-anonymous-head-own-payload",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-031-node-head-external-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-033-nested-attribute-later-payload-member",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-035-node-head-nested-list-reference",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-036-node-head-nested-object-reference",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-037-object-member-attribute-error-once",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-038-anonymous-tuple-head-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-039-anonymous-node-child-head-forward",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-040-quoted-attribute-own-payload",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-reference-order-041-node-head-not-binding-target",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-001-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-002-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-003-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-004-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-005-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-006-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-007-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-008-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-009-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-010-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-011-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-012-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-013-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-014-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-015-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-016-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-017-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-018-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-node-binding-generics-019-reject",
+          "classification": "extra-constraint",
+          "references": [
+            "C-generics"
+          ]
+        },
+        {
+          "id": "core-empty-key-root-duplicate",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-empty-key-object-duplicate",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-empty-key-attribute-duplicate",
+          "classification": "extra-constraint",
+          "references": [
+            "C-keys"
+          ]
+        },
+        {
+          "id": "core-empty-key-missing-target",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-empty-key-forward-target",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-empty-key-self-target",
+          "classification": "extra-constraint",
+          "references": [
+            "C-reference"
+          ]
+        },
+        {
+          "id": "core-empty-key-empty-local-space",
+          "classification": "extra-constraint",
+          "references": [
+            "C-sansa"
+          ]
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Recognition only: extra constraints are classified, not executed; no AEON SUT was run.",
+    "Reviewed source discrepancies remain open; informative status is unchanged.",
+    "Only the pinned Core manifests and local boundary cases were evaluated; no SANSA, AEOS, canonical, annotation or other SUT lane coverage is claimed.",
+    "Full-document recognition does not establish an unambiguous parse, lexer precedence, performance bounds or universal language coverage."
+  ]
+}
