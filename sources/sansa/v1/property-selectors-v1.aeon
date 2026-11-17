@@ -22,7 +22,7 @@ body:prose = >`
 
   # SANSA Property Selectors v1 Candidate [# property-selectors]
 
-  This is the unpublished 0.2 candidate for exact key and node-tag predicates. It prepares owning semantics, an additive adapter contract and an explicitly experimental CTS selection. It is not implemented support, a released profile, a registry promotion or an authorization grant. Local positions, new recursive selectors and identity-based references are outside this candidate.
+  This is the unpublished 0.2 candidate for exact key and node-tag predicates. It prepares owning semantics, an additive adapter contract and an explicitly experimental CTS selection. Its unpublished proposal status does not assert that implementations are absent. The resource's legacy proposal-unpublished-unimplemented status label records the unadmitted contract/profile lifecycle, not runtime availability. Experimental Addressing and standalone read-only Resolve implementations may support this contract; their delivered surfaces and evidence remain implementation-owned. This document does not establish a released profile, a registry promotion or an authorization grant. Local positions, new recursive selectors and identity-based references are outside this candidate.
 
   ## 1. Grammar and model [# grammar]
 

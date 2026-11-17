@@ -7,7 +7,8 @@
       "const": "sansa.property-selectors.candidate.0.2"
     },
     "status": {
-      "const": "proposal-unpublished-unimplemented"
+      "const": "proposal-unpublished-unimplemented",
+      "description": "Legacy lifecycle label for this unpublished, unadmitted proposal/profile. It does not assert that experimental implementations are absent or establish runtime support; implementation availability and evidence are recorded by each runtime."
     },
     "document": {
       "const": "sansa-v1-property-selectors"
