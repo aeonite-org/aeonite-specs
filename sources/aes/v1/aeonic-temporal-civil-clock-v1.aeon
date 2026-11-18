@@ -22,11 +22,14 @@ body:prose = >`
 
   # Aeonic Standalone Civil Clock v1 Working Contract [# civil-clock-working-contract]
 
-  Status: normative proposal-stage working contract, 2026-11-18. Publication is
-  disabled. This mutable target establishes no immutable snapshot, implementation,
-  release or native capacity claim. Earlier profiles and snapshots retain their
-  identities, defaults and bytes. Implementations MUST satisfy the closed
-  [@ /artifacts/assets/aeonic-operations/v1/civil-clock-contract.schema.json | operation schema]
+  Status: normative proposal-stage working contract for mutable next 0.2,
+  2026-11-18. Publication is disabled. Immutable compatibility snapshot
+  [$ aeonic-temporal-civil-clock-specs-v1-snapshot-0.1] is retained separately as
+  [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/aeonic-temporal-civil-clock-v1.aeon | frozen source]
+  and [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/civil-clock-contract.schema.json | frozen schema].
+  The mutable target cannot establish a stable snapshot claim. Existing profiles,
+  defaults and frozen bytes remain unchanged. Implementations MUST satisfy the closed
+  [@ /artifacts/assets/aeonic-operations/v1/civil-clock-contract.schema.json | working schema]
   and the semantics, resource guards and deterministic diagnostics below. Schema
   validity alone is insufficient. The mutable CTS lane is [$ aeonic-temporal-civil-clock].
 
