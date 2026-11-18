@@ -214,5 +214,9 @@ Independent complete Relations and Arithmetic capabilities use exact point/inter
 sets on a signed relative-day axis. Authored clocks start on day zero; shifts and
 steps retain midnight carry, and materialization never discards it. Seven-stage
 fail-closed diagnostics and explicit portable admission accompany the schema.
-This is a mutable, unpublished target, with no stable snapshot, implementation,
-native default capacity or package release claim. Existing frozen artifacts stay unchanged.
+The working document remains mutable and unpublished. The separate
+[snapshot record](docs/aeonic-temporal-civil-clock-snapshot-0.1.md) identifies
+`aeonic-temporal-civil-clock-specs-v1-snapshot-0.1`, with frozen source/schema copies
+under `resources/aeonic-operations/v1/snapshots/0.1/`. Mutable next advances to 0.2;
+stable implementation claims require genuine frozen-target runs and separate native
+capacity evidence. Existing frozen artifacts and package publication stay unchanged.
