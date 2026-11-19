@@ -1,0 +1,30 @@
+{
+  "description": "Frozen date, clock and date-time snapshot0.1 authorities reused by anchoring snapshot0.1; upstream bytes unchanged.",
+  "revision": "29b3a0b52d9709a9937d9b48f23eefcab0e35aea",
+  "artifacts": [
+    {
+      "file": "resources/aeonic-operations/v1/snapshots/0.1/civil-date-contract.schema.json",
+      "sha256": "34f516c6a131c886f9482bf703020b193ed205de6eb7f66136e22d3447a7fd93"
+    },
+    {
+      "file": "resources/aeonic-operations/v1/snapshots/0.1/aeonic-temporal-civil-date-v1.aeon",
+      "sha256": "3bd2ddebc945fc0ddc2f2fcc9f993d7b88ba0ec8cf55f78ac34036ab8c1fbfc8"
+    },
+    {
+      "file": "resources/aeonic-operations/v1/snapshots/0.1/civil-clock-contract.schema.json",
+      "sha256": "448921db259532011d0aa866f68a3483a5911d540edb691a56331e86e3cd7b69"
+    },
+    {
+      "file": "resources/aeonic-operations/v1/snapshots/0.1/aeonic-temporal-civil-clock-v1.aeon",
+      "sha256": "f7fbaf66f854a54564b25353d6eed8ae9d783ec026ecace8ea0a2768beb5e6c7"
+    },
+    {
+      "file": "resources/aeonic-operations/v1/snapshots/0.1/civil-datetime-contract.schema.json",
+      "sha256": "55ba948d45d7113c92f845cafc071c1f44f7794350543b31b7be179733332155"
+    },
+    {
+      "file": "resources/aeonic-operations/v1/snapshots/0.1/aeonic-temporal-civil-datetime-v1.aeon",
+      "sha256": "7c2f315c7ea19d17e01991ebea40e7474d5c2388286bbf827f38d6e56bff9fe1"
+    }
+  ]
+}
