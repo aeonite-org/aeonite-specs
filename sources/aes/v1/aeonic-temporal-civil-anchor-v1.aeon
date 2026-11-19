@@ -3,7 +3,7 @@ id:string = "aeonic-temporal-civil-anchor-v1"
 title:string = "Aeonic Civil Date Anchoring v1 Working Contract"
 description:string = "Exact single-day anchoring of civil clock sets with relative-day carry, inherited metadata and portable fail-closed admission."
 created:date = 2026-11-19
-modified:date = 2026-11-19
+modified:date = 2026-11-20
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
@@ -22,12 +22,16 @@ body:prose = >`
 
   # Aeonic Civil Date Anchoring v1 Working Contract [# civil-anchor-working-contract]
 
-  Status: normative proposal-stage mutable working contract, 2026-11-19.
+  Status: normative proposal-stage mutable next 0.2 working contract, 2026-11-20.
   Publication is disabled. Implementations MUST satisfy the
   [@ /artifacts/assets/aeonic-operations/v1/civil-anchor-contract.schema.json | closed working schema]
-  and the semantics, admission and diagnostic rules below. There is no immutable
-  anchoring snapshot or stable conformance claim yet. Existing frozen resources,
-  other capability requirements and their defaults remain unchanged.
+  and the semantics, admission and diagnostic rules below. Immutable compatibility
+  snapshot [$ aeonic-temporal-civil-anchor-specs-v1-snapshot-0.1] is separate:
+  [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/aeonic-temporal-civil-anchor-v1.aeon | frozen source],
+  [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/civil-anchor-contract.schema.json | frozen schema].
+  The mutable target never establishes stable snapshot conformance. Existing
+  frozen resources, profile/default meanings and other capability requirements
+  remain unchanged.
 
   ## 1. Domain and capability [# civil-anchor-section-1-domain-and-capability]
 

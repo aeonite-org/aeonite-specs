@@ -1,0 +1,361 @@
+schemaVersion:string = "1"
+id:string = "aeonic-temporal-civil-anchor-v1-snapshot-0-1"
+title:string = "Aeonic Civil Date Anchoring v1 Snapshot 0.1"
+description:string = "Exact single-day anchoring of civil clock sets with relative-day carry, inherited metadata and portable fail-closed admission."
+created:date = 2026-11-19
+modified:date = 2026-11-20
+family:string = "aes"
+group:string = "Semantic Language"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v1/aeonic-temporal-civil-anchor/snapshot-0.1"
+order:number = 48
+publish:boolean = false
+keywords:list<string> = ["AEON", "temporal", "anchoring", "civil clocks", "proposal"]
+related:list<string> = ["aeonic-semantic-language-v1", "aeonic-temporal-civil-date-v1", "aeonic-temporal-civil-clock-v1", "aeonic-temporal-civil-datetime-v1"]
+specSnapshotId:string = "aeonic-temporal-civil-anchor-specs-v1-snapshot-0.1"
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Aeonic Civil Date Anchoring v1 Snapshot 0.1 [# civil-anchor-working-contract]
+
+  Status: immutable compatibility snapshot
+  [$ aeonic-temporal-civil-anchor-specs-v1-snapshot-0.1], frozen 2026-11-20.
+  Proposal lifecycle and disabled publication are preserved. Implementations MUST
+  satisfy the [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/civil-anchor-contract.schema.json | closed snapshot schema]
+  and the semantics, admission and diagnostic rules below. Matching CTS snapshot:
+  [$ aeonic-temporal-civil-anchor-cts-v1-snapshot-0.1]. A stable implementation claim
+  requires a complete passing genuine execution against that recognized immutable
+  target. Artifact checks, fixture replay and native admission qualification
+  establish separate facts. Earlier snapshots, profile/default meanings and other
+  capability requirements remain unchanged.
+
+  ## 1. Domain and capability [# civil-anchor-section-1-domain-and-capability]
+
+  The profile is [$ aeonic.operations.temporal.civil-anchor.v1].
+  The complete capability is [$ Aeonic.Operations.Temporal.CivilAnchor], requiring [$ anchor].
+  Selection is explicit through operation policy or reusable context. No operand
+  shape, host date, locale, timezone or document metadata selects it automatically.
+  Validate both supplied configurations before resolving policy over context.
+
+  The complete capability requires all admitted anchor/clock forms and the shared
+  metadata, admission, accounting and diagnostic rules. There are no semantic case
+  opt-outs. It does not require implementing date, clock or date-time arithmetic;
+  consuming/producing those value bundles is a separate requirement from producing
+  them through another operation. Availability is trusted host configuration.
+
+  One exact calendar day anchors the clock's reference day zero. Reduced-date and
+  multi-date anchors are ineligible. Date-wise broadcasting, Cartesian products,
+  date/clock pairing expressions, wrapping/projection, inverse unanchoring,
+  timezone/WTC/leap/UTC realization and elapsed-time authority are outside scope.
+
+  ## 2. Closed logical request [# civil-anchor-section-2-closed-logical-request]
+
+  ~~~$ json
+  {
+    "operation": "anchor",
+    "input": {
+      "anchor": { "temporal": { "category": "civilDate", "value": "2024-02-28" } },
+      "clock": {
+        "temporal": {
+          "category": "civilClockSet",
+          "pieces": [{ "kind": "point", "at": { "day": "1", "time": "01:30:00" } }]
+        },
+        "originClockForm": "second",
+        "history": "none-declared"
+      },
+      "context": { "profile": "aeonic.operations.temporal.civil-anchor.v1" }
+    }
+  }
+  ~~~$
+
+  Request has exactly [$ operation] and [$ input]; input requires [$ anchor] and [$ clock]
+  and optionally admits [$ context] and [$ policy]. Context/policy each have only an
+  optional nonempty scalar-string [$ profile]. A selected profile is required; there
+  are no calendar-unit, count, rounding, output-family or clock-form settings.
+  Unknown fields fail closed. Trusted limits/capability availability are outside
+  logical input; logical fields cannot increase them.
+
+  ### Date anchor [# civil-anchor-section-date-anchor]
+
+  Reuse civil-date snapshot 0.1 bundles: authored/materialized [$ civilDate] and
+  canonical derived [$ civilDateSet]. Authored metadata may be omitted; default origin
+  from the literal shape and clamping history to [$ none-declared]. Derived sets
+  require [$ originGranularity] and [$ history]. Preserve valid supplied metadata.
+
+  Parse and validate all supplied supported date data, including intrinsic Gregorian
+  validity and canonical nonempty inclusive ranges. Reduced literals are valid
+  civil-date operands, not silently filled-in dates. Eligibility is checked later:
+  an authored literal must cover one day; a derived set must have exactly one range
+  whose start equals its end. Origin metadata cannot satisfy that test. Empty,
+  overlapping, adjacent, unsorted or malformed derived ranges are not repaired.
+
+  ### Clock [# civil-anchor-section-clock]
+
+  Reuse civil-clock snapshot 0.1 bundles: authored/materialized [$ civilClock] and
+  canonical derived [$ civilClockSet]. Authored forms are [$ HH:], [$ HH:MM] and
+  [$ HH:MM:SS\\[.fraction\\]] on reference day zero. Infer omitted authored origin from
+  the form, and default history to [$ none-declared]. Derived sets require
+  [$ originClockForm] and [$ history]; do not infer either from their endpoints.
+
+  Derived day text is canonical signed integer text, with no plus, leading zeroes
+  or negative zero. Time is full canonical [$ HH:MM:SS\\[.fraction\\]], with no trailing
+  fractional zeroes. Points and positive-width intervals form a nonempty canonical
+  sorted set. Endpoint flags, gaps and relative days have their existing meanings.
+  Seconds are 00–59; offsets, [$ Z], [$ &], dates, [$ 24:00] and second 60 are not supported
+  clock literal spellings here. No precision grid or implicit rounding is introduced.
+
+  Recognized other value families are deferred. Validate their enclosing bundle's
+  applicable supplied metadata, but leave descriptor payload opaque before the
+  stage 5 [$ unsupported_domain] result. Unknown category tags are [$ invalid_operand].
+  Logical JSON admission still reads/measures the request, including deferred data.
+
+  ## 3. Exact translation and domain [# civil-anchor-section-3-exact-translation-and-domain]
+
+  Let A be the anchor's zero-based Gregorian ordinal: 0001-01-01 has A=0. Translate
+  clock coordinate [$ {day:d,time:t}] to the civil date at ordinal A+d with the exact
+  same clock coordinate t. Relative day zero means midnight-to-midnight of the
+  selected anchor day. Signed carry/borrow is applied exactly once; never wrap it
+  away, clamp it, select another anchor or consult the current date/timezone.
+
+  This is a strictly order-preserving translation of the complete clock set.
+  Translate each point or interval directly and retain both endpoint flags. Canonical
+  ordering, gaps and nonmergeability are preserved; successful output has exactly
+  P pieces for P clock pieces. A hundred-day interval remains one interval. Do not
+  enumerate its dates, seconds or fractional grid or substitute a containing period.
+
+  The result domain is the existing civil-date-time domain, years 0001–9999. Every
+  covered coordinate must lie in that domain. Reject the whole result if any member
+  falls outside; no clipping, subset removal, partial success or error value.
+  An interval's excluded end exactly at 10000-01-01T00:00:00 becomes
+  [$ {"boundary":"endOfDomain"}]. That boundary cannot be a point, start or included
+  end. An excluded end beyond it still implies out-of-domain members and fails.
+
+  Compare signed relative-day magnitudes with the bounded legal ordinal offsets
+  before calendar conversion or constructing date-time text. Huge admitted day text
+  can establish [$ unrepresentable_result] compactly; no expanded seconds quantity or
+  day enumeration is needed. Fractions are copied exactly, not scaled into an epoch
+  integer. This contract adds no numeric-coefficient/exponent/workspace dimension.
+
+  ## 4. Closed success and metadata [# civil-anchor-section-4-closed-success-and-metadata]
+
+  ~~~$ json
+  {
+    "outcome": "value",
+    "value": {
+      "temporal": {
+        "category": "civilDateTimeSet",
+        "pieces": [{ "kind": "point", "at": "2024-02-29T01:30:00" }]
+      },
+      "originDateGranularity": "day",
+      "originClockForm": "second",
+      "history": { "clamping": "none-declared", "approximation": "none-declared" }
+    },
+    "metadata": {
+      "evaluation": "exact-for-policy",
+      "clamping": "not-applied",
+      "effectivePolicy": { "profile": "aeonic.operations.temporal.civil-anchor.v1" }
+    }
+  }
+  ~~~$
+
+  Success has exactly [$ outcome], [$ value] and [$ metadata]; metadata has exactly the
+  three shown fields. [$ effectivePolicy] contains only the selected anchor profile.
+  The complete value is an existing [$ civilDateTimeSet] bundle. Do not claim that the
+  whole anchoring response matches another profile's operation-result envelope.
+
+  Map date [$ originGranularity] to result [$ originDateGranularity]; copy clock
+  [$ originClockForm]. Copy date history into [$ history.clamping] and clock history into
+  [$ history.approximation]. Preserve declared markers and undeclared origins, even
+  when the result looks like a complete day/second form. Anchoring introduces no
+  new clamp or approximation, and detailed provenance remains deferred.
+
+  Applications can pass the returned [$ value] directly to an existing date-time
+  operation, explicitly selecting that operation's profile/context. Do not pass the
+  entire response or silently carry the anchoring profile into another evaluator.
+  Materialization remains a separate existing operation with explicit selectors.
+
+  ## 5. Portable accounting and selected allowances [# civil-anchor-section-5-portable-accounting-and-selected-allowances]
+
+  Let R be the supplied date-range count and P the clock-piece count. An authored
+  date/clock has one implicit range/piece; a reduced date literal still counts as
+  one range before eligibility. Required work is R+P; required intermediate capacity
+  is P; successful output count is P. Count points and intervals equally, with no
+  per-endpoint or per-covered-day multiplier. Optimized implementations use the same
+  admission counts and cannot shortcut an ineligible anchor around stage 6 guards.
+
+  The mutable CTS selects the following calibration map; implementations MUST expose the same independently configurable dimensions. These are not host defaults or verified support floors:
+
+  | Limit | Selected allowance | Meaning |
+  | <-- | <-- | <-- |
+  | maxRequestBytes | 65536 | Actual compact logical JSON UTF-8 bytes, or verbatim text bytes. |
+  | maxRequestDepth | 32 | Logical JSON container depth. |
+  | maxTemporalCharacters | 1024 | Each date/clock text payload or endpoint time text, counted as Unicode scalars before grammar. |
+  | maxInputRanges | 128 | Date anchor's conceptual/supplied ranges; before range-element traversal. |
+  | maxInputPieces | 512 | Clock's conceptual/supplied pieces; before derived piece traversal. |
+  | maxRelativeDayDigits | 256 | Each clock-coordinate day magnitude, excluding a minus sign; zero costs one digit. |
+  | maxFractionDigits | 256 | Each supplied clock fraction, before trimming authored trailing zeroes. |
+  | maxWork | 16384 | R+P logical work units. |
+  | maxIntermediatePieces | 4096 | P translated candidates, checked before eligibility/construction. |
+  | maxOutputPieces | 512 | P successful date-time pieces, after domain checks. |
+  | maxResultBytes | 131072 | Complete compact successful JSON envelope, before final text rendering/serialization. |
+  |~ Anchoring selected resource allowances
+
+  These are selected CTS allowances, not semantic ceilings or verified native
+  capacities. Every dimension requires its own admission/capacity evidence and
+  explicit companions; no Cartesian-product guarantee follows. Known nonnegative
+  safe-integer trusted settings are required; malformed/unknown settings are harness
+  configuration errors. No separate bare-text output, numerical amount or count
+  limit is needed because this operation produces only a derived temporal set.
+
+  All limits are per operation. Whole-chain policy belongs to the application.
+  Native JSON graph/shared-subtree admission must remain bounded by logical bytes
+  and depth with cycle rejection. Arbitrary accessors/proxies/subclasses, eager key
+  enumeration, outer STDIO framing, process heap/disk, browser preparation/display
+  and host timeouts remain separately qualified host/application concerns.
+
+  ## 6. Deterministic diagnostics [# civil-anchor-section-6-deterministic-diagnostics]
+
+  Implementations MUST stop at the first failed substep in this seven-stage order.
+
+  | Stage | Order and required behavior |
+  | <-- | <-- |
+  | 1 | Scalar text admission, logical byte/depth guards before deeper decoding; [$ invalid_operand] or reached [$ resource_limit], null path. |
+  | 2 | Strict JSON/duplicate keys; request required fields and closure; input object/anchor/clock/context/policy vocabulary; operation/capability availability; known-operation anchor/clock arity. [$ invalid_operand] or [$ unsupported_operation]. |
+  | 3 | Context then policy shape/closure, supplied profile value validity, then effective profile availability. [$ invalid_policy] or [$ unsupported_profile]. |
+  | 4 | Validate anchor bundle first, then clock bundle, using their frozen operand rules with rebased paths and the new profile's applicable allowances. [$ invalid_operand] or reached [$ resource_limit]. |
+  | 5 | Reject recognized deferred families, anchor before clock, with [$ unsupported_domain] at the category path. |
+  | 6 | Guard R+P work first, then P intermediate capacity; check anchor covers one day ([$ incompatible_operand] at [$ /input/anchor/temporal]); translate compactly. Reached budgets use [$ resource_limit], null path. |
+  | 7 | Check complete translated coverage/domain first ([$ unrepresentable_result], null path), then output-piece allowance and complete successful-envelope bytes ([$ resource_limit], null path). Render only after admission. |
+  |~ Anchoring validation and diagnostic precedence
+
+  Within-stage conventions are normative: require fields in
+  listed order; then reject unknown fields in Unicode scalar-name order; no null
+  alias for omission. Context and policy are both validated even if policy overrides
+  context. Missing selection uses [$ /input/policy/profile]. Required request fields
+  are operation/input; required anchor-operation input fields are anchor/clock.
+  Unavailable/unknown operation uses [$ /operation] before its arity failures.
+
+  Anchor metadata order is required derived origin/history, bundle closure, history,
+  origin, then descriptor fields and payload. Authored anchor's conceptual range
+  guard precedes detailed date payload parsing; supported date text then has type,
+  character allowance and intrinsic grammar/validity checks. Derived date ranges
+  must be a nonempty array before length admission, then validate start/end in order
+  before range canonicality. Clock metadata/coordinate/piece suborder follows the
+  frozen clock binding, including authored clock validity before its implicit
+  piece/day capacities. Empty derived arrays are invalid before their length guard.
+
+  Diagnostics have exactly [$ outcome], [$ reason], [$ context] and optionally a
+  human-readable scalar-string [$ message]. Context has exactly integer [$ stage] and
+  [$ path] (RFC6901 pointer or null). No diagnostic includes [$ value] or success
+  metadata. Recognized reasons are the existing invalid_operand, invalid_policy,
+  unsupported_operation, unsupported_profile, unsupported_domain, resource_limit,
+  incompatible_operand and unrepresentable_result. Unknown logical fields fail;
+  duplicate JSON keys and raw numerical spellings remain admission evidence.
+  Text and structured CTS-token ingress preserve supplied raw number spellings;
+  native host JSON values do not recover spellings lost before the boundary.
+
+
+  ## 7. Admission details and vocabulary [# civil-anchor-section-7-admission-details-and-vocabulary]
+
+  The request's generic input vocabulary is exactly anchor, clock, context, policy.
+  At stage 2 require request operation then input; reject unknown request fields;
+  require input object and reject unknown input fields; validate operation as a
+  nonempty scalar string and test operation availability; then require anchor,
+  clock in that order. Unsupported operation uses /operation. Missing fields use
+  their exact JSON Pointer; nonobject request/input uses null or /input respectively.
+  A valid but unavailable capability is an unsupported_operation, never a smaller
+  semantic opt-out. All supplied configurations are checked at stage 3: context
+  object/closure then policy object/closure, context profile then policy profile,
+  then effective profile availability. Invalid configurations use invalid_policy
+  at the reached field; missing selection is invalid_policy at /input/policy/profile.
+  An unavailable effective profile uses unsupported_profile at its selected field.
+
+  Stage 4 begins each bundle by requiring temporal as an object, then a recognized
+  scalar-string category. Use date metadata on the anchor and clock metadata on
+  the clock even for a deferred family. Only civilDate/civilDateSet are supported
+  anchor categories and only civilClock/civilClockSet are supported clock categories.
+  Recognized category vocabulary in this new profile is:
+  [$ civilDate], [$ civilDateSet], [$ civilClock], [$ civilClockSet], [$ civilDateTime], [$ civilDateTimeSet], [$ finiteNumber], [$ exactNumber], [$ exactRational], [$ string], [$ boolean], [$ symbol], [$ positiveInfinity], [$ negativeInfinity], [$ nan], [$ explicitNull], [$ explicitAbsence], [$ toggle], [$ hex], [$ radix], [$ encoding], [$ separator], [$ sansaAddress], [$ referenceForm], [$ temporal], [$ container].
+  Deferred descriptor fields remain opaque, including unknown descriptor fields;
+  their containing bundle remains closed and any supplied metadata is validated.
+  The three frozen value contracts are normative for supported bundle validation,
+  with operand paths rebased under /input/anchor or /input/clock and only the
+  applicable anchoring allowances applied. The new profile adds no numeric amount,
+  count, numerical workspace or materialized-text admission requirements.
+
+  Date authored payload checks type then maxTemporalCharacters before exact date
+  grammar and intrinsic validity, allowing only YYYY-, YYYY-MM or YYYY-MM-DD.
+  Each derived date endpoint checks the same text allowance before full-date
+  syntax and Gregorian validity. Years are 0001–9999. For range objects require
+  start/end, reject unknown fields, parse start then end, reject inversion at end,
+  then reject noncanonical neighboring ranges at the offending start. Range guard
+  paths are /input/anchor/temporal for authored forms and
+  /input/anchor/temporal/ranges for derived forms. Text and intrinsic failures use
+  the reached value/start/end field. Calendar eligibility is not an input grammar
+  restriction: valid month/year literals MUST reach stage 6.
+
+  For clocks, require temporal then category; derived bundles require originClockForm
+  then history, before closure; validate history then origin, descriptor required
+  fields and closure, then payload. A derived nonempty pieces array is admitted
+  against maxInputPieces before iterating it. Piece fields are kind then at for a
+  point, or start/end/includeStart/includeEnd for an interval. Require and reject
+  unknown fields before parsing coordinates; parse at/start then end, then flags,
+  interval order and cross-piece canonicality. Coordinates require day/time and
+  closure; day type, magnitude-character allowance, canonical syntax; then time
+  type, scalar-character allowance, grammar, fractional allowance, canonical fraction,
+  intrinsic clock ranges. Relative-day allowance excludes at most one initial minus;
+  a plus is not removed. Authored intrinsic clock validity precedes its implicit
+  day capacity, then implicit piece capacity, both one. Authored fraction capacity
+  counts supplied digits before trimming trailing zeroes. Fraction failures use
+  the time/value path; derived piece allowance uses the pieces path; implicit
+  capacities use temporal. Reversed/zero-width intervals use the end path; a
+  noncanonical neighbor uses its at or start field. All ordering is exact.
+
+  Stage 1 uses actual compact logical JSON UTF-8 bytes, with minimal JSON string
+  escaping and no insignificant whitespace for structured requests; text requests
+  use supplied bytes verbatim. Preserve every raw numerical token in structured
+  CTS logical requests, including integer -0 and huge exponents in deferred payloads.
+  Do not reconstruct spellings already lost by a caller before native admission.
+  Container depth counts the root container as one; scalar children do not increase
+  it. Guard Unicode-scalar text, bytes and depth with bounded incremental scanning
+  before strict JSON decoding at stage 2. Do not materialize a deferred descriptor
+  or an exponentially unfolded shared graph merely to reject its logical size.
+  Reject cyclic native graphs and duplicate logical object keys. Scalar text failure
+  is invalid_operand at stage 1, null path; invalid JSON/duplicates are invalid_operand
+  at stage 2, null path. Host framing is outside these logical measurements.
+
+  Trusted resource settings are nonnegative safe JSON integers, not Booleans, null,
+  fractional values or unknown names. Malformed settings fail as harness errors,
+  not logical diagnostic results. Omission selects host defaults; the CTS always
+  sends the complete calibrated map, including case-local overrides. The complete
+  successful result byte limit excludes optional protocol framing. Measure exact
+  compact UTF-8 size before final serialization, using bounded fragments; do not
+  construct an oversized whole string to discover its failure. Diagnostic envelopes
+  are not subject to successful-result byte limits.
+
+  ## 8. Reuse authority and conformance [# civil-anchor-section-8-reuse-authority-and-mutable-conformance]
+
+  Supported value semantics are reused from civil-date, civil-clock and civil
+  date-time specification snapshots 0.1, available in the isolated source/schema
+  resources under /artifacts/assets/aeonic-operations/v1/snapshots/0.1/.
+  The closed snapshot schema embeds only the necessary definitions, with local
+  reference prefixes; it does not change any frozen resource. The date and clock
+  deferred-category enumerations are extended for this profile only. Schema validity
+  cannot establish Gregorian intrinsic validity, set canonicality, exact translation,
+  explicit profile availability, deterministic diagnostics or bounded admission.
+
+  The matching immutable CTS target is [$ aeonic-temporal-civil-anchor-cts-v1-snapshot-0.1].
+  Every case is mandatory for the complete anchoring capability; there is no
+  arbitrary case filter. Stable claims require genuine passing execution of all
+  cases against the recognized exact immutable manifest with artifact integrity
+  retained. Artifact checks, fixture replay, native admission qualification and
+  package releases remain separate facts. The separate mutable next target never
+  establishes stable snapshot conformance. An anchoring-only provider need not
+  implement downstream date-time operations; returned bundles must nevertheless
+  conform to the existing date-time value format.
+`

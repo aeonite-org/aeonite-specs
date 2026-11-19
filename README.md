@@ -234,5 +234,11 @@ carry, exact endpoints, gaps and metadata in existing date-time value bundles.
 This is a mutable normative proposal with publication disabled. Its deterministic
 validation order and independent admission limits are part of the contract;
 schema validity alone is insufficient. The [reuse inventory](resources/aeonic-operations/v1/civil-anchor-reuse.json)
-pins the unchanged frozen date, clock and date-time value authorities. There is
-no immutable anchoring snapshot or implementation conformance claim yet.
+pins the unchanged frozen date, clock and date-time value authorities. The
+[snapshot record](docs/aeonic-temporal-civil-anchor-snapshot-0.1.md) identifies
+`aeonic-temporal-civil-anchor-specs-v1-snapshot-0.1`, with isolated source, schema
+and reuse inventory under `resources/aeonic-operations/v1/snapshots/0.1/`. Mutable
+next advances to 0.2. Genuine passing frozen-target executions support stable
+implementation claims; artifact validation, fixture replay and native admission
+evidence retain their separate scopes. Consumer adoption and releases follow
+separately.
