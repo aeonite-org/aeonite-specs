@@ -93,12 +93,12 @@ body:prose = >`
 
   Reuse civil-clock snapshot 0.1 bundles: authored/materialized [$ civilClock] and
   canonical derived [$ civilClockSet]. Authored forms are [$ HH:], [$ HH:MM] and
-  [$ HH:MM:SS[.fraction]] on reference day zero. Infer omitted authored origin from
+  [$ HH:MM:SS\\[.fraction\\]] on reference day zero. Infer omitted authored origin from
   the form, and default history to [$ none-declared]. Derived sets require
   [$ originClockForm] and [$ history]; do not infer either from their endpoints.
 
   Derived day text is canonical signed integer text, with no plus, leading zeroes
-  or negative zero. Time is full canonical [$ HH:MM:SS[.fraction]], with no trailing
+  or negative zero. Time is full canonical [$ HH:MM:SS\\[.fraction\\]], with no trailing
   fractional zeroes. Points and positive-width intervals form a nonempty canonical
   sorted set. Endpoint flags, gaps and relative days have their existing meanings.
   Seconds are 00–59; offsets, [$ Z], [$ &], dates, [$ 24:00] and second 60 are not supported
