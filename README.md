@@ -220,3 +220,19 @@ The working document remains mutable and unpublished. The separate
 under `resources/aeonic-operations/v1/snapshots/0.1/`. Mutable next advances to 0.2;
 stable implementation claims require genuine frozen-target runs and separate native
 capacity evidence. Existing frozen artifacts and package publication stay unchanged.
+
+
+## Explicit single-day civil anchoring
+
+The [anchoring working contract](sources/aes/v1/aeonic-temporal-civil-anchor-v1.aeon)
+and [closed schema](resources/aeonic-operations/v1/civil-anchor-contract.schema.json)
+add the explicitly selected `aeonic.operations.temporal.civil-anchor.v1` profile
+and complete `Aeonic.Operations.Temporal.CivilAnchor` capability. One exact date
+anchors authored clocks or derived clock sets, preserving signed relative-day
+carry, exact endpoints, gaps and metadata in existing date-time value bundles.
+
+This is a mutable normative proposal with publication disabled. Its deterministic
+validation order and independent admission limits are part of the contract;
+schema validity alone is insufficient. The [reuse inventory](resources/aeonic-operations/v1/civil-anchor-reuse.json)
+pins the unchanged frozen date, clock and date-time value authorities. There is
+no immutable anchoring snapshot or implementation conformance claim yet.
