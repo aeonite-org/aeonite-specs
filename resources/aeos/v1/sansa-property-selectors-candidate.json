@@ -1,0 +1,20 @@
+{
+  "id": "aeos-properties-0.1",
+  "status": "unpublished-experimental-candidate",
+  "source": "sources/aeos/v1/sansa-property-selectors-v1.aeon",
+  "entrypoints": {
+    "typescript": ["validateTelexRecords", "validateTelex"],
+    "rust": ["validate_telex_records", "validate_telex"],
+    "python": ["validate_telex_records", "validate_telex"]
+  },
+  "input": "event-locally-valid portable AES body records or validated Telex",
+  "field": "rules[].selector",
+  "properties": ["key", "tag", "headTag"],
+  "property_limit": {"field": "max_property_inspections", "default": 10000, "maximum": 1000000, "minimum": 0},
+  "state": "private per-validation snapshot; cache distinct selector strings; preserve in-Resolve multiplicity and charges",
+  "legacy_native_event_properties": false,
+  "type_transpiler": {"implemented": false, "release_prerequisite": false},
+  "stable_claim": false,
+  "publication": false,
+  "deployment": false
+}

@@ -1,0 +1,60 @@
+schemaVersion:string = "1"
+id:string = "aeos-v1-sansa-property-selectors"
+title:string = "AEOS Portable SANSA Property Selector Profile"
+description:string = "Unpublished portable AES and Telex selector-field integration; legacy targets remain unchanged."
+created:date = 2026-11-19
+modified:date = 2026-11-19
+family:string = "aeos"
+group:string = "AEOS"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aeos/v1/proposals/sansa-property-selectors"
+order:number = 137
+publish:boolean = false
+keywords:list<string> = ["AEOS", "SANSA", "property", "portable", "selector", "candidate"]
+related:list<string> = ["aeos-v1", "sansa-v1-property-selectors", "sansa-v1-resolve"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # AEOS Portable SANSA Property Selector Profile [# aeos-properties]
+
+  ## 1. Explicit consumer admission [# admission]
+
+  Candidate aeos-properties-0.1 admits key, tag and headTag predicates only in AEOS rule selector fields over decoded, event-locally valid portable AES body records and validated Telex. Reuse SANSA Addressing and standalone read-only Resolve. No alternate selector grammar or activation is introduced. Candidate status creates no stable conformance or publication claim.
+
+  TypeScript exposes validateTelexRecords and validateTelex; Rust exposes validate_telex_records and validate_telex; pure Python exposes validate_telex_records and validate_telex. TypeScript's record entry point also accepts the existing PortableAesEvent projection type. Headers remain transport metadata and are not schema bindings. The low-level decoded-record entry points retain their existing precondition of event-locally valid records; Telex entry points perform their ordinary transport validation first.
+
+  Native AEON event topology can omit explicit NodeHead occurrences and uses different child paths. Legacy native-event validation remains outside this property profile. Callers explicitly project source AEON events to portable AES before entering the portable profile. No schema or document may activate this profile by a hidden field. Existing native-event, identity, structural path and reference behavior is preserved.
+
+  ## 2. Metadata and targets [# metadata]
+
+  A key comes from an authorized ordinary member or attribute edge in the parsed portable event path. Empty and Unicode keys are literal. Positions and heads have no key. Namespace and attribute-space roots hide an incoming edge outside that scope. Do not infer keys from identity text, a tag, a display name or a lookalike field.
+
+  NodeLiteral and NodeHead are distinct portable kinds. A head's tag comes only from that NodeHead record's value. An ordinary field named tag is data. A container tag predicate lazily inspects its directly owned heads in canonical positional order; it emits its original container once on the first match. headTag selects only the head. Later child navigation remains explicit, and no reference is followed implicitly.
+
+  Resolution targets only actual indexed body-event occurrences. Preserve their canonical structural paths and identities; do not use reconstructed intermediate path spellings to manufacture or discard a target. Properties remain non-exact. AEOS structural path fields, event/storage paths, clone/pointer references, activation, Graph, Instruction/Mutate/SO and conversion/write surfaces remain closed.
+
+  Existing closed-world and attribute policies are unchanged. Selecting an attribute does not replace an attribute declaration required by those policies. Diagnostics and constraint checks continue to refer to the selected structural event path. Selector or metadata faults fail validation with the existing invalid_schema_policy classification and no guarantees; no partial success is advertised.
+
+  ## 3. Bounded validation-wide inspection [# accounting]
+
+  Add resource_policy.max_property_inspections and its host-option override. The default is10000; the portable domain is finite integer-valued built-in numeric values from0 through1000000. Integral1.0 and signed zero normalize to integers; booleans, fractions, strings, non-finite values, larger values and arbitrary coercible host objects fail. Validate both schema and option policies before namespace construction, including an invalid policy later overridden by a valid one. Existing diagnostics and all other budget domains are unchanged.
+
+  Use one private property allowance per public validation invocation, independent of the existing identity and selector-expansion allowances. Every actual SANSA predicate candidate and inspected direct head retains SANSA's logical charge and failure order. Multiple predicates and distinct selector resolutions share the remaining allowance. Identity scans in property-bearing and identity-only expressions share the existing identity allowance. A new or reentrant public validation invocation starts fresh state.
+
+  A distinct selector string is resolved once in the validation snapshot. The private result cache may serve repeated schema rules and the expansion/closed-world passes, as the existing identity integration does. Constraint checks and selector-expansion accounting still apply to each rule. Do not deduplicate repeated branches inside a Resolve invocation, persist this cache across calls or treat identity text or cached results as freshness evidence.
+
+  Namespace construction/indexing is bounded by the existing event/path/host policies and is separate from property inspection accounting. Establish direct-head order during that construction; do not clone or materialize the full head sequence on each predicate. Yield original handles incrementally and release iteration on early success or failure. Logical inspections are not a wall-time or heap guarantee. Keep the existing1.15x latency and1.20x memory budgets; no performance acceptance is allocated here.
+
+  ## 4. Verification and rollout [# verification]
+
+  CTS owns an explicitly excluded mutable development target and shared consumer fixtures. Assert every expected result/error/path, both records and Telex forms, every repeated invocation and unchanged input. Unsupported instrumentation fails. Include empty branches and keys, Unicode, node/head distinction, ordinary metadata lookalikes, identity composition, two-width head limits, shared/repeated rules, fresh snapshots, option precedence, structural/native denials and reference target preservation.
+
+  Owning runtime/fixture/specification review and merges, installed artifacts and existing native entry points precede advertisements. Pure Python gains no Query evaluator. No new WASM API is implied. The AES Type Transpiler is a separate preliminary proposal; it has no executable consumer to integrate in this slice and is not a prerequisite for this profile or the0.17.0 release. Future transpiler admission requires its own conversion/conflict/freshness/resource contract and fixtures.
+
+  Historical manifests, claims and immutable snapshots remain unchanged. Positional groups and recursive/root-search extensions remain separate. Official releases, deployment, stable promotion and final platform/profile/registry/performance qualification remain held.
+`
