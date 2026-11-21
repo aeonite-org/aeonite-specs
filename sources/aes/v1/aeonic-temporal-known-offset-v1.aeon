@@ -316,11 +316,37 @@ body:prose = >`
   contracts/snapshots are unchanged. Two leap-year literals can fit together.
 
   Character limits count decoded Unicode scalars; byte limits count logical UTF-8.
+  For structured logical requests, maxRequestBytes measures compact JSON with no
+  insignificant whitespace and minimal string escaping. Surround each key/string
+  with quotes; escape quotation mark and reverse solidus; use the two-character
+  JSON escapes for backspace, form feed, newline, carriage return and tab. Encode
+  other U+0000–U+001F controls as six ASCII characters using a lowercase hexadecimal
+  Unicode escape. Emit every other Unicode scalar as its literal UTF-8 bytes,
+  including non-ASCII, non-BMP, U+2028 and U+2029; do not ASCII-escape these or escape
+  solidus. Reject unpaired surrogates rather than replacing them. Use one colon
+  between each key/value and one comma between members/elements; container braces,
+  brackets and literal tokens contribute their actual bytes. Key order does not
+  affect byte count. Preserve supplied raw numerical token spellings in structured
+  CTS requests, including -0 and large exponents; a native API documents its mapping
+  of host numbers to logical token values before this measurement and cannot recover
+  source spellings already lost by a caller.
+
+  Raw requestText instead pays its supplied UTF-8 bytes verbatim, including
+  whitespace, escape spellings and numerical tokens. Never parse and compact it
+  before measuring. For both forms, container depth counts the logical root object
+  or array as one, each directly nested object/array adds one, and scalar children
+  add nothing. Do not count outer CTS envelopes, raw-string wrapping or implementation
+  token wrappers as logical containers. Guard bytes and depth incrementally before
+  deep decoding/materialization; a deep raw fixture must reach its stage-1 limit
+  diagnostic without relying on the host JSON decoder's recursion capacity.
+
   Fractions count supplied ASCII digits including trailing zeroes. Input arrays
-  and eligible literal expansions pay the full count. Result bytes measure the
-  entire successful compact JSON envelope without optional whitespace, including
-  all metadata. Piece maxima do not guarantee every precision/metadata combination
-  fits the byte limit. Use bounded/saturating arithmetic before allocations.
+  and eligible literal expansions pay the full count. Result bytes use the same
+  minimal escaping and compact encoding for the entire successful logical envelope,
+  including all metadata. Piece maxima do not guarantee every precision/metadata
+  combination fits the byte limit. Use bounded/saturating arithmetic before
+  allocations. Structured and raw representations of the same logical value may
+  therefore have different byte counts, but each has one defined counting recipe.
 
   All limits are per operation; applications manage chain budgets. Trusted limits
   are outside logical policy/context and must be an object of known nonnegative
@@ -344,7 +370,14 @@ body:prose = >`
   claims exercise actual returned-value chains; expected bundles may validate
   fixtures but cannot substitute for the SUT's returned bundle at execution time.
   Relations verify symmetry/inversion and strict-before transitivity without a
-  sorting API. Compound failures verify the exact stages/paths above.
+  sorting API. Law inputs MUST include a distinct-input equality pair and at least
+  one strict-before transitivity witness; passing zero assertions for a required
+  law is not coverage. Conversion claims require a successful linked conversion-to-
+  conversion chain. Relations claims require a non-vacuous relation law group;
+  combined claims additionally require a successful linked conversion-to-relation
+  chain. Reject a mutable target lacking the selected capability's required
+  coverage before reporting artifact validity or a complete execution pass.
+  Compound failures verify the exact stages/paths above.
 
   Artifact/schema validation is not implementation execution or stable conformance.
   Capacity probes are separate from mandatory semantic cases. A future immutable
