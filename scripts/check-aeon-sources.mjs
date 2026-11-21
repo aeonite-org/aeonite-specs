@@ -136,7 +136,7 @@ const ids = new Map();
 const publicationPaths = new Map();
 const documents = [];
 
-if (files.length !== 102) errors.push(`Expected 102 AEON specification sources, found ${files.length}.`);
+if (files.length !== 103) errors.push(`Expected 103 AEON specification sources, found ${files.length}.`);
 
 for (const file of files) {
   const relative = path.relative(repositoryRoot, file).split(path.sep).join('/');

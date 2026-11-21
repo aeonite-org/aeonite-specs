@@ -1,0 +1,1035 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aeonic-operations:temporal:known-offset:contract:v1:working",
+  "title": "Aeonic known-offset coordinate working contract",
+  "description": "Closed admission requests and results. Intrinsic Gregorian validity, exact eligibility, set canonicality, limits and diagnostic precedence require the owning source.",
+  "$defs": {
+    "coordinate": {
+      "type": "string",
+      "pattern": "^(?!0000)[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]*[1-9])?$(?![\\s\\S])"
+    },
+    "endBoundary": {
+      "type": "object",
+      "properties": {
+        "boundary": {
+          "const": "endOfDomain"
+        }
+      },
+      "required": [
+        "boundary"
+      ],
+      "additionalProperties": false
+    },
+    "point": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "point"
+        },
+        "at": {
+          "$ref": "#/$defs/coordinate"
+        }
+      },
+      "required": [
+        "kind",
+        "at"
+      ],
+      "additionalProperties": false
+    },
+    "interval": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "interval"
+        },
+        "start": {
+          "$ref": "#/$defs/coordinate"
+        },
+        "end": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/coordinate"
+            },
+            {
+              "$ref": "#/$defs/endBoundary"
+            }
+          ]
+        },
+        "includeStart": {
+          "type": "boolean"
+        },
+        "includeEnd": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "start",
+        "end",
+        "includeStart",
+        "includeEnd"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "end": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "end"
+            ]
+          },
+          "then": {
+            "properties": {
+              "includeEnd": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "piece": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/point"
+        },
+        {
+          "$ref": "#/$defs/interval"
+        }
+      ]
+    },
+    "dateOrigin": {
+      "enum": [
+        "year",
+        "month",
+        "day",
+        "undeclared"
+      ]
+    },
+    "clockOrigin": {
+      "enum": [
+        "hour",
+        "minute",
+        "second",
+        "undeclared"
+      ]
+    },
+    "history": {
+      "type": "object",
+      "properties": {
+        "clamping": {
+          "enum": [
+            "none-declared",
+            "clamping-declared"
+          ]
+        },
+        "approximation": {
+          "enum": [
+            "none-declared",
+            "approximation-declared"
+          ]
+        }
+      },
+      "required": [
+        "clamping",
+        "approximation"
+      ],
+      "additionalProperties": false
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "relationPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "symbol": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "symbol"
+        },
+        "value": {
+          "enum": [
+            "equal",
+            "notEqual",
+            "before",
+            "after",
+            "indeterminate",
+            "contains",
+            "containedBy",
+            "overlaps",
+            "disjoint"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "originSummary": {
+      "type": "object",
+      "properties": {
+        "dateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "clockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        }
+      },
+      "required": [
+        "dateGranularity",
+        "clockForm"
+      ],
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "diagnostic"
+        },
+        "reason": {
+          "enum": [
+            "invalid_operand",
+            "unsupported_operation",
+            "invalid_policy",
+            "unsupported_profile",
+            "unsupported_domain",
+            "unrepresentable_result",
+            "resource_limit"
+          ]
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "stage": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
+            },
+            "path": {
+              "oneOf": [
+                {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^(?:/(?:[^~/]|~[01])*)*$(?![\\s\\S])"
+                    }
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "stage",
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        "message": {
+          "type": "string",
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "outcome",
+        "reason",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "knownOffset": {
+      "type": "string",
+      "pattern": "^(?:Z|\\+(?:[01][0-9]|2[0-3]):[0-5][0-9]|-(?!(?:00:00))(?:(?:[01][0-9]|2[0-3]):[0-5][0-9]))$(?![\\s\\S])"
+    },
+    "inputOffset": {
+      "type": "string",
+      "pattern": "^(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$(?![\\s\\S])"
+    },
+    "originalOffset": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/knownOffset"
+        },
+        {
+          "const": "undeclared"
+        }
+      ]
+    },
+    "knownOffsetDateTime": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "knownOffsetDateTime"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^(?:(?!0000)[0-9]{4}-(?:(?:0[1-9]|1[0-2])(?:-(?:0[1-9]|[12][0-9]|3[01]))?)?T(?:[01][0-9]|2[0-3])(?::(?:[0-5][0-9](?::(?:[0-5][0-9]|60)(?:\\.[0-9]+)?)?)?)?(?:(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9]))?(?:&[A-Za-z0-9/_+.-]+)?|(?:[01][0-9]|2[0-3]):(?:[0-5][0-9](?::(?:[0-5][0-9]|60)(?:\\.[0-9]+)?)?)?(?:(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9]))?)$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "category",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "knownOffsetDateTimeSet": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "knownOffsetDateTimeSet"
+        },
+        "offset": {
+          "$ref": "#/$defs/inputOffset"
+        },
+        "pieces": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/piece"
+          }
+        }
+      },
+      "required": [
+        "category",
+        "offset",
+        "pieces"
+      ],
+      "additionalProperties": false
+    },
+    "authoredBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/knownOffsetDateTime"
+        },
+        "originDateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "originClockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        },
+        "history": {
+          "$ref": "#/$defs/history"
+        },
+        "clockModel": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        },
+        "timescale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "temporal"
+      ],
+      "additionalProperties": false
+    },
+    "derivedBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/knownOffsetDateTimeSet"
+        },
+        "originDateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "originClockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        },
+        "history": {
+          "$ref": "#/$defs/history"
+        },
+        "originalOffset": {
+          "$ref": "#/$defs/originalOffset"
+        },
+        "clockModel": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        },
+        "timescale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "temporal",
+        "originDateGranularity",
+        "originClockForm",
+        "history",
+        "originalOffset"
+      ],
+      "additionalProperties": false
+    },
+    "outputSet": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "const": "knownOffsetDateTimeSet"
+        },
+        "offset": {
+          "$ref": "#/$defs/knownOffset"
+        },
+        "pieces": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/piece"
+          }
+        }
+      },
+      "required": [
+        "category",
+        "offset",
+        "pieces"
+      ],
+      "additionalProperties": false
+    },
+    "outputBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/outputSet"
+        },
+        "originDateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "originClockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        },
+        "history": {
+          "$ref": "#/$defs/history"
+        },
+        "originalOffset": {
+          "$ref": "#/$defs/originalOffset"
+        }
+      },
+      "required": [
+        "temporal",
+        "originDateGranularity",
+        "originClockForm",
+        "history",
+        "originalOffset"
+      ],
+      "additionalProperties": false
+    },
+    "deferredTemporal": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "enum": [
+            "civilDate",
+            "civilDateSet",
+            "civilDateTime",
+            "civilDateTimeSet",
+            "civilClock",
+            "civilClockSet",
+            "finiteNumber",
+            "exactNumber",
+            "exactRational",
+            "string",
+            "boolean",
+            "symbol",
+            "positiveInfinity",
+            "negativeInfinity",
+            "nan",
+            "explicitNull",
+            "explicitAbsence",
+            "toggle",
+            "hex",
+            "radix",
+            "encoding",
+            "separator",
+            "sansaAddress",
+            "referenceForm",
+            "temporal",
+            "container"
+          ]
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "additionalProperties": true
+    },
+    "deferredBundle": {
+      "type": "object",
+      "properties": {
+        "temporal": {
+          "$ref": "#/$defs/deferredTemporal"
+        },
+        "originDateGranularity": {
+          "$ref": "#/$defs/dateOrigin"
+        },
+        "originClockForm": {
+          "$ref": "#/$defs/clockOrigin"
+        },
+        "history": {
+          "$ref": "#/$defs/history"
+        },
+        "clockModel": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        },
+        "timescale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "temporal"
+      ],
+      "additionalProperties": false
+    },
+    "bundle": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/authoredBundle"
+        },
+        {
+          "$ref": "#/$defs/derivedBundle"
+        },
+        {
+          "$ref": "#/$defs/deferredBundle"
+        }
+      ]
+    },
+    "convertPolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$(?![\\s\\S])"
+        },
+        "destinationOffset": {
+          "$ref": "#/$defs/knownOffset"
+        }
+      },
+      "required": [
+        "destinationOffset"
+      ],
+      "additionalProperties": false
+    },
+    "relationEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.known-offset.v1"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "convertEffectivePolicy": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "aeonic.operations.temporal.known-offset.v1"
+        },
+        "destinationOffset": {
+          "$ref": "#/$defs/knownOffset"
+        }
+      },
+      "required": [
+        "profile",
+        "destinationOffset"
+      ],
+      "additionalProperties": false
+    },
+    "convertRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "convert"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/convertPolicy"
+            }
+          },
+          "required": [
+            "value",
+            "policy"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "equalRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "equal"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/bundle"
+            },
+            "right": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/relationPolicy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "compareRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "compare"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/bundle"
+            },
+            "right": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/relationPolicy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "relateRequest": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "relate"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/bundle"
+            },
+            "right": {
+              "$ref": "#/$defs/bundle"
+            },
+            "context": {
+              "$ref": "#/$defs/context"
+            },
+            "policy": {
+              "$ref": "#/$defs/relationPolicy"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "context"
+              ],
+              "properties": {
+                "context": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {
+                  "required": [
+                    "profile"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/convertRequest"
+        },
+        {
+          "$ref": "#/$defs/equalRequest"
+        },
+        {
+          "$ref": "#/$defs/compareRequest"
+        },
+        {
+          "$ref": "#/$defs/relateRequest"
+        }
+      ]
+    },
+    "convertMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "const": "not-applied"
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/convertEffectivePolicy"
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy"
+      ],
+      "additionalProperties": false
+    },
+    "relationMetadata": {
+      "type": "object",
+      "properties": {
+        "evaluation": {
+          "const": "exact-for-policy"
+        },
+        "clamping": {
+          "const": "not-applied"
+        },
+        "effectivePolicy": {
+          "$ref": "#/$defs/relationEffectivePolicy"
+        },
+        "operandHistory": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/history"
+            },
+            "right": {
+              "$ref": "#/$defs/history"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        },
+        "operandOrigin": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/originSummary"
+            },
+            "right": {
+              "$ref": "#/$defs/originSummary"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        },
+        "operandOriginalOffset": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "$ref": "#/$defs/originalOffset"
+            },
+            "right": {
+              "$ref": "#/$defs/originalOffset"
+            }
+          },
+          "required": [
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "evaluation",
+        "clamping",
+        "effectivePolicy",
+        "operandHistory",
+        "operandOrigin",
+        "operandOriginalOffset"
+      ],
+      "additionalProperties": false
+    },
+    "convertSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/outputBundle"
+        },
+        "metadata": {
+          "$ref": "#/$defs/convertMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "relationSuccess": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "value"
+        },
+        "value": {
+          "$ref": "#/$defs/symbol"
+        },
+        "metadata": {
+          "$ref": "#/$defs/relationMetadata"
+        }
+      },
+      "required": [
+        "outcome",
+        "value",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "result": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/convertSuccess"
+        },
+        {
+          "$ref": "#/$defs/relationSuccess"
+        },
+        {
+          "$ref": "#/$defs/diagnostic"
+        }
+      ]
+    },
+    "resourceLimits": {
+      "type": "object",
+      "properties": {
+        "maxRequestBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxRequestDepth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxTemporalCharacters": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxInputPieces": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxIntermediatePieces": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxOutputPieces": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxWork": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxFractionDigits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxResultBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/request"
+}
