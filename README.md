@@ -82,7 +82,7 @@ parse-only checks do not replace the publisher's accessibility validation.
 
 ## Informative AEON ABNF
 
-[Grammar revision 0.4](resources/grammar/aeon/v1/0.4/aeon.abnf) translates the
+[Grammar revision 0.5](resources/grammar/aeon/v1/0.5/aeon.abnf) translates the
 existing Core v1 syntax into ABNF. Its manifest maps every production to exact
 normative-source sections and catalogues extra constraints and open source/CTS
 discrepancies. Full recognition checks cover pinned released and development

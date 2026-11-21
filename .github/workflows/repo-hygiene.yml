@@ -36,4 +36,4 @@ jobs:
       - name: Check validation guards
         run: python -m unittest discover -s tests -p 'test_abnf.py'
       - name: Recognize pinned Core CTS and compare recorded evidence
-        run: python scripts/check-aeon-abnf.py --cts-archive resources/grammar/aeon/v1/0.4/cts-inputs.json
+        run: python scripts/check-aeon-abnf.py --cts-archive resources/grammar/aeon/v1/0.5/cts-inputs.json

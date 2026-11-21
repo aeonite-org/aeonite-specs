@@ -21,7 +21,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_BUNDLE = ROOT / "resources/grammar/aeon/v1/0.4"
+DEFAULT_BUNDLE = ROOT / "resources/grammar/aeon/v1/0.5"
 PARSER_VERSION = "2.9.0"
 
 
