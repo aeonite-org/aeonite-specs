@@ -242,3 +242,15 @@ next advances to 0.2. Genuine passing frozen-target executions support stable
 implementation claims; artifact validation, fixture replay and native admission
 evidence retain their separate scopes. Consumer adoption and releases follow
 separately.
+
+
+### Known-offset coordinate working contract
+
+The [owning proposal](sources/aes/v1/aeonic-temporal-known-offset-v1.aeon) and
+[closed schema](resources/aeonic-operations/v1/known-offset-contract.schema.json)
+define explicitly selected `aeonic.operations.temporal.known-offset.v1`: complete
+independent Conversion and Relations capabilities over exact framed sets. The
+ordinary 86,400-second coordinate model preserves original offset claims without
+verifying physical UTC realization. The input-piece limit totals both operands.
+This is mutable proposal-stage work, with no immutable capture or implementation
+claim; existing profiles and snapshots retain their bytes and meanings.
