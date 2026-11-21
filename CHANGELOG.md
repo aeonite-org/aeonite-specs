@@ -17,6 +17,10 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Reserve radix16 as the fixed base-16 radix alias and document its literal
+  family, AES metadata and SANSA target handling. Informative ABNF revision 0.5
+  refreshes recognition evidence against the amended draft and development CTS.
+
 - Bound informative ABNF revision 0.4 to the current upstream source inventory
   and coordinated CTS/implementation commits for PR validation. Earlier
   grammar bundles and their recorded evidence retain their original bytes.

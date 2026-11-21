@@ -7,8 +7,8 @@ license: CC-BY-4.0
 The formal overview is authored in
 [`appendix-aeon-abnf.aeon`](../sources/appendices/v1/appendix-aeon-abnf.aeon).
 The current independently versioned bundle is
-[`resources/grammar/aeon/v1/0.4/`](../resources/grammar/aeon/v1/0.4/).
-Revisions 0.1, 0.2 and 0.3 retain their original bytes and observations.
+[`resources/grammar/aeon/v1/0.5/`](../resources/grammar/aeon/v1/0.5/).
+Revisions 0.1 through 0.4 retain their original bytes and observations.
 Normative prose retains authority; a green recognition check does not claim
 full language or SUT conformance.
 
@@ -42,7 +42,7 @@ The released Core 0.5 files remain unchanged.
 For fully offline CI replay, use the exact-byte CTS input evidence archive:
 
 ```sh
-/tmp/aeon-abnf-venv/bin/python scripts/check-aeon-abnf.py --cts-archive resources/grammar/aeon/v1/0.4/cts-inputs.json
+/tmp/aeon-abnf-venv/bin/python scripts/check-aeon-abnf.py --cts-archive resources/grammar/aeon/v1/0.5/cts-inputs.json
 ```
 
 The archive retains the authoritative external manifest/suite bytes, their MIT
@@ -65,8 +65,8 @@ sources in an AEON checkout:
 /tmp/aeon-abnf-venv/bin/python scripts/probe-aeon-abnf-runtimes.py --aeon-root ../../altopelago/aeon
 ```
 
-It checks 315 cases per implementation in revision 0.3, including the 207 new
-shared CTS vectors, without rebuilding TypeScript. There are no remaining runtime
+Revision 0.5 checks 317 cases per implementation, including strict-mode radix16
+acceptance and hex literal mismatch, without rebuilding TypeScript. There are no remaining runtime
 overrides in this revision. The recorded observations disclose the dirty checkout
 and fingerprint the available artifacts, without claiming complete transitive
 build provenance. `--write-report` is required to replace runtime evidence; its
@@ -108,10 +108,12 @@ retains the known raw-backtick escape questions. Zero-binding documents and the
 number-versus-temporal markers remain intentional supported forms.
 
 Revision 0.4 preserves 0.3 grammar behavior and refreshes source/CTS provenance
-for the isolated PRs. Earlier evidence is retained unchanged.
+for the isolated PRs. Revision 0.5 retains the grammar productions and refreshes
+the datatype-policy evidence for the reserved base-16 alias. The released Core
+target retains its historical rejection of the alias.
 
 The report covers the pinned Core 0.5 target (299 selections), the amended Core
-next target (655 selections), 463 focused cases and bounded lexical oracles.
+next target (657 selections), 465 focused cases and bounded lexical oracles.
 It does not establish exhaustive language equivalence, ambiguity freedom,
 performance bounds, annotation attachment or downstream semantics.
 

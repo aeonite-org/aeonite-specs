@@ -3,7 +3,7 @@ id:string = "sansa-v1-mutate"
 title:string = "SANSA.Mutate v1"
 description:string = "Proposal-stage boundary and conservative core model for deterministic semantic mutation intent."
 created:date = 2026-07-22
-modified:date = 2026-11-15
+modified:date = 2026-11-21
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -508,7 +508,7 @@ body:prose = >`
   [$ kind=hex] can remain representable as custom intent.
   Likewise, an AEON target surface may reject malformed reserved datatype
   metadata such as [$ radix\\[03\\]], unsupported reserved-looking aliases such as
-  [$ radix16], or malformed source-family payloads such as radix [$ 1__0] or
+  [$ radix10], or malformed source-family payloads such as radix [$ 1__0] or
   encoding [$ abc+/==]. Separator representability is checked in the same layer:
   [$ root/main] is not an AEON separator payload without quoting, [$ sep\\[","\\]] is not
   valid AEON Core separator metadata, and [$ kadot\\[...\\]] metadata is not an AEON

@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-value-types"
 title:string = "AEON v1 Value Types Reference"
 description:string = "Reference for AEON value kinds, reserved datatype names, literal families, container forms, and reference-bearing values."
 created:date = 2026-03-25
-modified:date = 2026-11-08
+modified:date = 2026-11-21
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -173,7 +173,7 @@ body:prose = >`
   | <-- | <-- |
   | Type | [$ radix] |
   | Alternative names | none |
-  | Reserved | [$ decimal], [$ radix2], [$ radix6], [$ radix8], [$ radix12] |
+  | Reserved | [$ decimal], [$ radix2], [$ radix6], [$ radix8], [$ radix12], [$ radix16] |
   |~ Radix value-type names
 
   ### [$ encoding] [# encoding]
@@ -668,6 +668,7 @@ body:prose = >`
   ~~~$ aeon
   bits = %1011
   bits:radix[2] = %1011
+  mask:radix16 = %BEEF
   ~~~$
 
   Nuances:
@@ -681,7 +682,7 @@ body:prose = >`
   - spaces around the radix base inside brackets are allowed in AEON source, but the integer itself must be contiguous;
   - radix base forms with leading zeroes, non-decimal payloads, empty brackets, repeated bracket lists, or values outside [$ 2..64] are invalid when a GP/AEOS layer activates radix-base semantics;
   - [$ decimal] is a reserved alias for [$ radix\\[10\\]];
-  - reserved aliases such as [$ radix2], [$ radix6], [$ radix8], and [$ radix12] remain accepted as shorthand;
+  - [$ radix2], [$ radix6], [$ radix8], [$ radix12], and [$ radix16] are reserved shorthand for their named bases. For example, [$ radix16] supplies the same base as [$ radix\\[16\\]];
   - optional leading sign [$ +] or [$ -] is allowed only once at the start of the payload;
   - radix payload digits are [$ 0-9], [$ A-Z], [$ a-z], [$ &], and [$ !] in that order;
   - [$ .] is an optional radix decimal point and may appear at most once;
@@ -693,13 +694,11 @@ body:prose = >`
   - lexical acceptance is not base-specific radix validity;
   - base-specific digit checks still belong downstream for implementation/profile/schema enforcement;
   - generic forms such as [$ radix<2>] are invalid; radix base metadata uses brackets.
-  - [$ radix16] is not a reserved Core v1 shorthand. Use [$ radix\\[16\\]] for radix-family base-16 values.
-  - [$ radix\\[16\\]] remains distinct from [$ hex]; it produces [$ RadixLiteral], while [$ hex] produces [$ HexLiteral].
+  - [$ radix16] and [$ radix\\[16\\]] use [$ %] and produce [$ RadixLiteral]. Base-16 validation uses the digits [$ 0–9] and [$ A–F]. [$ hex] uses [$ #] and produces [$ HexLiteral].
 
   Canonical notes:
 
-  - canonicalization of [$ :radix\\[...\\]] values is representation-preserving rather
-    than value-normalizing;
+  - canonicalization preserves the fixed-base alias name, such as [$ radix16], when used as the datatype;
 
   - [$ _] separators are removed from canonical radix output;
   - the remaining digit sequence, decimal-point placement, and leading-zero width

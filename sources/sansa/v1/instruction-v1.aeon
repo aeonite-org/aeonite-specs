@@ -3,7 +3,7 @@ id:string = "sansa-v1-instruction"
 title:string = "SANSA Instruction v1"
 description:string = "Proposal-stage human-authored instruction surface combining SANSA Addressing, Query, and Mutate vocabulary."
 created:date = 2026-07-26
-modified:date = 2026-11-15
+modified:date = 2026-11-21
 family:string = "sansa"
 group:string = "SANSA"
 standing:string = "official"
@@ -886,7 +886,8 @@ body:prose = >`
 
   For AEON targets, representability also includes reserved lexical metadata and
   literal-family shape. [$ radix\\[03\\]] is not representable as AEON Core radix
-  metadata, and [$ radix16] is not a reserved Core v1 radix alias. Known
+  metadata. [$ radix16] is a reserved base-16 radix alias and accepts a radix
+  literal such as [$ %BEEF]. Known
   datatype/literal-family mismatches, such as [$ :number, "42"], \`:boolean,
   "true"[$ , ]:hex, "fff"[$ , ]:nan, "NaN"[$ , ]:infinity, "+Infinity"[$ , ]:base64,
   "abc+/=="[$ , and ]:string, !notApplicable\`, are rejected by Instruction parsing
@@ -1038,7 +1039,8 @@ body:prose = >`
   | [$ create $.inventory.textProbe with :string<null>, ""] against an AEON target | target surface rejects unsupported generic datatype intent |
   | [$ create $.inventory.badNodeString with :node<string>, <title("Hello")>] against an AEON target | target surface rejects unsupported binding-side node datatype claim |
   | [$ create $.inventory.badRadix with :radix\\[03\\], %101] against an AEON target | target surface rejects invalid reserved radix metadata |
-  | [$ create $.inventory.badRadixAlias with :radix16, %10] against an AEON target | target surface rejects unsupported reserved-looking radix alias |
+  | [$ create $.inventory.mask with :radix16, %BEEF] against an AEON target | target surface accepts the fixed base-16 alias |
+  | [$ create $.inventory.badRadixAlias with :radix10, %10] against an AEON target | target surface rejects unsupported reserved-looking radix alias |
   | [$ create $.inventory.badSeparator with :sep\\[","\\], ^"hello, world"] against an AEON target | target surface rejects invalid reserved separator metadata |
   | [$ create $.inventory.emptyStage with :symbol, \\|\\|] against an AEON target | target surface rejects empty symbol payload |
   | [$ create $.inventory.badKadot with :kadot\\[.\\], ^1.2.3] against an AEON target | target surface rejects invalid reserved [$ kadot] metadata |

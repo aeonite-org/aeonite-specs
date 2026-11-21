@@ -3,7 +3,7 @@ id:string = "aeonic-semantic-language-v1"
 title:string = "Aeonic Semantic Language"
 description:string = "Architectural proposal for deterministic value behavior shared across AES consumers, including equality, comparison, ordering, conversion, measurement, and future arithmetic."
 created:date = 2026-07-21
-modified:date = 2026-11-15
+modified:date = 2026-11-21
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
@@ -411,7 +411,7 @@ body:prose = >`
   | [$ toggle] | toggle | exact toggle-token equality when exposed as toggle | conversion or materialization to Boolean is profile-defined; no implicit Boolean comparison |
   | [$ null], [$ !none], [$ !notSet], [$ !notApplicable], [$ !tombstone], [$ !"..."] | absence/null | explicit null identity and reason preservation | null equality, null ordering, and absence-domain meaning are profile/schema-defined |
   | [$ hex] | hexadecimal lexical structured scalar | canonical hex-payload identity; source spelling remains representation metadata | color, byte sequence, identifier, numeric, or other interpretation is profile-defined |
-  | [$ radix], [$ decimal], [$ radix2], [$ radix6], [$ radix8], [$ radix12] | radix numeric representation | exact representation preservation; base metadata preservation | base-specific numeric validity, conversion, equality, and ordering are profile-defined |
+  | [$ radix], [$ decimal], [$ radix2], [$ radix6], [$ radix8], [$ radix12], [$ radix16] | radix numeric representation | exact representation preservation; base metadata preservation | base-specific numeric validity, conversion, equality, and ordering are profile-defined |
   | [$ encoding], [$ base64], [$ embed], [$ inline] | encoded lexical payload | exact payload-string identity; naïve payload order; no implicit decoding | byte identity, media type, text decoding, hashing, or decoded-content ordering are profile-defined |
   | [$ date] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | precision, calendar, conversion, and richer compatibility are profile-defined |
   | [$ time] | temporal | literal recognition, preservation, and same-family canonical temporal comparison | offset handling, date-context rules, and richer compatibility are profile-defined |
@@ -514,7 +514,7 @@ body:prose = >`
   A numeric comparison under this profile MUST resolve one integral base from [$ 2] through [$ 64]:
 
   - [$ decimal] resolves to base 10;
-  - the reserved aliases [$ radix2], [$ radix6], [$ radix8], and [$ radix12] resolve to their named bases;
+  - the reserved aliases [$ radix2], [$ radix6], [$ radix8], [$ radix12], and [$ radix16] resolve to their named bases;
   - [$ radix\\[n\\]] resolves to [$ n] when [$ n] is an integral value from [$ 2] through [$ 64];
   - a consumer MAY supply equivalent trusted base metadata from an AES adapter or schema;
   - an untyped radix operand MAY inherit the base of its typed counterpart for that binary operation;
@@ -602,7 +602,7 @@ body:prose = >`
 
   ~~~$ aeon
   color:hex = #ff00aa
-  mask:radix[16] = %ff00aa
+  mask:radix16 = %FF00AA
   octal:radix8 = %70
   ~~~$
 
@@ -626,7 +626,7 @@ body:prose = >`
 
   A consumer that wants to compare hex values as numbers, bytes, colors, hashes, or identifiers must select an explicit profile for that interpretation. A consumer must not compare [$ hex:hex = #10] and [$ mask:radix\\[16\\] = %10] as equal merely because the payloads contain compatible base-16 digits.
 
-  Core v1 does not reserve [$ radix16] as a shorthand alias. Use [$ radix\\[16\\]] when a value is intended to remain in the radix-family numeric-representation surface. This keeps base-16 radix values explicit and avoids implying that [$ hex] and base-16 radix are interchangeable.
+  [$ radix16] and [$ radix\\[16\\]] both declare base 16 for a [$ RadixLiteral]. AES reports [$ radix16] as the datatype when the alias is authored.
 
   ### 6.10 Encoding Semantics [# encoding-semantics]
 
