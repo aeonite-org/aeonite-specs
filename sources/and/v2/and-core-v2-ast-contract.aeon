@@ -1,13 +1,13 @@
 schemaVersion:string = "1"
 id:string = "and-core-v2-ast-contract"
 title:string = "&ND Core v2 AST Contract"
-description:string = "Proposal AST additions, effective-version metadata, and canonical boundary for &ND Core v2."
+description:string = "Draft AST additions, effective-version metadata, and canonical boundary for &ND Core v2."
 created:date = 2026-08-19
-modified:date = 2026-08-24
+modified:date = 2026-11-23
 family:string = "and"
 group:string = "&ND"
 standing:string = "official"
-lifecycle:string = "proposal"
+lifecycle:string = "draft"
 normativity:string = "normative"
 license:string = "CC-BY-4.0"
 path:string = "specification/and/core-v2-ast-contract"
@@ -22,7 +22,7 @@ body:prose = >`
 
   # &ND Core v2 AST Contract [# nd-core-v2-ast-contract]
 
-  This document defines the proposal-stage AST additions exercised by the executable [$ &ND Core v2]
+  This document defines the draft AST additions exercised by the executable [$ &ND Core v2]
   fixture lane. v2 inherits every v1 AST node without changing its structural meaning.
 
   ## 1. Parse Result and Effective Version [# parse-result-and-effective-version]
@@ -55,7 +55,7 @@ body:prose = >`
   remains v1 even when the host requests v2, and declared-v2 input remains v2 even when the host passes
   [$ version: "v1"]. A declared-v2 document still requires a v2-capable reader. Implementations MUST NOT
   infer capability or effective version from document content. Registries of named embedding profiles
-  are outside this frozen proposal Core boundary.
+  are outside the v2 Core boundary.
 
   ## 2. Inherited Nodes [# inherited-nodes]
 
@@ -68,7 +68,7 @@ body:prose = >`
 
   ## 3. Capability Disposition [# capability-disposition]
 
-  The frozen proposal surface is divided by ownership, not by parser gates:
+  The v2 syntax and projections have the following ownership:
 
   | Forms | Disposition | Contract boundary |
   | <-- | <-- | <-- |
@@ -648,7 +648,7 @@ body:prose = >`
 
   Standalone v2 output begins with [$ &ND v2]; embedded output omits the declaration. Every promoted v2
   node has a deterministic spelling, and emitting a v2-only node under version v1 MUST fail. The
-  executable proposal runner checks standalone and embedded parse–emit–parse structural equivalence
+  v2 CTS runner checks standalone and embedded parse–emit–parse structural equivalence
   and canonical fixed-point stability for every accepted v2 fixture.
 
   Machine-readable contract [$ and-v2-projection-v1] in the reference implementation's
@@ -672,8 +672,6 @@ body:prose = >`
 
   ## 20. Stability [# stability]
 
-  This contract is executable but remains proposal-stage. The scalar-versus-rich-content split,
-  lexical constraints, capability disposition, and projection snapshots are frozen for this proposal
-  baseline. A change requires an explicit reviewed revision with corresponding parser, fixture,
-  canonical, projection, migration, and consumer-guidance updates.
+  The reference parser, canonical emitter, and HTML renderer exercise this draft contract.
+  Reviewed changes to the contract include corresponding conformance updates.
 `
