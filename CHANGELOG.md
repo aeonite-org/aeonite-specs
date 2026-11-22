@@ -17,6 +17,11 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Capture known-offset coordinate specification snapshot 0.1 with an isolated
+  source/schema and distinct identities. Advance mutable next to 0.2 without
+  changing profile semantics, schema structure, resource allowances or previous
+  frozen artifacts. Proposal lifecycle and disabled publication remain.
+
 - Clarify that generic arguments declare relationships defined by the enclosing
   datatype and annotation context. Document the domain of absence for `null<T>`,
   the expected element domain for `list<T>`, and the boundary between Core
