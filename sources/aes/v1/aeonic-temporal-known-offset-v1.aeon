@@ -3,7 +3,7 @@ id:string = "aeonic-temporal-known-offset-v1"
 title:string = "Aeonic Known-Offset Coordinate v1 Working Contract"
 description:string = "Exact known-offset conversion and relations with original-claim preservation and aggregate admission."
 created:date = 2026-11-22
-modified:date = 2026-11-22
+modified:date = 2026-11-23
 family:string = "aes"
 group:string = "Semantic Language"
 standing:string = "official"
@@ -22,11 +22,14 @@ body:prose = >`
 
   # Aeonic Known-Offset Coordinate v1 Working Contract [# known-offset-1]
 
-  Status: normative proposal-stage mutable next 0.1 working contract, 2026-11-22.
-  Publication is disabled. This creates no immutable snapshot, release, implemented
-  capability or native-capacity claim. Existing profiles, defaults and frozen
-  artifacts retain their meanings and bytes. Implementations MUST satisfy the
-  [@ /artifacts/assets/aeonic-operations/v1/known-offset-contract.schema.json | closed operation schema]
+  Status: normative proposal-stage mutable next 0.2 working contract, 2026-11-23.
+  Publication is disabled. Immutable compatibility snapshot
+  [$ aeonic-temporal-known-offset-specs-v1-snapshot-0.1] is retained separately as
+  [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/aeonic-temporal-known-offset-v1.aeon | frozen source]
+  and [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/known-offset-contract.schema.json | frozen schema].
+  This mutable surface cannot establish a stable snapshot claim. Existing profiles,
+  defaults and frozen artifacts retain their meanings and bytes. Implementations MUST
+  satisfy the [@ /artifacts/assets/aeonic-operations/v1/known-offset-contract.schema.json | closed operation schema]
   and the semantic, admission and diagnostic rules here; schema validity alone
   is insufficient.
 
@@ -380,8 +383,8 @@ body:prose = >`
   Compound failures verify the exact stages/paths above.
 
   Artifact/schema validation is not implementation execution or stable conformance.
-  Capacity probes are separate from mandatory semantic cases. A future immutable
-  capture requires a distinct reviewed artifact and consumer adoption. No physical
-  UTC/authority resolution, package release or other implementation claim follows
-  from this mutable working contract.
+  Capacity probes are separate from mandatory semantic cases. The isolated
+  snapshot 0.1 remains unchanged by future mutable development; consumer adoption
+  is explicit. No physical UTC/authority resolution, package release or other
+  implementation claim follows from this mutable working contract.
 `

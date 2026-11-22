@@ -252,5 +252,9 @@ define explicitly selected `aeonic.operations.temporal.known-offset.v1`: complet
 independent Conversion and Relations capabilities over exact framed sets. The
 ordinary 86,400-second coordinate model preserves original offset claims without
 verifying physical UTC realization. The input-piece limit totals both operands.
-This is mutable proposal-stage work, with no immutable capture or implementation
-claim; existing profiles and snapshots retain their bytes and meanings.
+The [snapshot record](docs/aeonic-temporal-known-offset-snapshot-0.1.md) identifies
+`aeonic-temporal-known-offset-specs-v1-snapshot-0.1` and its isolated source/schema.
+Mutable next advances to 0.2. Complete genuine execution against the matching
+recognized immutable CTS target is required for a stable implementation claim;
+artifact validation, native capacities, consumer adoption and releases remain
+separate. Existing profiles and frozen snapshots retain their bytes and meanings.

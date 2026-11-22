@@ -1,0 +1,394 @@
+schemaVersion:string = "1"
+id:string = "aeonic-temporal-known-offset-v1-snapshot-0-1"
+title:string = "Aeonic Known-Offset Coordinate v1 Snapshot 0.1"
+description:string = "Exact known-offset conversion and relations with original-claim preservation and aggregate admission."
+created:date = 2026-11-22
+modified:date = 2026-11-23
+family:string = "aes"
+group:string = "Semantic Language"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aes/v1/aeonic-temporal-known-offset/snapshot-0.1"
+order:number = 49
+publish:boolean = false
+keywords:list<string> = ["AEON", "temporal", "known offsets", "exact sets", "proposal"]
+related:list<string> = ["aeonic-semantic-language-v1", "aeonic-temporal-civil-datetime-v1", "aeon-core-v1-value-types", "aeon-gp-temporal-v1"]
+specSnapshotId:string = "aeonic-temporal-known-offset-specs-v1-snapshot-0.1"
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # Aeonic Known-Offset Coordinate v1 Snapshot 0.1 [# known-offset-1]
+
+  Status: immutable compatibility snapshot
+  [$ aeonic-temporal-known-offset-specs-v1-snapshot-0.1], frozen 2026-11-23.
+  Proposal lifecycle and disabled publication are preserved. Existing profiles,
+  defaults and frozen artifacts retain their meanings and bytes. Implementations
+  MUST satisfy the
+  [@ /artifacts/assets/aeonic-operations/v1/snapshots/0.1/known-offset-contract.schema.json | closed snapshot schema]
+  and the semantic, admission and diagnostic rules here; schema validity alone
+  is insufficient. Matching CTS snapshot:
+  [$ aeonic-temporal-known-offset-cts-v1-snapshot-0.1]. Only a complete passing
+  genuine execution against that recognized immutable target supports a stable
+  implementation claim; artifact checks, fixture replay and native capacity
+  qualification establish separate facts. Consumer adoption remains explicit.
+
+  ## 1. Domain, capabilities and selection [# known-offset-2]
+
+  Profile: [$ aeonic.operations.temporal.known-offset.v1]. Complete independent
+  capabilities are [$ Aeonic.Operations.Temporal.KnownOffset.Conversion], requiring
+  [$ convert], and [$ Aeonic.Operations.Temporal.KnownOffset.Relations], requiring
+  [$ equal], [$ compare] and [$ relate]. Every admitted semantic case in a claimed
+  capability is required. Host-declared availability is not enabled by a request.
+  Relations-only implementations consume externally produced bundles without a
+  conversion producer. Neither claim requires another public temporal capability.
+
+  This is ordinary ISO/proleptic Gregorian offset-coordinate arithmetic with
+  86,400 coordinate seconds per day. It does not verify physical UTC alignment,
+  clock realization, leap authority or exact elapsed SI/UTC time. Missing facts
+  are never inferred from the host timezone, locale, current date or database.
+  Coordinate shifts/differences, literal materialization, calendar arithmetic,
+  offset assignment to unqualified values and timezone/WTC resolution are deferred.
+
+  Require profile in [$ input.policy.profile] or [$ input.context.profile]. Validate
+  both supplied configurations, then let policy override context and resolve only
+  the effective identifier. Malformed overridden configuration still fails; a
+  well-formed overridden unavailable identifier need not resolve. Missing selection
+  is [$ invalid_policy] at [$ /input/policy/profile]. An unavailable nonempty scalar
+  identifier is [$ unsupported_profile] at its selected field.
+
+  Requests contain exactly [$ operation] and [$ input]. Convert input requires
+  [$ value] and [$ policy], optionally [$ context]. Relations require [$ left] and
+  [$ right], optionally [$ policy] and [$ context]. Context has only optional
+  [$ profile]. Convert policy requires [$ destinationOffset] and optionally [$ profile];
+  relation policy has only optional [$ profile]. These objects are closed. Context
+  cannot supply a destination. Even same-frame/zero conversion names its destination.
+
+  ## 2. Authored admission and deferred claims [# known-offset-3]
+
+  An authored bundle contains required [$ temporal] and optional
+  [$ originDateGranularity], [$ originClockForm], [$ history], [$ clockModel],
+  [$ timescale]. Its descriptor has exactly [$ category: "knownOffsetDateTime"]
+  and scalar-string [$ value]. This category is a nominal admission envelope:
+  recognized unknown/unqualified/context-bearing forms are not silently stripped
+  or relabeled malformed merely because the category's name includes known offset.
+
+  A dated value has date then [$ T] then clock, optional offset, then optional
+  [$ &] context. Date shapes are [$ YYYY-], [$ YYYY-MM], [$ YYYY-MM-DD]. Year is
+  0001–9999; validate Gregorian dates, including leap days. Dated clocks are [$ HH],
+  [$ HH:], [$ HH:MM], [$ HH:MM:SS] with an optional ASCII decimal fraction on seconds.
+  A date-less nominal clock is [$ HH:], [$ HH:MM] or [$ HH:MM:SS] with optional
+  fraction and offset, without a leading T or an & context. Both dated hour forms
+  have hour origin. Fields have stated widths, hours 00–23, minutes 00–59 and
+  nominal seconds 00–60. Fraction has one or more ASCII digits. A context is one
+  or more ASCII letters/digits or slash, underscore, hyphen, plus, dot. No whitespace,
+  decimal comma, overflow normalization or [$ 24:00] is admitted.
+
+  Offsets are [$ Z] or signed whole-minute [$ HH:MM], with hours 00–23 and minutes
+  00–59. [$ -00:00] is the recognized unknown-offset form; it is not known zero.
+  No civil-zone whitelist or offset seconds is admitted. These admission rules are
+  contract-local and do not change Core syntax/preservation or assert validity in
+  an authority-backed UTC model.
+
+  At stage 4 validate the complete nominal text, intrinsic Gregorian/clock ranges
+  and supplied metadata. Before any completion expansion, remember whether the
+  value is deferred: missing date, missing/unknown offset, second 60, any & context,
+  or supplied clockModel/timescale. At stage 5 any such operand returns
+  [$ unsupported_domain] at its temporal category path. No completion pieces are
+  constructed or charged for a deferred authored form; text/fraction/request guards
+  still apply. Validating right input still precedes a deferred left result.
+  Malformed nominal text is [$ invalid_operand] at stage 4, not a deferred success.
+
+  If supplied, clockModel/timescale must each be nonempty scalar strings, checked
+  at stage 4, then rejected as explicit deferred claims at stage 5. This holds for
+  known vocabulary and unknown future declarations alike: this profile assesses
+  neither. Missing declarations mean undeclared realization, never verified direct
+  UTC. Adapter authors MUST NOT omit supplied extra claims to manufacture eligibility.
+
+  Eligible authored hour/minute forms cover a half-open hour/minute on every
+  compatible date; explicit seconds cover one exact coordinate on every compatible
+  date, not a measurement bin. Keep all dates of a reduced month/year, never fill
+  missing fields or substitute a continuous hull. Preserve authored spelling at
+  admission, including fractional trailing zeroes. Fraction digits are exact.
+
+  ## 3. Derived sets and metadata [# known-offset-4]
+
+  ~~~$ json
+  {
+    "temporal": {
+      "category": "knownOffsetDateTimeSet",
+      "offset": "Z",
+      "pieces": [{ "kind": "point", "at": "2024-03-01T09:00:00" }]
+    },
+    "originDateGranularity": "day",
+    "originClockForm": "second",
+    "history": { "clamping": "none-declared", "approximation": "none-declared" },
+    "originalOffset": "+01:00"
+  }
+  ~~~$
+
+  Derived bundles require every field shown; optional clockModel/timescale use the
+  same validate-then-defer rule. Descriptor fields are exactly category, offset,
+  pieces. Input offset admits unknown -00:00 structurally, then rejects it at stage
+  5; successful bundles always have a known frame. Pieces describe local coordinates
+  in that one frame. All ordinary coordinates are canonical full
+  [$ YYYY-MM-DDTHH:MM:SS] with optional nonzero fraction ending in a nonzero digit.
+  Seconds are 00–59. Derived second 60 is malformed canonical coordinate input, unlike
+  a nominal authored second-60 admission. Validate actual dates. Trim fractional
+  trailing zeroes and omit a zero fraction in produced coordinates; incoming derived
+  text must already be canonical. Never round or establish a fixed temporal grid.
+
+  A point has exactly [$ kind: "point"] and [$ at]. An interval has exactly
+  [$ kind: "interval"], [$ start], [$ end], [$ includeStart], [$ includeEnd]. Flags
+  are Boolean endpoint membership, not predicate outputs. Start is strictly before
+  end. Singletons use points; all zero-width intervals are invalid. The sole special
+  endpoint is [$ {"boundary":"endOfDomain"}], permitted only as an excluded interval
+  end, denoting the start of year 10000 in this set's own frame. It cannot be an
+  included end, point, start, infinity or authored literal.
+
+  Pieces are nonempty, ascending, nonoverlapping, without redundant points or
+  exactly mergeable neighbors. Compare coordinates exactly by date, clock and
+  fraction with virtual zero padding. Adjacent pieces are separate only when their
+  touching coordinate is excluded by both. Never sort/repair incoming sets or fill
+  a missing point. Validate a piece completely before cross-piece canonicality;
+  reject overlap/unsorted/mergeable input at the offending at/start, nonpositive
+  width at end, and an included upper marker at includeEnd.
+
+  Origins use year/month/day/undeclared and hour/minute/second/undeclared.
+  History is the closed object with clamping none-declared/clamping-declared and
+  approximation none-declared/approximation-declared. Authored omitted origins
+  are inferred independently from shape; omitted history defaults both markers
+  to none-declared. Derived markers are required and never inferred from endpoints.
+  Valid explicit origins remain descriptive history even when differing from the
+  current shape. No marker selects coverage or implies an uncertainty interval.
+
+  originalOffset is a known offset string or [$ "undeclared"]. For authored input
+  initialize from the eligible suffix; authored bundles do not admit a separate
+  originalOffset override. For derived input require it explicitly. Undeclared
+  source history can coexist with a required known current frame. A historical
+  known offset need not match that frame. It does not reinterpret current coverage
+  or authenticate provenance. Repeated conversion preserves it unchanged, retaining
+  original Z versus +00:00 identity. Detailed source literals/logs remain application
+  provenance rather than a required standard operation log.
+
+  Other recognized descriptor categories are civilDate, civilDateSet, civilDateTime,
+  civilDateTimeSet, civilClock, civilClockSet, finiteNumber, exactNumber, exactRational,
+  string, boolean, symbol, positiveInfinity, negativeInfinity, nan, explicitNull,
+  explicitAbsence, toggle, hex, radix, encoding, separator, sansaAddress, referenceForm,
+  temporal, container. Validate their containing bundle/supplied origins, history
+  and claim strings; their descriptor payload is opaque after a present recognized
+  string category. Stage 5 rejects at category. Unknown categories are invalid.
+  These deferred bundles allow the authored optional fields but not originalOffset.
+  Opaque payloads still pay request admission. No tag can opt out of required cases.
+
+  ## 4. Translation, bounds and relations [# known-offset-5]
+
+  For reasoning let x be exact local ordinary seconds since 0001-01-01T00:00:00 and
+  o the signed offset in seconds. The common coordinate position is x minus o.
+  This is a mathematical chart, not a claim about physical clock realization.
+  Conversion from source o to destination d translates every coordinate by d minus
+  o. Preserve flags, gaps, order and piece count. No day/second/interior enumeration
+  or midnight splitting is required. Internal representations are implementation
+  choices; host binary rounding or fixed precision changes are forbidden.
+
+  Let B = 315537897600 be the excluded upper local boundary. All represented
+  coverage must remain inside the local domain from zero inclusive to B exclusive.
+  A translated end may equal B only when excluded, and must emit the marker there.
+  Translate the source marker's actual coordinate; when it lands inside the target
+  domain, emit an ordinary endpoint. Beyond-boundary exclusions still imply
+  out-of-domain coverage. Reject the whole conversion with unrepresentable_result;
+  never clip, widen or emit partial/empty coverage. For a nonempty positive-width
+  piece, lower bound zero is legal with either inclusion flag.
+
+  Relations compare exact common-position sets, admitting wider internal positions
+  without imposing a hypothetical stored zero-frame domain check. Frame spelling,
+  origins, histories and originalOffset do not affect covered-set equality.
+
+  - equal returns symbols equal or notEqual for exact equality.
+  - compare returns equal for identical sets, before only if every left member is
+    strictly earlier than every right member, after for the converse, otherwise
+    indeterminate. A half-open minute is before its excluded ending point. Disjoint
+    interleaved sets may compare indeterminately; this is not a total sorting order.
+  - relate returns exactly equal, strict contains, strict containedBy, overlaps
+    for a shared member without containment, or disjoint.
+
+  For example 10:00:00+01:00 and 09:00:00Z on the same full date compare equal.
+  0001-01-01T00:30:00+01:00 is before 0001-01-01T00:00:00Z, but converting the first
+  to Z fails bounds. The final year-9999 minute at +02:00 converted to +01:00 has
+  ordinary upper endpoint 9999-12-31T23:00:00, not an unchanged source marker.
+
+  ## 5. Closed successes and diagnostics [# known-offset-6]
+
+  Success has exactly outcome value, value and metadata. Conversion value is a
+  complete derived bundle; pass that value, not the response envelope, to another
+  operation. Preserve both origins, both sticky histories and originalOffset.
+  Conversion changes only local coordinates and the current frame. Reversing or
+  zero conversion never clears histories. No new clamping/approximation is applied.
+
+  Metadata has evaluation exact-for-policy, clamping not-applied and effectivePolicy.
+  For conversion effectivePolicy has exactly resolved profile and destinationOffset;
+  for relations it has exactly profile. Relations value is the existing closed
+  symbol descriptor with category symbol and the unwrapped symbolic name as value.
+  Its metadata additionally requires operandHistory, operandOrigin and
+  operandOriginalOffset, each with exactly left and right. Origins contain exactly
+  dateGranularity and clockForm. Exact current evaluation makes no source accuracy,
+  UTC realization, provenance authentication or uncertainty claim.
+
+  Diagnostic has exactly outcome diagnostic, reason and context, optionally scalar
+  message. Context has exactly integer stage 1–7 and path, a JSON Pointer or null.
+  A diagnostic has no value or successful metadata. Reasons are invalid_operand,
+  unsupported_operation, invalid_policy, unsupported_profile, unsupported_domain,
+  unrepresentable_result, resource_limit. Empty/noncanonical/malformed operands are
+  invalid_operand; recognized deferred operands are unsupported_domain. Invalid or
+  missing destination is invalid_policy, including -00:00. No failure automatically
+  produces a Boolean, symbol, null or empty temporal set.
+
+  ## 6. Ordered validation [# known-offset-7]
+
+  Stop at the first failing substep in the following order.
+
+  1. Scalar text, actual logical JSON UTF-8 bytes and per-path container depth before
+     deeper decoding: invalid_operand or reached resource_limit, null path.
+  2. Strict JSON/duplicate keys; closed envelope/input structure, operation
+     availability, operation-specific arity: invalid_operand or unsupported_operation.
+     Duplicate keys are invalid_operand at stage 2 with null path.
+  3. Context object, policy object/required destination, context profile, policy
+     profile, destination value, then effective profile selection/availability:
+     invalid_policy or unsupported_profile. A missing destination wins over malformed
+     supplied profiles; a malformed destination wins over unavailable profile.
+  4. Conversion value, or relation left then right. Validate category, bundle
+     metadata/closure, descriptor closure, text/precision, canonicality and aggregate
+     expansion allowance at the points below: invalid_operand or resource_limit.
+  5. Deferred domain rejection in operand order, unsupported_domain at category.
+  6. Full work count, conversion candidate count, then conversion result bounds:
+     resource_limit before unrepresentable_result. Relations have no candidates or
+     stored result-domain test. Operation failures have null path.
+  7. Final output piece count, then successful compact result bytes: resource_limit
+     with null path. Required diagnostics are never recursively suppressed by the
+     successful-output byte limit.
+
+  Within a closed object check required fields in their schema order, then unknown
+  keys in decoded Unicode-scalar order. JSON Pointer escapes are standard. At stage
+  2 require operation then input, reject unknown request fields, require input object,
+  reject unknown generic input fields (left/right/value/context/policy vocabulary),
+  check operation availability, then required arity and unexpected known fields.
+  Relations require left then right. Conversion requires value; policy's required
+  presence/destination is a stage-3 policy check rather than a stage-2 arity failure.
+
+  At stage 4 require temporal object and string category first. Supported derived
+  bundles then require date origin, clock origin, history, originalOffset, reject
+  unknown bundle fields, validate history (clamping then approximation), date origin,
+  clock origin, originalOffset, clockModel, timescale. Authored/deferred supplied
+  metadata use the same order, with absent authored defaults applied after valid
+  nominal parsing. Descriptor required/unknown fields precede payload. A set checks
+  offset before pieces. Empty arrays fail before length capacity. Charge full array
+  length against the remaining aggregate input allowance before visiting contents.
+  Each piece checks required/unknown fields, at/start, end, flags, boundary placement,
+  width and cross-piece canonicality, in that order.
+
+  A literal/ordinary coordinate's decoded character length is guarded before parse;
+  fraction length, including authored trailing zeroes, before fractional conversion
+  or derived trailing-zero canonicality. Nominal intrinsic validity precedes expansion
+  count. Only otherwise eligible authored forms consume their completion-piece count;
+  check this against the remaining request-wide allowance before allocation. Derived
+  arrays consume their supplied length even if a later eligibility check defers them.
+  Earlier stage-4 failures in left input precede all right validation. Within a later
+  operand, a reached remaining-capacity failure precedes an unvisited payload error.
+
+  Input piece failures use the reached operand's temporal/pieces path for a derived
+  array, temporal for authored expansion. Text/fraction/lexical errors use value or
+  the coordinate field. Derived input offset errors use offset. Nominal deferred
+  forms and supplied extra claims use category at stage 5. History/origin/claim
+  shape errors name the reached field. Operation budgets, bounds and final output
+  failures use null paths. These are semantic contract pointers, not outer CTS paths.
+
+  ## 7. Portable resources and harness boundary [# known-offset-8]
+
+  Conversion charges one work unit and one intermediate candidate per expanded
+  input piece P. Relations charge L + R work units. Neither enumerates an interval's
+  interior dates or coordinates nor constructs a Cartesian product. Optimizations,
+  early relation answers and same-frame conversion retain the complete portable
+  charge. Successful conversion preserves P canonical pieces. Expanded input,
+  intermediate candidates and canonical output are independently limited.
+
+  The explicit CTS baseline is maxRequestBytes 65536, maxRequestDepth 32,
+  maxTemporalCharacters 1024, maxInputPieces 1024, maxIntermediatePieces 1024,
+  maxOutputPieces 1024, maxWork 2048, maxFractionDigits 256, maxResultBytes 262144.
+  These are test settings, not measured native defaults. maxInputPieces is a total
+  across operands, unlike the existing civil date-time per-operand allowance; existing
+  contracts/snapshots are unchanged. Two leap-year literals can fit together.
+
+  Character limits count decoded Unicode scalars; byte limits count logical UTF-8.
+  For structured logical requests, maxRequestBytes measures compact JSON with no
+  insignificant whitespace and minimal string escaping. Surround each key/string
+  with quotes; escape quotation mark and reverse solidus; use the two-character
+  JSON escapes for backspace, form feed, newline, carriage return and tab. Encode
+  other U+0000–U+001F controls as six ASCII characters using a lowercase hexadecimal
+  Unicode escape. Emit every other Unicode scalar as its literal UTF-8 bytes,
+  including non-ASCII, non-BMP, U+2028 and U+2029; do not ASCII-escape these or escape
+  solidus. Reject unpaired surrogates rather than replacing them. Use one colon
+  between each key/value and one comma between members/elements; container braces,
+  brackets and literal tokens contribute their actual bytes. Key order does not
+  affect byte count. Preserve supplied raw numerical token spellings in structured
+  CTS requests, including -0 and large exponents; a native API documents its mapping
+  of host numbers to logical token values before this measurement and cannot recover
+  source spellings already lost by a caller.
+
+  Raw requestText instead pays its supplied UTF-8 bytes verbatim, including
+  whitespace, escape spellings and numerical tokens. Never parse and compact it
+  before measuring. For both forms, container depth counts the logical root object
+  or array as one, each directly nested object/array adds one, and scalar children
+  add nothing. Do not count outer CTS envelopes, raw-string wrapping or implementation
+  token wrappers as logical containers. Guard bytes and depth incrementally before
+  deep decoding/materialization; a deep raw fixture must reach its stage-1 limit
+  diagnostic without relying on the host JSON decoder's recursion capacity.
+
+  Fractions count supplied ASCII digits including trailing zeroes. Input arrays
+  and eligible literal expansions pay the full count. Result bytes use the same
+  minimal escaping and compact encoding for the entire successful logical envelope,
+  including all metadata. Piece maxima do not guarantee every precision/metadata
+  combination fits the byte limit. Use bounded/saturating arithmetic before
+  allocations. Structured and raw representations of the same logical value may
+  therefore have different byte counts, but each has one defined counting recipe.
+
+  All limits are per operation; applications manage chain budgets. Trusted limits
+  are outside logical policy/context and must be an object of known nonnegative
+  safe integers. Explicit null, arrays, booleans, fractional/unsafe values and
+  unknown names are harness errors, not defaults or operation diagnostics. Omitted
+  known fields may use documented native defaults; CTS supplies complete maps.
+
+  Raw JSON admission preserves numeric token spelling and duplicate-key evidence
+  inside opaque payloads, including negative zero and oversized exponents. Native
+  structured admission handles cycles/depth/shared graphs in bounded work without
+  exponentially re-expanding shared subtrees. Document host-specific unsupported
+  getters/proxies/subclasses as host boundaries, not semantic opt-outs. Unknown
+  logical fields never raise trusted capacities. No timeout or private optimization
+  changes the portable admission recipe.
+
+  ## 8. Conformance boundaries [# known-offset-9]
+
+  CTS MUST check each complete capability independently, all four operations
+  for combined claims, exact cross-offset coverage, flags/gaps, reduced-date
+  completion, fractions, frame/zero identity and metadata. Combined and conversion
+  claims exercise actual returned-value chains; expected bundles may validate
+  fixtures but cannot substitute for the SUT's returned bundle at execution time.
+  Relations verify symmetry/inversion and strict-before transitivity without a
+  sorting API. Law inputs MUST include a distinct-input equality pair and at least
+  one strict-before transitivity witness; passing zero assertions for a required
+  law is not coverage. Conversion claims require a successful linked conversion-to-
+  conversion chain. Relations claims require a non-vacuous relation law group;
+  combined claims additionally require a successful linked conversion-to-relation
+  chain. Reject a target lacking the selected capability's required
+  coverage before reporting artifact validity or a complete execution pass.
+  Compound failures verify the exact stages/paths above.
+
+  Artifact/schema validation is not implementation execution or stable conformance.
+  Capacity probes are separate from mandatory semantic cases. Mutable next 0.2
+  remains separate and cannot establish this snapshot's stable claim. Snapshot
+  capture preserves semantics, fixtures and allowances; it does not promote the
+  specification lifecycle. No physical UTC/authority resolution, package release
+  or other implementation claim follows from this capture.
+`
