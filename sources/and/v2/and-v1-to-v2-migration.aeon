@@ -3,11 +3,11 @@ id:string = "and-v1-to-v2-migration"
 title:string = "&ND Core v1 to v2 Migration Guide"
 description:string = "Compatibility rules and mechanical upgrade guidance for moving &ND Core v1 documents and tools to v2."
 created:date = 2026-08-20
-modified:date = 2026-08-24
+modified:date = 2026-11-23
 family:string = "and"
 group:string = "&ND"
 standing:string = "official"
-lifecycle:string = "proposal"
+lifecycle:string = "draft"
 normativity:string = "informative"
 license:string = "CC-BY-4.0"
 path:string = "specification/and/v1-to-v2-migration"
@@ -22,8 +22,7 @@ body:prose = >`
 
   # &ND Core v1 to v2 Migration Guide [# nd-core-v1-to-v2-migration-guide]
 
-  This guide describes migration to the frozen [$ &ND Core v2] proposal baseline. It does not announce
-  a published v2 specification.
+  This guide describes migration to the [$ &ND Core v2] draft and its implemented compatibility rules.
 
   ## 1. Compatibility Rule [# compatibility-rule]
 
