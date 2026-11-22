@@ -3,7 +3,7 @@ id:string = "aeon-core-v1-compliance"
 title:string = "AEON Core v1 Compliance Specification"
 description:string = "Conformance requirements for implementations, including required syntax support, reference legality, policy controls, and canonical rendering rules."
 created:date = 2026-03-25
-modified:date = 2026-11-15
+modified:date = 2026-11-22
 family:string = "aeon"
 group:string = "Core Specifications"
 standing:string = "official"
@@ -182,6 +182,31 @@ body:prose = >`
   2. allow untyped bindings in transport mode;
   3. require datatype presence on non-header bindings and value-carrying attribute entries in typed modes ([$ strict] and [$ custom]);
   4. emit deterministic mismatch diagnostics when an explicit reserved datatype does not match the bound literal kind.
+
+  #### 7.1.1 Generic Parameter Semantics [# generic-parameter-semantics]
+
+  A generic argument is a datatype descriptor that declares a type or domain relationship for the annotated value. The enclosing datatype and annotation context determine how to interpret the relationship, subject to the applicable Core rules and any active schema, profile, convention, or consumer rule. A declaration supplies a claim. Establishing its validity requires the checks defined for that relationship.
+
+  Core MUST enforce the existing generic syntax, depth, and datatype restrictions and preserve accepted arguments as part of the datatype descriptor. The argument alone does not require the represented value to belong to the declared domain. A Core parser MUST NOT convert, evaluate, compute, or substitute a value solely because a generic argument is present. The represented value retains its value family and content.
+
+  ~~~$ aeon
+  missingNumber:null<number> = !none
+  missingString:null<string> = !none
+  items:list<number> = [1, 2, 3]
+  ~~~$
+
+  In [$ null<T>], [$ T] declares the domain of absence. Both null bindings above represent [$ NullLiteral] values. In [$ list<T>], [$ T] declares the expected element domain. Core checks compatibility with the outer [$ list] datatype and preserves the element-domain claim. A validator applying an applicable schema, profile, or convention can check whether each element satisfies [$ T]. See the [@ document:aeon-core-v1-value-types | Value Types Reference] for individual datatype rules and [@ document:aeon-core-v1-structure-syntax | Structure and Syntax] for the generic descriptor syntax.
+
+  A future mathematical convention with support for parameterized symbolic rationals could define forms such as these.
+
+  ~~~$ text
+  a:rational<number> = |1/3|
+  b:rational<decimal> = |1/3|
+  ~~~$
+
+  The convention would define the domain relationship independently of whether the fraction has a finite representation in that domain. The generic would describe the symbolic value without requesting an approximation.
+
+  Core conformance checks can verify the accepted descriptor and the preserved value family and payload. Checks that depend on an additional schema, profile, or convention belong to the corresponding validation target.
 
   ### 7.2 Mode-Driven Datatype Acceptance [# mode-driven-datatype-acceptance]
 

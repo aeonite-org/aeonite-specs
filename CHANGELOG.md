@@ -17,6 +17,11 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Clarify that generic arguments declare relationships defined by the enclosing
+  datatype and annotation context. Document the domain of absence for `null<T>`,
+  the expected element domain for `list<T>`, and the boundary between Core
+  conformance and validation under an active schema, profile, or convention.
+
 - Reserve radix16 as the fixed base-16 radix alias and document its literal
   family, AES metadata and SANSA target handling. Informative ABNF revision 0.5
   refreshes recognition evidence against the amended draft and development CTS.
