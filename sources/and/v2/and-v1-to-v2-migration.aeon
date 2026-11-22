@@ -99,13 +99,17 @@ body:prose = >`
 
   ## 6. AEON Typed Scalars [# aeon-typed-scalars]
 
-  v2 adopts exact AEON anonymous typed-scalar assignment:
+  The explicit form uses AEON anonymous typed-scalar assignment.
 
   ~~~$ and
   [:date = 2026-08-20]
   [:number = 1000.5]
   [:radix[2] = %1011]
   ~~~$
+
+  Use [$ \\[: 2024-01-01\\]] to infer [$ date] from the literal. Canonical output expands the shorthand
+  to [$ \\[:date = 2024-01-01\\]]. Use the explicit form to supply a custom datatype, generic argument,
+  or clarifier.
 
   The earlier equals-free experiment migrates as follows:
 
@@ -124,7 +128,7 @@ body:prose = >`
   | [$ \\[! ...\\]], [$ \\[? ...\\]], [$ \\[+ value\\]] | Advisory, question, and consumer-tag nodes |
   | [$ \\[~ source \\| alt \\| mode\\]] | Inline image |
   | [$ \\[- ...\\]], [$ \\[" ...\\]], [$ \\[' ...\\]], [$ \\[= ...\\]], [$ \\[_ ...\\]] | Rich inline presentation nodes |
-  | [$ \\[:type = scalar\\]] | AEON typed scalar |
+  | [$ \\[:type = scalar\\]], [$ \\[: scalar\\]] | AEON typed scalar with an explicit or inferred datatype |
   | [$ - \\[ \\] content], [$ - \\[x\\] content], [$ - \\[,\\] content], [$ - \\[;\\] content] | First-class todo list and item states |
   | [$ \\[>\\]], [$ \\[<\\]] | Direction markers; leading unordered-item arrows replace bullets |
   | [$ \\[.\\]] | Explicit inline line break, never a direction marker |

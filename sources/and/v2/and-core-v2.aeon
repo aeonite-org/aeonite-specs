@@ -133,7 +133,7 @@ body:prose = >`
   | [$ \\[- ...\\]] | rich struck content | Core |
   | [$ \\[" ...\\]] | rich quoted inline content | Core |
   | [$ \\[' ...\\]] | rich inline comment content | Core |
-  | [$ \\[:type = scalar\\]] | exact AEON typed syntax over the closed inline-scalar subset | Core syntax + convention |
+  | [$ \\[:type = scalar\\]], [$ \\[: scalar\\]] | AEON inline scalar with an explicit or inferred datatype | Core syntax + convention |
   | [$ \\[= ...\\]] | rich highlighted content | Core |
   | [$ \\[_ ...\\]] | rich underlined content | Core |
   | [$ \\[.\\]] | inline line break | Core |
@@ -161,16 +161,18 @@ body:prose = >`
   omitted while mandatory alt text remains available; invalid bases fail with
   [$ invalid_image_base_url].
 
-  The promoted typed-value form adopts exact AEON anonymous typed-scalar syntax, including the
+  The explicit typed-value form uses AEON anonymous typed-scalar syntax, including the
   mandatory [$ =], structured generic arguments and clarifiers, reserved datatype aliases, literal-family
   compatibility, string escapes, and scalar canonicalization. Supported families are string, finite
   number, infinity, NaN, null, Boolean, toggle, hex, radix, encoding, date/time/datetime/WTC,
   separator literals, SANSA addresses, and custom datatype labels over those scalars. Structured
   values, references, nested typed values, trimticks, [$ prose], and multiline strings remain outside the
-  inline subset.
+  inline subset. The &ND shorthand [$ \\[: scalar\\]] requires a space after the colon and
+  infers the datatype from the AEON literal family. The shorthand has the same AST and canonical
+  output as the corresponding explicit assignment.
 
   The reference implementation pins this boundary as machine-readable contract
-  [$ and-v2-aeon-inline-scalar-v1], aligned with AEON TypeScript package version [$ 0.12.1]. Mandatory
+  [$ and-v2-aeon-inline-scalar-v1], aligned with AEON TypeScript package version [$ 0.13.0]. Mandatory
   dependency-free snapshots cover the &ND AST, canonical text, and HTML projection; an optional sibling
   repository check detects lexer, parser, or canonicalizer drift in the corresponding AEON forms.
 
@@ -187,6 +189,8 @@ body:prose = >`
   - [$ seed-v2-inline-comment-tag-enabled]
   - [$ seed-v2-inline-typed-value-enabled]
   - [$ seed-v2-inline-typed-value-aeon-scalars]
+  - [$ seed-v2-inline-typed-value-inferred-date]
+  - [$ seed-v2-inline-typed-value-inferred-invalid-date]
   - [$ seed-v2-inline-highlight-tag-enabled]
   - [$ seed-v2-inline-underline-tag-enabled]
   - [$ seed-v2-inline-line-break-marker-enabled]
@@ -468,7 +472,7 @@ body:prose = >`
 
   The v2 proposal remains test-first.
 
-  The implementation repository contains an executable 174-fixture v2 proposal lane. It is design
+  The implementation repository contains an executable 176-fixture v2 proposal lane. It is design
   pressure, not a published conformance requirement. The normative v1 lane remains independently
   reviewable. The proposal runner additionally checks v1 compatibility, headerless effective-version
   equivalence, standalone and embedded canonical fixed points, inert HTML projection, nested v2
