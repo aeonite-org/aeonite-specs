@@ -204,6 +204,8 @@ body:prose = >`
   b:rational<decimal> = |1/3|
   ~~~$
 
+  In modes that allow custom datatypes, current Core rules reject both bindings with [$ DATATYPE_LITERAL_MISMATCH]. AEON Core would first need to admit these parameterized datatype annotations on symbolic literals before a convention could interpret their arguments.
+
   The convention would define the domain relationship independently of whether the fraction has a finite representation in that domain. The generic would describe the symbolic value without requesting an approximation.
 
   Core conformance checks can verify the accepted descriptor and the preserved value family and payload. Checks that depend on an additional schema, profile, or convention belong to the corresponding validation target.
