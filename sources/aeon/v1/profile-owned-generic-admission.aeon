@@ -51,7 +51,7 @@ body:prose = >`
   through a reference. A node head admits arguments only on [$ node]. A
   directly applied binding-side [$ node] descriptor admits [$ node] or custom
   arguments. Evaluate a nested descriptor in its argument position. The
-  binding-side condition does not apply to [$ list<node<radix\[2\]>>].
+  binding-side condition does not apply to [$ list<node<radix\\[2\\]>>].
   GP continues to reject explicit clarifiers on node heads and on [$ symbol].
 
   In strict mode [$ duration:symbol<time> = |1min|] preserves the symbolic
@@ -62,7 +62,7 @@ body:prose = >`
 
   [$ set.to.eleven.v1] applies no generic or clarifier admission policy.
   Core syntax, literal-family compatibility and resource limits still apply.
-  One test case is [$ duration:symbol<time>\["minutes"\] = |1min|].
+  One test case is [$ duration:symbol<time>\\["minutes"\\] = |1min|].
 
   AEOS argument-count constraints and binary compatibility qualification are
   separate work on the proposal.
