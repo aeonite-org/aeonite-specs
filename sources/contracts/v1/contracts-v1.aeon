@@ -3,7 +3,7 @@ id:string = "aeon-v1-contracts"
 title:string = "AEON v1 Contracts Specification"
 description:string = "Contract-layer specification covering contract identifiers, artifact shapes, registry format, and the boundary between core processing, contracts, and consumer policy."
 created:date = 2026-03-25
-modified:date = 2026-09-30
+modified:date = 2026-11-27
 family:string = "contracts"
 group:string = "Contracts Overview"
 standing:string = "official"
@@ -100,6 +100,7 @@ body:prose = >`
   | [$ collections] | yes | object<string, collection> | normative GP semantics for collection shapes |
   | [$ containers] | yes | object<string, container> | normative GP semantics for object/node shapes |
   | [$ datatype_semantics] | yes | object<string, datatype semantics> | normative GP semantics for datatype-family interpretations |
+  | [$ generic_admission] | no | object | profile-owned admission rules for generic datatype claims |
   | [$ capabilities] | yes | object<string, boolean> | required processor support for GP profile claims |
   |~ Profile contract top-level keys
 
@@ -162,11 +163,34 @@ body:prose = >`
   clarifier from [$ 2] through [$ 64]. [$ separator_chars] requires one or more string
   clarifiers. [$ encoding_name] requires exactly one string clarifier.
 
-  Current baseline profile artifact:
+  The GP profile artifact version [$ 1.1.0] declares generic admission through
+  [$ generic_admission]. When trusted policy selects this GP profile, apply its
+  generic admission rules alongside the effective datatype policy and the
+  separate clarifier rules in [$ datatype_semantics].
+
+  | Key | Type | GP meaning |
+  | <-- | <-- | <-- |
+  | [$ reserved_datatypes] | list<string> | closed list of reserved datatype names that admit generic arguments |
+  | [$ custom_labels] | boolean | permits generic arguments on custom labels admitted by the effective datatype policy |
+  | [$ custom_value_kinds] | list<string> | closed list of value kinds permitted for an assigned custom generic annotation, evaluated on the value reached through a reference when applicable |
+  | [$ node_head_datatypes] | list<string> | closed list of datatype names that admit generic arguments on a node head |
+  | [$ binding_node_reserved_arguments] | list<string> | closed list of reserved datatype names permitted as immediate arguments of a binding-side [$ node] annotation |
+  |~ GP generic admission record keys
+
+  GP admits custom datatype arguments alongside the listed reserved arguments
+  on a directly applied binding-side [$ node] annotation. Apply these rules
+  recursively according to each descriptor's position. In
+  [$ list<node<radix\\[2\\]>>], the nested [$ node] is in an argument position.
+
+  Strict GP accepts [$ duration:symbol<time> = |1min|] and preserves the
+  symbolic value. The [$ time] argument is a datatype claim. GP rejects
+  explicit clarifiers on [$ symbol] and on node heads.
+
+  Current GP profile artifact:
 
   ~~~$ aeon
   profile_id = "aeon.gp.profile.v1"
-  profile_version = "1.0.0"
+  profile_version = "1.1.0"
   core_id = "aeon.core.v1"
   description = "General-purpose AEON profile baseline for v1."
   mode_default = "strict"
@@ -237,6 +261,13 @@ body:prose = >`
       literal_family = "EncodingLiteral"
       clarifiers = "encoding_name"
     }
+  }
+  generic_admission = {
+    reserved_datatypes = ["list", "tuple", "triple", "object", "node", "null", "nan", "infinity", "symbol"]
+    custom_labels = true
+    custom_value_kinds = ["ListNode", "TupleLiteral"]
+    node_head_datatypes = ["node"]
+    binding_node_reserved_arguments = ["node"]
   }
   capabilities = {
     references = true
@@ -353,7 +384,7 @@ body:prose = >`
       {
         "id": "aeon.gp.profile.v1",
         "kind": "profile",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "path": "profiles/aeon.gp.profile.v1.aeon",
         "sha256": "…",
         "status": "active"

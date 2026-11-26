@@ -17,6 +17,13 @@ This changelog follows the release-governance sections used by the AEON v1 draft
 
 ## Unreleased
 
+- Record profile-owned generic admission in `aeon.gp.profile.v1` artifact
+  version `1.1.0`. Trusted GP selection admits `symbol<time>` and applies
+  position-specific and custom collection rules to generic claims. Symbolic
+  clarifiers continue to be rejected. Consumers that require the `1.0.0`
+  contract can use the previously pinned artifact and registry revision.
+  Core, AES, canonical, and GP coverage remains in the experimental CTS targets.
+
 - Capture known-offset coordinate specification snapshot 0.1 with an isolated
   source/schema and distinct identities. Advance mutable next to 0.2 without
   changing profile semantics, schema structure, resource allowances or previous
