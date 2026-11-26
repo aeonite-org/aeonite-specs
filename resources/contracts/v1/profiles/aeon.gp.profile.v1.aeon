@@ -1,5 +1,5 @@
 profile_id = "aeon.gp.profile.v1"
-profile_version = "1.0.0"
+profile_version = "1.1.0"
 core_id = "aeon.core.v1"
 description = "General-purpose AEON profile baseline for v1."
 mode_default = "strict"
@@ -54,6 +54,10 @@ datatype_semantics = {
     literal_family = "SeparatorLiteral"
     clarifiers = "none"
   }
+  symbol = {
+    literal_family = "SymbolicLiteral"
+    clarifiers = "none"
+  }
   encoding = {
     literal_family = "EncodingLiteral"
     clarifiers = "encoding_name"
@@ -66,6 +70,13 @@ datatype_semantics = {
     literal_family = "EncodingLiteral"
     clarifiers = "encoding_name"
   }
+}
+generic_admission = {
+  reserved_datatypes = ["list", "tuple", "triple", "object", "node", "null", "nan", "infinity", "symbol"]
+  custom_labels = true
+  custom_value_kinds = ["ListNode", "TupleLiteral"]
+  node_head_datatypes = ["node"]
+  binding_node_reserved_arguments = ["node"]
 }
 capabilities = {
   references = true

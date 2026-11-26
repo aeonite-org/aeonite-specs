@@ -3,9 +3,9 @@
     {
       "id": "aeon.gp.profile.v1",
       "kind": "profile",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "path": "profiles/aeon.gp.profile.v1.aeon",
-      "sha256": "3e2c6edeb0a3c4608dbb467c3754cfee57452144ce10f5fa46ee000990d9e2ac",
+      "sha256": "85cdce9e20ff7407431825c51ea18b1013a738f0d2b60d72760a85a6910f438d",
       "status": "active"
     },
     {
