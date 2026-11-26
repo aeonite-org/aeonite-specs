@@ -1,0 +1,9 @@
+status = "proposal"
+profile_id = "aeon.gp.profile.v1"
+generic_admission = {
+  reserved_datatypes = ["list", "tuple", "triple", "object", "node", "null", "nan", "infinity", "symbol"]
+  custom_labels = true
+  custom_value_kinds = ["ListNode", "TupleLiteral"]
+  node_head_datatypes = ["node"]
+  binding_node_reserved_arguments = ["node"]
+}

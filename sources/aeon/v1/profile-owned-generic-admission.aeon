@@ -1,0 +1,69 @@
+schemaVersion:string = "1"
+id:string = "aeon-v1-profile-owned-generic-admission"
+title:string = "AEON Profile-Owned Generic Admission Candidate"
+description:string = "Draft Core descriptor and GP generic admission rules for the successor to the AEON 0.17.0 conformance targets."
+created:date = 2026-11-26
+modified:date = 2026-11-26
+family:string = "aeon"
+group:string = "Core References"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aeon-v1-documentation/profile-owned-generic-admission"
+order:number = 41
+publish:boolean = false
+keywords:list<string> = ["AEON", "datatype", "generic", "clarifier", "profile"]
+related:list<string> = ["aeon-core-v1", "aeon-core-v1-structure-syntax"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # AEON Profile-Owned Generic Admission Candidate [# profile-owned-generic-admission]
+
+  This proposal governs the mutable conformance targets for generic admission.
+  Released Core, profile, and CTS contracts keep their original expectations.
+
+  ## Core descriptor preservation [# core-descriptors]
+
+  A datatype descriptor in any legal annotation position may carry ordered,
+  nonempty type-descriptor arguments and a clarifier list. Nested descriptors
+  may carry both. Core enforces descriptor syntax, datatype and literal-family
+  compatibility, mode and datatype policy, and configured resource limits.
+  Literal values cannot serve as generic arguments. In custom mode
+  [$ r:rational<number> = |1/3|] preserves the custom claim and symbolic value.
+  Source canonicalization and AES preserve the descriptor and value family.
+  A generic claim does not by itself convert or materialize the payload.
+
+  ## General-purpose profile admission [# gp-admission]
+
+  Trusted selection applies the GP rules below. A document profile declaration
+  can serve as a routing hint. This candidate records the generic policy in a
+  separate record from the existing clarifier policy.
+
+  The candidate profile record is
+  [$ resources/contracts/candidates/gp-generic-admission.aeon].
+
+  The reserved list is closed. Custom labels may carry arguments when admitted
+  by the effective datatype policy. A custom annotation with arguments on an
+  assigned value requires a list or tuple, including when the value is reached
+  through a reference. A node head admits arguments only on [$ node]. A
+  directly applied binding-side [$ node] descriptor admits [$ node] or custom
+  arguments. Evaluate a nested descriptor in its argument position. The
+  binding-side condition does not apply to [$ list<node<radix\\[2\\]>>].
+  GP continues to reject explicit clarifiers on node heads and on [$ symbol].
+
+  In strict mode [$ duration:symbol<time> = |1min|] preserves the symbolic
+  value. The argument [$ time] names a reserved datatype. Its presence does
+  not turn the value into a time literal or assert a duration interpretation.
+
+  ## Permissive test profile [# permissive-test-profile]
+
+  [$ set.to.eleven.v1] applies no generic or clarifier admission policy.
+  Core syntax, literal-family compatibility and resource limits still apply.
+  One test case is [$ duration:symbol<time>\\["minutes"\\] = |1min|].
+
+  AEOS argument-count constraints and binary compatibility qualification are
+  separate work on the proposal.
+`
