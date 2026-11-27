@@ -1,0 +1,149 @@
+schemaVersion:string = "1"
+id:string = "aeon-v1-node-model-revision"
+title:string = "AEON Node Model Revision Candidate"
+description:string = "Draft v1 contract for tagged node bindings, shared reference paths, portable AES and SANSA."
+created:date = 2026-11-27
+modified:date = 2026-11-27
+family:string = "aeon"
+group:string = "Core References"
+standing:string = "official"
+lifecycle:string = "proposal"
+normativity:string = "normative"
+license:string = "CC-BY-4.0"
+path:string = "specification/aeon-v1-documentation/node-model-revision"
+order:number = 42
+publish:boolean = false
+keywords:list<string> = ["AEON", "node", "AES", "SANSA", "reference"]
+related:list<string> = ["aeon-core-v1", "aeon-core-v1-structure-syntax", "aes-events-v1", "telex-aes-v1", "film-aes-v1", "sansa-v1-property-selectors"]
+bodyFormat:string = "and-v2"
+
+body:prose = >`
+  &ND v2
+
+  # AEON Node Model Revision Candidate [# node-model-revision]
+
+  This candidate defines the revised node contract for development. Adoption
+  replaces the current node model within v1. Historical specification and
+  conformance snapshots retain their original interpretation. Record the
+  exact revision of the source contract, wire mapping and fixtures together
+  when publishing the revised v1 contract and its implementations.
+
+  ## Node declarations [# declarations]
+
+  A node is one binding with an intrinsic tag and an ordered child collection.
+  Its declaration begins with an angle bracket, then a nonempty bare or quoted
+  tag, an optional structural identity, an optional attribute block, an optional
+  datatype descriptor and optional parenthesised children. The closing angle
+  bracket completes the node. An empty child collection may omit its parentheses.
+  The children belong directly to the node. An explicit tuple among the children
+  uses its own parentheses.
+
+  In a document body, object or attribute block, the decoded node tag is the
+  binding key. A node and an ordinary entry with that key in the same scope
+  conflict. Attribute blocks supply their own named scope. Header recognition
+  follows the header grammar. A quoted node tag such as [$ <"aeon:header">]
+  declares an ordinary body binding.
+
+  In a list, tuple or node child collection, the node occupies a regular
+  positional slot. The index supplies its address. Repeated intrinsic tags
+  are valid in indexed scopes. Container nesting counts a node as one level.
+  Attributes and their traversal use the ordinary attribute-depth rules.
+
+  An explicitly keyed assignment to a node literal, or an anonymous wrapper
+  giving it external identity, attributes or type, is invalid in the revised
+  grammar. Use the node declaration to carry these properties. A typed
+  assignment to a reference remains an ordinary reference binding. Structural
+  identities use the current alphabet and document-wide uniqueness rules.
+
+  The node delimiter establishes its kind in strict mode. An optional inline
+  datatype in strict mode shall use [$ node] with any admitted generic arguments.
+  Other inline datatypes follow transport/custom admission. An inline
+  [$ node<T>] declares a domain for the direct children. Retain Core descriptor
+  preservation and profile-owned admission. An inline datatype denied by the
+  strict node rule reports [$ INVALID_NODE_DATATYPE].
+
+  ## Structural paths and reference availability [# structural-paths]
+
+  An exact AEON reference path and an exact SANSA structural path over the
+  corresponding portable AES document shall identify the same occurrence in
+  the same scope. This applies to quoted keys, positional children and explicit
+  attribute traversal. Top-level named nodes use their decoded tags in the path
+  and indexed nodes use their positions.
+
+  The following fragment illustrates the provisional syntax for the revised
+  grammar.
+
+  ~~~$ text
+  <tag("Hello", "World")>
+  first = ~tag[0]
+  second = ~>tag[1]
+  copy:node = ~tag
+  ~~~$
+
+  The clone and pointer target payloads are [$ $.tag\\[0\\]], [$ $.tag\\[1\\]]
+  and [$ $.tag] respectively. The occurrence at [$ $.copy] is a symbolic clone
+  reference. A reference written in a node's child collection takes one slot.
+  Source write-back after whole-node materialisation requires a separate
+  consumer decision.
+
+  A node's attached attributes are available to its children under the same
+  ordering rules as other bindings. References within its attribute block
+  obey ordinary sibling availability, so earlier attributes can be targeted
+  and a reference to a later sibling is rejected. Reference syntax admits
+  only fixed structural paths.
+
+  ## Portable AES node records [# portable-records]
+
+  The development record uses [$ kind=NodeLiteral] and a required nonempty
+  Unicode string [$ tag]. Use the tag's decoded spelling and the existing tag
+  length policy. This field carries the intrinsic tag even for a positional
+  node. A named node's tag equals the decoded terminal key in its record address.
+  Node records carry identity and datatype metadata and use ordinary attribute
+  descendant records. Emit attribute records before ordered child records.
+  The complete profile validates direct indexed children and their ordinary
+  positions beneath the node. A [$ NodeHead] record is invalid under the
+  revised model.
+
+  The candidate writes the tag as a distinct [$ tag] field in Telex v1 using
+  ordinary payload escaping. Canonical Telex writes it immediately after
+  [$ kind]. The Film v1 candidate encodes the tag as an ordinary string in the
+  kind-dependent payload slot for a tagged node. Allocate a distinct unused
+  Film kind code for that record and treat the former node and head codes as
+  invalid under the revised mapping. Numeric allocation and exact golden
+  bytes remain to be confirmed against the owning codec tables.
+
+  Use the entire source node declaration as the node record's provenance
+  span when source-backed. Preserve independent spans for attributes and
+  children. Integrity and canonical byte mappings shall include the
+  intrinsic tag. Verification of historical signed bytes uses the contract
+  that produced them.
+
+  ## SANSA and AEOS consumers [# consumers]
+
+  The node is selected directly by its path. Its children are direct
+  positional descendants and its attributes use the ordinary attribute-space
+  transition. SANSA [$ &tag()] filters the current occurrence using its
+  intrinsic node tag. [$ &key()] uses the incoming named key where the
+  scope admits it. Indexed nodes expose a tag and position. A scoped root
+  exposes its intrinsic tag and hides its incoming key.
+
+  Remove [$ &headTag()] from selector grammar and head enumeration from
+  the node property facet. Retain capability preflight, scope checks,
+  metadata validation and per-inspection accounting over the revised
+  occurrences. AEOS rule selectors use the same topology and intrinsic
+  tag metadata. Existing consumer admission controls govern each surface.
+
+  ## Canonical source and migration [# canonical-source]
+
+  Canonical source emits an empty node as [$ <tag>] and preserves ordered
+  children. Named nodes participate in normal reference-safe key ordering.
+  Canonical spelling of a quoted tag uses the decoded tag and the existing
+  quoting rules. The parser and canonical emitter preserve node identity,
+  metadata and direct reference paths.
+
+  A same-key collapse can keep its authored AEON reference paths. In portable
+  AES and SANSA, the same index can select a different occurrence after
+  cutover. Migrate different-key bindings, tag domain claims and separately
+  meaningful metadata case by case. Keep revisions coordinated across producers
+  and consumers because the v1 identifiers are shared by both revisions.
+`
