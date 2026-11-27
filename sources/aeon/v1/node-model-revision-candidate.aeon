@@ -113,12 +113,14 @@ body:prose = >`
   codes. The Film kind-dependent string maps to [$ tag], with no [$ value]
   field in the decoded logical record.
 
-  A missing or empty tag, an ill-formed Unicode tag, or a tag that differs from
-  the decoded terminal key of a named node uses [$ AES_INVALID_TAG]. A tag on
-  another recognized kind uses [$ AES_UNEXPECTED_TAG]. These rules apply to
-  complete and partial streams. Tag length counts Unicode code points against
-  [$ max_key_segment_codepoints]. Codecs count the decoded tag bytes under
-  their normal payload limits.
+  At the logical AES boundary, a missing or empty tag, an ill-formed Unicode
+  string, or a tag that differs from the decoded terminal key of a named node
+  uses [$ AES_INVALID_TAG]. A tag on another recognized kind uses
+  [$ AES_UNEXPECTED_TAG]. These rules apply to complete and partial streams.
+  Tag length counts Unicode code points against [$ max_key_segment_codepoints].
+  Telex counts the decoded tag bytes in its decoded payload allowance.
+  Film applies [$ max_field_bytes] to the encoded tag and rejects truncation or
+  invalid UTF-8 at its syntax stage before logical validation.
 
   Use the entire source node declaration as the node record's provenance
   span when source-backed. Preserve independent spans for attributes and

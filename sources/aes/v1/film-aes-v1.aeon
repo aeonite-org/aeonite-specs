@@ -54,9 +54,12 @@ body:prose = >`
   - Film-local resource counters; and
   - Film syntax and canonicality diagnostics.
   
-  Film v1 maps statically to [$ aes.events.v1]. An incompatible binary grammar or
-  mapping requires another Film format version. A new AES event contract does not
-  silently change the meaning of Film v1.
+  Each pinned Film v1 contract revision specifies its AES event mapping
+  statically. Incompatible changes to a released mapping normally require a new
+  Film format version. The coordinated tagged-node cutover in
+  [@ #tagged-node-development-mapping | section 6.1] is an explicit exception
+  within v1. Each participant selects that revision out of band. The original
+  immutable specifications and their artifacts retain their original mapping.
   
   ## 2. Design invariants [# 2-design-invariants]
   
@@ -341,8 +344,11 @@ body:prose = >`
   
   ### 6.1 Tagged-node development mapping [# tagged-node-development-mapping]
 
-  The tagged-node revision uses the same Film v1 preamble and record framing. Select this mapping by the pinned
-  contract revision. The preamble alone cannot identify the revision.
+  The tagged-node revision uses the same Film v1 preamble and record framing.
+  Select this mapping by the pinned contract revision. The preamble alone
+  cannot identify the revision. The cutover keeps old data and new data in
+  separately identified contexts, and durable writers still require the
+  release and deployment gates below.
 
   | Code | AES kind | Kind-dependent payload |
   | --> | --- | --- |
@@ -359,8 +365,12 @@ body:prose = >`
   development mapping. A semantic or syntax-record decoder rejects retired
   codes with [$ FILM_INVALID_KIND] at the kind byte.
 
-  The Film field byte limit applies to the encoded tag. Logical AES validation
-  requires a nonempty Unicode scalar string within the decoded key code-point
+  The Film field byte limit applies to the encoded tag. A missing or truncated
+  tag string is [$ FILM_TRUNCATED] and ill-formed UTF-8 is [$ FILM_INVALID_UTF8].
+  Both are Film syntax-stage failures. A well-framed empty tag is accepted by
+  syntax-only decoding and rejected by logical AES validation.
+
+  Logical AES validation requires a nonempty Unicode scalar string within the decoded key code-point
   limit and checks the decoded terminal key of a named node. Indexed nodes
   supply their own tag independently of the index. Completeness uses direct
   attribute and indexed paths beneath the node. In provenance, the node
@@ -833,8 +843,10 @@ body:prose = >`
   
   Repository-local Film development vectors remain mutable until promoted by
   the CTS authority. The released snapshot is immutable; compatible added coverage
-  requires a new CTS snapshot, while an incompatible wire change advances the Film
-  format version.
+  requires a new CTS snapshot. An incompatible wire change advances the Film
+  format version unless this document explicitly defines a coordinated
+  cutover, as in section 6.1. Publish separate pinned authorities for the
+  tagged-node mapping before claiming a released conformance target.
   
   The immutable [$ film-cts-v1-snapshot-0.2] supplies the language-neutral
   evidence for item 1. It contains 73 vectors and aligns with
