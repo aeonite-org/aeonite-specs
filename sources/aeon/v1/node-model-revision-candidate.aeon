@@ -3,7 +3,7 @@ id:string = "aeon-v1-node-model-revision"
 title:string = "AEON Node Model Revision Candidate"
 description:string = "Draft v1 contract for tagged node bindings, shared reference paths, portable AES and SANSA."
 created:date = 2026-11-27
-modified:date = 2026-11-27
+modified:date = 2026-11-28
 family:string = "aeon"
 group:string = "Core References"
 standing:string = "official"
@@ -107,10 +107,18 @@ body:prose = >`
   The candidate writes the tag as a distinct [$ tag] field in Telex v1 using
   ordinary payload escaping. Canonical Telex writes it immediately after
   [$ kind]. The Film v1 candidate encodes the tag as an ordinary string in the
-  kind-dependent payload slot for a tagged node. Allocate a distinct unused
-  Film kind code for that record and treat the former node and head codes as
-  invalid under the revised mapping. Numeric allocation and exact golden
-  bytes remain to be confirmed against the owning codec tables.
+  kind-dependent payload slot for a tagged node. The
+  [@ document:film-aes-v1#tagged-node-development-mapping | Film development mapping]
+  assigns [$ 19] to the tagged node and retires the former [$ 14] and [$ 15]
+  codes. The Film kind-dependent string maps to [$ tag], with no [$ value]
+  field in the decoded logical record.
+
+  A missing or empty tag, an ill-formed Unicode tag, or a tag that differs from
+  the decoded terminal key of a named node uses [$ AES_INVALID_TAG]. A tag on
+  another recognized kind uses [$ AES_UNEXPECTED_TAG]. These rules apply to
+  complete and partial streams. Tag length counts Unicode code points against
+  [$ max_key_segment_codepoints]. Codecs count the decoded tag bytes under
+  their normal payload limits.
 
   Use the entire source node declaration as the node record's provenance
   span when source-backed. Preserve independent spans for attributes and

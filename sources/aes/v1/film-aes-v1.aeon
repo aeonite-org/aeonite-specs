@@ -3,7 +3,7 @@ id:string = "film-aes-v1"
 title:string = "film.aes v1"
 description:string = "Canonical binary v1 encoding for portable AES event streams."
 created:date = 2026-09-12
-modified:date = 2026-10-17
+modified:date = 2026-11-28
 family:string = "aes"
 group:string = "Encodings"
 standing:string = "official"
@@ -339,6 +339,44 @@ body:prose = >`
   Adding an AES core kind requires an explicit event-contract and Film mapping.
   Unassigned codes are not an extension space.
   
+  ### 6.1 Tagged-node development mapping [# tagged-node-development-mapping]
+
+  The tagged-node revision uses the same Film v1 preamble and record framing. Select this mapping by the pinned
+  contract revision. The preamble alone cannot identify the revision.
+
+  | Code | AES kind | Kind-dependent payload |
+  | --> | --- | --- |
+  | [$ 14] | retired | invalid |
+  | [$ 15] | retired | invalid |
+  | [$ 19] | [$ NodeLiteral] | required [$ tag:string] |
+  |~ Revised node mapping
+
+  Code [$ 19] carries the UTF-8 tag as an ordinary length-prefixed string after
+  the optional identity and before provenance. This is the same position as
+  the kind-dependent payload in section 5. Decoding yields a logical [$ tag]
+  field and omits [$ value]. The remaining kind assignments are unchanged.
+  Codes [$ 00], [$ 14], [$ 15], and [$ 1A] through [$ FF] are invalid under the
+  development mapping. A semantic or syntax-record decoder rejects retired
+  codes with [$ FILM_INVALID_KIND] at the kind byte.
+
+  The Film field byte limit applies to the encoded tag. Logical AES validation
+  requires a nonempty Unicode scalar string within the decoded key code-point
+  limit and checks the decoded terminal key of a named node. Indexed nodes
+  supply their own tag independently of the index. Completeness uses direct
+  attribute and indexed paths beneath the node. In provenance, the node
+  record's span covers the entire declaration. Transcoding preserves the
+  logical [$ tag] and writes it immediately after [$ kind] in canonical Telex.
+
+  The complete default stream for the empty named node at [$ $.tag] with tag
+  [$ tag] is the following lowercase hexadecimal sequence.
+
+  ~~~$ text
+  4f5f5fff01000c001905242e74616703746167
+  ~~~$
+
+  Previously frozen Film fixtures and signed streams retain their original
+  mapping and must be interpreted with its pinned contract.
+
   ## 7. Datatype descriptors [# 7-datatype-descriptors]
   
   When record-control bit [$ 1] is one, one framed datatype descriptor follows the
