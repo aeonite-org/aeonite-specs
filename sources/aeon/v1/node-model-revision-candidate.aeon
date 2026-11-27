@@ -70,7 +70,10 @@ body:prose = >`
   attribute traversal. Top-level named nodes use their decoded tags in the path
   and indexed nodes use their positions.
 
-  ~~~$ aeon
+  The following fragment illustrates the provisional syntax for the revised
+  grammar.
+
+  ~~~$ text
   <tag("Hello", "World")>
   first = ~tag[0]
   second = ~>tag[1]
