@@ -21,6 +21,7 @@
       "aeon-core-v1-structure-syntax#binding-shape:1",
       "aeon-core-v1-structure-syntax#binding-shape:2",
       "aeon-core-v1-structure-syntax#attributes:2",
+      "aeon-v1-node-model-revision#structural-paths:1",
       "aeon-v1-temporal-precision-calendar-values#fractional-second-grammar:1",
       "aeon-v1-temporal-precision-calendar-values#leap-second-core-range:1",
       "aeon-v1-temporal-precision-calendar-values#wtc-composition:1",
